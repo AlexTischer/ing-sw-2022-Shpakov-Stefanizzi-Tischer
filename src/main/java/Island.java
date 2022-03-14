@@ -1,66 +1,36 @@
-public class Island {
-    private int numOfRedStudents = 0;
-    private int numOfBlueStudents = 0;
-    private int numOfYellowStudents = 0;
-    private int numOfGreenStudents = 0;
-    private int numOfPinkStudents = 0;
-    private int numOfIslands = 1;
-    private int numOfTowers = 0;
-    private TowerColor towersColor = TowerColor.NULL;
+import java.util.ArrayList;
 
-    public void addStudent(Color color) {
-        switch (color) {
-            case RED:
-                numOfRedStudents++;
-                break;
-            case BLUE:
-                numOfBlueStudents++;
-                break;
-            case YELLOW:
-                numOfYellowStudents++;
-                break;
-            case GREEN:
-                numOfGreenStudents++;
-                break;
-            case PINK:
-                numOfPinkStudents++;
-                break;
-        }
+public class Island {
+    private int numOfIslands = 1;
+    private ArrayList<Student> students = new ArrayList<Student>(0);
+    private ArrayList<Tower> towers = new ArrayList<Tower>(0);
+
+    public Island() {
+    }
+
+    public void addStudent(Student student){
+    }
+
+    public int getNumOfStudents(Color color){
+        int n = 0;
+        return n;
+    }
+
+    public void addTower(Tower tower){
     }
 
     public void setTowersColor(TowerColor towerColor){
-        this.towersColor=towerColor;
-    }
-
-    public int getNumOfStudents(Color color) {
-        switch (color) {
-            case RED:
-                return numOfRedStudents;
-            case BLUE:
-                return numOfBlueStudents;
-            case YELLOW:
-                return numOfYellowStudents;
-            case GREEN:
-                return numOfGreenStudents;
-            case PINK:
-                return numOfPinkStudents;
-            default:
-                return 0;
-        }
     }
 
     public int getNumOfTowers() {
-        return numOfTowers;
+        int n = 0;
+        return n;
     }
 
     public TowerColor getTowersColor(){
-        return towersColor;
+        TowerColor t = TowerColor.WHITE;
+        return t;
     }
 
-    public void createTower(TowerColor towerColor){
-        if(numOfIslands==1 && numOfTowers==0){
-            numOfTowers++;
-            setTowersColor(towerColor);
-        }
-    }
+
 }
