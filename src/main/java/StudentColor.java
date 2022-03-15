@@ -1,3 +1,3 @@
-public enum Color {
+public enum StudentColor {
 RED, YELLOW, BLUE, GREEN, PINK
 }

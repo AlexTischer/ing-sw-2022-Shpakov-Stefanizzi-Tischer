@@ -1,7 +1,7 @@
 public class Assistant {
     private int rank;
     private int movements;
-    private AssistantSuit suit;
+    private AssistantType suit;
 
     public int getRank() {
         return rank;
@@ -11,7 +11,7 @@ public class Assistant {
         return movements;
     }
 
-    public AssistantSuit getSuit() {
+    public AssistantType getType() {
         return suit;
     }
 }

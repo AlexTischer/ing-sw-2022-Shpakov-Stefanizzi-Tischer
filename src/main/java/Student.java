@@ -1,11 +1,11 @@
 public class Student {
-    private Color color;
+    private StudentColor studentColor;
 
-    public Color getColor(){
-        return color;
+    public StudentColor getColor(){
+        return studentColor;
     }
 
-    public Student(Color color) {
-        this.color = color;
+    public Student(StudentColor studentColor) {
+        this.studentColor = studentColor;
     }
 }

@@ -12,7 +12,7 @@ public class Island {
     public void addStudent(Student student){
     }
 
-    public int getNumOfStudents(Color color){
+    public int getNumOfStudents(StudentColor studentColor){
         int n = 0;
         return n;
     }

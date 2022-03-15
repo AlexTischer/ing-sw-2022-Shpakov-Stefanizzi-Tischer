@@ -14,7 +14,7 @@ public class GameBoard {
 
     private List<Character> characters;/*size = 3*/
 
-    private Stack<Coin> coins;
+    private int numOfCoins;
 
     private GameBoard(){
 
@@ -45,12 +45,12 @@ public class GameBoard {
         islandOfMotherNature = islands.get(positionOfMotherNature);
     }
 
-    public Coin getCoin(){
-        return coins.pop();
+    public void getCoin(){
+        numOfCoins--;
     }
 
     public void addCoin(Coin coin){
-        coins.add(coin);
+        numOfCoins++;
     }
 
     /*returns student popped from the bag*/

@@ -1,7 +1,7 @@
 public class Professor {
-    private Color color;
+    private StudentColor studentColor;
 
-    public Color getColor(){
-        return color;
+    public StudentColor getColor(){
+        return studentColor;
     }
 }

@@ -1,20 +1,18 @@
 import java.util.*;
 
-public class Character {
+public abstract class Character {
     private int cost;
-    private Effect effect;
     private List<Student> students;
 
-    public Character(int cost, Effect effect, Student[] students) {
+    public Character(int cost, Student[] students) {
         this.cost = cost;
-        this.effect = effect;
 
         for(Student s: students){
             this.students.add(s);
         }
     }
 
-    public Set<Color> getStudentsColors(){
+    public Set<StudentColor> getStudentsColors(){
         return null;
     }
 
@@ -24,12 +22,6 @@ public class Character {
 
     public Student popStudent(){
         return null;
-    }
-
-    public Effect getEffect(){
-        
-        /*how to prevent effect from being modified from the outside ?*/
-        return this.effect;
     }
 
     public int getCost(){

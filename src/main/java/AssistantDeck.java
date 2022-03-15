@@ -1,9 +1,9 @@
 import java.util.*;
 
 public class AssistantDeck {
-    private Map<AssistantSuit, List<Assistant> >assistants;
+    private Map<AssistantType, List<Assistant> >assistants;
 
-    public Assistant popAssistant(AssistantSuit suit){
+    public Assistant popAssistant(AssistantType suit){
         return null;
     }
 
