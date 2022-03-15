@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 public class Island {
     private int numOfIslands = 1;
+    /*advice to set List<Student> as static type*/
     private ArrayList<Student> students = new ArrayList<Student>(0);
     private ArrayList<Tower> towers = new ArrayList<Tower>(0);
 

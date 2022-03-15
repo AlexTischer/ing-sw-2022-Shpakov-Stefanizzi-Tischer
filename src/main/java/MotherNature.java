@@ -1,6 +1,6 @@
 public class MotherNature {
     private static MotherNature instanceOfMotherNature = null;
-    private GameBoard gameBoardinstance = null;
+    private GameBoard gameBoardInstance = null;
 
     private MotherNature() {
     }
