@@ -1,45 +1,84 @@
 import java.util.*;
 
 public class SchoolBoard {
-    private ArrayList<Student> entrance = new ArrayList<Student>(0);
-    /*private Student[][] diningRoom;*/
-    private Map<StudentColor, List <Student> > diningRoom;
-    private List<Professor> professorTable;
-    private List<Tower> towerTable;
+    private ArrayList<Color> entrance;
+    private Map<Color,Integer> diningRoom;
+    private Map<Color,Integer> professors;
+    private int numOfTowers;
     private TowerColor towersColor;
 
-    public void addStudent(Student student){
+    public SchoolBoard(TowerColor towerColor, int numOfTowers){
+        entrance = new ArrayList<Color>();
+
+        diningRoom = new HashMap<Color, Integer>();
+        //diningRoom init
+        for(Color c : Color.values()){
+            diningRoom.put(c,0);
+        }
+
+        professors = new HashMap<Color, Integer>();
+        //professors init
+        for(Color c : Color.values()){
+            professors.put(c,0);
+        }
+
+        this.towersColor = towerColor;
+        this.numOfTowers = numOfTowers;
     }
 
-    public void moveStudentToDining(Color studentColor){
+    public void addStudentToEntrance(Color color){
+        entrance.add(color);
     }
 
-    /*moves first student with given color to a given island */
-    public void moveStudentToIsland(Color studentColor, Island island){
+    public void moveStudentToDining(Color color){
+        diningRoom.put(color, diningRoom.get(color)+1);
+        entrance.remove(color);
     }
 
-    public int getNumOfStudentsInDining(StudentColor studentColor){
-        return 0;
+    public void moveStudentToIsland(Color color, Island island){
+        island.addStudent(color);
+        entrance.remove(color);
+    }
+
+    public int getNumOfStudentsInDining(Color color){
+        return diningRoom.get(color);
     }
 
     public TowerColor getTowersColor(){
         return towersColor;
     }
 
-    public Set<StudentColor> getProfessorsColor(){
-        return null;
+    public ArrayList<Color> getProfessorsColor(){
+        //creating professors list to return
+        ArrayList<Color> professorsList = new ArrayList<Color>();
+
+        for(Color c : Color.values()){
+            if(professors.get(c)==1){
+                professorsList.add(c);
+            }
+        }
+        return professorsList;
     }
 
-    public Island popTower(){
-        return null;
+    public void moveTowerToIsland(Island island){
+        numOfTowers--;
+        island.addTower(towersColor);
     }
 
-    public void pushProfessor(Professor professor){
+    public void addProfessor(Color color){
+        professors.put(color, 1);
     }
 
-    public Professor popProfessor(StudentColor studentColor){
-        return null;
+    public void removeProfessor(Color color){
+        professors.put(color, 0);
     }
 
+    public int getNumOfStudentsInEntrance(){
+        return entrance.size();
+    }
+
+    public void addTower(){
+        numOfTowers++;
+    }
 }
 
