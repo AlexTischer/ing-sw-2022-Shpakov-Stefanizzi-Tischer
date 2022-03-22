@@ -1,35 +1,46 @@
 import java.util.*;
 
 public class Island {
-    private int numOfIslands = 1;
+    private int numOfIslands;
     private Map <Color, Integer> students;
-    private Map <TowerColor, Integer> towers;
+    private int numOfTowers;
+    private TowerColor towersColor;
 
     public Island() {
+        students = new HashMap<Color, Integer>();
+        numOfIslands = 1;
+        numOfTowers = 0;
     }
 
     public void addStudent(Color color){
+        students.put(color, students.get(color)+1);
     }
 
-    public void setTowersColor(TowerColor towerColor){
+    public void setTowersColor(TowerColor towerColor) throws UnsupportedOperationException{
+        if(numOfTowers>0){
+            this.towersColor = towerColor;
+        }
+        else throw new UnsupportedOperationException();
     }
 
     public int getNumOfStudents(Color studentColor){
-        int n = 0;
-        return n;
+        return students.get(studentColor);
     }
 
-    public void addTower(TowerColor towerColor){
+    public void addTower(TowerColor towerColor) throws UnsupportedOperationException{
+        if(numOfTowers<numOfIslands){
+            numOfTowers++;
+            this.towersColor=towerColor;
+        }
+        else throw new UnsupportedOperationException();
     }
 
     public int getNumOfTowers() {
-        int n = 0;
-        return n;
+        return numOfTowers;
     }
 
     public TowerColor getTowersColor(){
-        TowerColor t = TowerColor.WHITE;
-        return t;
+        return towersColor;
     }
 
 

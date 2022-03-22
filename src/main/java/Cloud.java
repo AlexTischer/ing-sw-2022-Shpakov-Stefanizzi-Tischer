@@ -1,12 +1,28 @@
+import sun.invoke.empty.Empty;
+
+import java.util.ArrayList;
+import java.util.EmptyStackException;
+
 public class Cloud {
-    private Student[] students;
+    private ArrayList<Color> students;
 
-    public void getStudentsColor(){
+    public Cloud(){
+        students = new ArrayList<Color>();
     }
 
-    public void pushStudent(Student student){
+    public ArrayList<Color> getStudentsColors(){
+        return (ArrayList<Color>) students.clone();
     }
 
-    public Student popStudent(){
+
+    public void addStudents(Color color) throws EmptyStackException {
+        if (students.size()==0) {
+            students.add(color);
+        }
+        else throw new EmptyStackException();
+    }
+
+    public void removeStudents(){
+        students.clear();
     }
 }

@@ -11,11 +11,11 @@ public class SchoolBoard {
     public void addStudent(Student student){
     }
 
-    public void moveStudentToDining(StudentColor studentColor){
+    public void moveStudentToDining(Color studentColor){
     }
 
     /*moves first student with given color to a given island */
-    public void moveStudentToIsland(StudentColor studentColor, Island island){
+    public void moveStudentToIsland(Color studentColor, Island island){
     }
 
     public int getNumOfStudentsInDining(StudentColor studentColor){

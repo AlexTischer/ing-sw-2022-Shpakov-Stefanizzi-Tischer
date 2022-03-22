@@ -1,19 +1,46 @@
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 public class Player {
     private String name;
     private SchoolBoard schoolBoard;
-    private ArrayList<Assistant> assistants = new ArrayList<Assistant>(0);
-    private ArrayList<Coin> coins = new ArrayList<Coin>(0);
+    private int coins;
+    private TowerColor towerColor;
+    private AssistantType assistantType;
+    private Assistant playedAssistant;
+    private Assistant[] assistants;
 
-    protected void playTurn(){
-    }
-
-    protected Player(String name){
+    public Player(String name, TowerColor towerColor, AssistantType assistantType, int numOfTowers){
         this.name=name;
+        this.towerColor=towerColor;
+        this.assistantType=assistantType;
+        this.assistants = new Assistant[];
+        this.coins = 0;
+        schoolBoard = new SchoolBoard(this.towerColor, numOfTowers);
     }
-    protected String getName(){
-        return name;
+
+    public void moveStudentToIsland(Color studentColor,Island island){
+        schoolBoard.moveStudentToIsland(studentColor, island);
+    }
+
+    public void moveStudentToDining(Color studentColor){
+        schoolBoard.moveStudentToDining(studentColor);
+    }
+
+    public void addStudentToEntrance(Color studentColor){
+        schoolBoard.addStudentToEntrance(studentColor);
+    }
+
+    public Assistant getPlayedAssistant() {
+        return playedAssistant;
+    }
+
+    public void setPlayedAssistant(int rank) throws InvalidParameterException {
+        if(assistants[rank - 1] != null) {
+            playedAssistant = assistants[rank - 1];
+            assistants[rank - 1] = null;
+        }
+        else throw new InvalidParameterException();
     }
 
 }
