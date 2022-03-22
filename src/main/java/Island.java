@@ -1,26 +1,25 @@
-import java.util.ArrayList;
+import java.util.*;
 
 public class Island {
     private int numOfIslands = 1;
-    /*advice to set List<Student> as static type*/
-    private ArrayList<Student> students = new ArrayList<Student>(0);
-    private ArrayList<Tower> towers = new ArrayList<Tower>(0);
+    private Map <Color, Integer> students;
+    private Map <TowerColor, Integer> towers;
 
     public Island() {
     }
 
-    public void addStudent(Student student){
+    public void addStudent(Color color){
     }
 
-    public int getNumOfStudents(StudentColor studentColor){
+    public void setTowersColor(TowerColor towerColor){
+    }
+
+    public int getNumOfStudents(Color studentColor){
         int n = 0;
         return n;
     }
 
-    public void addTower(Tower tower){
-    }
-
-    public void setTowersColor(TowerColor towerColor){
+    public void addTower(TowerColor towerColor){
     }
 
     public int getNumOfTowers() {
