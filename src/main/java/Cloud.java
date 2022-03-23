@@ -4,6 +4,8 @@ import java.util.EmptyStackException;
 public class Cloud {
     private ArrayList<Color> students;
 
+    /*Mike: suggest adding maxNumOfStudents attribute in order to
+    make it more clear how many students i can put on a cloud*/
     public Cloud(){
         students = new ArrayList<Color>();
     }

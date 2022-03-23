@@ -8,7 +8,14 @@ public class Player {
     private TowerColor towerColor;
     private AssistantType assistantType;
     private Assistant playedAssistant;
+
+    /*Mike: why not creating an ArrayList?*/
     private Assistant[] assistants;
+
+    /*Mike: Player must have getProfessorsColor method in order to check influence inside GameBoard
+    * method must return Set<Color>*/
+
+    /*Mike: Player must have getTowerColor method in order to check influence inside GameBoard*/
 
     public Player(String name, TowerColor towerColor, AssistantType assistantType, int numOfTowers){
         this.name=name;
@@ -19,10 +26,12 @@ public class Player {
         schoolBoard = new SchoolBoard(this.towerColor, numOfTowers);
     }
 
+    /*Mike: shouldn`t it throw exception if there are no students in entrance ?*/
     public void moveStudentToIsland(Color studentColor,Island island){
         schoolBoard.moveStudentToIsland(studentColor, island);
     }
 
+    /*Mike: shouldn`t it throw exception if there are no students in entrance ?*/
     public void moveStudentToDining(Color studentColor){
         schoolBoard.moveStudentToDining(studentColor);
     }

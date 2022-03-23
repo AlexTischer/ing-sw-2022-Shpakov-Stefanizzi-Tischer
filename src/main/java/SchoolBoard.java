@@ -30,15 +30,21 @@ public class SchoolBoard {
         entrance.add(color);
     }
 
+    /*1 Mike: what if entrance is empty ? How about throwing exception ?*/
+    /*2 Mike: Shouldn`t I check professors each time I move student to the dining room ?*/
     public void moveStudentToDining(Color color){
         diningRoom.put(color, diningRoom.get(color)+1);
         entrance.remove(color);
     }
 
+    /*Mike: what if entrance is empty ? How about throwing exception ?*/
     public void moveStudentToIsland(Color color, Island island){
         island.addStudent(color);
         entrance.remove(color);
     }
+
+    /*Mike: can I move student from dining room into an island ?
+    * void moveStudentFromDiningToIsland() ?*/
 
     public int getNumOfStudentsInDining(Color color){
         return diningRoom.get(color);

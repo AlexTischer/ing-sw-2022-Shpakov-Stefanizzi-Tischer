@@ -1,7 +1,19 @@
 public class Assistant {
     private int rank;
     private int movements;
-    private AssistantType suit;
+    private AssistantType type;
+
+    public Assistant(int rank, int movements, AssistantType type) {
+        if(rank <= 0 || rank > 10)
+            throw new IllegalArgumentException("Error: Rank can`t be negative or greater than 10");
+
+        if(movements <= 0 || movements > 5)
+            throw new IllegalArgumentException("Error: Movements can`t be negative or greater than 5");
+
+        this.rank = rank;
+        this.movements = movements;
+        this.type = type;
+    }
 
     public int getRank() {
         return rank;
@@ -12,6 +24,6 @@ public class Assistant {
     }
 
     public AssistantType getType() {
-        return suit;
+        return type;
     }
 }
