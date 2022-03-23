@@ -1,5 +1,3 @@
-import sun.invoke.empty.Empty;
-
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 
