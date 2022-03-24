@@ -32,8 +32,7 @@ public class GameBoard {
 
         clouds = new ArrayList<Cloud>(numOfPlayers);
         for (int i=0; i < numOfPlayers; i++){
-            /*Cloud should accept numOfPlayers since it impacts on num of students that it contains*/
-            clouds.add(i, new Cloud(/*numOfPlayers*/));
+            clouds.add(i, new Cloud(numOfPlayers==3 ? 4 : 3));
         }
 
         /*Maybe make 3 parametric value ?*/
@@ -135,7 +134,7 @@ public class GameBoard {
             score += currentIsland.getNumOfStudents(color);
         }
 
-        if (player.getTowersColor().equals(currentIsland.getTowersColor())){
+        if (player.getTowerColor().equals(currentIsland.getTowersColor())){
             score += currentIsland.getNumOfTowers();
         }
 

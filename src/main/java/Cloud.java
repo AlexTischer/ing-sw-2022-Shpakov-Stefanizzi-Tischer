@@ -3,11 +3,11 @@ import java.util.EmptyStackException;
 
 public class Cloud {
     private ArrayList<Color> students;
+    private int maxNumOfStudents;
 
-    /*Mike: suggest adding maxNumOfStudents attribute in order to
-    make it more clear how many students i can put on a cloud*/
-    public Cloud(){
+    public Cloud(int maxNumOfStudents){
         students = new ArrayList<Color>();
+        this.maxNumOfStudents = maxNumOfStudents;
     }
 
     public ArrayList<Color> getStudentsColors(){
