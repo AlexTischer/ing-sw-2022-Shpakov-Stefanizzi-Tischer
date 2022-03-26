@@ -41,6 +41,17 @@ public class Player {
         schoolBoard.addStudentToEntrance(studentColor);
     }
 
+    public void addProfessor(Color color){
+        schoolBoard.addProfessor(color);
+    }
+
+    public void removeProfessor(Color color){
+        schoolBoard.removeProfessor(color);
+    }
+
+    public int getNumOfStudentsInDining(Color color){
+        return schoolBoard.getNumOfStudentsInDining(color);
+    }
     public Assistant getPlayedAssistant() {
         return playedAssistant;
     }

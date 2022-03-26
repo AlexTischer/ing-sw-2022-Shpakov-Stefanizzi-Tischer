@@ -14,8 +14,12 @@ public class Cloud {
         return (ArrayList<Color>) students.clone();
     }
 
+    public int getMaxNumOfStudents(){
+        return maxNumOfStudents;
+    }
 
-    public void addStudents(Color color) throws EmptyStackException {
+    /*implementation must be changed*/
+    public void addStudent(Color color) throws EmptyStackException {
         if (students.size()==0) {
             students.add(color);
         }

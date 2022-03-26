@@ -35,19 +35,13 @@ public class SchoolBoard {
     public void moveStudentToDining(Color color){
         diningRoom.put(color, diningRoom.get(color)+1);
         entrance.remove(color);
+        /*check professor*/
     }
 
     /*Mike: what if entrance is empty ? How about throwing exception ?*/
     public void moveStudentToIsland(Color color, Island island){
         island.addStudent(color);
         entrance.remove(color);
-    }
-
-    /*Mike: can I move student from dining room into an island ?
-    * void moveStudentFromDiningToIsland() ?*/
-
-    public int getNumOfStudentsInDining(Color color){
-        return diningRoom.get(color);
     }
 
     public TowerColor getTowersColor(){
@@ -81,6 +75,10 @@ public class SchoolBoard {
 
     public int getNumOfStudentsInEntrance(){
         return entrance.size();
+    }
+
+    public int getNumOfStudentsInDining(Color color){
+        return diningRoom.get(color);
     }
 
     public void addTower(){

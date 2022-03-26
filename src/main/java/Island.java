@@ -31,7 +31,7 @@ public class Island {
         if(numOfTowers>0){
             this.towersColor = towerColor;
         }
-        else throw new UnsupportedOperationException();
+        else throw new UnsupportedOperationException("Error: No towers on island");
     }
 
     public int getNumOfStudents(Color studentColor){
