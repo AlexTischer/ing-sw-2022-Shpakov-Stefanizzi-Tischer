@@ -1,3 +1,5 @@
+import exceptions.NumOfStudentsExceeded;
+
 import java.util.*;
 import java.util.Random;
 
@@ -96,7 +98,7 @@ public class GameBoard {
         player.moveStudentToIsland(studentColor, islands.get(islandNumber));
     }
 
-    public void moveStudentToDining(Player player, Color studentColor){
+    public void moveStudentToDining(Player player, Color studentColor) throws NumOfStudentsExceeded {
         player.moveStudentToDining(studentColor);
     }
 

@@ -1,4 +1,5 @@
 import java.util.*;
+import exceptions.*;
 
 public class SchoolBoard {
     private ArrayList<Color> entrance;
@@ -11,13 +12,13 @@ public class SchoolBoard {
         entrance = new ArrayList<Color>();
 
         diningRoom = new HashMap<Color, Integer>();
-        //diningRoom init
+        /*diningRoom init*/
         for(Color c : Color.values()){
             diningRoom.put(c,0);
         }
 
         professors = new HashMap<Color, Integer>();
-        //professors init
+        /*professors init*/
         for(Color c : Color.values()){
             professors.put(c,0);
         }
@@ -32,9 +33,12 @@ public class SchoolBoard {
 
     /*1 Mike: what if entrance is empty ? How about throwing exception ?*/
     /*2 Mike: Shouldn`t I check professors each time I move student to the dining room ?*/
-    public void moveStudentToDining(Color color){
-        diningRoom.put(color, diningRoom.get(color)+1);
-        entrance.remove(color);
+
+    public void moveStudentToDining(Color color) throws NumOfStudentsExceeded {
+        if (diningRoom.get(color) < 10) {
+            diningRoom.put(color, diningRoom.get(color) + 1);
+            entrance.remove(color);
+        } else throw new NumOfStudentsExceeded();
         /*check professor*/
     }
 

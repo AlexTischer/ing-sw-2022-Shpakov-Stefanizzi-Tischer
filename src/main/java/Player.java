@@ -1,6 +1,7 @@
+import exceptions.NumOfStudentsExceeded;
+
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Set;
 
 public class Player {
     private String name;
@@ -33,7 +34,7 @@ public class Player {
         return schoolBoard.getProfessorsColor();
     }
 
-    public void moveStudentToDining(Color studentColor){
+    public void moveStudentToDining(Color studentColor) throws NumOfStudentsExceeded {
         schoolBoard.moveStudentToDining(studentColor);
     }
 
