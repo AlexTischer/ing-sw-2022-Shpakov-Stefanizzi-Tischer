@@ -1,4 +1,8 @@
+package controller;
+
+import exceptions.NoEnoughCoinsException;
 import exceptions.NumOfStudentsExceeded;
+import model.*;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -22,7 +26,7 @@ public class Player {
         schoolBoard = new SchoolBoard(this.towerColor, numOfTowers);
     }
 
-    public void moveStudentToIsland(Color studentColor,Island island){
+    public void moveStudentToIsland(Color studentColor, Island island){
         schoolBoard.moveStudentToIsland(studentColor, island);
     }
 
@@ -63,6 +67,13 @@ public class Player {
             assistants[rank - 1] = null;
         }
         else throw new InvalidParameterException();
+    }
+
+    public void removeCoins(int coins) throws NoEnoughCoinsException {
+        if(this.coins>=coins) {
+            this.coins -= coins;
+        }
+        else throw new NoEnoughCoinsException();
     }
 
 }

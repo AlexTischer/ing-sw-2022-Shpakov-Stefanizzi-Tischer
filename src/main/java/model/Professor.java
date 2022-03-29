@@ -1,3 +1,5 @@
+package model;
+
 public class Professor {
     private StudentColor studentColor;
 

@@ -1,3 +1,5 @@
+package model;
+
 import java.util.*;
 import exceptions.*;
 
@@ -40,6 +42,12 @@ public class SchoolBoard {
             entrance.remove(color);
         } else throw new NumOfStudentsExceeded();
         /*check professor*/
+    }
+
+    public void addStudentToDining(Color color) throws NumOfStudentsExceeded {
+        if (diningRoom.get(color) < 10) {
+            diningRoom.put(color, diningRoom.get(color) + 1);
+        }
     }
 
     /*Mike: what if entrance is empty ? How about throwing exception ?*/

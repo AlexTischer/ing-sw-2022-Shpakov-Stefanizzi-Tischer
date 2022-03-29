@@ -1,3 +1,8 @@
+package model;
+
+import controller.CharacterDeck;
+import controller.Player;
+import exceptions.NoEntryException;
 import exceptions.NumOfStudentsExceeded;
 
 import java.util.*;
@@ -10,8 +15,6 @@ public class GameBoard {
 
     private List<Island> islands;
     private List<Cloud> clouds;
-    private List<Character> characters;
-
     private int positionOfMotherNature;
     private int numOfPlayers;
     private int numOfCoins;
@@ -43,11 +46,6 @@ public class GameBoard {
             clouds.add(i, new Cloud(numOfPlayers==3 ? 4 : 3));
         }
 
-        /*Maybe make 3 parametric value ?*/
-        for (int i = 0; i < 3; i++){
-            characters.add(i, characterDeck.popCharacter());
-        }
-
         switch (numOfPlayers){
             case 2: maxNumOfStudentsInEntrance = 7;
             case 3: maxNumOfStudentsInEntrance = 9;
@@ -60,7 +58,7 @@ public class GameBoard {
     }
 
     /*method that will be invoked at the start to refill entrance
-    of each player`s SchoolBoard*/
+    of each player`s model.SchoolBoard*/
     public void refillEntrance(Player player){
 
         for (int i = 0; i < maxNumOfStudentsInEntrance; i++)
@@ -76,14 +74,10 @@ public class GameBoard {
     }
 
     public void moveMotherNature(int steps){
-        if (steps < 1 || steps > 5)
-            throw new IllegalArgumentException("You can move Mother Nature 1 island at least and 5 at most");
-
         positionOfMotherNature = (positionOfMotherNature + steps) % islands.size();
     }
 
     public void getCoin() {
-
         numOfCoins--;
     }
 
@@ -103,10 +97,8 @@ public class GameBoard {
     }
 
     public void useCloud(Player player, int cloudNumber){
-
         if(cloudNumber < 1 || cloudNumber > clouds.size())
             throw new IllegalArgumentException("Error: invalid cloudNumber");
-
         for(Color color: clouds.get(cloudNumber).getStudentsColors()){
             player.addStudentToEntrance(color);
         }
@@ -155,25 +147,30 @@ public class GameBoard {
 
     }
 
-    /*returns the score of the player on particular island*/
-    public int calculateInfluence(Player player, int numOfIsland){
-
-        int score = 0;
-        Island currentIsland = islands.get(numOfIsland);
-
-        for (Color color: player.getProfessorsColor()){
-            score += currentIsland.getNumOfStudents(color);
-        }
-
-        if (player.getTowerColor().equals(currentIsland.getTowersColor())){
-            score += currentIsland.getNumOfTowers();
-        }
-
-        return score;
+    public void setNoEntry(int numOfIsland, boolean noEntry){
+        islands.get(numOfIsland).setNoEntry(noEntry);
     }
 
-    public int calculateInfluence(Player player){
+    /*returns the score of the player on particular island*/
+    public int calculateInfluence(Player player, int numOfIsland) throws NoEntryException {
+        if (!islands.get(numOfIsland).getNoEntry()){
+            int score = 0;
+            Island currentIsland = islands.get(numOfIsland);
+            for (Color color: player.getProfessorsColor()){
+                score += currentIsland.getNumOfStudents(color);
+            }
+            if (player.getTowerColor().equals(currentIsland.getTowersColor())){
+                score += currentIsland.getNumOfTowers();
+            }
+            return score;
+        }
+        else {
+            setNoEntry(numOfIsland, false);
+            throw new NoEntryException();
+        }
+    }
 
+    public int calculateInfluence(Player player) throws NoEntryException{
         return this.calculateInfluence(player, positionOfMotherNature);
     }
 

@@ -1,3 +1,5 @@
+package model;
+
 public class Assistant {
     private int rank;
     private int movements;

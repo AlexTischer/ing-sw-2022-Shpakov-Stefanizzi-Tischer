@@ -1,3 +1,5 @@
+package model;
+
 import java.util.*;
 
 public class Island {
@@ -5,6 +7,7 @@ public class Island {
     private Map <Color, Integer> students;
     private int numOfTowers;
     private TowerColor towersColor;
+    private boolean noEntry;
 
     public Island() {
         students = new HashMap<Color, Integer>();
@@ -13,6 +16,15 @@ public class Island {
         }
         numOfIslands = 1;
         numOfTowers = 0;
+        noEntry = false;
+    }
+
+    public void setNoEntry(boolean noEntry){
+        this.noEntry = noEntry;
+    }
+
+    public boolean getNoEntry(){
+        return this.noEntry;
     }
 
     public void mergeIsland(Island island){

@@ -1,5 +1,6 @@
+package model;
+
 import java.util.*;
-import java.lang.Math;
 
 public class AssistantDeck {
     private Map<AssistantType, List<Assistant>> assistants;
@@ -7,7 +8,7 @@ public class AssistantDeck {
     public AssistantDeck() {
         assistants = new HashMap<AssistantType, List<Assistant>>();
 
-        /*adds 10 Assistant cards per AssistantType inside assistants Map*/
+        /*adds 10 model.Assistant cards per model.AssistantType inside assistants Map*/
         for(AssistantType type: AssistantType.values()){
 
             assistants.put(type, new ArrayList<Assistant>(10));
