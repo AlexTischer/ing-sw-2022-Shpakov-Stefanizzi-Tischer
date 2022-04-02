@@ -10,8 +10,8 @@ public class Game {
     private GameBoard gameBoard;
     protected ArrayList<Player> players;
     protected Player currentPlayer;
-    private DefaultCharacter currentCharacter;
-    private DefaultCharacter playedCharacters[];
+    private Character currentCharacter;
+    private Character playedCharacters[];
     private ArrayList<Assistant> playedAssistant;
 
     public void moveStudentToIsland(Color studentColor, int islandNumber){
@@ -20,7 +20,7 @@ public class Game {
 
     public void moveStudentToDining(Color studentColor){
         removeStudentFromEntrance(studentColor);
-        addStudentToDining(currentPlayer);
+        addStudentToDining(currentPlayer, studentColor);
     }
 
     protected void addStudentToEntrance(Player player){
@@ -49,7 +49,12 @@ public class Game {
     }
 
     protected void calculateInfluence(int islandNumber){
-        gameBoard.calculateInfluence(islandNumber, currentCharacter);
+        try {
+            gameBoard.calculateInfluence(islandNumber, currentCharacter);
+        }
+        catch (NoEntryException e){
+            e.printStackTrace();
+        }
     }
 
     protected void reassignProfessor(Color professorColor){
@@ -61,8 +66,8 @@ public class Game {
             gameBoard.setNoEntry(islandNumber, noEntry);
         }
         catch (NoEntryException e){
-            for(DefaultCharacter c : playedCharacters){
-                c.addEntryTile();
+            for(Character c : playedCharacters){
+                c.addNoEntryTile();
             }
         }
     }
@@ -92,7 +97,7 @@ public class Game {
         currentCharacter.setToBeSwappedStudents(toBeSwappedStudents);
     }
 
-    public void activateCharacter(Color color, int IslandNumber){
+    public void activateCharacter(Color color, int islandNumber){
         currentCharacter.setSelectedStudent(color);
         currentCharacter.setSelectedIslandNumber(islandNumber);
         currentCharacter.execute();

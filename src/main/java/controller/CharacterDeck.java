@@ -5,14 +5,14 @@ import java.util.Collections;
 import java.util.List;
 
 public class CharacterDeck {
-    private List<DefaultCharacter> characters;
+    private List<Character> characters;
 
     public CharacterDeck(int size) {
 
         if( size != 12 && size != 8 )
             throw new IllegalArgumentException("Error: only 12 or 8 characters are allowed");
 
-        this.characters = new ArrayList<DefaultCharacter>(size);
+        this.characters = new ArrayList<Character>(size);
 
         //Creates 12 or 8 characters and adds them to characters List
 
@@ -21,7 +21,7 @@ public class CharacterDeck {
     }
 
     //returns a random model.Character from characters
-    public DefaultCharacter popCharacter(){
+    public Character popCharacter(){
 
         return characters.remove(0);
     }

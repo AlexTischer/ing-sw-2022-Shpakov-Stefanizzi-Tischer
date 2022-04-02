@@ -4,6 +4,7 @@ import controller.CharacterDeck;
 import controller.Player;
 import exceptions.NoEntryException;
 import exceptions.NumOfStudentsExceeded;
+import controller.Character;
 
 import java.util.*;
 import java.util.Random;
@@ -15,6 +16,7 @@ public class GameBoard {
 
     private List<Island> islands;
     private List<Cloud> clouds;
+
     private int positionOfMotherNature;
     private int numOfPlayers;
     private int numOfCoins;
@@ -31,11 +33,11 @@ public class GameBoard {
     }
 
     /*Initializes instanceOfBag and clouds. Takes number of players and
-    number of students to be in the bag( by default 130 ) and characterDeck to draw 3 characters*/
-    public void init(int numOfPlayers, int numOfStudents, CharacterDeck characterDeck){
+    number of students to be in the bag( by default 130 ) */
+    public void init(int numOfPlayers, int numOfStudents){
 
         if (numOfPlayers < 2 || numOfPlayers > 4 || numOfStudents < 0 ) {
-            throw new IllegalArgumentException("Error: Invalid Arguments. NumOfPlayers is not in [2, 4] or numOfStudents is negative");
+            throw new IllegalArgumentException("Error: Invalid Arguments. NumOfPlayers is not in [2, 4]");
         }
 
         instanceOfBag = new Bag(numOfStudents);
@@ -53,17 +55,8 @@ public class GameBoard {
         }
     }
 
-    public void init(int numOfPlayers, CharacterDeck characterDeck){
-        init(numOfPlayers, 130, characterDeck);
-    }
-
-    /*method that will be invoked at the start to refill entrance
-    of each player`s model.SchoolBoard*/
-    public void refillEntrance(Player player){
-
-        for (int i = 0; i < maxNumOfStudentsInEntrance; i++)
-            player.addStudentToEntrance(instanceOfBag.extractStudent());
-
+    public void init(int numOfPlayers){
+        init(numOfPlayers, 130);
     }
 
     public static GameBoard getInstanceOfGameBoard(){
@@ -73,23 +66,30 @@ public class GameBoard {
         return instanceOfGameBoard;
     }
 
-    public void moveMotherNature(int steps){
-        positionOfMotherNature = (positionOfMotherNature + steps) % islands.size();
+    /*method that will be invoked at the start to refill entrance
+    of each player`s SchoolBoard*/
+    public void refillEntrance(Player player){
+        for (int i = 0; i < maxNumOfStudentsInEntrance; i++)
+            player.addStudentToEntrance(instanceOfBag.extractStudent());
     }
 
-    public void getCoin() {
-        numOfCoins--;
+    public void moveMotherNature(int steps, Character character){
+        if(character.moveMotherNature(steps))
+            positionOfMotherNature = (positionOfMotherNature + steps) % islands.size();
     }
 
-    public void addCoin(){
-        numOfCoins++;
-    }
-
-    public void moveStudentToIsland(Player player, Color studentColor, int islandNumber ){
+    public void moveStudentToIsland( Player player, Color studentColor, int islandNumber ){
         if(islandNumber < 1 || islandNumber > islands.size())
             throw new IllegalArgumentException("Error: invalid island number");
 
-        player.moveStudentToIsland(studentColor, islands.get(islandNumber));
+        player.moveStudentToIsland(studentColor, islands.get(islandNumber-1));
+    }
+
+    public void moveStudentToIsland(Color studentColor, int islandNumber){
+        if(islandNumber < 0 || islandNumber > islands.size()-1)
+            throw new IllegalArgumentException("Error: invalid island number");
+
+        islands.get(islandNumber).addStudent(studentColor);
     }
 
     public void moveStudentToDining(Player player, Color studentColor) throws NumOfStudentsExceeded {
@@ -99,11 +99,12 @@ public class GameBoard {
     public void useCloud(Player player, int cloudNumber){
         if(cloudNumber < 1 || cloudNumber > clouds.size())
             throw new IllegalArgumentException("Error: invalid cloudNumber");
-        for(Color color: clouds.get(cloudNumber).getStudentsColors()){
+
+        for(Color color: clouds.get(cloudNumber-1).getStudentsColors()){
             player.addStudentToEntrance(color);
         }
 
-        clouds.get(cloudNumber).removeStudents();
+        clouds.get(cloudNumber-1).removeStudents();
 
     }
 
@@ -129,7 +130,7 @@ public class GameBoard {
                 if(positionOfMotherNature == i+1)
                     positionOfMotherNature = i;
 
-                /*Decrement index in order to check if I can merge other islands with the next one*/
+                /*Decrement index in order to check if I can merge the same islands with the next one*/
                 i--;
 
             }
@@ -147,31 +148,10 @@ public class GameBoard {
 
     }
 
-    public void setNoEntry(int numOfIsland, boolean noEntry){
-        islands.get(numOfIsland).setNoEntry(noEntry);
-    }
-
-    /*returns the score of the player on particular island*/
-    public int calculateInfluence(Player player, int numOfIsland) throws NoEntryException {
-        if (!islands.get(numOfIsland).getNoEntry()){
-            int score = 0;
-            Island currentIsland = islands.get(numOfIsland);
-            for (Color color: player.getProfessorsColor()){
-                score += currentIsland.getNumOfStudents(color);
-            }
-            if (player.getTowerColor().equals(currentIsland.getTowersColor())){
-                score += currentIsland.getNumOfTowers();
-            }
-            return score;
-        }
-        else {
-            setNoEntry(numOfIsland, false);
-            throw new NoEntryException();
-        }
-    }
-
-    public int calculateInfluence(Player player) throws NoEntryException{
-        return this.calculateInfluence(player, positionOfMotherNature);
+    /*returns the score of the current player on particular island
+    * note: the character knows who is the current player*/
+    public int calculateInfluence( int islandNumber, Character character ) throws NoEntryException {
+        return character.calculateInfluence(islands.get(islandNumber-1), islandNumber);
     }
 
     public void addProfessor(Player player, Color color){
@@ -182,4 +162,40 @@ public class GameBoard {
         player.removeProfessor(color);
     }
 
+
+    public void addStudentToEntrance(Player player, Color studentColor){
+
+        player.addStudentToEntrance(studentColor);
+    }
+
+    public void removeStudentFromEntrance(Player player, Color studentColor){
+        player.removeStudentFromEntrance(studentColor);
+    }
+
+    public void removeStudentFromDining(Player player, Color studentColor){
+        player.removeStudentFromDining(studentColor);
+    }
+
+    public void addStudentToDining(Player player, Color studentColor){
+        player.addStudentToDining(studentColor);
+    }
+
+    public void getCoin() {
+        numOfCoins--;
+    }
+
+    public void addCoin(){
+        numOfCoins++;
+    }
+
+    public void setNoEntry(int islandNumber, boolean noEntry){
+        if ( islandNumber < 1 || islandNumber > islands.size() )
+            throw new IllegalArgumentException("Incorrect island number");
+
+        islands.get(islandNumber-1).setNoEntry(noEntry);
+    }
+
+    public Color getStudentFromBag(){
+        return instanceOfBag.extractStudent();
+    }
 }

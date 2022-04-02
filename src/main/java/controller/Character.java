@@ -5,7 +5,7 @@ import model.*;
 
 import java.util.ArrayList;
 
-public class DefaultCharacter {
+public class Character {
     protected Game game;
     private int cost;
 
@@ -54,7 +54,7 @@ public class DefaultCharacter {
         throw new UnsupportedOperationException();
     }
 
-    public void setSelectedIsland(int selectedIsland){
+    public void setSelectedIslandNumber(int selectedIsland){
         throw new UnsupportedOperationException();
     }
 
@@ -66,8 +66,12 @@ public class DefaultCharacter {
         throw new UnsupportedOperationException();
     }
 
-    public void addEntryTile(){
+    public void addNoEntryTile(){
         throw new UnsupportedOperationException();
+    }
+
+    public int getMaxNumOfStudents(){
+        return maxNumOfStudents;
     }
 
 }

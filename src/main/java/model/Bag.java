@@ -6,7 +6,7 @@ public class Bag {
 
     private LinkedList<Color> students;
 
-    //NUMOFSTUDENT must be defined (current rules set it to 120)
+    //NUMOFSTUDENT must be defined (current rules set it to 130)
     public Bag(int NUMOFSTUDENTS){
 
         LinkedList<Color> students = new LinkedList<Color>();
