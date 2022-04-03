@@ -1,6 +1,7 @@
 package controller;
 
 import exceptions.NoEnoughCoinsException;
+import exceptions.NoEnoughEntryTilesException;
 import exceptions.NoEntryException;
 import model.*;
 
@@ -65,10 +66,11 @@ public class Game {
         try {
             gameBoard.setNoEntry(islandNumber, noEntry);
         }
+
         catch (NoEntryException e){
-            for(Character c : playedCharacters){
-                c.addNoEntryTile();
             }
+
+        catch (NoEnoughEntryTilesException e){
         }
     }
 

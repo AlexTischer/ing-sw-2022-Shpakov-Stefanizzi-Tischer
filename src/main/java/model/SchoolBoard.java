@@ -9,8 +9,11 @@ public class SchoolBoard {
     private Map<Color,Integer> professors;
     private int numOfTowers;
     private TowerColor towersColor;
+    private int maxStudentsInEntrance;
 
-    public SchoolBoard(TowerColor towerColor, int numOfTowers){
+    public SchoolBoard(TowerColor towerColor, int numOfTowers, int maxStudentsInEntrance){
+        this.maxStudentsInEntrance = maxStudentsInEntrance;
+
         entrance = new ArrayList<Color>();
 
         diningRoom = new HashMap<Color, Integer>();
@@ -29,8 +32,18 @@ public class SchoolBoard {
         this.numOfTowers = numOfTowers;
     }
 
-    public void addStudentToEntrance(Color color){
-        entrance.add(color);
+    public void addStudentToEntrance(Color color) throws NumOfStudentsExceeded{
+        if(entrance.size()<maxStudentsInEntrance) {
+            entrance.add(color);
+        }
+        else throw new NumOfStudentsExceeded();
+    }
+
+    public void removeStudentFromEntrance(Color studentColor) throws NoEnoughStudentsException {
+        if(entrance.contains(studentColor)) {
+            entrance.remove(studentColor);
+        }
+        else throw new NoEnoughStudentsException();
     }
 
     /*1 Mike: what if entrance is empty ? How about throwing exception ?*/
@@ -44,16 +57,32 @@ public class SchoolBoard {
         /*check professor*/
     }
 
-    public void addStudentToDining(Color color) throws NumOfStudentsExceeded {
-        if (diningRoom.get(color) < 10) {
-            diningRoom.put(color, diningRoom.get(color) + 1);
+    public void removeStudentFromDining(Color studentColor) throws NumOfStudentsExceeded{
+        if(diningRoom.get(studentColor)>0){
+            diningRoom.put(studentColor, diningRoom.get(studentColor) - 1);
         }
+        else throw new NumOfStudentsExceeded();
+    }
+
+    public void addStudentToDining(Color studentColor) throws NumOfStudentsExceeded {
+        if (diningRoom.get(studentColor) < 10) {
+            diningRoom.put(studentColor, diningRoom.get(studentColor) + 1);
+        }
+        else throw new NumOfStudentsExceeded();
     }
 
     /*Mike: what if entrance is empty ? How about throwing exception ?*/
-    public void moveStudentToIsland(Color color, Island island){
-        island.addStudent(color);
-        entrance.remove(color);
+    public void moveStudentToIsland(Color studentColor, Island island) throws NoEnoughStudentsException {
+        if(entrance.contains(studentColor)) {
+            entrance.remove(studentColor);
+        }
+        else throw new NoEnoughStudentsException();
+
+        island.addStudent(studentColor);
+    }
+
+    public int getNumOfStudentsInDining(Color studentColor){
+        return diningRoom.get(studentColor);
     }
 
     public TowerColor getTowersColor(){
@@ -87,10 +116,6 @@ public class SchoolBoard {
 
     public int getNumOfStudentsInEntrance(){
         return entrance.size();
-    }
-
-    public int getNumOfStudentsInDining(Color color){
-        return diningRoom.get(color);
     }
 
     public void addTower(){

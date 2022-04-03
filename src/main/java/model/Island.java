@@ -1,5 +1,7 @@
 package model;
 
+import exceptions.NoEntryException;
+
 import java.util.*;
 
 public class Island {
@@ -19,8 +21,13 @@ public class Island {
         noEntry = false;
     }
 
-    public void setNoEntry(boolean noEntry){
-        this.noEntry = noEntry;
+    public void setNoEntry(boolean noEntry) throws NoEntryException{
+        if(noEntry && this.noEntry){
+            throw new NoEntryException();
+        }
+        else {
+            this.noEntry = noEntry;
+        }
     }
 
     public boolean getNoEntry(){

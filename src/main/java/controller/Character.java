@@ -1,5 +1,7 @@
 package controller;
 
+import exceptions.NoEnoughEntryTilesException;
+import exceptions.NoEnoughStudentsException;
 import exceptions.NoEntryException;
 import model.*;
 
@@ -31,7 +33,7 @@ public class Character {
     }
 
     public boolean moveMotherNature(int steps){
-        return (game.currentPlayer.getPlayedAssistant().getRank()>steps);
+        return (game.currentPlayer.getPlayedAssistant().getMovements()>=steps);
     }
 
     public void initialFill(Game game){
@@ -54,8 +56,7 @@ public class Character {
         throw new UnsupportedOperationException();
     }
 
-    public void setSelectedIslandNumber(int selectedIsland){
-        throw new UnsupportedOperationException();
+    public void setSelectedIslandNumber(int selectedIsland) throws NoEnoughStudentsException{
     }
 
     public void setSelectedStudents(ArrayList<Color> selectedStudents){
@@ -66,8 +67,7 @@ public class Character {
         throw new UnsupportedOperationException();
     }
 
-    public void addNoEntryTile(){
-        throw new UnsupportedOperationException();
+    public void addNoEntryTile() throws NoEnoughEntryTilesException{
     }
 
     public int getMaxNumOfStudents(){

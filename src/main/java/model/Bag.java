@@ -16,10 +16,10 @@ public class Bag {
                 students.add(c);
             }
         }
+        Collections.shuffle(students);
     }
 
     public Color extractStudent(){
-        Collections.shuffle(students);
         return students.removeFirst();
     }
 }

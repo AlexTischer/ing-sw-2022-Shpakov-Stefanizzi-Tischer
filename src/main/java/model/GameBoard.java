@@ -2,6 +2,7 @@ package model;
 
 import controller.CharacterDeck;
 import controller.Player;
+import exceptions.NoEnoughEntryTilesException;
 import exceptions.NoEntryException;
 import exceptions.NumOfStudentsExceeded;
 import controller.Character;
@@ -188,7 +189,7 @@ public class GameBoard {
         numOfCoins++;
     }
 
-    public void setNoEntry(int islandNumber, boolean noEntry){
+    public void setNoEntry(int islandNumber, boolean noEntry) throws NoEntryException, NoEnoughEntryTilesException {
         if ( islandNumber < 1 || islandNumber > islands.size() )
             throw new IllegalArgumentException("Incorrect island number");
 

@@ -1,7 +1,8 @@
 package model;
 
+import exceptions.NumOfStudentsExceeded;
+
 import java.util.ArrayList;
-import java.util.EmptyStackException;
 
 public class Cloud {
     private ArrayList<Color> students;
@@ -20,12 +21,11 @@ public class Cloud {
         return maxNumOfStudents;
     }
 
-    /*implementation must be changed*/
-    public void addStudent(Color color) throws EmptyStackException {
-        if (students.size()==0) {
-            students.add(color);
+    public void addStudent(Color studentColor) throws NumOfStudentsExceeded{
+        if(students.size()<maxNumOfStudents){
+            students.add(studentColor);
         }
-        else throw new EmptyStackException();
+        else throw new NumOfStudentsExceeded();
     }
 
     public void removeStudents(){
