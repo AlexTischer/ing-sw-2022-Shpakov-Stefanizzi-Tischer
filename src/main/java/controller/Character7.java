@@ -1,5 +1,6 @@
 package controller;
 
+import exceptions.NoEnoughCoinsException;
 import model.Color;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ public class Character7 extends Character {
     /*Swaps selectedStudents from Dining with toBeSwappedStudents from Entrance in currentPlayer`s schoolBoard */
     private List<Color> selectedStudents;
     private List<Color> toBeSwappedStudents;
+    private int cost = 1;
 
     public void setSelectedStudents(ArrayList<Color> selectedStudents){
         this.selectedStudents = selectedStudents;
@@ -21,7 +23,7 @@ public class Character7 extends Character {
 
     public void execute(){
         if (selectedStudents.size() != toBeSwappedStudents.size())
-            throw new UnsupportedOperationException("2 lists don`t have the same size");
+            throw new IllegalArgumentException("2 lists don`t have the same size");
 
         for(int i = 0; i < selectedStudents.size(); i++){
             Color studentToEntrance = selectedStudents.get(i);
@@ -35,5 +37,11 @@ public class Character7 extends Character {
         }
 
     }
+    @Override
+    public void buy() throws NoEnoughCoinsException {
+        game.currentPlayer.removeCoins(cost);
+        cost = 2;
+    }
+
 
 }

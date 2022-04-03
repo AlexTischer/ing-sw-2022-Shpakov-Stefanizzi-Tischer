@@ -1,10 +1,13 @@
 package controller;
 
+import exceptions.NoEnoughCoinsException;
 import model.Color;
 import java.util.*;
 
 public class Character6 extends Character{
     /*In a Tie, currentPlayer wins*/
+
+    private int cost = 2;
 
     @Override
     public void reassignProfessor(Color professorColor) {
@@ -29,4 +32,10 @@ public class Character6 extends Character{
             }
         }
     }
+    @Override
+    public void buy() throws NoEnoughCoinsException {
+        game.currentPlayer.removeCoins(cost);
+        cost = 3;
+    }
+
 }

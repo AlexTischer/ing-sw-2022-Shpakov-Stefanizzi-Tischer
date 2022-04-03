@@ -1,5 +1,6 @@
 package controller;
 
+import exceptions.NoEnoughCoinsException;
 import exceptions.NoEnoughEntryTilesException;
 import exceptions.NoEnoughStudentsException;
 import exceptions.NoEntryException;
@@ -42,8 +43,7 @@ public class Character {
 
     public void execute() {}
 
-    public void buy(){
-
+    public void buy() throws NoEnoughCoinsException {
     }
 
     public int getCost(){

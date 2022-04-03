@@ -1,5 +1,6 @@
 package controller;
 
+import exceptions.NoEnoughCoinsException;
 import exceptions.NoEnoughStudentsException;
 import model.Color;
 
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 public class Character10 extends Character{
     private ArrayList<Color> students;
     protected Color selectedStudent;
+    private int cost = 2;
 
     @Override
     public void initialFill(Game game){
@@ -33,4 +35,11 @@ public class Character10 extends Character{
         students.remove(selectedStudent);
         students.add(game.getStudent());
     }
+
+    @Override
+    public void buy() throws NoEnoughCoinsException {
+        game.currentPlayer.removeCoins(cost);
+        cost = 3;
+    }
+
 }

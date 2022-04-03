@@ -18,13 +18,13 @@ public class Player {
     private Assistant[] assistants;
 
 
-    public Player(String name, TowerColor towerColor, AssistantType assistantType, int numOfTowers, int numOfPlayers) {
+    public Player(String name, TowerColor towerColor, AssistantType assistantType, int numOfTowers) {
         this.name = name;
         this.towerColor = towerColor;
         this.assistantType = assistantType;
         this.assistants = new Assistant[10];
         this.coins = 0;
-        schoolBoard = new SchoolBoard(this.towerColor, numOfTowers, numOfPlayers==3 ? 9 : 7);
+        schoolBoard = new SchoolBoard(this.towerColor, numOfTowers);
     }
 
     public void moveStudentToIsland(Color studentColor, Island island) {

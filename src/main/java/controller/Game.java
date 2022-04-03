@@ -21,22 +21,22 @@ public class Game {
 
     private Game(){}
 
-    public void Init(ArrayList<String> playersNames, boolean advancedSettings, AssistantDeck assistantDeck, CharacterDeck characterDeck){
+    public void init(ArrayList<String> playersNames, boolean advancedSettings, AssistantDeck assistantDeck, CharacterDeck characterDeck){
         switch (playersNames.size()){
             case 2:
-                this.players.add(new Player(playersNames.get(0), TowerColor.WHITE, AssistantType.ONE, 8, playersNames.size()));
-                this.players.add(new Player(playersNames.get(1), TowerColor.BLACK, AssistantType.TWO, 8, playersNames.size()));
+                this.players.add(new Player(playersNames.get(0), TowerColor.WHITE, AssistantType.ONE, 8));
+                this.players.add(new Player(playersNames.get(1), TowerColor.BLACK, AssistantType.TWO, 8));
                 break;
             case 3:
-                this.players.add(new Player(playersNames.get(0), TowerColor.WHITE, AssistantType.ONE, 6, playersNames.size()));
-                this.players.add(new Player(playersNames.get(1), TowerColor.BLACK, AssistantType.TWO, 6, playersNames.size()));
-                this.players.add(new Player(playersNames.get(2), TowerColor.GREY, AssistantType.THREE, 6, playersNames.size()));
+                this.players.add(new Player(playersNames.get(0), TowerColor.WHITE, AssistantType.ONE, 6));
+                this.players.add(new Player(playersNames.get(1), TowerColor.BLACK, AssistantType.TWO, 6));
+                this.players.add(new Player(playersNames.get(2), TowerColor.GREY, AssistantType.THREE, 6));
                 break;
             case 4:
-                this.players.add(new Player(playersNames.get(0), TowerColor.WHITE, AssistantType.ONE, 8, playersNames.size()));
-                this.players.add(new Player(playersNames.get(1), TowerColor.BLACK, AssistantType.TWO, 8, playersNames.size()));
-                this.players.add(new Player(playersNames.get(2), TowerColor.WHITE, AssistantType.THREE, 0, playersNames.size()));
-                this.players.add(new Player(playersNames.get(3), TowerColor.BLACK, AssistantType.FOUR, 0, playersNames.size()));
+                this.players.add(new Player(playersNames.get(0), TowerColor.WHITE, AssistantType.ONE, 8));
+                this.players.add(new Player(playersNames.get(1), TowerColor.BLACK, AssistantType.TWO, 8));
+                this.players.add(new Player(playersNames.get(2), TowerColor.WHITE, AssistantType.THREE, 0));
+                this.players.add(new Player(playersNames.get(3), TowerColor.BLACK, AssistantType.FOUR, 0));
                 break;
             default:
                 throw new InvalidParameterException();

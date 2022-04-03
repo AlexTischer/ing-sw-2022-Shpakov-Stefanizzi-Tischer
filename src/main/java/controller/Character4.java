@@ -1,4 +1,5 @@
 package controller;
+import exceptions.NoEnoughCoinsException;
 import exceptions.NoEntryException;
 import model.Color;
 import model.Island;
@@ -7,6 +8,7 @@ public class Character4 extends Character{
     /*students of selectedStudent color don’t count in influence*/
 
     private Color selectedStudent;
+    private int cost = 3;
 
     public void setSelectedStudent(Color selectedStudent){
         this.selectedStudent = selectedStudent;
@@ -31,4 +33,12 @@ public class Character4 extends Character{
             throw new NoEntryException();
         }
     }
+
+    @Override
+    public void buy() throws NoEnoughCoinsException {
+        game.currentPlayer.removeCoins(cost);
+        cost = 4;
+    }
+
+
 }

@@ -37,10 +37,6 @@ public class GameBoard {
     number of students to be in the bag( by default 130 ) */
     public void init(int numOfPlayers, int numOfStudents){
 
-        if (numOfPlayers < 2 || numOfPlayers > 4 || numOfStudents < 0 ) {
-            throw new IllegalArgumentException("Error: Invalid Arguments. NumOfPlayers is not in [2, 4]");
-        }
-
         instanceOfBag = new Bag(numOfStudents);
 
         clouds = new ArrayList<Cloud>(numOfPlayers);
@@ -98,8 +94,6 @@ public class GameBoard {
     }
 
     public void useCloud(Player player, int cloudNumber){
-        if(cloudNumber < 1 || cloudNumber > clouds.size())
-            throw new IllegalArgumentException("Error: invalid cloudNumber");
 
         for(Color color: clouds.get(cloudNumber-1).getStudentsColors()){
             player.addStudentToEntrance(color);

@@ -9,10 +9,8 @@ public class SchoolBoard {
     private Map<Color,Integer> professors;
     private int numOfTowers;
     private TowerColor towersColor;
-    private int maxStudentsInEntrance;
 
-    public SchoolBoard(TowerColor towerColor, int numOfTowers, int maxStudentsInEntrance){
-        this.maxStudentsInEntrance = maxStudentsInEntrance;
+    public SchoolBoard(TowerColor towerColor, int numOfTowers){
 
         entrance = new ArrayList<Color>();
 
@@ -33,10 +31,7 @@ public class SchoolBoard {
     }
 
     public void addStudentToEntrance(Color color) throws NumOfStudentsExceeded{
-        if(entrance.size()<maxStudentsInEntrance) {
-            entrance.add(color);
-        }
-        else throw new NumOfStudentsExceeded();
+        entrance.add(color);
     }
 
     public void removeStudentFromEntrance(Color studentColor) throws NoEnoughStudentsException {
