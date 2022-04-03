@@ -19,7 +19,7 @@ public class Character5 extends Character{
     }
 
     @Override
-    public void addNoEntryTile() throws NoEnoughEntryTilesException{
+    public void execute() throws NoEnoughEntryTilesException{
         if(noEntryTiles>0) {
             game.setNoEntry(selectedIslandNumber, true);
             noEntryTiles--;
@@ -27,7 +27,8 @@ public class Character5 extends Character{
         else throw new NoEnoughEntryTilesException();
     }
 
-    public void execute(){
+    public void addNoEntryTile(){
+        noEntryTiles++;
     }
 
 

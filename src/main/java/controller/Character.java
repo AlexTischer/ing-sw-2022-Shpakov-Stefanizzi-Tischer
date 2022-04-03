@@ -40,9 +40,7 @@ public class Character {
         this.game=game;
     }
 
-    public void execute(){
-
-    }
+    public void execute() {}
 
     public void buy(){
 
@@ -67,11 +65,6 @@ public class Character {
         throw new UnsupportedOperationException();
     }
 
-    public void addNoEntryTile() throws NoEnoughEntryTilesException{
-    }
-
-    public int getMaxNumOfStudents(){
-        return maxNumOfStudents;
-    }
+    public void addNoEntryTile(){}
 
 }

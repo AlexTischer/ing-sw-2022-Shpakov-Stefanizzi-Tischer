@@ -177,7 +177,7 @@ public class GameBoard {
         player.removeStudentFromDining(studentColor);
     }
 
-    public void addStudentToDining(Player player, Color studentColor){
+    public void addStudentToDining(Player player, Color studentColor) throws NumOfStudentsExceeded {
         player.addStudentToDining(studentColor);
     }
 

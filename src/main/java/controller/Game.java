@@ -2,18 +2,57 @@ package controller;
 
 import exceptions.NoEnoughCoinsException;
 import exceptions.NoEnoughEntryTilesException;
+import exceptions.NoEnoughStudentsException;
 import exceptions.NoEntryException;
 import model.*;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 public class Game {
+    private Game instanceOfGame;
     private GameBoard gameBoard;
     protected ArrayList<Player> players;
     protected Player currentPlayer;
     private Character currentCharacter;
     private Character playedCharacters[];
     private ArrayList<Assistant> playedAssistant;
+    private boolean advancedSettings;
+
+    private Game(){}
+
+    public void Init(ArrayList<String> playersNames, boolean advancedSettings, AssistantDeck assistantDeck, CharacterDeck characterDeck){
+        switch (playersNames.size()){
+            case 2:
+                this.players.add(new Player(playersNames.get(0), TowerColor.WHITE, AssistantType.ONE, 8, playersNames.size()));
+                this.players.add(new Player(playersNames.get(1), TowerColor.BLACK, AssistantType.TWO, 8, playersNames.size()));
+                break;
+            case 3:
+                this.players.add(new Player(playersNames.get(0), TowerColor.WHITE, AssistantType.ONE, 6, playersNames.size()));
+                this.players.add(new Player(playersNames.get(1), TowerColor.BLACK, AssistantType.TWO, 6, playersNames.size()));
+                this.players.add(new Player(playersNames.get(2), TowerColor.GREY, AssistantType.THREE, 6, playersNames.size()));
+                break;
+            case 4:
+                this.players.add(new Player(playersNames.get(0), TowerColor.WHITE, AssistantType.ONE, 8, playersNames.size()));
+                this.players.add(new Player(playersNames.get(1), TowerColor.BLACK, AssistantType.TWO, 8, playersNames.size()));
+                this.players.add(new Player(playersNames.get(2), TowerColor.WHITE, AssistantType.THREE, 0, playersNames.size()));
+                this.players.add(new Player(playersNames.get(3), TowerColor.BLACK, AssistantType.FOUR, 0, playersNames.size()));
+                break;
+            default:
+                throw new InvalidParameterException();
+        }
+        this.advancedSettings=advancedSettings;
+        if (advancedSettings){
+            for (int i = 0; i < 3; i++) {
+                playedCharacters[i]=characterDeck.popCharacter();
+            }
+            currentCharacter=new Character();
+        }
+        else {
+            currentCharacter=new Character();
+        }
+
+    }
 
     public void moveStudentToIsland(Color studentColor, int islandNumber){
         gameBoard.moveStudentToIsland(currentPlayer, studentColor, islandNumber);
@@ -54,7 +93,9 @@ public class Game {
             gameBoard.calculateInfluence(islandNumber, currentCharacter);
         }
         catch (NoEntryException e){
-            e.printStackTrace();
+            for (Character c : playedCharacters) {
+                c.addNoEntryTile();
+            }
         }
     }
 
@@ -69,9 +110,6 @@ public class Game {
 
         catch (NoEntryException e){
             }
-
-        catch (NoEnoughEntryTilesException e){
-        }
     }
 
     public void moveMotherNature(int steps){
@@ -97,9 +135,10 @@ public class Game {
     public void activateCharacter(ArrayList<Color> toBeSwappedStudents, ArrayList<Color> selectedStudents){
         currentCharacter.setSelectedStudents(selectedStudents);
         currentCharacter.setToBeSwappedStudents(toBeSwappedStudents);
+        currentCharacter.execute();
     }
 
-    public void activateCharacter(Color color, int islandNumber){
+    public void activateCharacter(Color color, int islandNumber) throws NoEnoughStudentsException {
         currentCharacter.setSelectedStudent(color);
         currentCharacter.setSelectedIslandNumber(islandNumber);
         currentCharacter.execute();
