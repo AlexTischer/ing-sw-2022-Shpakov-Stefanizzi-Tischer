@@ -29,11 +29,24 @@ public class Character {
         }
     }
 
-    public void reassignProfessor(Color professorColor){
+    public void reassignProfessor(Color professorColor) {
+        Player leader = game.players.get(0);
 
+        for (Color color: Color.values()){
+            for (Player player: game.players){
+                if (player.getNumOfStudentsInDining(color) > leader.getNumOfStudentsInDining(color))
+                    leader = player;
+            }
+            if (game.currentPlayer.equals(leader)){
+                leader.addProfessor(color);
+                for (Player player: game.players)
+                    if (!player.equals(leader))
+                        player.removeProfessor(color);
+            }
+        }
     }
 
-    public boolean moveMotherNature(int steps){
+            public boolean moveMotherNature(int steps){
         return (game.currentPlayer.getPlayedAssistant().getMovements()>=steps);
     }
 
