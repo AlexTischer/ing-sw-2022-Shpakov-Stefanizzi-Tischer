@@ -1,4 +1,4 @@
-package controller;
+package model;
 
 
 import exceptions.NoEnoughCoinsException;
@@ -10,12 +10,12 @@ public class Character8 extends Character{
 
     @Override
     public boolean moveMotherNature(int steps){
-        return (game.currentPlayer.getPlayedAssistant().getMovements()+2>=steps);
+        return (game.getCurrentPlayer().getPlayedAssistant().getMovements()+2>=steps);
     }
 
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.currentPlayer.removeCoins(cost);
+        game.getCurrentPlayer().removeCoins(cost);
         cost = 2;
     }
 

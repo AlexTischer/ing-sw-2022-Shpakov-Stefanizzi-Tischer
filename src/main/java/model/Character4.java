@@ -1,8 +1,6 @@
-package controller;
+package model;
 import exceptions.NoEnoughCoinsException;
 import exceptions.NoEntryException;
-import model.Color;
-import model.Island;
 
 public class Character4 extends Character{
     /*students of selectedStudent color don’t count in influence*/
@@ -18,11 +16,11 @@ public class Character4 extends Character{
     public int calculateInfluence(Island island, int islandNumber) throws NoEntryException {
         if (!island.getNoEntry()){
             int score = 0;
-            for (Color color: game.currentPlayer.getProfessorsColor()){
+            for (Color color: game.getCurrentPlayer().getProfessorsColor()){
                 if ( !color.equals(selectedStudent) )
                     score += island.getNumOfStudents(color);
             }
-            if (game.currentPlayer.getTowerColor().equals(island.getTowersColor())){
+            if (game.getCurrentPlayer().getTowerColor().equals(island.getTowersColor())){
                 score += island.getNumOfTowers();
             }
 
@@ -36,7 +34,7 @@ public class Character4 extends Character{
 
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.currentPlayer.removeCoins(cost);
+        game.getCurrentPlayer().removeCoins(cost);
         cost = 4;
     }
 

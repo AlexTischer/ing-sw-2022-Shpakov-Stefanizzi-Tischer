@@ -1,5 +1,8 @@
 package controller;
 
+import model.*;
+import model.Character;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

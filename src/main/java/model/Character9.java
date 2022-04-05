@@ -1,12 +1,11 @@
-package controller;
+package model;
 
+import controller.Game;
 import exceptions.NoEnoughCoinsException;
-import model.Color;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Stack;
 
 public class Character9 extends Character{
     /*Swaps selectedStudents in students with toBeSwappedStudents in currentPlayer Entrance */
@@ -49,9 +48,9 @@ public class Character9 extends Character{
             tempStudents.remove(studentToEntrance);
 
             Color studentToCharacter = toBeSwappedStudents.get(i);
-            game.currentPlayer.removeStudentFromEntrance(studentToCharacter);
+            game.getCurrentPlayer().removeStudentFromEntrance(studentToCharacter);
 
-            game.currentPlayer.addStudentToEntrance(studentToEntrance);
+            game.getCurrentPlayer().addStudentToEntrance(studentToEntrance);
             tempStudents.add(studentToCharacter);
         }
 
@@ -61,7 +60,7 @@ public class Character9 extends Character{
 
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.currentPlayer.removeCoins(cost);
+        game.getCurrentPlayer().removeCoins(cost);
         cost = 2;
     }
 

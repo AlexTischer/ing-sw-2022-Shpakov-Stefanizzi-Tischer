@@ -1,7 +1,8 @@
-package controller;
+package model;
 
+import controller.Game;
 import exceptions.NoEnoughCoinsException;
-import model.Color;
+
 import java.util.ArrayList;
 
 /** Move selected student to selected island */
@@ -38,7 +39,7 @@ public class Character1 extends Character{
 
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.currentPlayer.removeCoins(cost);
+        game.getCurrentPlayer().removeCoins(cost);
         cost = 2;
     }
 

@@ -1,4 +1,4 @@
-package controller;
+package model;
 
 import exceptions.NoEnoughCoinsException;
 
@@ -18,7 +18,7 @@ public class Character12 extends Character{
     
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.currentPlayer.removeCoins(cost);
+        game.getCurrentPlayer().removeCoins(cost);
         cost = 4;
     }
 

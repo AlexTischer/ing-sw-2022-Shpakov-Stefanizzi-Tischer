@@ -1,23 +1,19 @@
 package controller;
 
-import exceptions.NoEnoughCoinsException;
-import exceptions.NoEnoughEntryTilesException;
-import exceptions.NoEnoughStudentsException;
 import exceptions.NoEntryException;
 import model.*;
+import model.Character;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
-public class Game {
+public class Game implements GameForClient{
     private static Game instanceOfGame;
     private GameBoard gameBoard;
     protected ArrayList<Player> players;
-    protected Player currentPlayer;
-    private Character currentCharacter;
-    private Character playedCharacters[];
     private ArrayList<Assistant> playedAssistant;
     private boolean advancedSettings;
+
 
     private Game(){}
 
@@ -27,9 +23,9 @@ public class Game {
         }
         return instanceOfGame;
     }
+
     public void init(ArrayList<String> playersNames, boolean advancedSettings, AssistantDeck assistantDeck, CharacterDeck characterDeck){
         players = new ArrayList<Player>();
-        playedCharacters = new Character[3];
         switch (playersNames.size()){
             case 2:
                 this.players.add(new Player(playersNames.get(0), TowerColor.WHITE, AssistantType.ONE, 8));
@@ -49,69 +45,75 @@ public class Game {
             default:
                 throw new InvalidParameterException();
         }
-        this.advancedSettings=advancedSettings;
-        if (advancedSettings){
-            for (int i = 0; i < 3; i++) {
-                playedCharacters[i]=characterDeck.popCharacter();
-            }
-            currentCharacter=new Character();
-        }
-        else {
-            currentCharacter=new Character();
-        }
         gameBoard = GameBoard.getInstanceOfGameBoard();
+
+        this.advancedSettings=advancedSettings;
+        if (advancedSettings) {
+            for (int i = 0; i < 3; i++) {
+                Character c = characterDeck.popCharacter();
+                c.initialFill(this);
+                gameBoard.setPlayedCharacters(i, c);
+            }
+        }
+        gameBoard.setCurrentCharacter(new Character());
+    }
+
+    public Player getCurrentPlayer(){
+        return gameBoard.getCurrentPlayer();
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return players;
     }
 
     public void moveStudentToIsland(Color studentColor, int islandNumber){
-        gameBoard.moveStudentToIsland(currentPlayer, studentColor, islandNumber);
+        gameBoard.moveStudentToIsland(gameBoard.getCurrentPlayer(), studentColor, islandNumber);
     }
 
     public void moveStudentToDining(Color studentColor){
         removeStudentFromEntrance(studentColor);
-        addStudentToDining(currentPlayer, studentColor);
+        addStudentToDining(gameBoard.getCurrentPlayer(), studentColor);
     }
 
-    protected void addStudentToEntrance(Player player){
+    public void addStudentToEntrance(Player player){
         gameBoard.addStudentToEntrance(player, getStudent());
     }
 
-    protected void addStudentToEntrance(Player player, Color studentColor){
+    public void addStudentToEntrance(Player player, Color studentColor){
         gameBoard.addStudentToEntrance(player, studentColor);
     }
 
-    protected void addStudentToDining(Player player, Color studentColor){
+    public void addStudentToDining(Player player, Color studentColor){
         gameBoard.addStudentToDining(player, studentColor);
         reassignProfessor(studentColor);
     }
 
-    protected void removeStudentFromEntrance(Color studentColor){
-        gameBoard.removeStudentFromEntrance(currentPlayer, studentColor);
+    public void removeStudentFromEntrance(Color studentColor){
+        gameBoard.removeStudentFromEntrance(gameBoard.getCurrentPlayer(), studentColor);
     }
 
-    protected void removeStudentFromDining(Player player, Color studentColor){
+    public void removeStudentFromDining(Player player, Color studentColor){
         gameBoard.removeStudentFromDining(player, studentColor);
     }
 
-    protected Color getStudent(){
+    public Color getStudent(){
         return gameBoard.getStudentFromBag();
     }
 
-    protected void calculateInfluence(int islandNumber){
+    public void calculateInfluence(int islandNumber){
         try {
-            gameBoard.calculateInfluence(islandNumber, currentCharacter);
+            gameBoard.calculateInfluence(islandNumber);
         }
         catch (NoEntryException e){
-            for (Character c : playedCharacters) {
-                c.addNoEntryTile();
-            }
+            gameBoard.addNoEntryTile();
         }
     }
 
-    protected void reassignProfessor(Color professorColor){
-        currentCharacter.reassignProfessor(professorColor);
+    public void reassignProfessor(Color professorColor){
+        gameBoard.getCurrentCharacter().reassignProfessor(professorColor);
     }
 
-    protected void setNoEntry(int islandNumber, boolean noEntry){
+    public void setNoEntry(int islandNumber, boolean noEntry){
         try {
             gameBoard.setNoEntry(islandNumber, noEntry);
         }
@@ -121,49 +123,37 @@ public class Game {
     }
 
     public void moveMotherNature(int steps){
-        gameBoard.moveMotherNature(steps, currentCharacter);
+        gameBoard.moveMotherNature(steps);
     }
 
     public void buyCharacter(int characterNumber){
-            try {
-                currentPlayer.removeCoins(playedCharacters[characterNumber].getCost());
-                playedCharacters[characterNumber].buy();
-                this.currentCharacter=playedCharacters[characterNumber];
-            }
-            catch (NoEnoughCoinsException e) {
-                /* Catch*/
-            }
+            gameBoard.buyCharacter(characterNumber);
     }
 
     public void activateCharacter(int islandNumber){
-        currentCharacter.setSelectedIslandNumber(islandNumber);
-        currentCharacter.execute();
+        gameBoard.activateCharacter(islandNumber);
     }
 
     public void activateCharacter(ArrayList<Color> toBeSwappedStudents, ArrayList<Color> selectedStudents){
-        currentCharacter.setSelectedStudents(selectedStudents);
-        currentCharacter.setToBeSwappedStudents(toBeSwappedStudents);
-        currentCharacter.execute();
+        gameBoard.activateCharacter(toBeSwappedStudents, selectedStudents);
     }
 
-    public void activateCharacter(Color color, int islandNumber) throws NoEnoughStudentsException {
-        currentCharacter.setSelectedStudent(color);
-        currentCharacter.setSelectedIslandNumber(islandNumber);
-        currentCharacter.execute();
+    public void activateCharacter(Color color, int islandNumber){
+        gameBoard.activateCharacter(color, islandNumber);
     }
 
     public void activateCharacter(Color color){
-        currentCharacter.setSelectedStudent(color);
-        currentCharacter.execute();
+        gameBoard.activateCharacter(color);
     }
 
     public void useCloud(int cloudNumber){
-        gameBoard.useCloud(currentPlayer, cloudNumber);
+        gameBoard.useCloud(cloudNumber);
     }
 
     public void useAssistant(int assistantRank){}
-    public void newTurn(){}
-    public void newRound(){}
 
+    public void newTurn(){}
+
+    public void newRound(){}
 
 }

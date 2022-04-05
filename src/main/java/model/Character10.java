@@ -1,8 +1,8 @@
-package controller;
+package model;
 
+import controller.Game;
 import exceptions.NoEnoughCoinsException;
 import exceptions.NoEnoughStudentsException;
-import model.Color;
 
 import java.util.ArrayList;
 
@@ -31,14 +31,14 @@ public class Character10 extends Character{
 
     @Override
     public void execute() {
-        game.addStudentToDining(game.currentPlayer, selectedStudent);
+        game.addStudentToDining(game.getCurrentPlayer(), selectedStudent);
         students.remove(selectedStudent);
         students.add(game.getStudent());
     }
 
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.currentPlayer.removeCoins(cost);
+        game.getCurrentPlayer().removeCoins(cost);
         cost = 3;
     }
 

@@ -1,3 +1,5 @@
+package controller;
+
 import controller.CharacterDeck;
 import controller.Game;
 import junit.framework.TestCase;

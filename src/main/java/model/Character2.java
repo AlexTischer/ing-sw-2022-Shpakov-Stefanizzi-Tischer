@@ -1,9 +1,6 @@
-package controller;
+package model;
 
 import exceptions.NoEnoughCoinsException;
-import model.Color;
-import model.Island;
-import java.util.ArrayList;
 
 /** adds 2 points to influence of currentPlayer */
 public class Character2 extends Character {
@@ -12,7 +9,7 @@ public class Character2 extends Character {
 
     public int calculateInfluence(Island island){
         int score = 2;
-        for (Color color: game.currentPlayer.getProfessorsColor()) {
+        for (Color color: game.getCurrentPlayer().getProfessorsColor()) {
             score += island.getNumOfStudents(color);
         }
         return score;
@@ -20,7 +17,7 @@ public class Character2 extends Character {
 
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.currentPlayer.removeCoins(cost);
+        game.getCurrentPlayer().removeCoins(cost);
         cost = 3;
     }
 

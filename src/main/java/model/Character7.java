@@ -1,7 +1,6 @@
-package controller;
+package model;
 
 import exceptions.NoEnoughCoinsException;
-import model.Color;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,19 +26,19 @@ public class Character7 extends Character {
 
         for(int i = 0; i < selectedStudents.size(); i++){
             Color studentToEntrance = selectedStudents.get(i);
-            game.currentPlayer.removeStudentFromDining(studentToEntrance);
+            game.getCurrentPlayer().removeStudentFromDining(studentToEntrance);
 
             Color studentToDining = toBeSwappedStudents.get(i);
-            game.currentPlayer.removeStudentFromEntrance(studentToDining);
+            game.getCurrentPlayer().removeStudentFromEntrance(studentToDining);
 
-            game.currentPlayer.addStudentToEntrance(studentToEntrance);
-            game.currentPlayer.addStudentToDining(studentToDining);
+            game.getCurrentPlayer().addStudentToEntrance(studentToEntrance);
+            game.getCurrentPlayer().addStudentToDining(studentToDining);
         }
 
     }
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.currentPlayer.removeCoins(cost);
+        game.getCurrentPlayer().removeCoins(cost);
         cost = 2;
     }
 

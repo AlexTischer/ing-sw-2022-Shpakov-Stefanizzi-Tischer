@@ -1,8 +1,7 @@
-package controller;
+package model;
 
+import controller.Player;
 import exceptions.NoEnoughCoinsException;
-import model.Color;
-import java.util.*;
 
 public class Character6 extends Character{
     /*In a Tie, currentPlayer wins*/
@@ -11,22 +10,22 @@ public class Character6 extends Character{
 
     @Override
     public void reassignProfessor(Color professorColor) {
-        Player leader = game.players.get(0);
+        Player leader = game.getPlayers().get(0);
 
         for (Color color: Color.values()){
 
-            for (Player player: game.players){
-                if(player.getNumOfStudentsInDining(color) == leader.getNumOfStudentsInDining(color) && player.equals(game.currentPlayer))
+            for (Player player: game.getPlayers()){
+                if(player.getNumOfStudentsInDining(color) == leader.getNumOfStudentsInDining(color) && player.equals(game.getCurrentPlayer()))
                     leader = player;
 
                 if (player.getNumOfStudentsInDining(color) > leader.getNumOfStudentsInDining(color))
                     leader = player;
             }
 
-            if (game.currentPlayer.equals(leader)){
+            if (game.getCurrentPlayer().equals(leader)){
                 leader.addProfessor(color);
 
-                for (Player player: game.players)
+                for (Player player: game.getPlayers())
                     if (!player.equals(leader))
                         player.removeProfessor(color);
             }
@@ -34,7 +33,7 @@ public class Character6 extends Character{
     }
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.currentPlayer.removeCoins(cost);
+        game.getCurrentPlayer().removeCoins(cost);
         cost = 3;
     }
 

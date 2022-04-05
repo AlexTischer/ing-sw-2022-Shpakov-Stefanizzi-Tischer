@@ -1,3 +1,5 @@
+package model;
+
 import exceptions.NoEnoughStudentsException;
 import junit.framework.TestCase;
 import model.Bag;

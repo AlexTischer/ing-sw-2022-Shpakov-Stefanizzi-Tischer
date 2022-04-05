@@ -1,8 +1,8 @@
-package controller;
+package model;
 
+import controller.Game;
 import exceptions.NoEnoughCoinsException;
 import exceptions.NoEnoughEntryTilesException;
-import exceptions.NoEntryException;
 
 public class Character5 extends Character{
     private int noEntryTiles;
@@ -35,7 +35,7 @@ public class Character5 extends Character{
 
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.currentPlayer.removeCoins(cost);
+        game.getCurrentPlayer().removeCoins(cost);
         cost = 3;
     }
 

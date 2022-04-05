@@ -1,3 +1,5 @@
+package model;
+
 import exceptions.NumOfStudentsExceeded;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;

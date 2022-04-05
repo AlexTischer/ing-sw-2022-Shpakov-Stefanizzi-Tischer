@@ -1,7 +1,7 @@
-package controller;
+package model;
 
+import controller.Player;
 import exceptions.NoEnoughCoinsException;
-import model.Color;
 
 public class Character11 extends Character{
     /*Removes 3 Students of studentColor from each player`s Dining*/
@@ -14,7 +14,7 @@ public class Character11 extends Character{
     }
 
     public void execute() {
-        for (Player player: game.players){
+        for (Player player: game.getPlayers()){
             int numOfStudentsInDining = player.getNumOfStudentsInDining(selectedStudent);
 
             for (int i = 0; i < (Math.min(3, numOfStudentsInDining)); i++)
@@ -23,7 +23,7 @@ public class Character11 extends Character{
     }
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.currentPlayer.removeCoins(cost);
+        game.getCurrentPlayer().removeCoins(cost);
         cost = 4;
     }
 

@@ -1,5 +1,7 @@
-package controller;
+package model;
 
+import controller.Game;
+import controller.Player;
 import exceptions.NoEnoughCoinsException;
 import exceptions.NoEnoughEntryTilesException;
 import exceptions.NoEnoughStudentsException;
@@ -15,10 +17,10 @@ public class Character {
     public int calculateInfluence(Island island, int islandNumber) throws NoEntryException{
         if (!island.getNoEntry()){
             int score = 0;
-            for (Color color: game.currentPlayer.getProfessorsColor()){
+            for (Color color: game.getCurrentPlayer().getProfessorsColor()){
                 score += island.getNumOfStudents(color);
             }
-            if (game.currentPlayer.getTowerColor().equals(island.getTowersColor())){
+            if (game.getCurrentPlayer().getTowerColor().equals(island.getTowersColor())){
                 score += island.getNumOfTowers();
             }
             return score;
@@ -30,16 +32,16 @@ public class Character {
     }
 
     public void reassignProfessor(Color professorColor) {
-        Player leader = game.players.get(0);
+        Player leader = game.getPlayers().get(0);
 
         for (Color color: Color.values()){
-            for (Player player: game.players){
+            for (Player player: game.getPlayers()){
                 if (player.getNumOfStudentsInDining(color) > leader.getNumOfStudentsInDining(color))
                     leader = player;
             }
-            if (game.currentPlayer.equals(leader)){
+            if (game.getCurrentPlayer().equals(leader)){
                 leader.addProfessor(color);
-                for (Player player: game.players)
+                for (Player player: game.getPlayers())
                     if (!player.equals(leader))
                         player.removeProfessor(color);
             }
@@ -47,7 +49,7 @@ public class Character {
     }
 
             public boolean moveMotherNature(int steps){
-        return (game.currentPlayer.getPlayedAssistant().getMovements()>=steps);
+        return (game.getCurrentPlayer().getPlayedAssistant().getMovements()>=steps);
     }
 
     public void initialFill(Game game){
