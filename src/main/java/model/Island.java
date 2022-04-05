@@ -58,8 +58,8 @@ public class Island {
     }
 
     public void addTower(TowerColor towerColor) throws UnsupportedOperationException{
-        if(numOfTowers<numOfIslands){
-            numOfTowers++;
+        if(numOfTowers==0){
+            numOfTowers=1;
             this.towersColor=towerColor;
         }
         else throw new UnsupportedOperationException();
