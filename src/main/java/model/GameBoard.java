@@ -24,18 +24,18 @@ public class GameBoard {
     private int maxNumOfStudentsInEntrance;
 
     /*creates 12 islands and puts MotherNature on a random island*/
-    private GameBoard(){
+    private GameBoard(){}
+
+    /*Initializes instanceOfBag and clouds. Takes number of players and
+    number of students to be in the bag( by default 130 ) */
+    public void init(int numOfPlayers, int numOfStudents){
+
         islands = new ArrayList<Island>(12);
         for(int i = 0; i < 12; i++){
             islands.add(i, new Island());
         }
 
         positionOfMotherNature = new Random().nextInt(12);
-    }
-
-    /*Initializes instanceOfBag and clouds. Takes number of players and
-    number of students to be in the bag( by default 130 ) */
-    public void init(int numOfPlayers, int numOfStudents){
 
         instanceOfBag = new Bag(numOfStudents);
 
@@ -45,11 +45,8 @@ public class GameBoard {
             clouds.add(i, new Cloud(numOfPlayers==3 ? 4 : 3));
         }
 
-        switch (numOfPlayers){
-            case 2: maxNumOfStudentsInEntrance = 7;
-            case 3: maxNumOfStudentsInEntrance = 9;
-            case 4: maxNumOfStudentsInEntrance = 7;
-        }
+        maxNumOfStudentsInEntrance = numOfPlayers== 3 ? 9 : 7;
+
     }
 
     public void init(int numOfPlayers){

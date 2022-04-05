@@ -38,8 +38,8 @@ public class Island {
         for(Color c : Color.values()){
             students.put(c, this.students.get(c)+island.students.get(c));
         }
-        this.numOfIslands++;
-        this.numOfTowers=this.numOfTowers+island.numOfTowers;
+        this.numOfIslands += island.numOfIslands;
+        this.numOfTowers += island.numOfTowers;
     }
 
     public void addStudent(Color color){

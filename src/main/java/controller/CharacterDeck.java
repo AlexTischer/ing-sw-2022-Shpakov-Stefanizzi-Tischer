@@ -7,22 +7,26 @@ import java.util.List;
 public class CharacterDeck {
     private List<Character> characters;
 
-    public CharacterDeck(int size) {
+    public CharacterDeck() {
 
-        if( size != 12 && size != 8 )
-            throw new IllegalArgumentException("Error: only 12 or 8 characters are allowed");
-
-        this.characters = new ArrayList<Character>(size);
-
-        //Creates 12 or 8 characters and adds them to characters List
-
-        /*shuffles the order of characters*/
+        this.characters = new ArrayList<Character>(12);
+        characters.add(new Character1());
+        characters.add(new Character2());
+        characters.add(new Character3());
+        characters.add(new Character4());
+        characters.add(new Character5());
+        characters.add(new Character6());
+        characters.add(new Character7());
+        characters.add(new Character8());
+        characters.add(new Character9());
+        characters.add(new Character10());
+        characters.add(new Character11());
+        characters.add(new Character12());
         Collections.shuffle(characters);
     }
 
     //returns a random model.Character from characters
     public Character popCharacter(){
-
         return characters.remove(0);
     }
 }

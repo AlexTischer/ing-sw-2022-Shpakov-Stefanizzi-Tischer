@@ -10,7 +10,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 public class Game {
-    private Game instanceOfGame;
+    private static Game instanceOfGame;
     private GameBoard gameBoard;
     protected ArrayList<Player> players;
     protected Player currentPlayer;
@@ -21,7 +21,15 @@ public class Game {
 
     private Game(){}
 
+    public static Game getInstanceOfGame() {
+        if(instanceOfGame==null){
+            instanceOfGame = new Game();
+        }
+        return instanceOfGame;
+    }
     public void init(ArrayList<String> playersNames, boolean advancedSettings, AssistantDeck assistantDeck, CharacterDeck characterDeck){
+        players = new ArrayList<Player>();
+        playedCharacters = new Character[3];
         switch (playersNames.size()){
             case 2:
                 this.players.add(new Player(playersNames.get(0), TowerColor.WHITE, AssistantType.ONE, 8));
@@ -51,7 +59,7 @@ public class Game {
         else {
             currentCharacter=new Character();
         }
-
+        gameBoard = GameBoard.getInstanceOfGameBoard();
     }
 
     public void moveStudentToIsland(Color studentColor, int islandNumber){
