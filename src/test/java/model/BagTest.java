@@ -10,7 +10,7 @@ public class BagTest extends TestCase {
 
     @Test
     void extractStudentExceptionTest(){
-        Bag testbag = new Bag(130);
+        Bag testbag = new Bag();
 
         for(int i=0;i<130;i++) {
             testbag.extractStudent();

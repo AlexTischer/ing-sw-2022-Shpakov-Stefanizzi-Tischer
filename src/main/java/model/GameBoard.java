@@ -25,7 +25,7 @@ public class GameBoard {
 
     /*Initializes instanceOfBag and clouds. Takes number of players and
     number of students to be in the bag( by default 130 ) */
-    public void init(int numOfPlayers, int numOfStudents) {
+    public void init(int numOfPlayers) {
         playedCharacters = new Character[3];
         islands = new ArrayList<Island>(12);
         for (int i = 0; i < 12; i++) {
@@ -34,7 +34,7 @@ public class GameBoard {
 
         positionOfMotherNature = new Random().nextInt(12);
 
-        instanceOfBag = new Bag(numOfStudents);
+        instanceOfBag = new Bag();
 
         clouds = new ArrayList<Cloud>(numOfPlayers);
 
@@ -44,10 +44,6 @@ public class GameBoard {
 
         maxNumOfStudentsInEntrance = numOfPlayers == 3 ? 9 : 7;
 
-    }
-
-    public void init(int numOfPlayers) {
-        init(numOfPlayers, 130);
     }
 
     public static GameBoard getInstanceOfGameBoard() {

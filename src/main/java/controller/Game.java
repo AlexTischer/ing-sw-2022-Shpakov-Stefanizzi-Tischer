@@ -46,6 +46,7 @@ public class Game implements GameForClient{
                 throw new InvalidParameterException();
         }
         gameBoard = GameBoard.getInstanceOfGameBoard();
+        gameBoard.init(playersNames.size());
 
         this.advancedSettings=advancedSettings;
         if (advancedSettings) {

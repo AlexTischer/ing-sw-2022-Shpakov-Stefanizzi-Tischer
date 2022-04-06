@@ -16,6 +16,7 @@ public class Character10 extends Character{
     @Override
     public void initialFill(Game game){
         super.initialFill(game);
+        students=new ArrayList<Color>();
         for(int i=0;i<4;i++){
             students.add(game.getStudent());
         }

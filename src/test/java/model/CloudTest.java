@@ -16,13 +16,13 @@ public class CloudTest extends TestCase {
         Cloud testcloud = new Cloud(4);
         for (int i = 0; i < testcloud.getMaxNumOfStudents(); i++) {
             testcloud.addStudent(Color.getRandom());
-
+        }
             try {
                 testcloud.addStudent(Color.getRandom());
                 assertTrue("false", false);
             } catch (NumOfStudentsExceeded e) {
+                assertTrue(true);
             }
-        }
     }
 
     @Test
