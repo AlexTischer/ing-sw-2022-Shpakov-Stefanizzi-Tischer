@@ -20,7 +20,8 @@ public class CloudTest extends TestCase {
             try {
                 testcloud.addStudent(Color.getRandom());
                 assertTrue("false", false);
-            } catch (NumOfStudentsExceeded e) {
+            }
+            catch (NumOfStudentsExceeded e) {
                 assertTrue(true);
             }
     }

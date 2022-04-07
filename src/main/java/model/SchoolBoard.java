@@ -44,19 +44,19 @@ public class SchoolBoard {
     /*1 Mike: what if entrance is empty ? How about throwing exception ?*/
     /*2 Mike: Shouldn`t I check professors each time I move student to the dining room ?*/
 
-    public void moveStudentToDining(Color color) throws NumOfStudentsExceeded {
+    public void moveStudentToDining(Color color) throws NumOfStudentsExceeded{
         if (diningRoom.get(color) < 10) {
+            removeStudentFromEntrance(color);
             diningRoom.put(color, diningRoom.get(color) + 1);
-            entrance.remove(color);
         } else throw new NumOfStudentsExceeded();
         /*check professor*/
     }
 
-    public void removeStudentFromDining(Color studentColor) throws NumOfStudentsExceeded{
+    public void removeStudentFromDining(Color studentColor) throws NoEnoughStudentsException{
         if(diningRoom.get(studentColor)>0){
             diningRoom.put(studentColor, diningRoom.get(studentColor) - 1);
         }
-        else throw new NumOfStudentsExceeded();
+        else throw new NoEnoughStudentsException();
     }
 
     public void addStudentToDining(Color studentColor) throws NumOfStudentsExceeded {
@@ -66,13 +66,9 @@ public class SchoolBoard {
         else throw new NumOfStudentsExceeded();
     }
 
-    /*Mike: what if entrance is empty ? How about throwing exception ?*/
-    public void moveStudentToIsland(Color studentColor, Island island) throws NoEnoughStudentsException {
-        if(entrance.contains(studentColor)) {
-            entrance.remove(studentColor);
-        }
-        else throw new NoEnoughStudentsException();
 
+    public void moveStudentToIsland(Color studentColor, Island island) {
+        removeStudentFromEntrance(studentColor);
         island.addStudent(studentColor);
     }
 
@@ -96,6 +92,7 @@ public class SchoolBoard {
         return professorsList;
     }
 
+    //Giacomo: NoEnoughTowersException needed?
     public void moveTowerToIsland(Island island){
         numOfTowers--;
         island.addTower(towersColor);
@@ -110,7 +107,12 @@ public class SchoolBoard {
     }
 
     public int getNumOfStudentsInEntrance(){
-        return entrance.size();
+        if(entrance.isEmpty()){
+            return 0;
+        }
+        else {
+            return entrance.size();
+        }
     }
 
     public void addTower(){
