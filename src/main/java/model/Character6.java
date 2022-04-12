@@ -1,6 +1,6 @@
 package model;
 
-import controller.Player;
+import model.Player;
 import exceptions.NoEnoughCoinsException;
 
 public class Character6 extends Character{
@@ -18,7 +18,7 @@ public class Character6 extends Character{
                 if(player.getNumOfStudentsInDining(color) == leader.getNumOfStudentsInDining(color) && player.equals(game.getCurrentPlayer()))
                     leader = player;
 
-                if (player.getNumOfStudentsInDining(color) > leader.getNumOfStudentsInDining(color))
+                if(player.getNumOfStudentsInDining(color) > leader.getNumOfStudentsInDining(color))
                     leader = player;
             }
 

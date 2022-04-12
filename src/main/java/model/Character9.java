@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**Swaps selectedStudents in students with toBeSwappedStudents in currentPlayer Entrance **/
 public class Character9 extends Character{
-    /*Swaps selectedStudents in students with toBeSwappedStudents in currentPlayer Entrance */
     private Color[] students;
     private List<Color> selectedStudents;
     private List<Color> toBeSwappedStudents;
@@ -25,6 +25,9 @@ public class Character9 extends Character{
     }
 
     public void setSelectedStudents(ArrayList<Color> selectedStudents){
+        if(selectedStudents.size() > 3)
+            throw new IllegalArgumentException("You can select at most 3 students");
+
         for (Color studentColor: selectedStudents)
             if (!Arrays.asList(students).contains(studentColor))
                 throw new IllegalArgumentException("No such student color on the card");
@@ -33,6 +36,9 @@ public class Character9 extends Character{
     }
 
     public void setToBeSwappedStudents(ArrayList<Color> toBeSwappedStudents){
+        if (toBeSwappedStudents.size() > 3)
+            throw new IllegalArgumentException("You can select at most 3 students");
+
         this.toBeSwappedStudents = toBeSwappedStudents;
     }
 

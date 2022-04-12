@@ -1,7 +1,7 @@
 package model;
 
 import controller.Game;
-import controller.Player;
+import model.Player;
 import exceptions.NoEnoughCoinsException;
 import exceptions.NoEnoughEntryTilesException;
 import exceptions.NoEnoughStudentsException;
@@ -48,7 +48,7 @@ public class Character {
         }
     }
 
-            public boolean moveMotherNature(int steps){
+    public boolean moveMotherNature(int steps){
         return (game.getCurrentPlayer().getPlayedAssistant().getMovements()>=steps);
     }
 

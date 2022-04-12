@@ -56,7 +56,9 @@ public class Game implements GameForClient{
                 gameBoard.setPlayedCharacters(i, c);
             }
         }
+
         gameBoard.setCurrentCharacter(new Character());
+        gameBoard.getCurrentCharacter().initialFill(this);
     }
 
     public Player getCurrentPlayer(){

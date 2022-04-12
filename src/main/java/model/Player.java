@@ -1,4 +1,4 @@
-package controller;
+package model;
 
 import exceptions.NoEnoughCoinsException;
 import exceptions.NumOfStudentsExceeded;
@@ -6,6 +6,8 @@ import model.*;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 public class Player {
@@ -75,6 +77,14 @@ public class Player {
         return playedAssistant;
     }
 
+    public AssistantType getAssistantType(){ return assistantType; }
+
+    public void setAssistants(ArrayList<Assistant> assistants){
+
+        for (int i=0 ; i < 10; i++)
+            this.assistants[i] = assistants.get(i);
+    }
+
     public void setPlayedAssistantRank(int rank) throws InvalidParameterException {
         if (assistants[rank - 1] != null) {
             playedAssistant = assistants[rank - 1];
@@ -91,4 +101,10 @@ public class Player {
     public void addCoins(int coins) {
         this.coins += coins;
     }
+
+    /*TEST METHODS*/
+    public int getNumOfStudentsInEntrance(){
+        return schoolBoard.getNumOfStudentsInEntrance();
+    }
+
 }

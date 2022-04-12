@@ -3,27 +3,14 @@ package model;
 import java.util.*;
 
 public class AssistantDeck {
-    private Map<AssistantType, List<Assistant>> assistants;
+    private Map<AssistantType, ArrayList<Assistant>> assistants;
 
-    public AssistantDeck() {
-
-        assistants = new HashMap<AssistantType, List<Assistant>>();
-
-        /*adds 10 model.Assistant cards per model.AssistantType inside assistants Map*/
-        /*
-        for(AssistantType type: AssistantType.values()){
-
-            assistants.put(type, new ArrayList<Assistant>(10));
-
-            for ( int rank = 1 ; rank <= 10; rank++){
-               assistants.get(type).add(rank-1, new Assistant(rank, (rank+1)/2, type));
-            }
-        }
-        */
+    public AssistantDeck(){
+        assistants = new HashMap<AssistantType, ArrayList<Assistant>>();
     }
 
     /*returns assistant card given its type, starting from the lowest rank*/
-    public Assistant popAssistant(AssistantType type){
-        return assistants.get(type).remove(0);
+    public ArrayList<Assistant> popAssistants(AssistantType type){
+        return assistants.get(type);
     }
 }

@@ -1,6 +1,6 @@
 package model;
 
-import controller.Player;
+import model.Player;
 import exceptions.NoEnoughCoinsException;
 
 public class Character11 extends Character{

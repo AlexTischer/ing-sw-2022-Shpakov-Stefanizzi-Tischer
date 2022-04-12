@@ -1,6 +1,5 @@
 package model;
 
-import controller.Player;
 import exceptions.*;
 
 import java.util.*;
@@ -14,6 +13,7 @@ public class GameBoard {
     private List<Cloud> clouds;
     private Character currentCharacter;
     private Character playedCharacters[];
+    private AssistantDeck assistantDeck;
     private int positionOfMotherNature;
     private int numOfPlayers;
     private int numOfCoins;
@@ -44,6 +44,7 @@ public class GameBoard {
 
         maxNumOfStudentsInEntrance = numOfPlayers == 3 ? 9 : 7;
 
+        assistantDeck = new AssistantFactory().getAssistantDeck();
     }
 
     public static GameBoard getInstanceOfGameBoard() {
@@ -55,14 +56,23 @@ public class GameBoard {
 
     /*method that will be invoked at the start to refill entrance
     of each player`s SchoolBoard*/
-    public void refillEntrance(Player player) {
+    public void refillEntrance(Player player) throws NumOfStudentsExceeded{
+        if (player.getNumOfStudentsInEntrance() >= maxNumOfStudentsInEntrance)
+            throw new NumOfStudentsExceeded();
+
         for (int i = 0; i < maxNumOfStudentsInEntrance; i++)
             player.addStudentToEntrance(instanceOfBag.extractStudent());
     }
 
+    public void refillAssistants(Player player){
+        player.setAssistants(assistantDeck.popAssistants(player.getAssistantType()));
+    }
+
     public void moveMotherNature(int steps) {
-        if (currentCharacter.moveMotherNature(steps))
-            positionOfMotherNature = (positionOfMotherNature + steps) % islands.size();
+        if (steps < 0 || !currentCharacter.moveMotherNature(steps))
+            throw new IllegalArgumentException("This number of steps is not allowed");
+
+        positionOfMotherNature = (positionOfMotherNature + steps) % islands.size();
     }
 
     public Player getCurrentPlayer() {
@@ -81,11 +91,12 @@ public class GameBoard {
         player.moveStudentToIsland(studentColor, islands.get(islandNumber - 1));
     }
 
+    /*is invoked when character card is in use*/
     public void moveStudentToIsland(Color studentColor, int islandNumber) {
-        if (islandNumber < 0 || islandNumber > islands.size() - 1)
+        if (islandNumber < 1 || islandNumber > islands.size())
             throw new IllegalArgumentException("Error: invalid island number");
 
-        islands.get(islandNumber).addStudent(studentColor);
+        islands.get(islandNumber-1).addStudent(studentColor);
     }
 
     public void moveStudentToDining(Player player, Color studentColor) throws NumOfStudentsExceeded {
@@ -199,7 +210,7 @@ public class GameBoard {
             playedCharacters[characterNumber].buy();
             this.currentCharacter = playedCharacters[characterNumber];
         } catch (NoEnoughCoinsException e) {
-            /* Catch*/
+            e.printStackTrace();
         }
     }
 
@@ -242,4 +253,7 @@ public class GameBoard {
             c.addNoEntryTile();
         }
     }
+
+    /*TEST METHODS*/
+    public int getNumOfClouds() { return clouds.size(); }
 }

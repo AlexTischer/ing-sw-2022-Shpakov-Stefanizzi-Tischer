@@ -41,8 +41,6 @@ public class SchoolBoard {
         else throw new NoEnoughStudentsException();
     }
 
-    /*1 Mike: what if entrance is empty ? How about throwing exception ?*/
-    /*2 Mike: Shouldn`t I check professors each time I move student to the dining room ?*/
 
     public void moveStudentToDining(Color color) throws NumOfStudentsExceeded{
         if (diningRoom.get(color) < 10) {

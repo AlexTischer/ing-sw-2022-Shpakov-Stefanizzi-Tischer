@@ -5,18 +5,24 @@ import exceptions.NoEnoughCoinsException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**Swaps selectedStudents from Dining with toBeSwappedStudents from Entrance in currentPlayer`s schoolBoard **/
 public class Character7 extends Character {
 
-    /*Swaps selectedStudents from Dining with toBeSwappedStudents from Entrance in currentPlayer`s schoolBoard */
     private List<Color> selectedStudents;
     private List<Color> toBeSwappedStudents;
     private int cost = 1;
 
     public void setSelectedStudents(ArrayList<Color> selectedStudents){
+        if(selectedStudents.size() > 2)
+            throw new IllegalArgumentException("You can select at most 2 students");
+
         this.selectedStudents = selectedStudents;
     }
 
     public void setToBeSwappedStudents(ArrayList<Color> toBeSwappedStudents){
+        if(toBeSwappedStudents.size() > 2)
+            throw new IllegalArgumentException("You can select at most 2 students");
+
         this.toBeSwappedStudents = toBeSwappedStudents;
     }
 
