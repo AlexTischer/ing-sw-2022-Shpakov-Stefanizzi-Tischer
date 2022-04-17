@@ -85,18 +85,18 @@ public class GameBoard {
 
 
     public void moveStudentToIsland(Player player, Color studentColor, int islandNumber) {
-        if (islandNumber < 1 || islandNumber > islands.size())
+        if (islandNumber < 0 || islandNumber > islands.size()-1)
             throw new IllegalArgumentException("Error: invalid island number");
 
-        player.moveStudentToIsland(studentColor, islands.get(islandNumber - 1));
+        player.moveStudentToIsland(studentColor, islands.get(islandNumber));
     }
 
     /*is invoked when character card is in use*/
     public void moveStudentToIsland(Color studentColor, int islandNumber) {
-        if (islandNumber < 1 || islandNumber > islands.size())
+        if (islandNumber < 0 || islandNumber > islands.size()-1)
             throw new IllegalArgumentException("Error: invalid island number");
 
-        islands.get(islandNumber-1).addStudent(studentColor);
+        islands.get(islandNumber).addStudent(studentColor);
     }
 
     public void moveStudentToDining(Player player, Color studentColor) throws NumOfStudentsExceeded {
@@ -105,11 +105,11 @@ public class GameBoard {
 
     public void useCloud(int cloudNumber) {
 
-        for (Color color : clouds.get(cloudNumber - 1).getStudentsColors()) {
+        for (Color color : clouds.get(cloudNumber).getStudentsColors()) {
             currentPlayer.addStudentToEntrance(color);
         }
 
-        clouds.get(cloudNumber - 1).removeStudents();
+        clouds.get(cloudNumber).removeStudents();
 
     }
 
@@ -118,26 +118,37 @@ public class GameBoard {
     }
 
     /* Merge islands with same towerColor and returns boolean
-    True if at least 2 islands have been merged, False otherwise*/
+    True if at least 2 islands have been merged, False otherwise
+    Executed each time any island gets conquered*/
     public boolean mergeIslands() {
 
         int oldNumOfIslands = islands.size();
 
-        for (int i = 0; i < islands.size() - 1; i++) {
+        for (int i = 0; i < islands.size(); i++) {
 
-            /*if 2 tower colors are the same, then unify*/
-            if (islands.get(i).getTowersColor().equals(islands.get(i + 1).getTowersColor())) {
+            if (islands.get(i).getTowersColor() != null && islands.get((i+1) % islands.size()).getTowersColor() != null){
+                /*if 2 tower colors are the same, then unify*/
+                if (islands.get(i).getTowersColor().equals(islands.get((i+1) % islands.size()).getTowersColor())) {
 
-                islands.get(i).mergeIsland(islands.get(i + 1));
+                    islands.get(i).mergeIsland(islands.get((i+1) % islands.size()));
 
-                /*if i unite island with the one that MotherNature stays on,
-                then positionOfMotherNature should be decremented*/
-                if (positionOfMotherNature == i + 1)
-                    positionOfMotherNature = i;
 
-                /*Decrement index in order to check if I can merge the same islands with the next one*/
-                i--;
+                    /*change position of MN only if it is located on the next islands*/
+                    if (positionOfMotherNature > i || i == islands.size()-1 ){
+                        positionOfMotherNature--;
 
+                        if (positionOfMotherNature < 0)
+                            positionOfMotherNature = islands.size()-2;
+                    }
+
+
+                    /*remove empty island*/
+                    islands.remove((i+1) % islands.size());
+
+                    /*Decrement index in order to check if I can merge the same islands with the next one*/
+                    i--;
+
+                }
             }
         }
 
@@ -156,7 +167,7 @@ public class GameBoard {
     /*returns the score of the current player on particular island
      * note: the character knows who is the current player*/
     public int calculateInfluence(int islandNumber) throws NoEntryException {
-        return currentCharacter.calculateInfluence(islands.get(islandNumber - 1), islandNumber);
+        return currentCharacter.calculateInfluence(islands.get(islandNumber), islandNumber);
     }
 
     public void addProfessor(Player player, Color color) {
@@ -177,13 +188,14 @@ public class GameBoard {
         player.removeStudentFromEntrance(studentColor);
     }
 
+    public void addStudentToDining(Player player, Color studentColor) throws NumOfStudentsExceeded {
+        player.addStudentToDining(studentColor);
+    }
+
     public void removeStudentFromDining(Player player, Color studentColor) {
         player.removeStudentFromDining(studentColor);
     }
 
-    public void addStudentToDining(Player player, Color studentColor) throws NumOfStudentsExceeded {
-        player.addStudentToDining(studentColor);
-    }
 
     public void getCoin() {
         numOfCoins--;
@@ -194,10 +206,10 @@ public class GameBoard {
     }
 
     public void setNoEntry(int islandNumber, boolean noEntry) throws NoEntryException, NoEnoughEntryTilesException {
-        if (islandNumber < 1 || islandNumber > islands.size())
-            throw new IllegalArgumentException("Incorrect island number");
+        if (islandNumber < 0 || islandNumber > islands.size()-1)
+            throw new IllegalArgumentException("Error: invalid island number");
 
-        islands.get(islandNumber - 1).setNoEntry(noEntry);
+        islands.get(islandNumber).setNoEntry(noEntry);
     }
 
     public Color getStudentFromBag() {
@@ -256,4 +268,58 @@ public class GameBoard {
 
     /*TEST METHODS*/
     public int getNumOfClouds() { return clouds.size(); }
+
+    public int getNumOfStudentsOnIsland(int numOfIsland, Color studentColor){
+        if (numOfIsland < 0 || numOfIsland > islands.size()-1)
+            throw new IllegalArgumentException();
+
+        return islands.get(numOfIsland).getNumOfStudents(studentColor);
+    }
+
+    public int getNumOfTowersOnIsland(int numOfIsland){
+        if (numOfIsland < 0 || numOfIsland > islands.size()-1)
+            throw new IllegalArgumentException();
+
+        return islands.get(numOfIsland).getNumOfTowers();
+    }
+
+    public TowerColor getTowersColorOnIsland(int numOfIsland){
+        if (numOfIsland < 0 || numOfIsland > islands.size()-1)
+            throw new IllegalArgumentException();
+
+        return islands.get(numOfIsland).getTowersColor();
+    }
+
+    public boolean getNoEntryOnIsland(int numOfIsland){
+        if (numOfIsland < 0 || numOfIsland > islands.size()-1)
+            throw new IllegalArgumentException();
+
+        return islands.get(numOfIsland).getNoEntry();
+    }
+
+    /*method that adds a tower or changes it`s color
+    * note:not only current player can conquer an island that MN stops on*/
+    public void conquerIsland(int numOfIsland, TowerColor towerColor){
+        if (numOfIsland < 0 || numOfIsland > islands.size()-1)
+            throw new IllegalArgumentException();
+
+        try {
+            islands.get(numOfIsland).setTowersColor(towerColor);
+        }
+        catch (UnsupportedOperationException e){
+            islands.get(numOfIsland).addTower(towerColor);
+        }
+
+    }
+
+    public int getPositionOfMotherNature(){
+        return positionOfMotherNature;
+    }
+
+    public void placeMotherNature(int numOfIsland){
+        if (numOfIsland < 0 || numOfIsland > islands.size()-1)
+            throw new IllegalArgumentException();
+
+        positionOfMotherNature = numOfIsland;
+    }
 }
