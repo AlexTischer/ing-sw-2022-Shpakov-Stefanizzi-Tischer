@@ -45,6 +45,8 @@ public class GameBoard {
         maxNumOfStudentsInEntrance = numOfPlayers == 3 ? 9 : 7;
 
         assistantDeck = new AssistantFactory().getAssistantDeck();
+
+        numOfCoins = 20;
     }
 
     public static GameBoard getInstanceOfGameBoard() {
@@ -97,10 +99,6 @@ public class GameBoard {
             throw new IllegalArgumentException("Error: invalid island number");
 
         islands.get(islandNumber).addStudent(studentColor);
-    }
-
-    public void moveStudentToDining(Player player, Color studentColor) throws NumOfStudentsExceeded {
-        player.moveStudentToDining(studentColor);
     }
 
     public void useCloud(int cloudNumber) {
@@ -181,7 +179,10 @@ public class GameBoard {
 
     public void addStudentToEntrance(Player player, Color studentColor) {
 
-        player.addStudentToEntrance(studentColor);
+        if (player.getNumOfStudentsInEntrance() < maxNumOfStudentsInEntrance)
+            player.addStudentToEntrance(studentColor);
+        else
+            throw new NumOfStudentsExceeded();
     }
 
     public void removeStudentFromEntrance(Player player, Color studentColor) {
@@ -197,11 +198,17 @@ public class GameBoard {
     }
 
 
-    public void getCoin() {
+    public void getCoin() throws NoEnoughCoinsException {
+        if (numOfCoins <= 0)
+            throw new NoEnoughCoinsException("The Game board has no coins available");
+
         numOfCoins--;
     }
 
-    public void addCoin() {
+    public void addCoin() throws NumOfCoinsExceeded {
+        if (numOfCoins >= 20)
+            throw new NumOfCoinsExceeded();
+
         numOfCoins++;
     }
 
@@ -218,9 +225,11 @@ public class GameBoard {
 
     public void buyCharacter(int characterNumber) {
         try {
-            currentPlayer.removeCoins(playedCharacters[characterNumber].getCost());
             playedCharacters[characterNumber].buy();
-            this.currentCharacter = playedCharacters[characterNumber];
+            for (int i = 0; i < playedCharacters[characterNumber].getCost(); i++)
+                addCoin();
+
+            setCurrentCharacter(playedCharacters[characterNumber]);
         } catch (NoEnoughCoinsException e) {
             e.printStackTrace();
         }
@@ -269,6 +278,10 @@ public class GameBoard {
     /*TEST METHODS*/
     public int getNumOfClouds() { return clouds.size(); }
 
+    public int getNumOfStudentsOnCloud(int numOfCloud){
+        return clouds.get(numOfCloud).getStudentsColors().size();
+    }
+
     public int getNumOfStudentsOnIsland(int numOfIsland, Color studentColor){
         if (numOfIsland < 0 || numOfIsland > islands.size()-1)
             throw new IllegalArgumentException();
@@ -298,7 +311,8 @@ public class GameBoard {
     }
 
     /*method that adds a tower or changes it`s color
-    * note:not only current player can conquer an island that MN stops on*/
+    * note:not only one current player can conquer an island that MN stops on
+    * but other players as well*/
     public void conquerIsland(int numOfIsland, TowerColor towerColor){
         if (numOfIsland < 0 || numOfIsland > islands.size()-1)
             throw new IllegalArgumentException();
@@ -321,5 +335,9 @@ public class GameBoard {
             throw new IllegalArgumentException();
 
         positionOfMotherNature = numOfIsland;
+    }
+
+    public int getNumOfCoins(){
+        return numOfCoins;
     }
 }

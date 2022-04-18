@@ -3,6 +3,7 @@ package model;
 import exceptions.NumOfStudentsExceeded;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import model.Cloud;
 import model.Color;
 import java.util.ArrayList;
@@ -17,13 +18,8 @@ public class CloudTest extends TestCase {
         for (int i = 0; i < testcloud.getMaxNumOfStudents(); i++) {
             testcloud.addStudent(Color.getRandom());
         }
-            try {
-                testcloud.addStudent(Color.getRandom());
-                assertTrue("false", false);
-            }
-            catch (NumOfStudentsExceeded e) {
-                assertTrue(true);
-            }
+
+        assertThrows(NumOfStudentsExceeded.class, ()->{ testcloud.addStudent(Color.getRandom()); });
     }
 
     @Test

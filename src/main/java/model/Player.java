@@ -107,4 +107,7 @@ public class Player {
         return schoolBoard.getNumOfStudentsInEntrance();
     }
 
+    public ArrayList<Color> getStudentsInEntrance(){
+        return schoolBoard.getStudentsInEntrance();
+    }
 }

@@ -116,5 +116,11 @@ public class SchoolBoard {
     public void addTower(){
         numOfTowers++;
     }
+
+    /*TEST METHODS*/
+
+    public ArrayList<Color> getStudentsInEntrance(){
+        return (ArrayList<Color>) entrance.clone();
+    }
 }
 

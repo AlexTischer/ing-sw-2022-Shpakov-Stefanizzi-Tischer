@@ -1,11 +1,15 @@
 package model;
 
 import controller.*;
+import exceptions.NoEnoughCoinsException;
 import exceptions.NoEnoughStudentsException;
+import exceptions.NumOfCoinsExceeded;
+import exceptions.NumOfStudentsExceeded;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 
 import java.security.InvalidAlgorithmParameterException;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -105,7 +109,7 @@ public class GameBoardTest extends TestCase {
         }
 
 
-        /**MERGE LAST AND THE FIRST ISLANDS**/
+        /**MERGE THE LAST AND THE FIRST ISLANDS**/
 
         /*place MN on the last island and conquer it*/
         testGameBoard.placeMotherNature(10);
@@ -221,53 +225,352 @@ public class GameBoardTest extends TestCase {
         }
     }
 
-
-    /*MAY BE IMPLEMENTED INSIDE GAME TEST !*/
     @Test
-    void moveStudentToIsland(){
+    void refillCloudsTest(){
+        GameBoard testGameBoard2 = GameBoard.getInstanceOfGameBoard();
+        testGameBoard2.init(2);
+
+        assertEquals(2, testGameBoard2.getNumOfClouds());
+
+        /*maxNumOfStudents on cloud is 3*/
+        testGameBoard2.refillClouds();
+
+        for (int i = 0; i < testGameBoard2.getNumOfClouds(); i++)
+            assertEquals(3, testGameBoard2.getNumOfStudentsOnCloud(i));
+
+
+        GameBoard testGameBoard3 = GameBoard.getInstanceOfGameBoard();
+        testGameBoard3.init(3);
+
+        assertEquals(3, testGameBoard3.getNumOfClouds());
+
+        /*maxNumOfStudents on cloud is 4*/
+        testGameBoard3.refillClouds();
+
+        for (int i = 0; i < testGameBoard3.getNumOfClouds(); i++)
+            assertEquals(4, testGameBoard3.getNumOfStudentsOnCloud(i));
+
+
+        GameBoard testGameBoard4 = GameBoard.getInstanceOfGameBoard();
+        testGameBoard4.init(4);
+
+        assertEquals(4, testGameBoard4.getNumOfClouds());
+
+        /*maxNumOfStudents on cloud is 3*/
+        testGameBoard4.refillClouds();
+
+        for (int i = 0; i < testGameBoard4.getNumOfClouds(); i++)
+            assertEquals(3, testGameBoard4.getNumOfStudentsOnCloud(i));
+
+    }
+
+    @Test
+    void addAndRemoveProfessorTest(){
+        GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
+        testGameBoard.init(2);
+
+        Player testPlayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE, 8);
+
+        /*precedent list of professors*/
+        ArrayList<Color> oldProfessors = testPlayer.getProfessorsColor();
+        assertTrue(oldProfessors.isEmpty());
+
+        /*add a professor*/
+        testGameBoard.addProfessor(testPlayer, Color.GREEN);
+
+        /*professor map changed*/
+        assertFalse(oldProfessors.equals(testPlayer.getProfessorsColor()));
+
+        /*check size*/
+        assertEquals(1, testPlayer.getProfessorsColor().size());
+
+        /*check if green is contained*/
+        for (Color c: Color.values()){
+            if (c.equals(Color.GREEN))
+                assertTrue(testPlayer.getProfessorsColor().contains(c));
+            else
+                assertFalse(testPlayer.getProfessorsColor().contains(c));
+        }
+
+
+        oldProfessors = testPlayer.getProfessorsColor();
+
+        /*add a professor*/
+        testGameBoard.addProfessor(testPlayer, Color.BLUE);
+
+        /*professor map changed*/
+        assertTrue(!oldProfessors.equals(testPlayer.getProfessorsColor()));
+
+        /*check size*/
+        assertEquals(2, testPlayer.getProfessorsColor().size());
+
+        /*check if green and blue are contained*/
+        for (Color c: Color.values()){
+            if (c.equals(Color.GREEN) || c.equals(Color.BLUE))
+                assertTrue(testPlayer.getProfessorsColor().contains(c));
+            else
+                assertFalse(testPlayer.getProfessorsColor().contains(c));
+        }
+
+
+        oldProfessors = testPlayer.getProfessorsColor();
+
+        /*add an existing professor*/
+        testGameBoard.addProfessor(testPlayer, Color.BLUE);
+
+        /*professor map has not changed*/
+        assertTrue(oldProfessors.equals(testPlayer.getProfessorsColor()));
+
+        /*check size*/
+        assertEquals(2, testPlayer.getProfessorsColor().size());
+
+        /*check that there are no duplicates*/
+        for (int i = 0; i < testPlayer.getProfessorsColor().size(); i++){
+            for (int j = i+1; j < testPlayer.getProfessorsColor().size(); j++){
+                assertFalse(testPlayer.getProfessorsColor().get(i).equals(testPlayer.getProfessorsColor().get(j)));
+            }
+        }
+
+        /*test removeProfessor*/
+
+        /*remove one professor*/
+        testPlayer.removeProfessor(Color.BLUE);
+
+        /*professor map has been changed*/
+        assertFalse(oldProfessors.equals(testPlayer.getProfessorsColor()));
+
+        /*check size*/
+        assertEquals(1, testPlayer.getProfessorsColor().size());
+
+        /*check if green is contained*/
+        for (Color c: Color.values()){
+            if (c.equals(Color.GREEN))
+                assertTrue(testPlayer.getProfessorsColor().contains(c));
+            else
+                assertFalse(testPlayer.getProfessorsColor().contains(c));
+        }
+
+        /*remove the last professor*/
+        testPlayer.removeProfessor(Color.GREEN);
+
+        /*professor list has become empty*/
+        assertTrue(testPlayer.getProfessorsColor().isEmpty());
+
+    }
+
+    @Test
+    void addAndGetCoinTest(){
+        GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
+        testGameBoard.init(2);
+        assertEquals(20, testGameBoard.getNumOfCoins());
+
+        assertThrows(NumOfCoinsExceeded.class, () ->{testGameBoard.addCoin();});
+
+        testGameBoard.getCoin();
+        assertEquals(19, testGameBoard.getNumOfCoins());
+
+        for (int i = 0; i < 19; i++)
+            testGameBoard.getCoin();
+
+        assertThrows(NoEnoughCoinsException.class, ()->{testGameBoard.getCoin();});
+
+    }
+
+    @Test
+    void setAndGetCurrentCharactersTest(){
+        GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
+        testGameBoard.init(2);
+
+        testGameBoard.setCurrentCharacter(new Character1());
+        assertTrue(testGameBoard.getCurrentCharacter() instanceof Character1);
+    }
+
+    @Test
+    void addAndRemoveStudentInEntranceTest(){
+        GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
+        /*maxNumOfStudents is 7*/
+        testGameBoard.init(2);
+
+        Player testPlayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE, 8);
+
+        assertEquals(0, testPlayer.getNumOfStudentsInEntrance());
+
+        /*test that size has changed*/
+        testGameBoard.addStudentToEntrance(testPlayer, Color.GREEN);
+        assertEquals(1, testPlayer.getNumOfStudentsInEntrance());
+
+        /*test exception when entrance has reached maximum*/
+        for (int i = 0; i < 6; i++)
+            testGameBoard.addStudentToEntrance(testPlayer, Color.GREEN);
+        assertThrows(NumOfStudentsExceeded.class, ()->{testGameBoard.addStudentToEntrance(testPlayer, Color.GREEN);});
+
+        /*test colors added*/
+        for (Color c: testPlayer.getStudentsInEntrance())
+            assertTrue(c.equals(Color.GREEN));
+
+        /*test that size has changed*/
+        testGameBoard.removeStudentFromEntrance(testPlayer, Color.GREEN);
+        testGameBoard.removeStudentFromEntrance(testPlayer, Color.GREEN);
+        testGameBoard.removeStudentFromEntrance(testPlayer, Color.GREEN);
+        assertEquals(4, testPlayer.getNumOfStudentsInEntrance());
+
+        /*add different colors with duplicates*/
+        testGameBoard.addStudentToEntrance(testPlayer, Color.RED);
+        testGameBoard.addStudentToEntrance(testPlayer, Color.RED);
+        testGameBoard.addStudentToEntrance(testPlayer, Color.YELLOW);
+        for (Color c: testPlayer.getStudentsInEntrance()){
+            /*if color is different from those added, stop testing*/
+            if (!c.equals(Color.GREEN) && !c.equals(Color.RED) && !c.equals(Color.YELLOW))
+                assertTrue(false);
+        }
+
+        /*remove only 1 from 2 red colors*/
+        testGameBoard.removeStudentFromEntrance(testPlayer, Color.RED);
+        assertEquals(6, testPlayer.getNumOfStudentsInEntrance());
+
+        int numOfGreen = 0;
+        int numOfRed = 0;
+        int numOfYellow = 0;
+        for (Color c: testPlayer.getStudentsInEntrance()){
+            switch (c){
+                case GREEN:
+                    numOfGreen++;
+                    break;
+                case RED:
+                    numOfRed++;
+                    break;
+                case YELLOW:
+                    numOfYellow++;
+                    break;
+                default:/*if color is different from those added, stop testing*/
+                    assertTrue(false);
+            }
+        }
+
+        /*Test that number of other colors is not changed*/
+        assertEquals(4, numOfGreen);
+        assertEquals(1, numOfRed);
+        assertEquals(1, numOfYellow);
+
+
+        /*test removal exception*/
+        for (int i=0; i < 4; i++)
+            testGameBoard.removeStudentFromEntrance(testPlayer, Color.GREEN);
+
+        testGameBoard.removeStudentFromEntrance(testPlayer, Color.RED);
+        testGameBoard.removeStudentFromEntrance(testPlayer, Color.YELLOW);
+
+        for (Color c: Color.values())
+            assertThrows(NoEnoughStudentsException.class, ()->{testGameBoard.removeStudentFromEntrance(testPlayer, c);});
+
+    }
+
+    @Test
+    void addStudentAndRemoveStudentInDining(){
+        GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
+        testGameBoard.init(2);
+        Player testPlayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE, 8);
+
+        /*test that there are no students at the beginning*/
+        for (Color c: Color.values())
+            assertEquals(0, testPlayer.getNumOfStudentsInDining(c));
+
+        /*test adding exactly one student*/
+        testGameBoard.addStudentToDining(testPlayer, Color.GREEN);
+        for (Color c: Color.values()){
+            if (c.equals(Color.GREEN))
+                assertEquals(1, testPlayer.getNumOfStudentsInDining(c));
+            else
+                assertEquals(0, testPlayer.getNumOfStudentsInDining(c));
+        }
+
+        /*test adding student of different color*/
+        testGameBoard.addStudentToDining(testPlayer, Color.BLUE);
+        for (Color c: Color.values()){
+            if (c.equals(Color.GREEN))
+                assertEquals(1, testPlayer.getNumOfStudentsInDining(c));
+            else if (c.equals(Color.BLUE))
+                assertEquals(1, testPlayer.getNumOfStudentsInDining(c));
+            else
+                assertEquals(0, testPlayer.getNumOfStudentsInDining(c));
+        }
+
+        /*test exception when dining has reached max number of students*/
+        for (int i=0; i < 9; i++)
+            testGameBoard.addStudentToDining(testPlayer, Color.GREEN);
+        assertThrows(NumOfStudentsExceeded.class, ()->{testGameBoard.addStudentToDining(testPlayer, Color.GREEN);});
+
+        /*test student removal*/
+        testGameBoard.removeStudentFromDining(testPlayer, Color.BLUE);
+        for (Color c: Color.values()){
+            if (c.equals(Color.GREEN))
+                assertEquals(10, testPlayer.getNumOfStudentsInDining(c));
+            else
+                assertEquals(0, testPlayer.getNumOfStudentsInDining(c));
+        }
+
+        /*test exception when there are no students left in dining*/
+        assertThrows(NoEnoughStudentsException.class ,()->{testGameBoard.removeStudentFromDining(testPlayer, Color.BLUE);});
+
+        for (int i = 0; i < 10; i++)
+            testGameBoard.removeStudentFromDining(testPlayer, Color.GREEN);
+        
+        for (Color c: Color.values())
+            assertEquals(0, testPlayer.getNumOfStudentsInDining(c));
+
+        for (Color c: Color.values())
+            assertThrows(NoEnoughStudentsException.class ,()->{testGameBoard.removeStudentFromDining(testPlayer, c);});
+    }
+
+
+    @Test
+    void moveStudentToIslandTest(){
         GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
         Player testPlayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE, 8);
         testGameBoard.init(2);
         testGameBoard.setCurrentPlayer(testPlayer);
 
         /*moving student from entrance to island*/
-        testPlayer.addStudentToEntrance(Color.GREEN);
-        testGameBoard.moveStudentToIsland(testPlayer, Color.GREEN, 1);
+        testGameBoard.addStudentToEntrance(testPlayer, Color.GREEN);
+        testGameBoard.moveStudentToIsland(testPlayer, Color.GREEN, 0);
 
-        assertEquals(1, testGameBoard.getNumOfStudentsOnIsland(1, Color.GREEN));
+        assertEquals(1, testGameBoard.getNumOfStudentsOnIsland(0, Color.GREEN));
         assertEquals(0, testPlayer.getNumOfStudentsInEntrance());
 
         /*adding a student to island*/
-        testGameBoard.moveStudentToIsland(Color.GREEN, 1);
+        testGameBoard.moveStudentToIsland(Color.GREEN, 0);
 
-        assertEquals(2, testGameBoard.getNumOfStudentsOnIsland(1, Color.GREEN));
+        assertEquals(2, testGameBoard.getNumOfStudentsOnIsland(0, Color.GREEN));
         assertEquals(0, testPlayer.getNumOfStudentsInEntrance());
 
         /*exception control*/
         assertThrows(IllegalArgumentException.class, ()->{
-            testGameBoard.moveStudentToIsland(testPlayer, Color.GREEN, 0);
+            testGameBoard.moveStudentToIsland(testPlayer, Color.GREEN, -1);
         } );
         assertThrows(IllegalArgumentException.class, ()->{
-            testGameBoard.moveStudentToIsland(testPlayer, Color.GREEN, 13);
+            testGameBoard.moveStudentToIsland(testPlayer, Color.GREEN, 12);
         } );
         assertThrows(IllegalArgumentException.class, ()->{
-            testGameBoard.moveStudentToIsland(Color.GREEN, 0);
+            testGameBoard.moveStudentToIsland(Color.GREEN, -1);
         } );
         assertThrows(IllegalArgumentException.class, ()->{
-            testGameBoard.moveStudentToIsland(Color.GREEN, 13);
+            testGameBoard.moveStudentToIsland(Color.GREEN, 12);
         } );
 
         assertThrows(NoEnoughStudentsException.class, ()->{
-            testGameBoard.moveStudentToIsland(testPlayer, Color.RED, 1);
+            testGameBoard.moveStudentToIsland(testPlayer, Color.GREEN, 0);
         } );
         assertThrows(NoEnoughStudentsException.class, ()->{
-            testGameBoard.moveStudentToIsland(testPlayer, Color.BLUE, 1);
+            testGameBoard.moveStudentToIsland(testPlayer, Color.RED, 0);
         } );
         assertThrows(NoEnoughStudentsException.class, ()->{
-            testGameBoard.moveStudentToIsland(testPlayer, Color.PINK, 1);
+            testGameBoard.moveStudentToIsland(testPlayer, Color.BLUE, 0);
         } );
         assertThrows(NoEnoughStudentsException.class, ()->{
-            testGameBoard.moveStudentToIsland(testPlayer, Color.YELLOW, 1);
+            testGameBoard.moveStudentToIsland(testPlayer, Color.PINK, 0);
+        } );
+        assertThrows(NoEnoughStudentsException.class, ()->{
+            testGameBoard.moveStudentToIsland(testPlayer, Color.YELLOW, 0);
         } );
     }
 }

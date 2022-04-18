@@ -22,7 +22,7 @@ public class Cloud {
     }
 
     public void addStudent(Color studentColor) throws NumOfStudentsExceeded{
-        if(students.size()<=maxNumOfStudents){
+        if(students.size()<maxNumOfStudents){
             students.add(studentColor);
         }
         else throw new NumOfStudentsExceeded();
