@@ -71,10 +71,13 @@ public class GameBoard {
     }
 
     public void moveMotherNature(int steps) {
-        if (steps < 0 || !currentCharacter.moveMotherNature(steps))
+        if (!currentCharacter.moveMotherNature(steps))
             throw new IllegalArgumentException("This number of steps is not allowed");
 
         positionOfMotherNature = (positionOfMotherNature + steps) % islands.size();
+        if(positionOfMotherNature<0){
+            positionOfMotherNature += islands.size();
+        }
     }
 
     public Player getCurrentPlayer() {
@@ -164,7 +167,7 @@ public class GameBoard {
 
     /*returns the score of the current player on particular island
      * note: the character knows who is the current player*/
-    public int calculateInfluence(int islandNumber) throws NoEntryException {
+    public int calculateInfluence(int islandNumber) {
         return currentCharacter.calculateInfluence(islands.get(islandNumber), islandNumber);
     }
 
@@ -340,4 +343,7 @@ public class GameBoard {
     public int getNumOfCoins(){
         return numOfCoins;
     }
+
 }
+
+

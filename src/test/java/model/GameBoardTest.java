@@ -374,6 +374,9 @@ public class GameBoardTest extends TestCase {
 
         assertThrows(NoEnoughCoinsException.class, ()->{testGameBoard.getCoin();});
 
+        testGameBoard.addCoin();
+        assertEquals(testGameBoard.getNumOfCoins(),1);
+
     }
 
     @Test
@@ -573,4 +576,44 @@ public class GameBoardTest extends TestCase {
             testGameBoard.moveStudentToIsland(testPlayer, Color.YELLOW, 0);
         } );
     }
+
+    @Test
+    void useCloudTest(){
+        GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
+        Player testPlayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE, 8);
+        testGameBoard.init(2);
+        testGameBoard.setCurrentPlayer(testPlayer);
+
+        testGameBoard.refillClouds();
+        testGameBoard.useCloud(0);
+        assertEquals(testPlayer.getNumOfStudentsInEntrance(),3);
+
+    }
+
+
+    @Test
+    void addProfessorTest(){
+        GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
+        Player testPlayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE, 8);
+        testGameBoard.init(2);
+        testGameBoard.setCurrentPlayer(testPlayer);
+
+        testGameBoard.addProfessor(testPlayer, Color.RED);
+        assertTrue(testPlayer.getProfessorsColor().contains(Color.RED));
+    }
+
+    @Test
+    void removeProfessorTest(){
+        GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
+        Player testPlayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE, 8);
+        testGameBoard.init(2);
+        testGameBoard.setCurrentPlayer(testPlayer);
+
+        testGameBoard.addProfessor(testPlayer, Color.RED);
+        assertTrue(testPlayer.getProfessorsColor().contains(Color.RED));
+
+        testGameBoard.removeProfessor(testPlayer,Color.RED);
+        assertTrue(testPlayer.getProfessorsColor().isEmpty());
+    }
+
 }

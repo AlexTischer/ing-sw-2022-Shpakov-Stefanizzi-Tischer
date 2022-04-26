@@ -10,6 +10,8 @@ import model.*;
 
 import java.util.ArrayList;
 
+import static java.lang.Math.abs;
+
 public class Character {
     protected Game game;
     private int cost;
@@ -49,7 +51,7 @@ public class Character {
     }
 
     public boolean moveMotherNature(int steps){
-        return (game.getCurrentPlayer().getPlayedAssistant().getMovements()>=steps);
+        return (game.getCurrentPlayer().getPlayedAssistant().getMovements()>=abs(steps));
     }
 
     public void initialFill(Game game){

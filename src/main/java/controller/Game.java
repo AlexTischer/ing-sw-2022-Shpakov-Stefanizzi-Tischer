@@ -103,13 +103,15 @@ public class Game implements GameForClient{
         return gameBoard.getStudentFromBag();
     }
 
-    public void calculateInfluence(int islandNumber){
+    public int calculateInfluence(int islandNumber){
+        int influence = -1;
         try {
-            gameBoard.calculateInfluence(islandNumber);
+            influence = gameBoard.calculateInfluence(islandNumber);
         }
         catch (NoEntryException e){
             gameBoard.addNoEntryTile();
         }
+        return influence;
     }
 
     public void reassignProfessor(Color professorColor){
@@ -159,4 +161,9 @@ public class Game implements GameForClient{
 
     public void newRound(){}
 
+    /*TEST METHODS*/
+
+    public GameBoard getGameBoard() {
+        return gameBoard;
+    }
 }

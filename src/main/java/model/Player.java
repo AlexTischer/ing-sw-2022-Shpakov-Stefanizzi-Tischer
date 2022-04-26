@@ -110,4 +110,8 @@ public class Player {
     public ArrayList<Color> getStudentsInEntrance(){
         return schoolBoard.getStudentsInEntrance();
     }
+
+    public String getName() {
+        return name;
+    }
 }
