@@ -91,6 +91,10 @@ public class Game implements GameForClient{
         reassignProfessor(studentColor);
     }
 
+    public void addStudentToIsland(Color studentColor, int islandNumber){
+        gameBoard.addStudentToIsland(studentColor, islandNumber);
+    }
+
     public void removeStudentFromEntrance(Color studentColor){
         gameBoard.removeStudentFromEntrance(gameBoard.getCurrentPlayer(), studentColor);
     }

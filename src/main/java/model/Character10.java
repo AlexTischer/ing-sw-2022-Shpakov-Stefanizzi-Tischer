@@ -43,4 +43,9 @@ public class Character10 extends Character{
         cost = 3;
     }
 
+    /*TEST METHODS*/
+    public ArrayList<Color> getStudents(){
+        return (ArrayList<Color>) students.clone();
+    }
+
 }

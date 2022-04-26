@@ -15,6 +15,7 @@ public class Character5 extends Character{
         noEntryTiles = 4;
     }
 
+
     @Override
     public void setSelectedIslandNumber(int selectedIslandNumber){
         this.selectedIslandNumber = selectedIslandNumber;
@@ -29,6 +30,7 @@ public class Character5 extends Character{
         else throw new NoEnoughEntryTilesException();
     }
 
+    @Override
     public void addNoEntryTile(){
         noEntryTiles++;
     }

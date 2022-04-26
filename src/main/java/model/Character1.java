@@ -24,7 +24,7 @@ public class Character1 extends Character{
     @Override
     public void execute(){
         students.remove(selectedStudent);
-        game.moveStudentToIsland(selectedStudent, selectedIslandNumber);
+        game.addStudentToIsland(selectedStudent, selectedIslandNumber);
         students.add(game.getStudent());
     }
 
@@ -42,6 +42,12 @@ public class Character1 extends Character{
     public void buy() throws NoEnoughCoinsException {
         game.getCurrentPlayer().removeCoins(cost);
         cost = 2;
+    }
+
+    /*TEST METHODS*/
+    public ArrayList<Color> getStudents(){
+        return (ArrayList<Color>) students.clone();
+
     }
 
 }

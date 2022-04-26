@@ -96,6 +96,10 @@ public class GameBoard {
         player.moveStudentToIsland(studentColor, islands.get(islandNumber));
     }
 
+    public void addStudentToIsland(Color studentColor, int islandNumber){
+        islands.get(islandNumber).addStudent(studentColor);
+    }
+
     /*is invoked when character card is in use*/
     public void moveStudentToIsland(Color studentColor, int islandNumber) {
         if (islandNumber < 0 || islandNumber > islands.size()-1)
@@ -249,7 +253,7 @@ public class GameBoard {
         currentCharacter.execute();
     }
 
-    public void activateCharacter(Color color, int islandNumber) throws NoEnoughStudentsException {
+    public void activateCharacter(Color color, int islandNumber) {
         currentCharacter.setSelectedStudent(color);
         currentCharacter.setSelectedIslandNumber(islandNumber);
         currentCharacter.execute();
