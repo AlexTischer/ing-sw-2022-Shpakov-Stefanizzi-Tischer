@@ -4,11 +4,13 @@ import controller.CharacterDeck;
 import controller.Game;
 import exceptions.NoEnoughCoinsException;
 import exceptions.NoEnoughEntryTilesException;
+import exceptions.NoEntryException;
 import junit.framework.TestCase;
 import model.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
+
+import static model.Color.*;
 
 public class CharactersTest extends TestCase {
     ArrayList<String> playerNames = new ArrayList<>();
@@ -50,7 +52,7 @@ public class CharactersTest extends TestCase {
         GameBoard testGameBoard = gametest.getGameBoard();
         testGameBoard.setCurrentPlayer(testPlayer);
         testPlayer.addCoins(5);
-        testPlayer.addProfessor(Color.GREEN);
+        testPlayer.addProfessor(GREEN);
 
         Character2 character2test = new Character2();
         character2test.initialFill(gametest);
@@ -58,15 +60,88 @@ public class CharactersTest extends TestCase {
 
         character2test.buy();
 
-        testGameBoard.addStudentToIsland(Color.GREEN,2);
-        testGameBoard.addStudentToIsland(Color.GREEN, 2);
-        testGameBoard.addStudentToIsland(Color.BLUE,2);
+        gametest.addStudentToIsland(GREEN,2);
+        gametest.addStudentToIsland(GREEN, 2);
+        gametest.addStudentToIsland(Color.BLUE,2);
         testGameBoard.conquerIsland(2,TowerColor.BLACK);
 
         gametest.calculateInfluence(2);
 
         assertEquals(gametest.calculateInfluence(2),5);
 
+    }
+
+    @Test
+    void Character3Test(){
+        playerNames.add("a");
+        playerNames.add("b");
+        Game gametest = Game.getInstanceOfGame();
+        gametest.init(playerNames,true,assistantDeck,characterDeck);
+        GameBoard testGameBoard = gametest.getGameBoard();
+        testGameBoard.setCurrentPlayer(testPlayer);
+        testPlayer.addCoins(5);
+        testPlayer.addProfessor(GREEN);
+
+        Character3 character3test = new Character3();
+        character3test.initialFill(gametest);
+        testGameBoard.setCurrentCharacter(character3test);
+
+        character3test.buy();
+
+        gametest.addStudentToIsland(GREEN,2);
+        gametest.addStudentToIsland(GREEN, 2);
+        gametest.addStudentToIsland(Color.BLUE,2);
+        testGameBoard.conquerIsland(2,TowerColor.BLACK);
+
+        gametest.calculateInfluence(2);
+
+        assertEquals(gametest.calculateInfluence(2),2);
+
+        testGameBoard.setNoEntry(2,true);
+        try{
+            testGameBoard.calculateInfluence(2);
+            assertTrue("false", false);
+        }
+        catch(NoEntryException e){
+
+        }
+    }
+
+    @Test
+    void Character4Test(){
+        playerNames.add("a");
+        playerNames.add("b");
+        Game gametest = Game.getInstanceOfGame();
+        gametest.init(playerNames,true,assistantDeck,characterDeck);
+        GameBoard testGameBoard = gametest.getGameBoard();
+        testGameBoard.setCurrentPlayer(testPlayer);
+        testPlayer.addCoins(5);
+        testPlayer.addProfessor(GREEN);
+
+        Character4 character4test = new Character4();
+        character4test.initialFill(gametest);
+        testGameBoard.setCurrentCharacter(character4test);
+
+        character4test.buy();
+        gametest.activateCharacter(GREEN);
+
+        gametest.addStudentToIsland(GREEN,2);
+        gametest.addStudentToIsland(GREEN, 2);
+        gametest.addStudentToIsland(Color.BLUE,2);
+        testGameBoard.conquerIsland(2,TowerColor.BLACK);
+
+        gametest.calculateInfluence(2);
+
+        assertEquals(gametest.calculateInfluence(2),1);
+
+        testGameBoard.setNoEntry(2,true);
+        try{
+            testGameBoard.calculateInfluence(2);
+            assertTrue("false", false);
+        }
+        catch(NoEntryException e){
+
+        }
     }
 
     @Test
@@ -112,6 +187,95 @@ public class CharactersTest extends TestCase {
     }
 
     @Test
+    void Character6Test(){
+
+    }
+
+    @Test
+    void Character7Test(){
+        playerNames.add("a");
+        playerNames.add("b");
+        Game gametest = Game.getInstanceOfGame();
+        gametest.init(playerNames,true,assistantDeck,characterDeck);
+        GameBoard testGameBoard = gametest.getGameBoard();
+        testGameBoard.setCurrentPlayer(testPlayer);
+        testPlayer.addCoins(5);
+
+        Character7 character7test = new Character7();
+        character7test.initialFill(gametest);
+        testGameBoard.setCurrentCharacter(character7test);
+        character7test.buy();
+
+        /* adding some students to dining room */
+        gametest.addStudentToDining(testPlayer,BLUE);
+        gametest.addStudentToDining(testPlayer,BLUE);
+        gametest.addStudentToDining(testPlayer,PINK);
+
+        /* adding students to entrance */
+        gametest.addStudentToEntrance(testPlayer,GREEN);
+        gametest.addStudentToEntrance(testPlayer,RED);
+        gametest.addStudentToEntrance(testPlayer,RED);
+        gametest.addStudentToEntrance(testPlayer,PINK);
+
+        /* students in entrance */
+        ArrayList<Color> toBeSwappedTest = new ArrayList<>();
+        toBeSwappedTest.add(GREEN);
+        toBeSwappedTest.add(RED);
+
+        /* students in dining */
+        ArrayList<Color> selectedTest = new ArrayList<>();
+        selectedTest.add(BLUE);
+        selectedTest.add(PINK);
+
+        gametest.activateCharacter(toBeSwappedTest,selectedTest);
+
+        /* checking new entrance */
+        assertEquals(testPlayer.getStudentsInEntrance().contains(RED), true);
+        assertEquals(testPlayer.getStudentsInEntrance().contains(PINK), true);
+        assertEquals(testPlayer.getStudentsInEntrance().contains(BLUE), true);
+        assertEquals(testPlayer.getNumOfStudentsInEntrance(), 4);
+
+        /*checking new diningroom */
+        assertEquals(testPlayer.getNumOfStudentsInDining(BLUE), 1);
+        assertEquals(testPlayer.getNumOfStudentsInDining(PINK), 0);
+        assertEquals(testPlayer.getNumOfStudentsInDining(GREEN), 1);
+        assertEquals(testPlayer.getNumOfStudentsInDining(RED), 1);
+        assertEquals(testPlayer.getNumOfStudentsInDining(YELLOW), 0);
+
+        /* TESTING EXCEPTIONS */
+
+        toBeSwappedTest.add(PINK);
+
+        try {
+            gametest.activateCharacter(toBeSwappedTest, selectedTest);
+            assertTrue("false", false);
+        }
+        catch (IllegalArgumentException e){
+        }
+
+        selectedTest.add(YELLOW);
+        toBeSwappedTest.remove(0);
+
+        try {
+            gametest.activateCharacter(toBeSwappedTest, selectedTest);
+            assertTrue("false", false);
+        }
+        catch (IllegalArgumentException e){
+        }
+
+        selectedTest.remove(YELLOW);
+        selectedTest.remove(BLUE);
+
+        try {
+            gametest.activateCharacter(toBeSwappedTest, selectedTest);
+            assertTrue("false", false);
+        }
+        catch (IllegalArgumentException e){
+        }
+
+    }
+
+    @Test
     void Character8Test(){
         playerNames.add("a");
         playerNames.add("b");
@@ -139,6 +303,91 @@ public class CharactersTest extends TestCase {
 
     }
 
+
+    @Test
+    void Character9Test(){
+        playerNames.add("a");
+        playerNames.add("b");
+        Game gametest = Game.getInstanceOfGame();
+        gametest.init(playerNames,true,assistantDeck,characterDeck);
+        GameBoard testGameBoard = gametest.getGameBoard();
+        testGameBoard.setCurrentPlayer(testPlayer);
+        testPlayer.addCoins(5);
+
+        Character7 character7test = new Character7();
+        character7test.initialFill(gametest);
+        testGameBoard.setCurrentCharacter(character7test);
+        character7test.buy();
+
+        /* adding some students to dining room */
+        gametest.addStudentToDining(testPlayer,BLUE);
+        gametest.addStudentToDining(testPlayer,BLUE);
+        gametest.addStudentToDining(testPlayer,PINK);
+
+        /* adding students to entrance */
+        gametest.addStudentToEntrance(testPlayer,GREEN);
+        gametest.addStudentToEntrance(testPlayer,RED);
+        gametest.addStudentToEntrance(testPlayer,RED);
+        gametest.addStudentToEntrance(testPlayer,PINK);
+
+        /* students in entrance */
+        ArrayList<Color> toBeSwappedTest = new ArrayList<>();
+        toBeSwappedTest.add(GREEN);
+        toBeSwappedTest.add(RED);
+
+        /* students in dining */
+        ArrayList<Color> selectedTest = new ArrayList<>();
+        selectedTest.add(BLUE);
+        selectedTest.add(PINK);
+
+        gametest.activateCharacter(toBeSwappedTest,selectedTest);
+
+        /* checking new entrance */
+        assertEquals(testPlayer.getStudentsInEntrance().contains(RED), true);
+        assertEquals(testPlayer.getStudentsInEntrance().contains(PINK), true);
+        assertEquals(testPlayer.getStudentsInEntrance().contains(BLUE), true);
+        assertEquals(testPlayer.getNumOfStudentsInEntrance(), 4);
+
+        /*checking new diningroom */
+        assertEquals(testPlayer.getNumOfStudentsInDining(BLUE), 1);
+        assertEquals(testPlayer.getNumOfStudentsInDining(PINK), 0);
+        assertEquals(testPlayer.getNumOfStudentsInDining(GREEN), 1);
+        assertEquals(testPlayer.getNumOfStudentsInDining(RED), 1);
+        assertEquals(testPlayer.getNumOfStudentsInDining(YELLOW), 0);
+
+        /* TESTING EXCEPTIONS */
+
+        toBeSwappedTest.add(PINK);
+
+        try {
+            gametest.activateCharacter(toBeSwappedTest, selectedTest);
+            assertTrue("false", false);
+        }
+        catch (IllegalArgumentException e){
+        }
+
+        selectedTest.add(YELLOW);
+        toBeSwappedTest.remove(0);
+
+        try {
+            gametest.activateCharacter(toBeSwappedTest, selectedTest);
+            assertTrue("false", false);
+        }
+        catch (IllegalArgumentException e){
+        }
+
+        selectedTest.remove(YELLOW);
+        selectedTest.remove(BLUE);
+
+        try {
+            gametest.activateCharacter(toBeSwappedTest, selectedTest);
+            assertTrue("false", false);
+        }
+        catch (IllegalArgumentException e){
+        }
+
+    }
+
     @Test
     void Character12Test() {
         playerNames.add("a");
@@ -148,7 +397,7 @@ public class CharactersTest extends TestCase {
         GameBoard testGameBoard = gametest.getGameBoard();
         testGameBoard.setCurrentPlayer(testPlayer);
         testPlayer.addCoins(5);
-        testPlayer.addProfessor(Color.GREEN);
+        testPlayer.addProfessor(GREEN);
 
         Character12 character12test = new Character12();
         character12test.initialFill(gametest);
@@ -156,8 +405,8 @@ public class CharactersTest extends TestCase {
 
         character12test.buy();
 
-        testGameBoard.addStudentToIsland(Color.GREEN, 2);
-        testGameBoard.addStudentToIsland(Color.GREEN, 2);
+        testGameBoard.addStudentToIsland(GREEN, 2);
+        testGameBoard.addStudentToIsland(GREEN, 2);
         testGameBoard.addStudentToIsland(Color.BLUE, 2);
         testGameBoard.conquerIsland(2, TowerColor.BLACK);
 
@@ -166,6 +415,8 @@ public class CharactersTest extends TestCase {
         assertEquals(gametest.calculateInfluence(2), 3);
     }
 
+
+    /*
     @Test
     void Character10Test(){
         playerNames.add("a");
@@ -191,4 +442,6 @@ public class CharactersTest extends TestCase {
 
 
     }
+
+     */
 }

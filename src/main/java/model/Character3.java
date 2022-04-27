@@ -1,12 +1,20 @@
 package model;
 
+import controller.Game;
 import exceptions.NoEnoughCoinsException;
 import exceptions.NoEntryException;
+
+import java.util.ArrayList;
 
 public class Character3 extends Character{
     /*does not count towers in influence*/
 
     private int cost = 3;
+
+    @Override
+    public void initialFill(Game game){
+        super.initialFill(game);
+    }
 
     @Override
     public int calculateInfluence(Island island, int islandNumber) throws NoEntryException {

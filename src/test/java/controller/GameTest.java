@@ -171,7 +171,6 @@ public class GameTest extends TestCase {
 
     }
 
-    /*
     @Test
     void noEntryExceptionTest(){
         playersNames.add("a");
@@ -179,16 +178,29 @@ public class GameTest extends TestCase {
         game.init(playersNames,true, assistantDeck, characterDeck);
         GameBoard testGameBoard = game.getGameBoard();
 
+
+
         game.setNoEntry(0,true);
+
         try {
-            game.calculateInfluence(0);
-            assertTrue("false", false);
+            game.setNoEntry(0, true);
         }
         catch (NoEntryException e){
 
         }
+        try {
+            testGameBoard.calculateInfluence(0);
+            assertTrue("false", false);
+        }
+        catch (NoEntryException e){
+        }
+
+        game.setNoEntry(0,true);
+        game.calculateInfluence(0);
+
+
     }
-     */
+
     @Test
     void moveMotherNatureTest(){
         playersNames.add("a");

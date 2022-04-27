@@ -8,6 +8,8 @@ public class Character4 extends Character{
     private Color selectedStudent;
     private int cost = 3;
 
+
+
     public void setSelectedStudent(Color selectedStudent){
         this.selectedStudent = selectedStudent;
     }
