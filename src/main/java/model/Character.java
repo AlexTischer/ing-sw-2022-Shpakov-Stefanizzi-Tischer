@@ -33,7 +33,7 @@ public class Character {
         }
     }
 
-    public void reassignProfessor(Color professorColor) {
+    public void reassignProfessor() {
         Player leader = game.getPlayers().get(0);
 
         for (Color color: Color.values()){

@@ -95,7 +95,7 @@ public class Game implements GameForClient{
 
     public void addStudentToDining(Player player, Color studentColor){
         gameBoard.addStudentToDining(player, studentColor);
-        reassignProfessor(studentColor);
+        reassignProfessor();
     }
 
     public void addStudentToIsland(Color studentColor, int islandNumber){
@@ -125,8 +125,8 @@ public class Game implements GameForClient{
         return influence;
     }
 
-    public void reassignProfessor(Color professorColor){
-        gameBoard.getCurrentCharacter().reassignProfessor(professorColor);
+    public void reassignProfessor(){
+        gameBoard.getCurrentCharacter().reassignProfessor();
     }
 
     public void setNoEntry(int islandNumber, boolean noEntry){
