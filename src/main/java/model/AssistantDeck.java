@@ -2,7 +2,7 @@ package model;
 
 import java.util.*;
 
-public class AssistantDeck {
+public class  AssistantDeck {
     private Map<AssistantType, ArrayList<Assistant>> assistants;
 
     public AssistantDeck(){

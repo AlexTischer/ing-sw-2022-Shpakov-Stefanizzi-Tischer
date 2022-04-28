@@ -1,6 +1,7 @@
 package controller;
 
 import model.Color;
+import model.Player;
 
 import java.util.ArrayList;
 
@@ -13,7 +14,7 @@ public interface GameForClient {
 
     public void moveMotherNature(int steps);
 
-    public void useAssistant(int assistantRank);
+    public void useAssistant(int assistantRank, Player player);
 
     public void buyCharacter(int characterNumber);
 
@@ -24,4 +25,5 @@ public interface GameForClient {
     public void activateCharacter(Color color, int islandNumber);
 
     public void activateCharacter(Color color);
+
 }

@@ -1,20 +1,19 @@
 package controller;
 
 import exceptions.NoEntryException;
+import exceptions.RepeatedAssistantRankException;
 import model.*;
 import model.Character;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Game implements GameForClient{
     private static Game instanceOfGame;
     private GameBoard gameBoard;
-    protected ArrayList<Player> players;
-    private ArrayList<Assistant> playedAssistant;
+    private ArrayList<Player> players;
     private boolean advancedSettings;
-
-
     private Game(){}
 
     public static Game getInstanceOfGame() {
@@ -59,6 +58,14 @@ public class Game implements GameForClient{
 
         gameBoard.setCurrentCharacter(new Character());
         gameBoard.getCurrentCharacter().initialFill(this);
+
+        new Thread(() -> {
+            try {
+                playGame();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
     }
 
     public Player getCurrentPlayer(){
@@ -159,11 +166,48 @@ public class Game implements GameForClient{
         gameBoard.useCloud(cloudNumber);
     }
 
-    public void useAssistant(int assistantRank){}
+    public void useAssistant(int assistantRank, Player player){
+        if(true){
+            player.setPlayedAssistantRank(assistantRank);
+            notifyAll();
+        }else throw new RepeatedAssistantRankException();
+    }
 
-    public void newTurn(){}
+    private void playGame() throws InterruptedException {
+        while(!checkEndGame()){
+            newRound();
+        }
+    }
 
-    public void newRound(){}
+    private void newRound() throws InterruptedException {
+        gameBoard.refillClouds();
+        for (Player p : players){
+            while(p.getPlayedAssistant()==null){
+                wait();
+            }
+        }
+
+        Collections.sort(players); /*If two ranks are the same, the second selected plays second!!*/
+
+        for(Player p : players){
+            if(!checkEndGame()){
+                newTurn(p);
+            }
+        }
+
+        for (Player p : players){
+            p.setPlayedAssistantRank(0);
+        }
+    }
+
+    private boolean checkEndGame(){
+        return false;
+    }
+
+    private void newTurn(Player p) throws InterruptedException {
+        gameBoard.setCurrentPlayer(p);
+        wait();
+    }
 
     /*TEST METHODS*/
 

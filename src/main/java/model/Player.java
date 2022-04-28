@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-public class Player {
+public class Player implements Comparable{
     private String name;
     private SchoolBoard schoolBoard;
     private int coins;
@@ -31,6 +31,16 @@ public class Player {
 
     public void moveStudentToIsland(Color studentColor, Island island) {
         schoolBoard.moveStudentToIsland(studentColor, island);
+    }
+
+    @Override
+    public int compareTo(Object comparePlayer) {
+        if (comparePlayer instanceof Player) {
+            int compareRank = ((Player) comparePlayer).playedAssistant.getRank();
+            /* For Descending order*/
+            return compareRank - this.playedAssistant.getRank();
+        }
+        else throw new IllegalArgumentException();
     }
 
     public TowerColor getTowerColor() {
@@ -86,9 +96,11 @@ public class Player {
     }
 
     public void setPlayedAssistantRank(int rank) throws InvalidParameterException {
-        if (assistants[rank - 1] != null) {
+        if (rank != 0 && assistants[rank - 1] != null) {
             playedAssistant = assistants[rank - 1];
             assistants[rank - 1] = null;
+        } else if (rank == 0) {
+            playedAssistant = null;
         } else throw new InvalidParameterException();
     }
 
