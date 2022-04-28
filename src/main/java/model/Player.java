@@ -114,6 +114,10 @@ public class Player implements Comparable{
         this.coins += coins;
     }
 
+    public List<Assistant> getAssistants(){
+        return Arrays.stream(assistants).toList();
+    }
+
     /*TEST METHODS*/
     public int getNumOfStudentsInEntrance(){
         return schoolBoard.getNumOfStudentsInEntrance();

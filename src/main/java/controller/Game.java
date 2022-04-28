@@ -8,6 +8,8 @@ import model.Character;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Game implements GameForClient{
     private static Game instanceOfGame;
@@ -58,6 +60,10 @@ public class Game implements GameForClient{
 
         gameBoard.setCurrentCharacter(new Character());
         gameBoard.getCurrentCharacter().initialFill(this);
+
+        /*refill assistants of player*/
+        for(Player player: players)
+            gameBoard.refillAssistants(player);
 
         new Thread(() -> {
             try {
@@ -167,7 +173,7 @@ public class Game implements GameForClient{
     }
 
     public void useAssistant(int assistantRank, Player player){
-        if(true){
+        if(checkAssistant(assistantRank, player)){
             player.setPlayedAssistantRank(assistantRank);
             notifyAll();
         }else throw new RepeatedAssistantRankException();
@@ -187,6 +193,7 @@ public class Game implements GameForClient{
             }
         }
 
+        /*need to control it, i suppose there is a bug*/
         Collections.sort(players); /*If two ranks are the same, the second selected plays second!!*/
 
         for(Player p : players){
@@ -200,13 +207,29 @@ public class Game implements GameForClient{
         }
     }
 
+    private boolean checkAssistant(int assistantRank, Player player){
+        Set<Integer> playedAssistantsRanks = players.stream().filter(p -> p!=player && p.getPlayedAssistant()!=null).
+                map(p -> p.getPlayedAssistant().getRank()).collect(Collectors.toSet());
+
+        /*if a player decides to play an assistant with rank already played by smbd else,
+        it is allowable only when player has no other option*/
+        if (playedAssistantsRanks.contains(assistantRank)){
+            for (Assistant a: player.getAssistants()) {
+                if (!playedAssistantsRanks.contains(a.getRank()))
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
     private boolean checkEndGame(){
         return false;
     }
 
     private void newTurn(Player p) throws InterruptedException {
         gameBoard.setCurrentPlayer(p);
-        wait();
+        wait();/*wait for the finish of the action phase that will notify me*/
     }
 
     /*TEST METHODS*/
