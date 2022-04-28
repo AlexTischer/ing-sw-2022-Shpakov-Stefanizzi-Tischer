@@ -1,5 +1,6 @@
 package model;
 
+import controller.Game;
 import model.Player;
 import exceptions.NoEnoughCoinsException;
 
@@ -9,7 +10,12 @@ public class Character6 extends Character{
     private int cost = 2;
 
     @Override
-    public void reassignProfessor(Color professorColor) {
+    public void initialFill(Game game){
+        super.initialFill(game);
+    }
+
+    @Override
+    public void reassignProfessor() {
         Player leader = game.getPlayers().get(0);
 
         for (Color color: Color.values()){

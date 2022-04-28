@@ -18,6 +18,7 @@ public class CharactersTest extends TestCase {
     AssistantDeck assistantDeck = new AssistantDeck();
     CharacterDeck characterDeck = new CharacterDeck();
 
+
     @Test
     void Character1Test(){
         playerNames.add("a");
@@ -188,6 +189,27 @@ public class CharactersTest extends TestCase {
 
     @Test
     void Character6Test(){
+        playerNames.add("a");
+        playerNames.add("b");
+        Game gametest = Game.getInstanceOfGame();
+        gametest.init(playerNames,true,assistantDeck,characterDeck);
+        GameBoard testGameBoard = gametest.getGameBoard();
+
+        Character6 character6test = new Character6();
+        character6test.initialFill(gametest);
+        testGameBoard.setCurrentCharacter(character6test);
+
+        gametest.getPlayers().get(0).addStudentToDining(GREEN);
+        gametest.getPlayers().get(0).addProfessor(GREEN);
+
+        gametest.getPlayers().get(1).addStudentToDining(GREEN);
+
+        testGameBoard.setCurrentPlayer(gametest.getPlayers().get(1));
+
+        gametest.reassignProfessor();
+
+        assertTrue(gametest.getPlayers().get(1).getProfessorsColor().contains(GREEN));
+
 
     }
 
@@ -303,7 +325,6 @@ public class CharactersTest extends TestCase {
 
     }
 
-
     @Test
     void Character9Test(){
         playerNames.add("a");
@@ -389,6 +410,75 @@ public class CharactersTest extends TestCase {
     }
 
     @Test
+    void Character10Test(){
+        playerNames.add("a");
+        playerNames.add("b");
+        Game gametest = Game.getInstanceOfGame();
+        gametest.init(playerNames,true,assistantDeck,characterDeck);
+        GameBoard testGameBoard = gametest.getGameBoard();
+        testGameBoard.setCurrentPlayer(testPlayer);
+        testPlayer.addCoins(5);
+
+        Character10 character10test = new Character10();
+        character10test.initialFill(gametest);
+        testGameBoard.setCurrentCharacter(character10test);
+
+        character10test.buy();
+
+        ArrayList<Color> studentsTest = new ArrayList<>();
+        studentsTest = character10test.getStudents();
+
+        gametest.activateCharacter(studentsTest.get(0));
+
+        assertEquals(testPlayer.getNumOfStudentsInDining(studentsTest.get(0)),1);
+        assertEquals(character10test.getStudents().size(), 4);
+
+
+    }
+
+    @Test
+    void Character11Test(){
+        playerNames.add("a");
+        playerNames.add("b");
+        Game gametest = Game.getInstanceOfGame();
+        gametest.init(playerNames,true,assistantDeck,characterDeck);
+        GameBoard testGameBoard = gametest.getGameBoard();
+        testGameBoard.setCurrentPlayer(testPlayer);
+        testPlayer.addCoins(5);
+
+        Character11 character11test = new Character11();
+        character11test.initialFill(gametest);
+        testGameBoard.setCurrentCharacter(character11test);
+
+        character11test.buy();
+
+        ArrayList<Player> players = new ArrayList<>();
+        players = gametest.getPlayers();
+
+        players.get(0).addStudentToDining(GREEN);
+        players.get(0).addStudentToDining(GREEN);
+        players.get(0).addStudentToDining(GREEN);
+
+        players.get(1).addStudentToDining(GREEN);
+        players.get(1).addStudentToDining(GREEN);
+        players.get(1).addStudentToDining(GREEN);
+        players.get(1).addStudentToDining(GREEN);
+
+
+        gametest.activateCharacter(GREEN);
+
+        assertEquals(players.get(0).getNumOfStudentsInDining(GREEN), 0);
+        assertEquals(players.get(1).getNumOfStudentsInDining(GREEN), 1);
+
+        gametest.activateCharacter(GREEN);
+        assertEquals(players.get(1).getNumOfStudentsInDining(GREEN),0);
+
+
+
+
+    }
+
+    @Test
     void Character12Test() {
         playerNames.add("a");
         playerNames.add("b");
@@ -414,34 +504,4 @@ public class CharactersTest extends TestCase {
 
         assertEquals(gametest.calculateInfluence(2), 3);
     }
-
-
-    /*
-    @Test
-    void Character10Test(){
-        playerNames.add("a");
-        playerNames.add("b");
-        Game gametest = Game.getInstanceOfGame();
-        gametest.init(playerNames,true,assistantDeck,characterDeck);
-        GameBoard testGameBoard = gametest.getGameBoard();
-        testGameBoard.setCurrentPlayer(testPlayer);
-        testPlayer.addCoins(5);
-
-        Character10 character10test = new Character10();
-        character10test.initialFill(gametest);
-        testGameBoard.setCurrentCharacter(character10test);
-
-        character10test.buy();
-
-        ArrayList<Color> testStudents;
-        testStudents = character10test.getStudents();
-        Color firstStudent = testStudents.get(0);
-        gametest.activateCharacter(firstStudent);
-
-        assertEquals(testPlayer.getNumOfStudentsInDining(firstStudent), 1);
-
-
-    }
-
-     */
 }
