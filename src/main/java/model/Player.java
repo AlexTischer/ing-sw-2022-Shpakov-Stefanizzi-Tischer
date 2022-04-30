@@ -114,8 +114,9 @@ public class Player implements Comparable{
         this.coins += coins;
     }
 
-    public List<Assistant> getAssistants(){
-        return Arrays.stream(assistants).toList();
+    /*returns list of not null assistants` ranks*/
+    public List<Integer> getAssistantsRanks(){
+        return Arrays.stream(assistants).filter(a -> a!=null).map(a -> a.getRank()).toList();
     }
 
     /*TEST METHODS*/

@@ -1,13 +1,9 @@
 package controller;
 
-import controller.CharacterDeck;
-import controller.Game;
 import exceptions.NoEntryException;
 import junit.framework.TestCase;
 import model.*;
-import model.Character;
 import org.junit.jupiter.api.Test;
-import org.junit.runners.model.TestClass;
 
 import java.util.ArrayList;
 
@@ -22,7 +18,7 @@ public class GameTest extends TestCase {
         playersNames.add("Pippo");
         playersNames.add("Pluto");
 
-        game.init(playersNames, true, assistantDeck, characterDeck);
+        game.init(playersNames, true, characterDeck);
 
         ArrayList<Player> playersNamesTest = new ArrayList<>();
         playersNamesTest = game.getPlayers();
@@ -39,7 +35,7 @@ public class GameTest extends TestCase {
         playersNames.add("Pluto");
         playersNames.add("Paperino");
 
-        game.init(playersNames, true, assistantDeck, characterDeck);
+        game.init(playersNames, true, characterDeck);
 
         ArrayList<Player> playersNamesTest = new ArrayList<>();
         playersNamesTest = game.getPlayers();
@@ -57,7 +53,7 @@ public class GameTest extends TestCase {
         playersNames.add("Paperino");
         playersNames.add("Topolino");
 
-        game.init(playersNames, true, assistantDeck, characterDeck);
+        game.init(playersNames, true, characterDeck);
 
         ArrayList<Player> playersNamesTest = new ArrayList<>();
         playersNamesTest = game.getPlayers();
@@ -76,7 +72,7 @@ public class GameTest extends TestCase {
         playersNames.add("Topolino");
         playersNames.add("Minnie");
         try{
-            game.init(playersNames, true, assistantDeck, characterDeck);
+            game.init(playersNames, true, characterDeck);
         }
         catch (Exception e){
             assertTrue(true);
@@ -87,7 +83,7 @@ public class GameTest extends TestCase {
         Player testplayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE,8);
         playersNames.add("a");
         playersNames.add("b");
-        game.init(playersNames,true,assistantDeck,characterDeck);
+        game.init(playersNames,true, characterDeck);
         GameBoard testGameBoard = game.getGameBoard();
         testGameBoard.setCurrentPlayer(testplayer);
         testplayer.addStudentToEntrance(Color.GREEN);
@@ -108,7 +104,7 @@ public class GameTest extends TestCase {
     void moveStudentToDiningTest(){
         playersNames.add("a");
         playersNames.add("b");
-        game.init(playersNames,true, assistantDeck, characterDeck);
+        game.init(playersNames,true, characterDeck);
         Player testplayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE,8);
         GameBoard testGameBoard = game.getGameBoard();
         testGameBoard.setCurrentPlayer(testplayer);
@@ -124,7 +120,7 @@ public class GameTest extends TestCase {
     void addStudentToEntranceTest(){
         playersNames.add("a");
         playersNames.add("b");
-        game.init(playersNames,true, assistantDeck, characterDeck);
+        game.init(playersNames,true, characterDeck);
         Player testplayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE,8);
         GameBoard testGameBoard = game.getGameBoard();
         testGameBoard.setCurrentPlayer(testplayer);
@@ -143,7 +139,7 @@ public class GameTest extends TestCase {
     void removeStudentFromDiningTest(){
         playersNames.add("a");
         playersNames.add("b");
-        game.init(playersNames,true, assistantDeck, characterDeck);
+        game.init(playersNames,true, characterDeck);
         Player testplayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE,8);
         GameBoard testGameBoard = game.getGameBoard();
         testGameBoard.setCurrentPlayer(testplayer);
@@ -161,7 +157,7 @@ public class GameTest extends TestCase {
     void setNoEntryTest(){
         playersNames.add("a");
         playersNames.add("b");
-        game.init(playersNames,true, assistantDeck, characterDeck);
+        game.init(playersNames,true, characterDeck);
         GameBoard testGameBoard = game.getGameBoard();
 
         assertEquals(testGameBoard.getNoEntryOnIsland(0 ), false);
@@ -175,7 +171,7 @@ public class GameTest extends TestCase {
     void noEntryExceptionTest(){
         playersNames.add("a");
         playersNames.add("b");
-        game.init(playersNames,true, assistantDeck, characterDeck);
+        game.init(playersNames,true, characterDeck);
         GameBoard testGameBoard = game.getGameBoard();
 
 
@@ -205,7 +201,7 @@ public class GameTest extends TestCase {
     void moveMotherNatureTest(){
         playersNames.add("a");
         playersNames.add("b");
-        game.init(playersNames,true, assistantDeck, characterDeck);
+        game.init(playersNames,true, characterDeck);
         Player testplayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE,8);
         GameBoard testGameBoard = game.getGameBoard();
         testGameBoard.setCurrentPlayer(testplayer);

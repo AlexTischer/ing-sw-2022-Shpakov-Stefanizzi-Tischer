@@ -6,7 +6,6 @@ import exceptions.NoEnoughCoinsException;
 import exceptions.NoEnoughEntryTilesException;
 import exceptions.NoEntryException;
 import junit.framework.TestCase;
-import model.*;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 
@@ -24,7 +23,7 @@ public class CharactersTest extends TestCase {
         playerNames.add("a");
         playerNames.add("b");
         Game gametest = Game.getInstanceOfGame();
-        gametest.init(playerNames,true,assistantDeck,characterDeck);
+        gametest.init(playerNames,true, characterDeck);
         GameBoard testGameBoard = gametest.getGameBoard();
         testGameBoard.setCurrentPlayer(testPlayer);
         testPlayer.addCoins(5);
@@ -49,7 +48,7 @@ public class CharactersTest extends TestCase {
         playerNames.add("a");
         playerNames.add("b");
         Game gametest = Game.getInstanceOfGame();
-        gametest.init(playerNames,true,assistantDeck,characterDeck);
+        gametest.init(playerNames,true, characterDeck);
         GameBoard testGameBoard = gametest.getGameBoard();
         testGameBoard.setCurrentPlayer(testPlayer);
         testPlayer.addCoins(5);
@@ -77,7 +76,7 @@ public class CharactersTest extends TestCase {
         playerNames.add("a");
         playerNames.add("b");
         Game gametest = Game.getInstanceOfGame();
-        gametest.init(playerNames,true,assistantDeck,characterDeck);
+        gametest.init(playerNames,true, characterDeck);
         GameBoard testGameBoard = gametest.getGameBoard();
         testGameBoard.setCurrentPlayer(testPlayer);
         testPlayer.addCoins(5);
@@ -113,7 +112,7 @@ public class CharactersTest extends TestCase {
         playerNames.add("a");
         playerNames.add("b");
         Game gametest = Game.getInstanceOfGame();
-        gametest.init(playerNames,true,assistantDeck,characterDeck);
+        gametest.init(playerNames,true, characterDeck);
         GameBoard testGameBoard = gametest.getGameBoard();
         testGameBoard.setCurrentPlayer(testPlayer);
         testPlayer.addCoins(5);
@@ -150,7 +149,7 @@ public class CharactersTest extends TestCase {
         playerNames.add("a");
         playerNames.add("b");
         Game gametest = Game.getInstanceOfGame();
-        gametest.init(playerNames,true,assistantDeck,characterDeck);
+        gametest.init(playerNames,true, characterDeck);
         GameBoard testGameBoard = gametest.getGameBoard();
         testGameBoard.setCurrentPlayer(testPlayer);
         testPlayer.addCoins(1);
@@ -192,7 +191,7 @@ public class CharactersTest extends TestCase {
         playerNames.add("a");
         playerNames.add("b");
         Game gametest = Game.getInstanceOfGame();
-        gametest.init(playerNames,true,assistantDeck,characterDeck);
+        gametest.init(playerNames,true, characterDeck);
         GameBoard testGameBoard = gametest.getGameBoard();
 
         Character6 character6test = new Character6();
@@ -218,7 +217,7 @@ public class CharactersTest extends TestCase {
         playerNames.add("a");
         playerNames.add("b");
         Game gametest = Game.getInstanceOfGame();
-        gametest.init(playerNames,true,assistantDeck,characterDeck);
+        gametest.init(playerNames,true, characterDeck);
         GameBoard testGameBoard = gametest.getGameBoard();
         testGameBoard.setCurrentPlayer(testPlayer);
         testPlayer.addCoins(5);
@@ -302,7 +301,7 @@ public class CharactersTest extends TestCase {
         playerNames.add("a");
         playerNames.add("b");
         Game gametest = Game.getInstanceOfGame();
-        gametest.init(playerNames,true,assistantDeck,characterDeck);
+        gametest.init(playerNames,true, characterDeck);
         GameBoard testGameBoard = gametest.getGameBoard();
         testGameBoard.setCurrentPlayer(testPlayer);
         testPlayer.addCoins(5);
@@ -330,7 +329,7 @@ public class CharactersTest extends TestCase {
         playerNames.add("a");
         playerNames.add("b");
         Game gametest = Game.getInstanceOfGame();
-        gametest.init(playerNames,true,assistantDeck,characterDeck);
+        gametest.init(playerNames,true, characterDeck);
         GameBoard testGameBoard = gametest.getGameBoard();
         testGameBoard.setCurrentPlayer(testPlayer);
         testPlayer.addCoins(5);
@@ -414,7 +413,7 @@ public class CharactersTest extends TestCase {
         playerNames.add("a");
         playerNames.add("b");
         Game gametest = Game.getInstanceOfGame();
-        gametest.init(playerNames,true,assistantDeck,characterDeck);
+        gametest.init(playerNames,true, characterDeck);
         GameBoard testGameBoard = gametest.getGameBoard();
         testGameBoard.setCurrentPlayer(testPlayer);
         testPlayer.addCoins(5);
@@ -441,7 +440,7 @@ public class CharactersTest extends TestCase {
         playerNames.add("a");
         playerNames.add("b");
         Game gametest = Game.getInstanceOfGame();
-        gametest.init(playerNames,true,assistantDeck,characterDeck);
+        gametest.init(playerNames,true, characterDeck);
         GameBoard testGameBoard = gametest.getGameBoard();
         testGameBoard.setCurrentPlayer(testPlayer);
         testPlayer.addCoins(5);
@@ -483,7 +482,7 @@ public class CharactersTest extends TestCase {
         playerNames.add("a");
         playerNames.add("b");
         Game gametest = Game.getInstanceOfGame();
-        gametest.init(playerNames, true, assistantDeck, characterDeck);
+        gametest.init(playerNames, true, characterDeck);
         GameBoard testGameBoard = gametest.getGameBoard();
         testGameBoard.setCurrentPlayer(testPlayer);
         testPlayer.addCoins(5);

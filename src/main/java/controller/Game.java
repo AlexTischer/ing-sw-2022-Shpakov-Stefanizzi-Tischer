@@ -17,6 +17,9 @@ public class Game implements GameForClient{
     private ArrayList<Player> players;
     private boolean advancedSettings;
     private Game(){}
+    private int studentMove = 0;
+    private boolean motherNatureMove = false;
+    private boolean useCloudMove = false;
 
     public static Game getInstanceOfGame() {
         if(instanceOfGame==null){
@@ -25,7 +28,7 @@ public class Game implements GameForClient{
         return instanceOfGame;
     }
 
-    public void init(ArrayList<String> playersNames, boolean advancedSettings, AssistantDeck assistantDeck, CharacterDeck characterDeck){
+    public void init(ArrayList<String> playersNames, boolean advancedSettings, CharacterDeck characterDeck){
         players = new ArrayList<Player>();
         switch (playersNames.size()){
             case 2:
@@ -83,12 +86,20 @@ public class Game implements GameForClient{
     }
 
     public void moveStudentToIsland(Color studentColor, int islandNumber){
+        if (studentMove > 2)
+            throw new RuntimeException();
+
         gameBoard.moveStudentToIsland(gameBoard.getCurrentPlayer(), studentColor, islandNumber);
+        studentMove++;
     }
 
     public void moveStudentToDining(Color studentColor){
+        if (studentMove > 2)
+            throw new RuntimeException();
+
         removeStudentFromEntrance(studentColor);
         addStudentToDining(gameBoard.getCurrentPlayer(), studentColor);
+        studentMove++;
     }
 
     public void addStudentToEntrance(Player player){
@@ -120,12 +131,14 @@ public class Game implements GameForClient{
         return gameBoard.getStudentFromBag();
     }
 
+    /*calculates influence score of the current player*/
     public int calculateInfluence(int islandNumber){
         int influence = -1;
         try {
             influence = gameBoard.calculateInfluence(islandNumber);
         }
         catch (NoEntryException e){
+            /*returns noEntry to the character card*/
             gameBoard.addNoEntryTile();
         }
         return influence;
@@ -145,7 +158,11 @@ public class Game implements GameForClient{
     }
 
     public void moveMotherNature(int steps){
+        if (studentMove != 3)
+            throw new RuntimeException();
+
         gameBoard.moveMotherNature(steps);
+        motherNatureMove = true;
     }
 
     public void buyCharacter(int characterNumber){
@@ -169,10 +186,14 @@ public class Game implements GameForClient{
     }
 
     public void useCloud(int cloudNumber){
+        if (studentMove != 3 || !motherNatureMove)
+            throw new RuntimeException();
+
         gameBoard.useCloud(cloudNumber);
+        useCloudMove = true;
     }
 
-    public void useAssistant(int assistantRank, Player player){
+    public synchronized void useAssistant(int assistantRank, Player player){
         if(checkAssistant(assistantRank, player)){
             player.setPlayedAssistantRank(assistantRank);
             notifyAll();
@@ -185,7 +206,7 @@ public class Game implements GameForClient{
         }
     }
 
-    private void newRound() throws InterruptedException {
+    private synchronized void newRound() throws InterruptedException {
         gameBoard.refillClouds();
         for (Player p : players){
             while(p.getPlayedAssistant()==null){
@@ -207,15 +228,33 @@ public class Game implements GameForClient{
         }
     }
 
+    private void newTurn(Player p) throws InterruptedException {
+        /*virtual view controls current player before forwarding any method to controller*/
+        gameBoard.setCurrentPlayer(p);
+
+        while (!useCloudMove);
+
+        studentMove = 0;
+        motherNatureMove = false;
+        useCloudMove = false;
+
+    }
+
+    /*check whether a player can play an assistant with a certain rank*/
     private boolean checkAssistant(int assistantRank, Player player){
         Set<Integer> playedAssistantsRanks = players.stream().filter(p -> p!=player && p.getPlayedAssistant()!=null).
                 map(p -> p.getPlayedAssistant().getRank()).collect(Collectors.toSet());
 
+        /*if a player wants to play rank not contained, then return false*/
+        if (!player.getAssistantsRanks().contains(assistantRank))
+            return false;
+
         /*if a player decides to play an assistant with rank already played by smbd else,
         it is allowable only when player has no other option*/
         if (playedAssistantsRanks.contains(assistantRank)){
-            for (Assistant a: player.getAssistants()) {
-                if (!playedAssistantsRanks.contains(a.getRank()))
+            for (int rank: player.getAssistantsRanks()) {
+                /*if player has an assistant with rank not yet played*/
+                if (!playedAssistantsRanks.contains(rank))
                     return false;
             }
         }
@@ -227,10 +266,7 @@ public class Game implements GameForClient{
         return false;
     }
 
-    private void newTurn(Player p) throws InterruptedException {
-        gameBoard.setCurrentPlayer(p);
-        wait();/*wait for the finish of the action phase that will notify me*/
-    }
+
 
     /*TEST METHODS*/
 
