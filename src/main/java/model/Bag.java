@@ -29,4 +29,13 @@ public class Bag {
             throw new NoEnoughStudentsException();
         }
     }
+
+    public void addStudent(Color studentColor){
+        students.add(studentColor);
+        Collections.shuffle(students);
+    }
+
+    public boolean checkEmpty(){
+        return students.isEmpty();
+    }
 }

@@ -119,6 +119,10 @@ public class Player implements Comparable{
         return Arrays.stream(assistants).filter(a -> a!=null).map(a -> a.getRank()).toList();
     }
 
+    public boolean checkEmptyTowers(){
+        return schoolBoard.checkEmptyTowers();
+    }
+
     /*TEST METHODS*/
     public int getNumOfStudentsInEntrance(){
         return schoolBoard.getNumOfStudentsInEntrance();

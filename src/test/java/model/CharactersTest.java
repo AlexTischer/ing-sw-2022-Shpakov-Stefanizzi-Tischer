@@ -372,15 +372,10 @@ public class CharactersTest extends TestCase {
         testGameBoard.setCurrentPlayer(testPlayer);
         testPlayer.addCoins(5);
 
-        Character7 character7test = new Character7();
-        character7test.initialFill(gametest);
-        testGameBoard.setCurrentCharacter(character7test);
-        character7test.buy();
-
-        /* adding some students to dining room */
-        gametest.addStudentToDining(testPlayer,BLUE);
-        gametest.addStudentToDining(testPlayer,BLUE);
-        gametest.addStudentToDining(testPlayer,PINK);
+        Character9 character9test = new Character9();
+        character9test.initialFill(gametest);
+        testGameBoard.setCurrentCharacter(character9test);
+        character9test.buy();
 
         /* adding students to entrance */
         gametest.addStudentToEntrance(testPlayer,GREEN);
@@ -393,25 +388,25 @@ public class CharactersTest extends TestCase {
         toBeSwappedTest.add(GREEN);
         toBeSwappedTest.add(RED);
 
-        /* students in dining */
-        ArrayList<Color> selectedTest = new ArrayList<>();
-        selectedTest.add(BLUE);
-        selectedTest.add(PINK);
+        /* students on Character Card */
+        Color[] studentsTest = character9test.getStudents();
+        ArrayList<Color> selectedTest = new ArrayList<Color>();
+        selectedTest.add(studentsTest[0]);
+        selectedTest.add(studentsTest[1]);
 
         gametest.activateCharacter(toBeSwappedTest,selectedTest);
 
         /* checking new entrance */
         assertEquals(testPlayer.getStudentsInEntrance().contains(RED), true);
         assertEquals(testPlayer.getStudentsInEntrance().contains(PINK), true);
-        assertEquals(testPlayer.getStudentsInEntrance().contains(BLUE), true);
+        assertEquals(testPlayer.getStudentsInEntrance().contains(studentsTest[0]), true);
+        assertEquals(testPlayer.getStudentsInEntrance().contains(studentsTest[1]), true);
         assertEquals(testPlayer.getNumOfStudentsInEntrance(), 4);
 
-        /*checking new diningroom */
-        assertEquals(testPlayer.getNumOfStudentsInDining(BLUE), 1);
-        assertEquals(testPlayer.getNumOfStudentsInDining(PINK), 0);
-        assertEquals(testPlayer.getNumOfStudentsInDining(GREEN), 1);
-        assertEquals(testPlayer.getNumOfStudentsInDining(RED), 1);
-        assertEquals(testPlayer.getNumOfStudentsInDining(YELLOW), 0);
+        Color[] studentTest2 = character9test.getStudents();
+        assertEquals(studentTest2[5]==selectedTest.get(0), true);
+        assertEquals(studentTest2[6]==selectedTest.get(1), true);
+
 
         /* TESTING EXCEPTIONS */
 

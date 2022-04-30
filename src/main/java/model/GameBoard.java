@@ -282,7 +282,12 @@ public class GameBoard {
         }
     }
 
+    public boolean checkBagEmpty(){
+        return instanceOfBag.checkEmpty();
+    }
+
     /*TEST METHODS*/
+
     public int getNumOfClouds() { return clouds.size(); }
 
     public int getNumOfStudentsOnCloud(int numOfCloud){
@@ -316,10 +321,10 @@ public class GameBoard {
 
         return islands.get(numOfIsland).getNoEntry();
     }
-
     /*method that adds a tower or changes it`s color
     * note:not only one current player can conquer an island that MN stops on
     * but other players as well*/
+
     public void conquerIsland(int numOfIsland, TowerColor towerColor){
         if (numOfIsland < 0 || numOfIsland > islands.size()-1)
             throw new IllegalArgumentException();

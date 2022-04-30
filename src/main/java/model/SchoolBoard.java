@@ -92,8 +92,14 @@ public class SchoolBoard {
 
     //Giacomo: NoEnoughTowersException needed?
     public void moveTowerToIsland(Island island){
-        numOfTowers--;
-        island.addTower(towersColor);
+        if(numOfTowers>0) {
+            numOfTowers--;
+            island.addTower(towersColor);
+        } else throw new NoEnoughTowersException();
+    }
+
+    public boolean checkEmptyTowers(){
+        return numOfTowers==0;
     }
 
     public void addProfessor(Color color){

@@ -70,5 +70,9 @@ public class Character9 extends Character{
         cost = 2;
     }
 
+    public Color[] getStudents(){
+        return students;
+    }
+
 
 }

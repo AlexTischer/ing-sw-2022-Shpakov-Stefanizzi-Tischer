@@ -65,8 +65,10 @@ public class Game implements GameForClient{
         gameBoard.getCurrentCharacter().initialFill(this);
 
         /*refill assistants of player*/
-        for(Player player: players)
-            gameBoard.refillAssistants(player);
+        for(Player p: players){
+            gameBoard.refillAssistants(p);
+            gameBoard.refillEntrance(p);
+        }
 
         studentMove = 0;
         motherNatureMove = false;
@@ -104,14 +106,6 @@ public class Game implements GameForClient{
         removeStudentFromEntrance(studentColor);
         addStudentToDining(gameBoard.getCurrentPlayer(), studentColor);
         studentMove++;
-    }
-
-    public void addStudentToEntrance(Player player){
-        gameBoard.addStudentToEntrance(player, getStudent());
-    }
-
-    public void addStudentToEntrance(Player player, Color studentColor){
-        gameBoard.addStudentToEntrance(player, studentColor);
     }
 
     public void addStudentToDining(Player player, Color studentColor){
@@ -267,7 +261,22 @@ public class Game implements GameForClient{
     }
 
     private boolean checkEndGame(){
-        return false;
+        for(Player p : players){
+            if(p.getAssistantsRanks().isEmpty()){
+                return true;
+            }
+        }
+        for (Player p : players){
+            if(p.checkEmptyTowers()){
+                if(players.size()>3){
+                    for (Player q : players){
+                        if (!p.equals(q) && p.getTowerColor()==q.getTowerColor() && q.checkEmptyTowers())
+                            return true;
+                    }
+                } else return true;
+            }
+        }
+        return gameBoard.checkBagEmpty() || gameBoard.getNumOfIslands()<=3;
     }
 
 
@@ -277,4 +286,13 @@ public class Game implements GameForClient{
     public GameBoard getGameBoard() {
         return gameBoard;
     }
+
+    public void addStudentToEntrance(Player player){
+        gameBoard.addStudentToEntrance(player, getStudent());
+    }
+
+    public void addStudentToEntrance(Player player, Color studentColor){
+        gameBoard.addStudentToEntrance(player, studentColor);
+    }
+
 }
