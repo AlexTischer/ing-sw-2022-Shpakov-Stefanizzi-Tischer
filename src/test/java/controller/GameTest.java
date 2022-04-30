@@ -18,6 +18,7 @@ public class GameTest extends TestCase {
         playersNames.clear();
     }
 
+
     @Test
     void twoPlayersInitTest(){
 
