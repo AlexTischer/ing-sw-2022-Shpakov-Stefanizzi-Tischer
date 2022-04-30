@@ -3,18 +3,24 @@ package controller;
 import exceptions.NoEntryException;
 import junit.framework.TestCase;
 import model.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
 public class GameTest extends TestCase {
     Game game = Game.getInstanceOfGame();
-    AssistantDeck assistantDeck = new AssistantDeck();
     CharacterDeck characterDeck = new CharacterDeck();
     ArrayList<String> playersNames = new ArrayList<String>();
 
+    @BeforeEach
+    void reset() {
+        playersNames.clear();
+    }
+
     @Test
     void twoPlayersInitTest(){
+
         playersNames.add("Pippo");
         playersNames.add("Pluto");
 
@@ -204,17 +210,49 @@ public class GameTest extends TestCase {
         game.init(playersNames,true, characterDeck);
         Player testplayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE,8);
         GameBoard testGameBoard = game.getGameBoard();
+
         testGameBoard.setCurrentPlayer(testplayer);
-
-
-
 
         testGameBoard.refillAssistants(testplayer);
         //character with rank 8 has 4 steps
         testplayer.setPlayedAssistantRank(8);
         testGameBoard.placeMotherNature(2);
+
+        testGameBoard.addStudentToEntrance(testplayer, Color.GREEN);
+        testGameBoard.addStudentToEntrance(testplayer, Color.GREEN);
+        testGameBoard.addStudentToEntrance(testplayer, Color.GREEN);
+
+        game.moveStudentToDining(Color.GREEN);
+        game.moveStudentToDining(Color.GREEN);
+        game.moveStudentToDining(Color.GREEN);
+
         game.moveMotherNature(3);
         assertEquals(testGameBoard.getPositionOfMotherNature(),5);
+
+    }
+
+    @Test
+    void moveMotherNatureTestNegative(){
+        playersNames.add("a");
+        playersNames.add("b");
+        game.init(playersNames,true, characterDeck);
+        Player testplayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE,8);
+        GameBoard testGameBoard = game.getGameBoard();
+
+        testGameBoard.setCurrentPlayer(testplayer);
+
+        testGameBoard.refillAssistants(testplayer);
+        //character with rank 8 has 4 steps
+        testplayer.setPlayedAssistantRank(8);
+        testGameBoard.placeMotherNature(2);
+
+        testGameBoard.addStudentToEntrance(testplayer, Color.GREEN);
+        testGameBoard.addStudentToEntrance(testplayer, Color.GREEN);
+        testGameBoard.addStudentToEntrance(testplayer, Color.GREEN);
+
+        game.moveStudentToDining(Color.GREEN);
+        game.moveStudentToDining(Color.GREEN);
+        game.moveStudentToDining(Color.GREEN);
 
         testplayer.setPlayedAssistantRank(6);
         testGameBoard.placeMotherNature(1);

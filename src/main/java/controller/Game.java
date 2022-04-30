@@ -17,9 +17,9 @@ public class Game implements GameForClient{
     private ArrayList<Player> players;
     private boolean advancedSettings;
     private Game(){}
-    private int studentMove = 0;
-    private boolean motherNatureMove = false;
-    private boolean useCloudMove = false;
+    private int studentMove;
+    private boolean motherNatureMove;
+    private boolean useCloudMove;
 
     public static Game getInstanceOfGame() {
         if(instanceOfGame==null){
@@ -68,6 +68,10 @@ public class Game implements GameForClient{
         for(Player player: players)
             gameBoard.refillAssistants(player);
 
+        studentMove = 0;
+        motherNatureMove = false;
+        useCloudMove = false;
+
         new Thread(() -> {
             try {
                 playGame();
@@ -86,7 +90,7 @@ public class Game implements GameForClient{
     }
 
     public void moveStudentToIsland(Color studentColor, int islandNumber){
-        if (studentMove > 2)
+        if (studentMove > (players.size() == 3? 4: 3))
             throw new RuntimeException();
 
         gameBoard.moveStudentToIsland(gameBoard.getCurrentPlayer(), studentColor, islandNumber);
@@ -94,7 +98,7 @@ public class Game implements GameForClient{
     }
 
     public void moveStudentToDining(Color studentColor){
-        if (studentMove > 2)
+        if (studentMove > (players.size() == 3? 4: 3))
             throw new RuntimeException();
 
         removeStudentFromEntrance(studentColor);
@@ -158,7 +162,7 @@ public class Game implements GameForClient{
     }
 
     public void moveMotherNature(int steps){
-        if (studentMove != 3)
+        if (studentMove != (players.size() == 3? 4: 3) || motherNatureMove)
             throw new RuntimeException();
 
         gameBoard.moveMotherNature(steps);
@@ -186,7 +190,7 @@ public class Game implements GameForClient{
     }
 
     public void useCloud(int cloudNumber){
-        if (studentMove != 3 || !motherNatureMove)
+        if (studentMove != (players.size() == 3? 4: 3) || !motherNatureMove)
             throw new RuntimeException();
 
         gameBoard.useCloud(cloudNumber);
@@ -232,7 +236,7 @@ public class Game implements GameForClient{
         /*virtual view controls current player before forwarding any method to controller*/
         gameBoard.setCurrentPlayer(p);
 
-        while (!useCloudMove);
+        while (studentMove != (players.size() == 3? 4: 3) || !motherNatureMove || !useCloudMove);
 
         studentMove = 0;
         motherNatureMove = false;

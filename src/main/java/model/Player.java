@@ -37,8 +37,8 @@ public class Player implements Comparable{
     public int compareTo(Object comparePlayer) {
         if (comparePlayer instanceof Player) {
             int compareRank = ((Player) comparePlayer).playedAssistant.getRank();
-            /* For Descending order*/
-            return compareRank - this.playedAssistant.getRank();
+            /* For ascending order*/
+            return this.playedAssistant.getRank() - compareRank;
         }
         else throw new IllegalArgumentException();
     }
