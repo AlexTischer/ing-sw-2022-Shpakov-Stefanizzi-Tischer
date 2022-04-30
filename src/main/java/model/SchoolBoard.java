@@ -38,7 +38,7 @@ public class SchoolBoard {
         if(entrance.contains(studentColor)) {
             entrance.remove(studentColor);
         }
-        else throw new NoEnoughStudentsException();
+        else throw new StudentNotFoundException();
     }
 
 
@@ -54,7 +54,7 @@ public class SchoolBoard {
         if(diningRoom.get(studentColor)>0){
             diningRoom.put(studentColor, diningRoom.get(studentColor) - 1);
         }
-        else throw new NoEnoughStudentsException();
+        else throw new StudentNotFoundException();
     }
 
     public void addStudentToDining(Color studentColor) throws NumOfStudentsExceeded {

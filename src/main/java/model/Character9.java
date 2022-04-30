@@ -28,9 +28,13 @@ public class Character9 extends Character{
         if(selectedStudents.size() > 3)
             throw new IllegalArgumentException("You can select at most 3 students");
 
-        for (Color studentColor: selectedStudents)
-            if (!Arrays.asList(students).contains(studentColor))
-                throw new IllegalArgumentException("No such student color on the card");
+        List<Color> testStudents = Arrays.asList(students);
+        for (Color studentColor: selectedStudents) {
+            if (testStudents.contains(studentColor))
+                testStudents.remove(studentColor);
+            else
+                throw new IllegalArgumentException("No such students on the card");
+        }
 
         this.selectedStudents = selectedStudents;
     }
@@ -38,6 +42,14 @@ public class Character9 extends Character{
     public void setToBeSwappedStudents(ArrayList<Color> toBeSwappedStudents){
         if (toBeSwappedStudents.size() > 3)
             throw new IllegalArgumentException("You can select at most 3 students");
+
+        List<Color> testStudents = game.getCurrentPlayer().getStudentsInEntrance();
+        for (Color studentColor: toBeSwappedStudents) {
+            if (testStudents.contains(studentColor))
+                testStudents.remove(studentColor);
+            else
+                throw new IllegalArgumentException("No such students in player entrance");
+        }
 
         this.toBeSwappedStudents = toBeSwappedStudents;
     }

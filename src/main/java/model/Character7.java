@@ -2,8 +2,7 @@ package model;
 
 import exceptions.NoEnoughCoinsException;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**Swaps selectedStudents from Dining with toBeSwappedStudents from Entrance in currentPlayer`s schoolBoard **/
 public class Character7 extends Character {
@@ -16,12 +15,31 @@ public class Character7 extends Character {
         if(selectedStudents.size() > 2)
             throw new IllegalArgumentException("You can select at most 2 students");
 
+        Map<Color, Integer > testStudents = new HashMap<Color, Integer>();
+        for (Color c: Color.values())
+            testStudents.put(c, game.getCurrentPlayer().getNumOfStudentsInDining(c));
+
+        for (Color studentColor: selectedStudents) {
+            if (testStudents.get(studentColor) > 0)
+                testStudents.put(studentColor, testStudents.get(studentColor)-1);
+            else
+                throw new IllegalArgumentException("No such students on the card");
+        }
+
         this.selectedStudents = selectedStudents;
     }
 
     public void setToBeSwappedStudents(ArrayList<Color> toBeSwappedStudents){
         if(toBeSwappedStudents.size() > 2)
             throw new IllegalArgumentException("You can select at most 2 students");
+
+        List<Color> testStudents = game.getCurrentPlayer().getStudentsInEntrance();
+        for (Color studentColor: toBeSwappedStudents) {
+            if (testStudents.contains(studentColor))
+                testStudents.remove(studentColor);
+            else
+                throw new IllegalArgumentException("No such students in player entrance");
+        }
 
         this.toBeSwappedStudents = toBeSwappedStudents;
     }
