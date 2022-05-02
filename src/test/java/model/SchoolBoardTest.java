@@ -2,6 +2,7 @@ package model;
 
 import exceptions.NoEnoughStudentsException;
 import exceptions.NumOfStudentsExceeded;
+import exceptions.StudentNotFoundException;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +23,7 @@ public class SchoolBoardTest extends TestCase {
             testschoolboard.removeStudentFromEntrance(Color.RED);
             assertTrue("false", false);
         }
-        catch(NoEnoughStudentsException e){
+        catch(StudentNotFoundException e){
         }
     }
 
@@ -33,7 +34,7 @@ public class SchoolBoardTest extends TestCase {
             testschoolboard.removeStudentFromDining(Color.getRandom());
             assertTrue("false", false);
         }
-        catch(NoEnoughStudentsException e){
+        catch(StudentNotFoundException e){
         }
     }
 
@@ -87,7 +88,7 @@ public class SchoolBoardTest extends TestCase {
         try {
             testschoolboard.moveStudentToIsland(Color.RED, testisland);
             assertTrue("false", false);
-        } catch (NoEnoughStudentsException e) {
+        } catch (StudentNotFoundException e) {
         }
     }
 

@@ -1,10 +1,7 @@
 package model;
 
 import controller.*;
-import exceptions.NoEnoughCoinsException;
-import exceptions.NoEnoughStudentsException;
-import exceptions.NumOfCoinsExceeded;
-import exceptions.NumOfStudentsExceeded;
+import exceptions.*;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 
@@ -464,7 +461,7 @@ public class GameBoardTest extends TestCase {
         testGameBoard.removeStudentFromEntrance(testPlayer, Color.YELLOW);
 
         for (Color c: Color.values())
-            assertThrows(NoEnoughStudentsException.class, ()->{testGameBoard.removeStudentFromEntrance(testPlayer, c);});
+            assertThrows(StudentNotFoundException.class, ()->{testGameBoard.removeStudentFromEntrance(testPlayer, c);});
 
     }
 
@@ -513,7 +510,7 @@ public class GameBoardTest extends TestCase {
         }
 
         /*test exception when there are no students left in dining*/
-        assertThrows(NoEnoughStudentsException.class ,()->{testGameBoard.removeStudentFromDining(testPlayer, Color.BLUE);});
+        assertThrows(StudentNotFoundException.class ,()->{testGameBoard.removeStudentFromDining(testPlayer, Color.BLUE);});
 
         for (int i = 0; i < 10; i++)
             testGameBoard.removeStudentFromDining(testPlayer, Color.GREEN);
@@ -522,7 +519,7 @@ public class GameBoardTest extends TestCase {
             assertEquals(0, testPlayer.getNumOfStudentsInDining(c));
 
         for (Color c: Color.values())
-            assertThrows(NoEnoughStudentsException.class ,()->{testGameBoard.removeStudentFromDining(testPlayer, c);});
+            assertThrows(StudentNotFoundException.class ,()->{testGameBoard.removeStudentFromDining(testPlayer, c);});
     }
 
 
@@ -560,19 +557,19 @@ public class GameBoardTest extends TestCase {
             testGameBoard.moveStudentToIsland(Color.GREEN, 12);
         } );
 
-        assertThrows(NoEnoughStudentsException.class, ()->{
+        assertThrows(StudentNotFoundException.class, ()->{
             testGameBoard.moveStudentToIsland(testPlayer, Color.GREEN, 0);
         } );
-        assertThrows(NoEnoughStudentsException.class, ()->{
+        assertThrows(StudentNotFoundException.class, ()->{
             testGameBoard.moveStudentToIsland(testPlayer, Color.RED, 0);
         } );
-        assertThrows(NoEnoughStudentsException.class, ()->{
+        assertThrows(StudentNotFoundException.class, ()->{
             testGameBoard.moveStudentToIsland(testPlayer, Color.BLUE, 0);
         } );
-        assertThrows(NoEnoughStudentsException.class, ()->{
+        assertThrows(StudentNotFoundException.class, ()->{
             testGameBoard.moveStudentToIsland(testPlayer, Color.PINK, 0);
         } );
-        assertThrows(NoEnoughStudentsException.class, ()->{
+        assertThrows(StudentNotFoundException.class, ()->{
             testGameBoard.moveStudentToIsland(testPlayer, Color.YELLOW, 0);
         } );
     }
