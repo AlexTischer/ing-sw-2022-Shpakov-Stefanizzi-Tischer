@@ -73,5 +73,4 @@ public class Island {
         return towersColor;
     }
 
-
 }

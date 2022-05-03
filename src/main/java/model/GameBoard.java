@@ -1,11 +1,13 @@
 package model;
 
 import exceptions.*;
+import modelChange.ModelChange;
+import utils.Observable;
 
 import java.util.*;
 import java.util.Random;
 
-public class GameBoard {
+public class GameBoard extends Observable<ModelChange> {
 
     private static GameBoard instanceOfGameBoard;
     private Bag instanceOfBag;
@@ -240,6 +242,10 @@ public class GameBoard {
         } catch (NoEnoughCoinsException e) {
             e.printStackTrace();
         }
+    }
+
+    public void removeCoins(Player player, int cost){
+        player.removeCoins(cost);
     }
 
     public void activateCharacter(int islandNumber) {

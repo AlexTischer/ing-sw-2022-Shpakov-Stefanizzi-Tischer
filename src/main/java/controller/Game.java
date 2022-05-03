@@ -1,5 +1,6 @@
 package controller;
 
+import packets.Packet;
 import exceptions.NoEntryException;
 import exceptions.RepeatedAssistantRankException;
 import model.*;
@@ -279,7 +280,10 @@ public class Game implements GameForClient{
         return gameBoard.checkBagEmpty() || gameBoard.getNumOfIslands()<=3;
     }
 
-
+    public void update(Packet packet){
+        packet.setGame(this);
+        packet.execute();
+    }
 
     /*TEST METHODS*/
 

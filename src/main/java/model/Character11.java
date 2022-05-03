@@ -26,12 +26,12 @@ public class Character11 extends Character{
             int numOfStudentsInDining = player.getNumOfStudentsInDining(selectedStudent);
 
             for (int i = 0; i < (Math.min(3, numOfStudentsInDining)); i++)
-                player.removeStudentFromDining(selectedStudent);
+                game.getGameBoard().removeStudentFromDining(player, selectedStudent);
         }
     }
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.getCurrentPlayer().removeCoins(cost);
+        game.getGameBoard().removeCoins(game.getCurrentPlayer(), cost);
         cost = 4;
     }
 

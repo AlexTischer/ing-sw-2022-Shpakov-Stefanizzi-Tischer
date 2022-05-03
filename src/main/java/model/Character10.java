@@ -32,14 +32,14 @@ public class Character10 extends Character{
 
     @Override
     public void execute() {
-        game.addStudentToDining(game.getCurrentPlayer(), selectedStudent);
+        game.getGameBoard().addStudentToDining(game.getCurrentPlayer(), selectedStudent);
         students.remove(selectedStudent);
         students.add(game.getStudent());
     }
 
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.getCurrentPlayer().removeCoins(cost);
+        game.getGameBoard().removeCoins(game.getCurrentPlayer(), cost);
         cost = 3;
     }
 

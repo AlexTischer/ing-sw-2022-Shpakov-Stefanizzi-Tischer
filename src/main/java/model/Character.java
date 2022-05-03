@@ -42,10 +42,10 @@ public class Character {
                     leader = player;
             }
             if (game.getCurrentPlayer().equals(leader)){
-                leader.addProfessor(color);
+                game.getGameBoard().addProfessor(leader, color);
                 for (Player player: game.getPlayers())
                     if (!player.equals(leader))
-                        player.removeProfessor(color);
+                        game.getGameBoard().removeProfessor(player, color);
             }
         }
     }

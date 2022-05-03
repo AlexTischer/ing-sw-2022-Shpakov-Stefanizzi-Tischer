@@ -40,7 +40,7 @@ public class Character1 extends Character{
 
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.getCurrentPlayer().removeCoins(cost);
+        game.getGameBoard().removeCoins(game.getCurrentPlayer(), cost);
         cost = 2;
     }
 

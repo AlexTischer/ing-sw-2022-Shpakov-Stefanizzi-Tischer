@@ -66,9 +66,9 @@ public class Character9 extends Character{
             tempStudents.remove(studentToEntrance);
 
             Color studentToCharacter = toBeSwappedStudents.get(i);
-            game.getCurrentPlayer().removeStudentFromEntrance(studentToCharacter);
+            game.getGameBoard().removeStudentFromEntrance(game.getCurrentPlayer(), studentToCharacter);
 
-            game.getCurrentPlayer().addStudentToEntrance(studentToEntrance);
+            game.getGameBoard().addStudentToEntrance(game.getCurrentPlayer(), studentToEntrance);
             tempStudents.add(studentToCharacter);
         }
 
@@ -78,7 +78,7 @@ public class Character9 extends Character{
 
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.getCurrentPlayer().removeCoins(cost);
+        game.getGameBoard().removeCoins(game.getCurrentPlayer(), cost);
         cost = 2;
     }
 

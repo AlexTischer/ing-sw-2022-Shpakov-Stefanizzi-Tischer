@@ -29,17 +29,17 @@ public class Character6 extends Character{
             }
 
             if (game.getCurrentPlayer().equals(leader)){
-                leader.addProfessor(color);
+                game.getGameBoard().addProfessor(leader, color);
 
                 for (Player player: game.getPlayers())
                     if (!player.equals(leader))
-                        player.removeProfessor(color);
+                        game.getGameBoard().removeProfessor(player,color);
             }
         }
     }
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.getCurrentPlayer().removeCoins(cost);
+        game.getGameBoard().removeCoins(game.getCurrentPlayer(), cost);
         cost = 3;
     }
 
