@@ -5,9 +5,10 @@ import exceptions.NoEnoughCoinsException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
-/**Swaps selectedStudents in students with toBeSwappedStudents in currentPlayer Entrance **/
+/**Swaps selectedStudents in students on card with toBeSwappedStudents in currentPlayer Entrance **/
 public class Character9 extends Character{
     private Color[] students;
     private List<Color> selectedStudents;
@@ -28,7 +29,7 @@ public class Character9 extends Character{
         if(selectedStudents.size() > 3)
             throw new IllegalArgumentException("You can select at most 3 students");
 
-        List<Color> testStudents = Arrays.asList(students);
+        List<Color> testStudents = new LinkedList<Color>(Arrays.asList(students));
         for (Color studentColor: selectedStudents) {
             if (testStudents.contains(studentColor))
                 testStudents.remove(studentColor);
@@ -72,7 +73,9 @@ public class Character9 extends Character{
             tempStudents.add(studentToCharacter);
         }
 
-        students = ( Color[] )tempStudents.toArray();
+        for(int i=0; i <tempStudents.size();i++){
+            students[i] = tempStudents.get(i);
+        }
 
     }
 

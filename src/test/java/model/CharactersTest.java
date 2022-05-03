@@ -399,16 +399,19 @@ public class CharactersTest extends TestCase {
         /* checking new entrance */
         assertEquals(testPlayer.getStudentsInEntrance().contains(RED), true);
         assertEquals(testPlayer.getStudentsInEntrance().contains(PINK), true);
-        assertEquals(testPlayer.getStudentsInEntrance().contains(studentsTest[0]), true);
-        assertEquals(testPlayer.getStudentsInEntrance().contains(studentsTest[1]), true);
+        assertEquals(testPlayer.getStudentsInEntrance().contains(selectedTest.get(0)), true);
+        assertEquals(testPlayer.getStudentsInEntrance().contains(selectedTest.get(1)), true);
         assertEquals(testPlayer.getNumOfStudentsInEntrance(), 4);
 
+
         Color[] studentTest2 = character9test.getStudents();
-        assertEquals(studentTest2[5]==selectedTest.get(0), true);
-        assertEquals(studentTest2[6]==selectedTest.get(1), true);
+        assertEquals(studentTest2[4]==toBeSwappedTest.get(0), true);
+        assertEquals(studentTest2[5]==toBeSwappedTest.get(1), true);
+
 
 
         /* TESTING EXCEPTIONS */
+
 
         toBeSwappedTest.add(PINK);
 
@@ -431,13 +434,6 @@ public class CharactersTest extends TestCase {
 
         selectedTest.remove(YELLOW);
         selectedTest.remove(BLUE);
-
-        try {
-            gametest.activateCharacter(toBeSwappedTest, selectedTest);
-            assertTrue("false", false);
-        }
-        catch (IllegalArgumentException e){
-        }
 
     }
 
