@@ -18,7 +18,7 @@ public class IslandChange extends ModelChange{
 
     @Override
     public void execute(ClientGameBoard gameBoard){
-        /*TODO gameBoard.getIsland(islandNumber).setSomeThing(this.someThing)*/
+        /*TODO clientGameBoard.getIsland(islandNumber).setSomeThing(this.someThing)*/
     }
 
     public IslandChange(Island island, int islandNumber){

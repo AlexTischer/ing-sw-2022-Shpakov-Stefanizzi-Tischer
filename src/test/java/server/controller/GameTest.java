@@ -98,13 +98,13 @@ public class GameTest extends TestCase {
         testplayer.addStudentToEntrance(Color.BLUE);
         testplayer.addProfessor(Color.GREEN);
 
-        assertEquals(game.calculateInfluence(0), 0);
+        assertEquals(game.calculateInfluence(0, testplayer), 0);
 
         game.moveStudentToIsland(Color.GREEN, 0);
         game.moveStudentToIsland(Color.GREEN, 0);
         game.moveStudentToIsland(Color.BLUE, 0);
 
-        assertEquals(game.calculateInfluence(0), 2);
+        assertEquals(game.calculateInfluence(0, testplayer), 2);
     }
 
     @Test
@@ -180,8 +180,7 @@ public class GameTest extends TestCase {
         playersNames.add("b");
         game.init(playersNames,true, characterDeck);
         GameBoard testGameBoard = game.getGameBoard();
-
-
+        Player testPlayer = new Player("c", TowerColor.BLACK, AssistantType.ONE, 8);
 
         game.setNoEntry(0,true);
 
@@ -192,14 +191,14 @@ public class GameTest extends TestCase {
 
         }
         try {
-            testGameBoard.calculateInfluence(0);
+            testGameBoard.calculateInfluence(0, testPlayer);
             assertTrue("false", false);
         }
         catch (NoEntryException e){
         }
 
         game.setNoEntry(0,true);
-        game.calculateInfluence(0);
+        game.calculateInfluence(0, testPlayer);
 
 
     }

@@ -20,7 +20,7 @@ public class Character12 extends Character {
 
     @Override
     public void execute(){
-        game.calculateInfluence(selectedIslandNumber);
+        game.reassignIsland(selectedIslandNumber);
     }
     
     @Override

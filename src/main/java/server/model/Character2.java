@@ -13,12 +13,14 @@ public class Character2 extends Character {
         super.initialFill(game);
     }
 
-    public int calculateInfluence(Island island, int islandNumber){
+
+    //TODO accept Player parameter
+    public int calculateInfluence(Island island, int islandNumber, Player player){
         int score = 2;
-        for (Color color: game.getCurrentPlayer().getProfessorsColor()){
+        for (Color color: player.getProfessorsColor()){
             score += island.getNumOfStudents(color);
         }
-        if (game.getCurrentPlayer().getTowerColor().equals(island.getTowersColor())){
+        if (player.getTowerColor().equals(island.getTowersColor())){
             score += island.getNumOfTowers();
         }
         return score;

@@ -15,6 +15,6 @@ public class UseAssistantPacket extends Packet{
             throw new ClassCastException("Invalid arguments");
         }
 
-        // TODO game.useAssistant(assistantRank, !!PLAYER!!);
+        game.useAssistant(assistantRank);
     }
 }

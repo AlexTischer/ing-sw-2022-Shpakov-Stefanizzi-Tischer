@@ -129,11 +129,46 @@ public class Game implements GameForClient{
         return gameBoard.getStudentFromBag();
     }
 
-    /*calculates influence score of the current player*/
-    public int calculateInfluence(int islandNumber){
-        int influence = -1;
+    public void reassignIsland(int islandNumber){ //TODO 4 Players game
+        Player master = players.get(0);
+        Player loser = players.get(0);
+        int masterInfluence = 0;
+        // Looking for player with highest influence
+        for (Player p : players){
+            if(calculateInfluence(islandNumber, p)>masterInfluence ||
+                    (calculateInfluence(islandNumber, p)==masterInfluence &&
+                            p.getTowerColor().equals(gameBoard.getTowersColorOnIsland(islandNumber))))
+            {master=p;}
+        }
+        for (Player p : players){
+            if(p!=master && masterInfluence==calculateInfluence(islandNumber, p)){
+                return;
+            }
+        }
+        if(master.getNumOfTowers()>=gameBoard.getNumOfMergedIslands(islandNumber)) {
+            // Looking for player to return towers to if there were towers on island
+            if (gameBoard.getNumOfTowersOnIsland(islandNumber) > 0) {
+                for (Player p : players) {
+                    if (p.getTowerColor() == gameBoard.getTowersColorOnIsland(islandNumber) && p.getNumOfTowers() > 0) {
+                        loser = p;
+                    }
+                }
+                if (master != loser) {
+                    gameBoard.addTowersToPlayer(gameBoard.getNumOfTowersOnIsland(islandNumber), loser);
+                }
+            }
+            if (master != loser) {
+                gameBoard.addTowersToIsland(islandNumber, master);
+                gameBoard.removeTowersFromPlayer(islandNumber, master);
+            }
+        }
+    }
+
+    /*calculates influence score on specified Island*/ //TODO review
+    public int calculateInfluence(int islandNumber, Player player){
+        int influence = -1; //return -1 when NoEntry Tile is on selected island
         try {
-            influence = gameBoard.calculateInfluence(islandNumber);
+            influence = gameBoard.calculateInfluence(islandNumber, player);
         }
         catch (NoEntryException e){
             /*returns noEntry to the character card*/
@@ -191,11 +226,12 @@ public class Game implements GameForClient{
         useCloudMove = true;
     }
 
-    public synchronized void useAssistant(int assistantRank, Player player){
-        if(checkAssistant(assistantRank, player)){
-            player.setPlayedAssistantRank(assistantRank);
+    public synchronized void useAssistant(int assistantRank){
+        if(checkAssistant(assistantRank, gameBoard.getCurrentPlayer())){
+            gameBoard.getCurrentPlayer().setPlayedAssistantRank(assistantRank);
             notifyAll();
         }else throw new RepeatedAssistantRankException();
+        gameBoard.setCurrentPlayer(players.get((players.indexOf(gameBoard.getCurrentPlayer())+1)%players.size()));
     }
 
     private void playGame() throws InterruptedException {
@@ -208,6 +244,8 @@ public class Game implements GameForClient{
     /*TODO need to control newRound(), i suppose there is a bug*/
     private synchronized void newRound() throws InterruptedException {
         gameBoard.refillClouds();
+        gameBoard.setCurrentPlayer(players.get(0));
+
         for (Player p : players){
             while(p.getPlayedAssistant()==null){
                 wait();

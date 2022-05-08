@@ -129,4 +129,15 @@ public class Player implements Comparable{
     public String getName() {
         return name;
     }
+    public void addTower() {
+        schoolBoard.addTower();
+    }
+
+    public int getNumOfTowers() {
+        return schoolBoard.getNumOfTowers();
+    }
+
+    public void removeTower() {
+        schoolBoard.removeTower();
+    }
 }

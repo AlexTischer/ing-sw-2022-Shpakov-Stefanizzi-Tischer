@@ -94,6 +94,7 @@ public class GameBoard extends Observable<ModelChange> {
             throw new IllegalArgumentException("Error: invalid island number");
 
         player.moveStudentToIsland(studentColor, islands.get(islandNumber));
+        //TODO remove this method: use removeStudentFrom
     }
 
     public void addStudentToIsland(Color studentColor, int islandNumber){
@@ -171,8 +172,8 @@ public class GameBoard extends Observable<ModelChange> {
 
     /*returns the score of the current player on particular island
      * note: the character knows who is the current player*/
-    public int calculateInfluence(int islandNumber) {
-        return currentCharacter.calculateInfluence(islands.get(islandNumber), islandNumber);
+    public int calculateInfluence(int islandNumber, Player player) {
+        return currentCharacter.calculateInfluence(islands.get(islandNumber), islandNumber, player);
     }
 
     public void addProfessor(Player player, Color color) {
@@ -189,6 +190,15 @@ public class GameBoard extends Observable<ModelChange> {
             player.addStudentToEntrance(studentColor);
         else
             throw new NumOfStudentsExceeded();
+    }
+
+    public void addTowersToIsland(int islandNumber, Player player){
+        try {
+            islands.get(islandNumber).setTowersColor(player.getTowerColor());
+        }
+        catch (UnsupportedOperationException e){
+            islands.get(islandNumber).addTower(player.getTowerColor());
+        }
     }
 
     public void removeStudentFromEntrance(Player player, Color studentColor) {
@@ -336,7 +346,7 @@ public class GameBoard extends Observable<ModelChange> {
     * note:not only one current player can conquer an island that MN stops on
     * but other players as well*/
 
-    public void conquerIsland(int numOfIsland, TowerColor towerColor){
+    public void conquerIslandTEST(int numOfIsland, TowerColor towerColor){
         if (numOfIsland < 0 || numOfIsland > islands.size()-1)
             throw new IllegalArgumentException();
 
@@ -364,6 +374,21 @@ public class GameBoard extends Observable<ModelChange> {
         return numOfCoins;
     }
 
+    public void addTowersToPlayer(int numOfTowers, Player player) {
+        for (int i = 0; i < numOfTowers; i++) {
+            player.addTower();
+        }
+    }
+
+    public void removeTowersFromPlayer(int islandNumber, Player player) {
+        for (int i = 0; i < islands.get(islandNumber).getNumOfIslands(); i++) {
+            player.removeTower();
+        }
+    }
+
+    public int getNumOfMergedIslands(int islandNumber){
+        return islands.get(islandNumber).getNumOfIslands();
+    }
 }
 
 

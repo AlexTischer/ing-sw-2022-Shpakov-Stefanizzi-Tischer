@@ -39,9 +39,9 @@ public class CharactersTest extends TestCase {
         gametest.addStudentToIsland(GREEN,2);
         gametest.addStudentToIsland(GREEN, 2);
         gametest.addStudentToIsland(Color.BLUE,2);
-        testGameBoard.conquerIsland(2,TowerColor.BLACK);
-        gametest.calculateInfluence(2);
-        assertEquals(gametest.calculateInfluence(2),1);
+        testGameBoard.conquerIslandTEST(2,TowerColor.BLACK);
+        gametest.calculateInfluence(2, testPlayer);
+        assertEquals(gametest.calculateInfluence(2, testPlayer),1);
 
         gametest.getPlayers().get(0).addStudentToDining(GREEN);
         gametest.getPlayers().get(0).addProfessor(GREEN);
@@ -134,11 +134,11 @@ public class CharactersTest extends TestCase {
         gametest.addStudentToIsland(GREEN,2);
         gametest.addStudentToIsland(GREEN, 2);
         gametest.addStudentToIsland(Color.BLUE,2);
-        testGameBoard.conquerIsland(2,TowerColor.BLACK);
+        testGameBoard.conquerIslandTEST(2,TowerColor.BLACK);
 
-        gametest.calculateInfluence(2);
+        gametest.calculateInfluence(2, testPlayer);
 
-        assertEquals(gametest.calculateInfluence(2),5);
+        assertEquals(gametest.calculateInfluence(2, testPlayer),5);
 
     }
 
@@ -162,15 +162,15 @@ public class CharactersTest extends TestCase {
         gametest.addStudentToIsland(GREEN,2);
         gametest.addStudentToIsland(GREEN, 2);
         gametest.addStudentToIsland(Color.BLUE,2);
-        testGameBoard.conquerIsland(2,TowerColor.BLACK);
+        testGameBoard.conquerIslandTEST(2,TowerColor.BLACK);
 
-        gametest.calculateInfluence(2);
+        gametest.calculateInfluence(2, testPlayer);
 
-        assertEquals(gametest.calculateInfluence(2),2);
+        assertEquals(gametest.calculateInfluence(2, testPlayer),2);
 
         testGameBoard.setNoEntry(2,true);
         try{
-            testGameBoard.calculateInfluence(2);
+            testGameBoard.calculateInfluence(2, testPlayer);
             assertTrue("false", false);
         }
         catch(NoEntryException e){
@@ -199,15 +199,15 @@ public class CharactersTest extends TestCase {
         gametest.addStudentToIsland(GREEN,2);
         gametest.addStudentToIsland(GREEN, 2);
         gametest.addStudentToIsland(Color.BLUE,2);
-        testGameBoard.conquerIsland(2,TowerColor.BLACK);
+        testGameBoard.conquerIslandTEST(2,TowerColor.BLACK);
 
-        gametest.calculateInfluence(2);
+        gametest.calculateInfluence(2, testPlayer);
 
-        assertEquals(gametest.calculateInfluence(2),1);
+        assertEquals(gametest.calculateInfluence(2, testPlayer),1);
 
         testGameBoard.setNoEntry(2,true);
         try{
-            testGameBoard.calculateInfluence(2);
+            testGameBoard.calculateInfluence(2, testPlayer);
             assertTrue("false", false);
         }
         catch(NoEntryException e){
@@ -597,10 +597,10 @@ public class CharactersTest extends TestCase {
         testGameBoard.addStudentToIsland(GREEN, 2);
         testGameBoard.addStudentToIsland(GREEN, 2);
         testGameBoard.addStudentToIsland(Color.BLUE, 2);
-        testGameBoard.conquerIsland(2, TowerColor.BLACK);
+        testGameBoard.conquerIslandTEST(2, TowerColor.BLACK);
 
         gametest.activateCharacter(2);
 
-        assertEquals(gametest.calculateInfluence(2), 3);
+        assertEquals(gametest.calculateInfluence(2, testPlayer), 3);
     }
 }

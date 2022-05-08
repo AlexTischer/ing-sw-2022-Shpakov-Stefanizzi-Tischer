@@ -1,13 +1,14 @@
 package modelChange;
 
 import client.model.ClientGameBoard;
+import client.model.ClientIsland;
 import server.model.Island;
 
 import java.util.List;
 
 public class IslandsChange extends ModelChange{
 
-    private List<Island> islands;
+    private List<ClientIsland> islands;
 
     @Override
     public void execute(ClientGameBoard gameBoard){
@@ -15,6 +16,11 @@ public class IslandsChange extends ModelChange{
     }
 
     public IslandsChange(List<Island> islands){
-        this.islands=islands;
+        for(Island i : islands){
+            ClientIsland clientIsland = new ClientIsland();
+            clientIsland.setNumOfTowers(i.getNumOfTowers());
+
+            this.islands.add(clientIsland);
+        }
     }
 }

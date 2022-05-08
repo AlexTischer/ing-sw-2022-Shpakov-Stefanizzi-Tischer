@@ -80,8 +80,8 @@ public class GameBoardTest extends TestCase {
         testGameBoard.moveStudentToIsland(Color.GREEN, 1);
         testGameBoard.moveStudentToIsland(Color.YELLOW, 1);
 
-        testGameBoard.conquerIsland(0, TowerColor.BLACK);
-        testGameBoard.conquerIsland(1, TowerColor.BLACK);
+        testGameBoard.conquerIslandTEST(0, TowerColor.BLACK);
+        testGameBoard.conquerIslandTEST(1, TowerColor.BLACK);
 
         assertEquals(true, testGameBoard.mergeIslands());
         assertEquals(11, testGameBoard.getNumOfIslands());
@@ -118,7 +118,7 @@ public class GameBoardTest extends TestCase {
         testGameBoard.moveStudentToIsland(Color.BLUE, 10);
 
         /*test merging first and the last island*/
-        testGameBoard.conquerIsland(10, TowerColor.BLACK);
+        testGameBoard.conquerIslandTEST(10, TowerColor.BLACK);
 
         assertEquals(true, testGameBoard.mergeIslands());
         assertEquals(10, testGameBoard.getNumOfIslands());
@@ -154,7 +154,7 @@ public class GameBoardTest extends TestCase {
         testGameBoard.moveStudentToIsland(Color.BLUE, 7);
 
         /*test that non-consecutive islands are not merged*/
-        testGameBoard.conquerIsland(7, TowerColor.BLACK);
+        testGameBoard.conquerIslandTEST(7, TowerColor.BLACK);
 
         assertEquals(false, testGameBoard.mergeIslands());
         assertEquals(10, testGameBoard.getNumOfIslands());
@@ -197,7 +197,7 @@ public class GameBoardTest extends TestCase {
         testGameBoard.moveStudentToIsland(Color.BLUE, 8);
 
         /*test merging first and the last island*/
-        testGameBoard.conquerIsland(8, TowerColor.BLACK);
+        testGameBoard.conquerIslandTEST(8, TowerColor.BLACK);
 
         assertEquals(true, testGameBoard.mergeIslands());
         assertEquals(8, testGameBoard.getNumOfIslands());

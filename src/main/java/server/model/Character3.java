@@ -15,10 +15,10 @@ public class Character3 extends Character {
     }
 
     @Override
-    public int calculateInfluence(Island island, int islandNumber) throws NoEntryException {
+    public int calculateInfluence(Island island, int islandNumber, Player player) throws NoEntryException {
         if (!island.getNoEntry()){
             int score = 0;
-            for (Color color: game.getCurrentPlayer().getProfessorsColor()){
+            for (Color color: player.getProfessorsColor()){
                 score += island.getNumOfStudents(color);
             }
 

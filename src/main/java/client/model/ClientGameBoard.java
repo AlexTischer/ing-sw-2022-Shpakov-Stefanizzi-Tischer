@@ -1,14 +1,13 @@
 package client.model;
 
 import server.model.Cloud;
-import server.model.Island;
 import server.model.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ClientGameBoard {
-    private List<Island> islands;
+    private List<ClientIsland> islands;
     private List<Cloud> clouds;
     private Character currentCharacter;
     private Character playedCharacters[];
@@ -17,10 +16,10 @@ public class ClientGameBoard {
     private Player currentPlayer;
     private ArrayList<Player> players;
 
-    public List<Island> getIslands() {
+    public List<ClientIsland> getIslands() {
         return islands;
     }
-    public void setIslands(List<Island> islands) {
+    public void setIslands(List<ClientIsland> islands) {
         this.islands = islands;
     }
 
@@ -65,11 +64,16 @@ public class ClientGameBoard {
     }
 
     public void setCurrentPlayer(int currentPlayerNumber) {
-        this.currentPlayer = players.get(0);} /*TODO*/
+        this.currentPlayer = players.get(currentPlayerNumber);}
 
     public Player getPlayer(String playerName) {
-        return players.get(0);
-    } /*TODO*/
+        for(Player p : players){
+            if(p.getName().equals(playerName)){
+                return p;
+            }
+        }
+        throw new IllegalArgumentException();
+    }
 
     public void setPlayers(ArrayList<Player> players) {
         this.players = players;

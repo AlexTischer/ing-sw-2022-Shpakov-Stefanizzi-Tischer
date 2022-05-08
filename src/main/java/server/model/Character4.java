@@ -14,15 +14,16 @@ public class Character4 extends Character {
         this.selectedStudent = selectedStudent;
     }
 
+
     @Override
-    public int calculateInfluence(Island island, int islandNumber) throws NoEntryException {
+    public int calculateInfluence(Island island, int islandNumber, Player player) throws NoEntryException {
         if (!island.getNoEntry()){
             int score = 0;
-            for (Color color: game.getCurrentPlayer().getProfessorsColor()){
+            for (Color color: player.getProfessorsColor()){
                 if ( !color.equals(selectedStudent) )
                     score += island.getNumOfStudents(color);
             }
-            if (game.getCurrentPlayer().getTowerColor().equals(island.getTowersColor())){
+            if (player.getTowerColor().equals(island.getTowersColor())){
                 score += island.getNumOfTowers();
             }
 

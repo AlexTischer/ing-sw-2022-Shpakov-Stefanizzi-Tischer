@@ -14,7 +14,7 @@ public interface GameForClient {
 
     public void moveMotherNature(int steps);
 
-    public void useAssistant(int assistantRank, Player player);
+    public void useAssistant(int assistantRank);
 
     public void buyCharacter(int characterNumber);
 

@@ -52,7 +52,9 @@ public class Island {
         }
         else throw new UnsupportedOperationException("Error: No towers on island");
     }
-
+    public int getNumOfIslands() {
+        return numOfIslands;
+    }
     public int getNumOfStudents(Color studentColor){
         return students.get(studentColor);
     }

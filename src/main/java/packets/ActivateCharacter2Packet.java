@@ -3,7 +3,7 @@ package packets;
 import server.controller.GameForClient;
 import server.model.Color;
 
-public class ActivateCharacter2Packet /*TODO change name*/ extends Packet{
+public class ActivateCharacter2Packet extends Packet{
 
     @Override
     public void execute(GameForClient game) {
