@@ -17,11 +17,23 @@ public class SchoolBoardChange extends ModelChange{
 
     @Override
     public void execute(ClientGameBoard gameBoard){
-        /*TODO gameBoard.getPlayer(Player.getName()).getSchoolBoard.setSomeThing(this.someThing)*/
+        gameBoard.getPlayer(playerName).getSchoolBoard().setEntrance(entrance);
+        gameBoard.getPlayer(playerName).getSchoolBoard().setNumOfTowers(numOfTowers);
+        gameBoard.getPlayer(playerName).getSchoolBoard().setTowersColor(towersColor);
+        gameBoard.getPlayer(playerName).getSchoolBoard().setDiningRoom(diningRoom);
+        gameBoard.getPlayer(playerName).getSchoolBoard().setProfessors(professors);
     }
 
     public SchoolBoardChange(Player player){
         playerName=player.getName();
-        /*TODO this.someThing=player.getSomeThing*/
+        this.entrance = player.getStudentsInEntrance();
+        this.numOfTowers = player.getNumOfTowers();
+        this.towersColor = player.getTowerColor();
+        for(Color c : Color.values()){
+            this.diningRoom.put(c,player.getNumOfStudentsInDining(c));
+        }
+        for(Color c : player.getProfessorsColor()){
+            this.professors.put(c, 1);
+        }
     }
 }

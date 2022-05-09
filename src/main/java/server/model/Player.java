@@ -140,4 +140,16 @@ public class Player implements Comparable{
     public void removeTower() {
         schoolBoard.removeTower();
     }
+
+    public SchoolBoard getSchoolBoard() {
+        return schoolBoard;
+    }
+
+    public int getCoins() {
+        return coins;
+    }
+
+    public Assistant[] getAssistants() {
+        return assistants;
+    }
 }

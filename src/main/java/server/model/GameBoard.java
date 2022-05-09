@@ -389,6 +389,18 @@ public class GameBoard extends Observable<ModelChange> {
     public int getNumOfMergedIslands(int islandNumber){
         return islands.get(islandNumber).getNumOfIslands();
     }
+
+    public List<Island> getIslands() {
+        return islands;
+    }
+
+    public List<Cloud> getClouds() {
+        return clouds;
+    }
+
+    public Character[] getPlayedCharacters() {
+        return playedCharacters;
+    }
 }
 
 

@@ -8,13 +8,13 @@ import java.util.List;
 
 public class ClientGameBoard {
     private List<ClientIsland> islands;
-    private List<Cloud> clouds;
+    private List<ClientCloud> clouds;
     private Character currentCharacter;
     private Character playedCharacters[];
     private int positionOfMotherNature;
     private int numOfCoins;
-    private Player currentPlayer;
-    private ArrayList<Player> players;
+    private String currentPlayerName;
+    private ArrayList<ClientPlayer> players;
 
     public List<ClientIsland> getIslands() {
         return islands;
@@ -23,11 +23,13 @@ public class ClientGameBoard {
         this.islands = islands;
     }
 
-    public List<Cloud> getClouds() {
+    public List<ClientCloud> getClouds() {
         return clouds;
     }
 
-    public void setClouds(List<Cloud> clouds) {
+    public ClientCloud getCloud(int numOfCloud) { return clouds.get(numOfCloud); }
+
+    public void setClouds(List<ClientCloud> clouds) {
         this.clouds = clouds;
     }
 
@@ -59,15 +61,16 @@ public class ClientGameBoard {
         this.numOfCoins = numOfCoins;
     }
 
-    public Player getCurrentPlayer() {
-        return currentPlayer;
+    public String getCurrentPlayerName() {
+        return currentPlayerName;
     }
 
-    public void setCurrentPlayer(int currentPlayerNumber) {
-        this.currentPlayer = players.get(currentPlayerNumber);}
+    public void setCurrentPlayerName(String currentPlayerName) {
+        this.currentPlayerName = currentPlayerName;
+    }
 
-    public Player getPlayer(String playerName) {
-        for(Player p : players){
+    public ClientPlayer getPlayer(String playerName) {
+        for(ClientPlayer p : players){
             if(p.getName().equals(playerName)){
                 return p;
             }
@@ -75,7 +78,7 @@ public class ClientGameBoard {
         throw new IllegalArgumentException();
     }
 
-    public void setPlayers(ArrayList<Player> players) {
+    public void setPlayers(ArrayList<ClientPlayer> players) {
         this.players = players;
     }
 }
