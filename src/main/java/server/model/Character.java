@@ -26,6 +26,7 @@ public class Character {
             return score;
         }
         else {
+            /*takes no entry tile away from the island*/
             game.setNoEntry(islandNumber,false);
             throw new NoEntryException();
         }

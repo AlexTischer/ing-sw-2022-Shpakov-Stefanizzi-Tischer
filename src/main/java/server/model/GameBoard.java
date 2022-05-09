@@ -170,8 +170,7 @@ public class GameBoard extends Observable<ModelChange> {
 
     }
 
-    /*returns the score of the current player on particular island
-     * note: the character knows who is the current player*/
+    /*returns the score of the player on particular island*/
     public int calculateInfluence(int islandNumber, Player player) {
         return currentCharacter.calculateInfluence(islands.get(islandNumber), islandNumber, player);
     }
@@ -197,6 +196,7 @@ public class GameBoard extends Observable<ModelChange> {
             islands.get(islandNumber).setTowersColor(player.getTowerColor());
         }
         catch (UnsupportedOperationException e){
+            /*there were no towers on island*/
             islands.get(islandNumber).addTower(player.getTowerColor());
         }
     }
@@ -380,8 +380,8 @@ public class GameBoard extends Observable<ModelChange> {
         }
     }
 
-    public void removeTowersFromPlayer(int islandNumber, Player player) {
-        for (int i = 0; i < islands.get(islandNumber).getNumOfIslands(); i++) {
+    public void removeTowersFromPlayer(int numOfIslands, Player player) {
+        for (int i = 0; i < numOfIslands; i++) {
             player.removeTower();
         }
     }

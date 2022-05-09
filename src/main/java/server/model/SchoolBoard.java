@@ -126,6 +126,13 @@ public class SchoolBoard {
         numOfTowers++;
     }
 
+    public void removeTower() {
+        if (numOfTowers < 1)
+            throw new NoEnoughTowersException();
+
+        numOfTowers--;
+    }
+
     /*TEST METHODS*/
 
     public ArrayList<Color> getStudentsInEntrance(){
@@ -136,8 +143,6 @@ public class SchoolBoard {
         return numOfTowers;
     }
 
-    public void removeTower() {
-        numOfTowers--;
-    }
+
 }
 

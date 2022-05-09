@@ -129,42 +129,87 @@ public class Game implements GameForClient{
         return gameBoard.getStudentFromBag();
     }
 
-    public void reassignIsland(int islandNumber){ //TODO 4 Players game
+    public void reassignIsland(int islandNumber){
+        /*no players with 0 towers allowed except in case of 4 player game*/
         Player master = players.get(0);
         Player loser = players.get(0);
+
         int masterInfluence = 0;
-        // Looking for player with highest influence
-        for (Player p : players){
-            if(calculateInfluence(islandNumber, p)>masterInfluence ||
-                    (calculateInfluence(islandNumber, p)==masterInfluence &&
-                            p.getTowerColor().equals(gameBoard.getTowersColorOnIsland(islandNumber))))
-            {master=p;}
-        }
-        for (Player p : players){
-            if(p!=master && masterInfluence==calculateInfluence(islandNumber, p)){
-                return;
+        int influenceToCompare = 0;
+
+        /*if an island has noEntry tile on it, then the island does not get conquered*/
+        if (calculateInfluence(islandNumber, master) == -1)
+            return;
+
+        // Looking for a player ( or team ) with the highest influence
+        // Iterate through players that hold towers
+        for (Player p : players.stream().filter((Player pl) -> pl.getNumOfTowers() > 0).toList()){
+            influenceToCompare = calculateInfluence(islandNumber, p);
+
+            // Iterate through players that does not hold any towers
+            for (Player q : players.stream().filter((Player pl) -> pl.getNumOfTowers() == 0).toList()){
+                //if players have the same tower color then they are from
+                //the same team and thus their influence should be added
+                if (p.getTowerColor().equals(q.getTowerColor()))
+                    influenceToCompare += calculateInfluence(islandNumber, q);
+            }
+
+
+            if(influenceToCompare > masterInfluence || (influenceToCompare == masterInfluence &&
+                    p.getTowerColor().equals(gameBoard.getTowersColorOnIsland(islandNumber)))) {
+                /*assign to master the player from the team that holds towers*/
+                master = p;
+                masterInfluence = influenceToCompare;
             }
         }
-        if(master.getNumOfTowers()>=gameBoard.getNumOfMergedIslands(islandNumber)) {
-            // Looking for player to return towers to if there were towers on island
-            if (gameBoard.getNumOfTowersOnIsland(islandNumber) > 0) {
-                for (Player p : players) {
-                    if (p.getTowerColor() == gameBoard.getTowersColorOnIsland(islandNumber) && p.getNumOfTowers() > 0) {
-                        loser = p;
-                    }
+
+        /*if there are 2 players ( or 2 teams ) with the same maximum influence score then nobody conquers an island*/
+        for (Player p : players.stream().filter((Player pl) -> pl.getNumOfTowers() > 0).toList()){
+
+            if (!p.getTowerColor().equals(master.getTowerColor())){
+                influenceToCompare = calculateInfluence(islandNumber, p);
+
+                for (Player q : players.stream().filter((Player pl) -> pl.getNumOfTowers() == 0).toList()){
+                    if (p.getTowerColor().equals(q.getTowerColor()))
+                        influenceToCompare += calculateInfluence(islandNumber, q);
                 }
-                if (master != loser) {
-                    gameBoard.addTowersToPlayer(gameBoard.getNumOfTowersOnIsland(islandNumber), loser);
-                }
-            }
-            if (master != loser) {
-                gameBoard.addTowersToIsland(islandNumber, master);
-                gameBoard.removeTowersFromPlayer(islandNumber, master);
+
+                /*found a player or a team that has the same influence score*/
+                if (masterInfluence == influenceToCompare)
+                    return;
             }
         }
+
+        /*the code below works in case of teams as well*/
+
+        //Search for the player to take his towers back
+        //check whether an island has towers
+        if (gameBoard.getNumOfTowersOnIsland(islandNumber) > 0) {
+
+            /*return towers to the player that holds them for the entire team*/
+            for (Player p : players.stream().filter((Player pl) -> pl.getNumOfTowers() > 0).toList()) {
+                if (p.getTowerColor().equals(gameBoard.getTowersColorOnIsland(islandNumber)))
+                    loser = p;
+
+            }
+            /*to avoid useless model change, make a check*/
+            if (master != loser)
+                gameBoard.addTowersToPlayer(gameBoard.getNumOfTowersOnIsland(islandNumber), loser);
+
+        }
+
+        /*to avoid useless model change, make a check*/
+        if (master != loser) {
+            gameBoard.addTowersToIsland(islandNumber, master);
+            //suppose that the case with the master that has 0 towers is impossible
+            //if a player has no enough towers then he puts all towers that he owns and as a result becomes a winner
+            //otherwise he puts as many towers as islands inside the island that he wants to conquer
+            gameBoard.removeTowersFromPlayer(Math.min(master.getNumOfTowers(), gameBoard.getNumOfMergedIslands(islandNumber)), master);
+        }
+
     }
 
-    /*calculates influence score on specified Island*/ //TODO review
+    /*calculates influence score on specified Island*/
     public int calculateInfluence(int islandNumber, Player player){
         int influence = -1; //return -1 when NoEntry Tile is on selected island
         try {
@@ -231,6 +276,7 @@ public class Game implements GameForClient{
             gameBoard.getCurrentPlayer().setPlayedAssistantRank(assistantRank);
             notifyAll();
         }else throw new RepeatedAssistantRankException();
+        /*set the next player to chose assistant card*/
         gameBoard.setCurrentPlayer(players.get((players.indexOf(gameBoard.getCurrentPlayer())+1)%players.size()));
     }
 
@@ -252,6 +298,8 @@ public class Game implements GameForClient{
             }
         }
 
+        /*sorts players based on rank, from lowest to highest so that the next turn
+        is started by player that played the card with the lowest rank*/
         Collections.sort(players);
 
         for(Player p : players){
@@ -282,12 +330,12 @@ public class Game implements GameForClient{
         Set<Integer> playedAssistantsRanks = players.stream().filter(p -> p!=player && p.getPlayedAssistant()!=null).
                 map(p -> p.getPlayedAssistant().getRank()).collect(Collectors.toSet());
 
-        /*if a player wants to play rank not contained, then return false*/
+        /*if a player wants to play rank not contained in his hand, then return false*/
         if (!player.getAssistantsRanks().contains(assistantRank))
             return false;
 
-        /*if a player decides to play an assistant with rank already played by smbd else,
-        it is allowable only when player has no other option*/
+        /*if a player decides to play an assistant with rank already played by someone,
+        it is allowable only when player has no other options*/
         if (playedAssistantsRanks.contains(assistantRank)){
             for (int rank: player.getAssistantsRanks()) {
                 /*if player has an assistant with rank not yet played*/
@@ -299,6 +347,9 @@ public class Game implements GameForClient{
         return true;
     }
 
+    /*the game is finished when there is a player that has no assistants or
+    has no towers or there is a team that has no towers (in case of 4 players) or
+    the bag is empty or the number of islands is less than 3*/
     private boolean checkEndGame(){
         for(Player p : players){
             if(p.getAssistantsRanks().isEmpty()){
@@ -318,6 +369,7 @@ public class Game implements GameForClient{
         return gameBoard.checkBagEmpty() || gameBoard.getNumOfIslands()<=3;
     }
 
+    /*the packet received executes certain methods on Game*/
     public void update(Packet packet){
         packet.execute(this);
     }

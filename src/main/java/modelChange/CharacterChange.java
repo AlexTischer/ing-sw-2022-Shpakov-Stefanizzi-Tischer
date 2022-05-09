@@ -11,7 +11,7 @@ public class CharacterChange extends ModelChange{
         gameBoard.setCurrentCharacter(currentCharacter);
     }
 
-    public CharacterChange(java.lang.Character currentCharacter){
+    public CharacterChange(Character currentCharacter){
         this.currentCharacter=currentCharacter;
     }
 }

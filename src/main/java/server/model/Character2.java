@@ -1,5 +1,6 @@
 package server.model;
 
+import exceptions.NoEntryException;
 import server.controller.Game;
 import exceptions.NoEnoughCoinsException;
 
@@ -14,16 +15,22 @@ public class Character2 extends Character {
     }
 
 
-    //TODO accept Player parameter
     public int calculateInfluence(Island island, int islandNumber, Player player){
-        int score = 2;
-        for (Color color: player.getProfessorsColor()){
-            score += island.getNumOfStudents(color);
+        if (!island.getNoEntry()) {
+            int score = 2;
+            for (Color color : player.getProfessorsColor()) {
+                score += island.getNumOfStudents(color);
+            }
+            if (player.getTowerColor().equals(island.getTowersColor())) {
+                score += island.getNumOfTowers();
+            }
+            return score;
         }
-        if (player.getTowerColor().equals(island.getTowersColor())){
-            score += island.getNumOfTowers();
+        else {
+            /*takes no entry tile away from the island*/
+            game.setNoEntry(islandNumber,false);
+            throw new NoEntryException();
         }
-        return score;
     }
 
     @Override
