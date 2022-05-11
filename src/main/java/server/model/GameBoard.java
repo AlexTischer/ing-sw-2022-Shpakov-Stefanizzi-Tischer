@@ -89,20 +89,18 @@ public class GameBoard extends Observable<ModelChange> {
         this.currentPlayer = currentPlayer;
     }
 
-    public void moveStudentToIsland(Player player, Color studentColor, int islandNumber) {
+    public void addStudentToIsland(Player player, Color studentColor, int islandNumber) {
         if (islandNumber < 0 || islandNumber > islands.size()-1)
             throw new IllegalArgumentException("Error: invalid island number");
-
-        player.moveStudentToIsland(studentColor, islands.get(islandNumber));
-        //TODO remove this method: use removeStudentFrom
-    }
-
-    public void addStudentToIsland(Color studentColor, int islandNumber){
+        player.removeStudentFromEntrance(studentColor);
         islands.get(islandNumber).addStudent(studentColor);
     }
 
-    /*is invoked when character card is in use*/
-    public void moveStudentToIsland(Color studentColor, int islandNumber) {
+    public void sendPlayersChange(ArrayList<Player> players){
+        //TODO create new PlayersChange
+    }
+
+    public void addStudentToIsland(Color studentColor, int islandNumber){
         if (islandNumber < 0 || islandNumber > islands.size()-1)
             throw new IllegalArgumentException("Error: invalid island number");
 

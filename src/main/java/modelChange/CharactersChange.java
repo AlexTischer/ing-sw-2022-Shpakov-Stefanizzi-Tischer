@@ -1,6 +1,7 @@
 package modelChange;
 
 import client.model.ClientGameBoard;
+import server.model.Character;
 
 public class CharactersChange extends ModelChange{
 
@@ -11,7 +12,7 @@ public class CharactersChange extends ModelChange{
         gameBoard.setPlayedCharacters(playedCharacters);
     }
 
-    public CharactersChange(java.lang.Character[] playedCharacters){
+    public CharactersChange(Character[] playedCharacters){
         this.playedCharacters=playedCharacters;
     }
 }

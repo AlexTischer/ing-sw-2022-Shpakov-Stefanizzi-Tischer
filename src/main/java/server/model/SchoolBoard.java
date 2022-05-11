@@ -66,13 +66,6 @@ public class SchoolBoard {
         else throw new NumOfStudentsExceeded();
     }
 
-
-    //TODO remove this method: use removeStudentFrom
-    public void moveStudentToIsland(Color studentColor, Island island) {
-        removeStudentFromEntrance(studentColor);
-        island.addStudent(studentColor);
-    }
-
     public int getNumOfStudentsInDining(Color studentColor){
         return diningRoom.get(studentColor);
     }
@@ -91,14 +84,6 @@ public class SchoolBoard {
             }
         }
         return professorsList;
-    }
-
-    //TODO remove this method: use removeTower
-    public void moveTowerToIsland(Island island){
-        if(numOfTowers>0) {
-            numOfTowers--;
-            island.addTower(towersColor);
-        } else throw new NoEnoughTowersException();
     }
 
     public boolean checkEmptyTowers(){

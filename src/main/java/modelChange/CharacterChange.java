@@ -1,6 +1,7 @@
 package modelChange;
 
 import client.model.ClientGameBoard;
+import server.model.Character;
 
 public class CharacterChange extends ModelChange{
 

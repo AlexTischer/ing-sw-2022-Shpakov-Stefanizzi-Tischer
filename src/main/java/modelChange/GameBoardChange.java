@@ -17,7 +17,6 @@ public class GameBoardChange extends ModelChange{
     private List<ClientCloud> clouds;
     private Character currentCharacter;
     private Character[] playedCharacters;
-    private AssistantDeck assistantDeck;
     private int positionOfMotherNature;
     private int numOfCoins;
     private String currentPlayerName;
@@ -26,10 +25,10 @@ public class GameBoardChange extends ModelChange{
     public void execute(ClientGameBoard gameBoard){
         gameBoard.setIslands(islands);
         gameBoard.setClouds(clouds);
-        /* TODO fix setCharacter
+
         gameBoard.setCurrentCharacter(currentCharacter);
         gameBoard.setPlayedCharacters(playedCharacters);
-        */
+
         gameBoard.setPositionOfMotherNature(positionOfMotherNature);
         gameBoard.setNumOfCoins(numOfCoins);
         gameBoard.setCurrentPlayerName(currentPlayerName);

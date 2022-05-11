@@ -70,28 +70,6 @@ public class SchoolBoardTest extends TestCase {
     }
 
     @Test
-    void moveStudentToIslandTest() {
-        SchoolBoard testschoolboard = new SchoolBoard(TowerColor.BLACK, 8);
-        Island testisland = new Island();
-
-        testschoolboard.addStudentToEntrance(Color.GREEN);
-        testschoolboard.moveStudentToIsland(Color.GREEN, testisland);
-
-        assertEquals(1, testisland.getNumOfStudents(Color.GREEN));
-    }
-
-    @Test
-    void moveStudentToIslandTestBis(){
-        SchoolBoard testschoolboard = new SchoolBoard(TowerColor.BLACK, 8);
-        Island testisland = new Island();
-        try {
-            testschoolboard.moveStudentToIsland(Color.RED, testisland);
-            assertTrue("false", false);
-        } catch (StudentNotFoundException e) {
-        }
-    }
-
-    @Test
     void getNumOfStudentsInDiningTest(){
         SchoolBoard testschoolboard = new SchoolBoard(TowerColor.BLACK, 8);
            testschoolboard.addStudentToDining(Color.BLUE);
@@ -118,16 +96,6 @@ public class SchoolBoardTest extends TestCase {
         testprofessorlist.add(Color.YELLOW);
 
         assertEquals(true , testprofessorlist.containsAll(testschoolboard.getProfessorsColor()));
-    }
-
-    @Test
-    void moveTowerToIslandTest(){
-        SchoolBoard testschoolboard = new SchoolBoard(TowerColor.BLACK, 8);
-        Island testisland = new Island();
-
-        testschoolboard.moveTowerToIsland(testisland);
-
-        assertEquals(1, testisland.getNumOfTowers());
     }
 
     @Test

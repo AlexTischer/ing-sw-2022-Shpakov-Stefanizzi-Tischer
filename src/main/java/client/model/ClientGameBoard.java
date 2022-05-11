@@ -1,10 +1,9 @@
 package client.model;
 
-import server.model.Cloud;
-import server.model.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import server.model.Character;
 
 public class ClientGameBoard {
     private List<ClientIsland> islands;

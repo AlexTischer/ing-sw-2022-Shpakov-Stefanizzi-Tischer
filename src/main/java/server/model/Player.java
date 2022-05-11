@@ -27,10 +27,6 @@ public class Player implements Comparable{
         schoolBoard = new SchoolBoard(this.towerColor, numOfTowers);
     }
 
-    public void moveStudentToIsland(Color studentColor, Island island) {
-        schoolBoard.moveStudentToIsland(studentColor, island);
-    }
-
     @Override
     public int compareTo(Object comparePlayer) {
         if (comparePlayer instanceof Player) {

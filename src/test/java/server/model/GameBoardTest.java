@@ -75,10 +75,10 @@ public class GameBoardTest extends TestCase {
         testGameBoard.placeMotherNature(1);
 
         /*test merging 2 islands*/
-        testGameBoard.moveStudentToIsland(Color.GREEN, 0);
-        testGameBoard.moveStudentToIsland(Color.RED, 0);
-        testGameBoard.moveStudentToIsland(Color.GREEN, 1);
-        testGameBoard.moveStudentToIsland(Color.YELLOW, 1);
+        testGameBoard.addStudentToIsland(Color.GREEN, 0);
+        testGameBoard.addStudentToIsland(Color.RED, 0);
+        testGameBoard.addStudentToIsland(Color.GREEN, 1);
+        testGameBoard.addStudentToIsland(Color.YELLOW, 1);
 
         testGameBoard.conquerIslandTEST(0, TowerColor.BLACK);
         testGameBoard.conquerIslandTEST(1, TowerColor.BLACK);
@@ -114,8 +114,8 @@ public class GameBoardTest extends TestCase {
         /*place MN on the last island and conquer it*/
         testGameBoard.placeMotherNature(10);
 
-        testGameBoard.moveStudentToIsland(Color.PINK, 10);
-        testGameBoard.moveStudentToIsland(Color.BLUE, 10);
+        testGameBoard.addStudentToIsland(Color.PINK, 10);
+        testGameBoard.addStudentToIsland(Color.BLUE, 10);
 
         /*test merging first and the last island*/
         testGameBoard.conquerIslandTEST(10, TowerColor.BLACK);
@@ -150,8 +150,8 @@ public class GameBoardTest extends TestCase {
         /*place MN on the last island*/
         testGameBoard.placeMotherNature(9);
 
-        testGameBoard.moveStudentToIsland(Color.PINK, 7);
-        testGameBoard.moveStudentToIsland(Color.BLUE, 7);
+        testGameBoard.addStudentToIsland(Color.PINK, 7);
+        testGameBoard.addStudentToIsland(Color.BLUE, 7);
 
         /*test that non-consecutive islands are not merged*/
         testGameBoard.conquerIslandTEST(7, TowerColor.BLACK);
@@ -193,8 +193,8 @@ public class GameBoardTest extends TestCase {
 
         /**TEST MERGING BY COVERING A GAP**/
 
-        testGameBoard.moveStudentToIsland(Color.RED, 8);
-        testGameBoard.moveStudentToIsland(Color.BLUE, 8);
+        testGameBoard.addStudentToIsland(Color.RED, 8);
+        testGameBoard.addStudentToIsland(Color.BLUE, 8);
 
         /*test merging first and the last island*/
         testGameBoard.conquerIslandTEST(8, TowerColor.BLACK);
@@ -571,45 +571,45 @@ public class GameBoardTest extends TestCase {
 
         /*moving student from entrance to island*/
         testGameBoard.addStudentToEntrance(testPlayer, Color.GREEN);
-        testGameBoard.moveStudentToIsland(testPlayer, Color.GREEN, 0);
+        testGameBoard.addStudentToIsland(testPlayer, Color.GREEN, 0);
 
         assertEquals(1, testGameBoard.getNumOfStudentsOnIsland(0, Color.GREEN));
         assertEquals(0, testPlayer.getNumOfStudentsInEntrance());
 
         /*adding a student to island*/
-        testGameBoard.moveStudentToIsland(Color.GREEN, 0);
+        testGameBoard.addStudentToIsland(Color.GREEN, 0);
 
         assertEquals(2, testGameBoard.getNumOfStudentsOnIsland(0, Color.GREEN));
         assertEquals(0, testPlayer.getNumOfStudentsInEntrance());
 
         /*exception control*/
         assertThrows(IllegalArgumentException.class, ()->{
-            testGameBoard.moveStudentToIsland(testPlayer, Color.GREEN, -1);
+            testGameBoard.addStudentToIsland(testPlayer, Color.GREEN, -1);
         } );
         assertThrows(IllegalArgumentException.class, ()->{
-            testGameBoard.moveStudentToIsland(testPlayer, Color.GREEN, 12);
+            testGameBoard.addStudentToIsland(testPlayer, Color.GREEN, 12);
         } );
         assertThrows(IllegalArgumentException.class, ()->{
-            testGameBoard.moveStudentToIsland(Color.GREEN, -1);
+            testGameBoard.addStudentToIsland(Color.GREEN, -1);
         } );
         assertThrows(IllegalArgumentException.class, ()->{
-            testGameBoard.moveStudentToIsland(Color.GREEN, 12);
+            testGameBoard.addStudentToIsland(Color.GREEN, 12);
         } );
 
         assertThrows(StudentNotFoundException.class, ()->{
-            testGameBoard.moveStudentToIsland(testPlayer, Color.GREEN, 0);
+            testGameBoard.addStudentToIsland(testPlayer, Color.GREEN, 0);
         } );
         assertThrows(StudentNotFoundException.class, ()->{
-            testGameBoard.moveStudentToIsland(testPlayer, Color.RED, 0);
+            testGameBoard.addStudentToIsland(testPlayer, Color.RED, 0);
         } );
         assertThrows(StudentNotFoundException.class, ()->{
-            testGameBoard.moveStudentToIsland(testPlayer, Color.BLUE, 0);
+            testGameBoard.addStudentToIsland(testPlayer, Color.BLUE, 0);
         } );
         assertThrows(StudentNotFoundException.class, ()->{
-            testGameBoard.moveStudentToIsland(testPlayer, Color.PINK, 0);
+            testGameBoard.addStudentToIsland(testPlayer, Color.PINK, 0);
         } );
         assertThrows(StudentNotFoundException.class, ()->{
-            testGameBoard.moveStudentToIsland(testPlayer, Color.YELLOW, 0);
+            testGameBoard.addStudentToIsland(testPlayer, Color.YELLOW, 0);
         } );
     }
 

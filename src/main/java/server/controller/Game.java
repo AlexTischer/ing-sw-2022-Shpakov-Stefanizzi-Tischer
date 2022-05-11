@@ -95,7 +95,7 @@ public class Game implements GameForClient{
         if (studentMove > (players.size() == 3? 4: 3))
             throw new RuntimeException();
 
-        gameBoard.moveStudentToIsland(gameBoard.getCurrentPlayer(), studentColor, islandNumber);
+        gameBoard.addStudentToIsland(gameBoard.getCurrentPlayer(), studentColor, islandNumber);
         studentMove++;
     }
 
@@ -190,12 +190,10 @@ public class Game implements GameForClient{
             for (Player p : players.stream().filter((Player pl) -> pl.getNumOfTowers() > 0).toList()) {
                 if (p.getTowerColor().equals(gameBoard.getTowersColorOnIsland(islandNumber)))
                     loser = p;
-
             }
             /*to avoid useless model change, make a check*/
             if (master != loser)
                 gameBoard.addTowersToPlayer(gameBoard.getNumOfTowersOnIsland(islandNumber), loser);
-
         }
 
         /*to avoid useless model change, make a check*/
@@ -206,7 +204,6 @@ public class Game implements GameForClient{
             //otherwise he puts as many towers as islands inside the island that he wants to conquer
             gameBoard.removeTowersFromPlayer(Math.min(master.getNumOfTowers(), gameBoard.getNumOfMergedIslands(islandNumber)), master);
         }
-
     }
 
     /*calculates influence score on specified Island*/
