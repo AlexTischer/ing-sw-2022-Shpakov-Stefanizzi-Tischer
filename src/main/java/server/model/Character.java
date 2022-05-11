@@ -84,4 +84,11 @@ public class Character {
 
     public void addNoEntryTile(){}
 
+    public int getNoEntryTiles(){
+        return -1;
+    }
+
+    public Color[] getStudentsSlot(){
+        return null;
+    }
 }

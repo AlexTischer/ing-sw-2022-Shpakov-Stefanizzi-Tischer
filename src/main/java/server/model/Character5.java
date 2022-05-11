@@ -36,6 +36,11 @@ public class Character5 extends Character {
     }
 
     @Override
+    public int getNoEntryTiles(){
+        return noEntryTiles;
+    }
+
+    @Override
     public void buy() throws NoEnoughCoinsException {
         game.getGameBoard().removeCoins(game.getCurrentPlayer(), cost);
         cost = 3;

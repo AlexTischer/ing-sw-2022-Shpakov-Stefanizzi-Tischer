@@ -14,7 +14,7 @@
         <sonar.language>java</sonar.language>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <sonar.coverage.exclusions> **/Peer Review/**/*, **/client/**/*, **/modelChange/**/*, **/packets/**/*, **/utils/**/* </sonar.coverage.exclusions>
+        <sonar.coverage.exclusions> **/Peer Reviews/**/*, **/client/**/*, **/modelChange/**/*, **/packets/**/*, **/utils/**/* </sonar.coverage.exclusions>
     </properties>
 
 

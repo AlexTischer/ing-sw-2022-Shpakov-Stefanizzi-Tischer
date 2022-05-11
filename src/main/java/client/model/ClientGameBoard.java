@@ -8,8 +8,8 @@ import server.model.Character;
 public class ClientGameBoard {
     private List<ClientIsland> islands;
     private List<ClientCloud> clouds;
-    private Character currentCharacter;
-    private Character playedCharacters[];
+    private int currentCharacter;
+    private ClientCharacter playedCharacters[];
     private int positionOfMotherNature;
     private int numOfCoins;
     private String currentPlayerName;
@@ -32,17 +32,17 @@ public class ClientGameBoard {
         this.clouds = clouds;
     }
 
-    public Character getCurrentCharacter() {
-        return currentCharacter;
+    public ClientCharacter getCurrentCharacter() {
+        return playedCharacters[currentCharacter];
     }
-    public void setCurrentCharacter(Character currentCharacter) {
+    public void setCurrentCharacter(int currentCharacter) {
         this.currentCharacter = currentCharacter;
     }
 
-    public Character[] getPlayedCharacters() {
+    public ClientCharacter[] getPlayedCharacters() {
         return playedCharacters;
     }
-    public void setPlayedCharacters(Character[] playedCharacters) {
+    public void setPlayedCharacters(ClientCharacter[] playedCharacters) {
         this.playedCharacters = playedCharacters;
     }
 

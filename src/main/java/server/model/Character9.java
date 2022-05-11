@@ -85,7 +85,8 @@ public class Character9 extends Character {
         cost = 2;
     }
 
-    public Color[] getStudents(){
+    @Override
+    public Color[] getStudentsSlot(){
         return students;
     }
 

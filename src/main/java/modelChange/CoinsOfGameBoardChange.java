@@ -2,7 +2,7 @@ package modelChange;
 
 import client.model.ClientGameBoard;
 
-public class NumOfCoinsChange extends ModelChange{
+public class CoinsOfGameBoardChange extends ModelChange{
 
     private int numOfCoins;
 
@@ -11,7 +11,7 @@ public class NumOfCoinsChange extends ModelChange{
         gameBoard.setNumOfCoins(numOfCoins);
     }
 
-    public NumOfCoinsChange(int numOfCoins){
+    public CoinsOfGameBoardChange(int numOfCoins){
         this.numOfCoins=numOfCoins;
     }
 }

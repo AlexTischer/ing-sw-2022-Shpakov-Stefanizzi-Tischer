@@ -44,6 +44,11 @@ public class Character1 extends Character {
         cost = 2;
     }
 
+    @Override
+    public Color[] getStudentsSlot(){
+        return (Color[]) students.toArray();
+    }
+
     /*TEST METHODS*/
     public ArrayList<Color> getStudents(){
         return (ArrayList<Color>) students.clone();

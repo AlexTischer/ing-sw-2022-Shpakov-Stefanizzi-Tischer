@@ -1,5 +1,6 @@
 package modelChange;
 
+import client.model.ClientCharacter;
 import client.model.ClientCloud;
 import client.model.ClientGameBoard;
 import client.model.ClientIsland;
@@ -15,11 +16,12 @@ public class GameBoardChange extends ModelChange{
 
     private List<ClientIsland> islands;
     private List<ClientCloud> clouds;
-    private Character currentCharacter;
-    private Character[] playedCharacters;
+    private int currentCharacter;
+    private ClientCharacter[] playedCharacters = new ClientCharacter[3];
     private int positionOfMotherNature;
     private int numOfCoins;
     private String currentPlayerName;
+    private ArrayList<PlayerChange> players;
 
     @Override
     public void execute(ClientGameBoard gameBoard){
@@ -66,11 +68,35 @@ public class GameBoardChange extends ModelChange{
         }
         this.clouds = clientClouds;
 
+        //setting playedCharacters
+        Character[] serverCharacters = gameBoard.getPlayedCharacters();
+
+        for(int i=0; i<3; i++){
+            playedCharacters[i].setCost(serverCharacters[i].getCost());
+
+            if(serverCharacters[i].getNoEntryTiles()!=-1)
+                playedCharacters[i].setNoEntryTiles(serverCharacters[i].getNoEntryTiles());
+
+            if(serverCharacters[i].getStudentsSlot()!=null)
+                playedCharacters[i].setStudents(serverCharacters[i].getStudentsSlot());
+        }
+
+        //TODO check if it's all right
+        //setting currentCharacter
+        int cnt = 0;
+        for(int i=0;i<3;i++){
+            if(serverCharacters[i].equals(gameBoard.getCurrentCharacter())) {
+                this.currentCharacter = i;
+                cnt = 1;
+            }
+        }
+        if(cnt == 0)
+            this.currentCharacter = -1; //-1 is the index of DefaultCharacter
+
         //setting others attributes
-        this.currentCharacter = gameBoard.getCurrentCharacter();
-        this.playedCharacters = gameBoard.getPlayedCharacters();
         this.positionOfMotherNature = gameBoard.getPositionOfMotherNature();
         this.numOfCoins = gameBoard.getNumOfCoins();
         this.currentPlayerName = gameBoard.getCurrentPlayer().getName();
+
     }
 }

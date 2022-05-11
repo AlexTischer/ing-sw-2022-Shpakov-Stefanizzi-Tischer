@@ -460,7 +460,7 @@ public class CharactersTest extends TestCase {
         toBeSwappedTest.add(RED);
 
         /* students on Character Card */
-        Color[] studentsTest = character9test.getStudents();
+        Color[] studentsTest = character9test.getStudentsSlot();
         ArrayList<Color> selectedTest = new ArrayList<Color>();
         selectedTest.add(studentsTest[0]);
         selectedTest.add(studentsTest[1]);
@@ -475,7 +475,7 @@ public class CharactersTest extends TestCase {
         assertEquals(testPlayer.getNumOfStudentsInEntrance(), 4);
 
 
-        Color[] studentTest2 = character9test.getStudents();
+        Color[] studentTest2 = character9test.getStudentsSlot();
         assertEquals(studentTest2[4]==toBeSwappedTest.get(0), true);
         assertEquals(studentTest2[5]==toBeSwappedTest.get(1), true);
 
