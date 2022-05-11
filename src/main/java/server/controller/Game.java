@@ -1,5 +1,6 @@
 package server.controller;
 
+import exceptions.WrongActionException;
 import packets.Packet;
 import server.model.*;
 import server.model.Character;
@@ -234,7 +235,7 @@ public class Game implements GameForClient{
 
     public void moveMotherNature(int steps){
         if (studentMove != (players.size() == 3? 4: 3) || motherNatureMove)
-            throw new RuntimeException();
+            throw new WrongActionException();
 
         gameBoard.moveMotherNature(steps);
         motherNatureMove = true;
@@ -367,7 +368,7 @@ public class Game implements GameForClient{
     }
 
     /*the packet received executes certain methods on Game*/
-    public void update(Packet packet){
+    public void usePacket(Packet packet){
         packet.execute(this);
     }
 
