@@ -5,13 +5,13 @@ import packets.Packet;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Scanner;
 
+//This class is clientHandler that manages client on a separate thread
 public class Connection implements Runnable{
     private Socket clientSocket;
     private ObjectInputStream socketIn;
     private ObjectOutputStream socketOut;
-    private VirtualView clientVirtualView;
+    private VirtualView userVirtualView;
     private Server server;
     private boolean isActive;
 
@@ -24,9 +24,9 @@ public class Connection implements Runnable{
         return isActive;
     }
 
-    private synchronized void closeConnection(){
+    private void closeConnection(String msg){
         try{
-            socketOut.writeChars("Connection closed from the server side");
+            socketOut.writeChars(msg);
             clientSocket.close();
         }catch (IOException e){
             System.err.println(e.getMessage());
@@ -34,11 +34,11 @@ public class Connection implements Runnable{
         isActive = false;
     }
 
-    public void close(){
+    public void close(String msg){
         /*first I close socket, then I deregister client from server*/
-        closeConnection();
+        closeConnection(msg);
         System.out.println("Deregistering client with ip" + clientSocket.getRemoteSocketAddress().toString());
-        server.deregisterConnection(this);
+        server.deregisterConnectionFromLobby(this);
         System.out.println("Done!");
     }
 
@@ -58,26 +58,53 @@ public class Connection implements Runnable{
             socketIn = new ObjectInputStream(clientSocket.getInputStream());
             socketOut = new ObjectOutputStream(clientSocket.getOutputStream());
 
-            /*allows client to insert the name*/
-            socketOut.writeChars("name");
-            String name = socketIn.readUTF();
-            server.lobby(this, name);
+            //waits till client insert correct name
+            while(true){
+                try{
+                    /*allows client to insert the name*/
+                    socketOut.writeChars("name");
+                    String name = socketIn.readUTF();
+                    //from this moment client needs to create model, view and controller
+                    server.lobby(this, name);
+                    break;
+                }
+                catch (IllegalArgumentException e){
+                    continue;
+                }
+            }
 
             while(isActive()){
-                if (server.getGameReady()) {
+                if (server.isGameReady()) {
                     try {
                         Packet packet = (Packet) socketIn.readObject();
-                        clientVirtualView.sendPacket(packet);
+                        userVirtualView.sendPacket(packet);
                     } catch (ClassCastException | ClassNotFoundException e) {
                         /*client has sent wrong object type*/
                         e.printStackTrace();
+                    }
+                }
+                else{//control if client is alive
+                    //I suppose it must be done on a separate thread
+                    try {
+                        socketOut.writeByte(1);
+                        socketOut.flush();
+                        /*set timeout so that if I don`t get the response, close the socket*/
+                        clientSocket.setSoTimeout(10*1000);
+                        /*execute it if response is sent*/
+                        byte ping = socketIn.readByte();
+
+                    } catch(IOException e){
+                        /*this exception gets caught in case client has closed it`s socket*/
+                        e.printStackTrace();
+                        server.deregisterConnectionFromLobby(this);
+                        close("Connection closed from server side. Dead client\nGood bye!");
                     }
                 }
             }
         } catch(IOException e){
             System.err.println(e.getMessage());
         } finally {
-            close();
+            close("Connection closed from server side, malicious client\nGood bye!");
         }
     }
 }

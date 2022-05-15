@@ -20,25 +20,31 @@ public class VirtualView implements Runnable, Observer<ModelChange> {
 
     @Override
     public void update(ModelChange message) {
-
+        clientConnection.send(message);
     }
 
     public void sendPacket(Packet packet) {
-        //disconnect malicious client that tries make an action when it`s not his turn
+        /*send message to client*/
+
+        //disconnect malicious client that tries to make an action when it`s not his turn
+        //or sends exception back to the client in case of error
         if (player != game.getCurrentPlayer())
-            clientConnection.close();
+            clientConnection.close("Connection closed from server side, malicious client\nIt`s not your turn to play");
         else {
             try{
                 game.usePacket(packet);
             }
             catch (WrongActionException e){
-                clientConnection.close();
+                clientConnection.close("Connection closed from server side, malicious client\nThe action phase actions sequence is not correct");
             }
-            catch (IllegalArgumentException e){
+            catch (Exception e){
                 clientConnection.send(new ExceptionChange(e));
             }
         }
 
-            /*send message to client*/
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

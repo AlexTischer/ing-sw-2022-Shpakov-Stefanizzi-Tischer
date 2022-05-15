@@ -10,12 +10,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/*used when GameBoard changed all it`s players got changed
+* e.g. character card that changes all school boards*/
 public class PlayersChange extends ModelChange{
     private ArrayList<ClientPlayer> clientPlayers;
 
     @Override
     public void execute(ClientGameBoard gameBoard){
-        gameBoard.setPlayers(clientPlayers);
+        ArrayList<ClientPlayer> tempPlayers = new ArrayList<ClientPlayer>();
+        for (ClientPlayer p : gameBoard.getPlayers()) {
+            for (ClientPlayer q : clientPlayers) {
+                if (p.getName().equals(q.getName())) {
+                    tempPlayers.add(q);
+                    break;
+                }
+            }
+        }
+
+        gameBoard.setPlayers(tempPlayers);
     }
 
     public PlayersChange(ArrayList<Player> players){

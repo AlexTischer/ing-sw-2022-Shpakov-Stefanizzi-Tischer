@@ -2,6 +2,7 @@ package server.model;
 
 import exceptions.*;
 import modelChange.ModelChange;
+import server.controller.Game;
 import utils.Observable;
 
 import java.util.*;
@@ -10,6 +11,7 @@ import java.util.Random;
 public class GameBoard extends Observable<ModelChange> {
 
     private static GameBoard instanceOfGameBoard;
+    private Game game;
     private Bag instanceOfBag;
     private List<Island> islands;
     private List<Cloud> clouds;
@@ -26,7 +28,8 @@ public class GameBoard extends Observable<ModelChange> {
 
     /*Initializes instanceOfBag and clouds. Takes number of players and
     number of students to be in the bag( by default 130 ) */
-    public void init(int numOfPlayers) {
+    public void init(Game game, int numOfPlayers) {
+        this.game = game;
         playedCharacters = new Character[3];
         islands = new ArrayList<Island>(12);
         for (int i = 0; i < 12; i++) {
@@ -96,9 +99,6 @@ public class GameBoard extends Observable<ModelChange> {
         islands.get(islandNumber).addStudent(studentColor);
     }
 
-    public void sendPlayersChange(ArrayList<Player> players){
-        //TODO create new PlayersChange
-    }
 
     public void addStudentToIsland(Color studentColor, int islandNumber){
         if (islandNumber < 0 || islandNumber > islands.size()-1)

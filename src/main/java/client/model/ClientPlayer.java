@@ -14,6 +14,7 @@ public class ClientPlayer {
     private AssistantType assistantType;
     private Assistant playedAssistant;
     private Assistant[] assistants;
+    private boolean connectionStatus;
 
     public String getName() {
         return name;
@@ -70,4 +71,9 @@ public class ClientPlayer {
     public void setAssistants(Assistant[] assistants) {
         this.assistants = assistants;
     }
+
+    public void setConnectionStatus(boolean connectionStatus) {
+        this.connectionStatus = connectionStatus;
+    }
+
 }

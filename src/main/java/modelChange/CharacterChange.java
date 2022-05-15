@@ -16,14 +16,14 @@ public class CharacterChange extends ModelChange{
 
     @Override
     public void execute(ClientGameBoard gameBoard){
+        gameBoard.setCurrentCharacter(characterIndex);
 
         gameBoard.getCurrentCharacter().setCost(cost);
         if(noEntryTiles!=-1)
-        gameBoard.getCurrentCharacter().setNoEntryTiles(noEntryTiles);
+            gameBoard.getCurrentCharacter().setNoEntryTiles(noEntryTiles);
         if(students!=null)
-        gameBoard.getCurrentCharacter().setStudents(students);
+            gameBoard.getCurrentCharacter().setStudents(students);
 
-        gameBoard.setCurrentCharacter(characterIndex);
     }
 
     public CharacterChange(Character character, int index){ //index must be -1 for defaultCharacter

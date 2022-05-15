@@ -18,15 +18,15 @@ public class GameBoardTest extends TestCase {
     @Test
     void initTest(){
         GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
-        testGameBoard.init(2);
+        testGameBoard.init(null,2);
 
         assertEquals(12, testGameBoard.getNumOfIslands());
         assertEquals(2, testGameBoard.getNumOfClouds());
 
-        testGameBoard.init(3);
+        testGameBoard.init(null,3);
         assertEquals(3, testGameBoard.getNumOfClouds());
 
-        testGameBoard.init(4);
+        testGameBoard.init(null,4);
         assertEquals(4, testGameBoard.getNumOfClouds());
     }
 
@@ -35,19 +35,19 @@ public class GameBoardTest extends TestCase {
     void refillEntranceTest(){
         /*2 players game*/
         GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
-        testGameBoard.init(2);
+        testGameBoard.init(null,2);
         Player testPlayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE, 8);
         testGameBoard.refillEntrance(testPlayer);
         assertEquals(7, testPlayer.getNumOfStudentsInEntrance());
 
         /*3 players game*/
-        testGameBoard.init(3);
+        testGameBoard.init(null, 3);
         testPlayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE, 6);
         testGameBoard.refillEntrance(testPlayer);
         assertEquals(9, testPlayer.getNumOfStudentsInEntrance());
 
         /*4 players game*/
-        testGameBoard.init(4);
+        testGameBoard.init(null,4);
         testPlayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE, 8);
         testGameBoard.refillEntrance(testPlayer);
         assertEquals(7, testPlayer.getNumOfStudentsInEntrance());
@@ -58,7 +58,7 @@ public class GameBoardTest extends TestCase {
     void getCurrentPlayerTest(){
         GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
         Player testPlayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE, 8);
-        testGameBoard.init(2);
+        testGameBoard.init(null,2);
         testGameBoard.setCurrentPlayer(testPlayer);
 
         assertEquals(testPlayer, testGameBoard.getCurrentPlayer());
@@ -67,7 +67,7 @@ public class GameBoardTest extends TestCase {
     @Test
     void mergeIslandsTest(){
         GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
-        testGameBoard.init(2);
+        testGameBoard.init(null,2);
 
         /**MERGE 2 CONSECUTIVE ISLANDS**/
 
@@ -228,7 +228,7 @@ public class GameBoardTest extends TestCase {
     @Test
     void refillCloudsTest(){
         GameBoard testGameBoard2 = GameBoard.getInstanceOfGameBoard();
-        testGameBoard2.init(2);
+        testGameBoard2.init(null,2);
 
         assertEquals(2, testGameBoard2.getNumOfClouds());
 
@@ -240,7 +240,7 @@ public class GameBoardTest extends TestCase {
 
 
         GameBoard testGameBoard3 = GameBoard.getInstanceOfGameBoard();
-        testGameBoard3.init(3);
+        testGameBoard3.init(null,3);
 
         assertEquals(3, testGameBoard3.getNumOfClouds());
 
@@ -252,7 +252,7 @@ public class GameBoardTest extends TestCase {
 
 
         GameBoard testGameBoard4 = GameBoard.getInstanceOfGameBoard();
-        testGameBoard4.init(4);
+        testGameBoard4.init(null,4);
 
         assertEquals(4, testGameBoard4.getNumOfClouds());
 
@@ -267,7 +267,7 @@ public class GameBoardTest extends TestCase {
     @Test
     void addAndRemoveProfessorTest(){
         GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
-        testGameBoard.init(2);
+        testGameBoard.init(null,2);
 
         Player testPlayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE, 8);
 
@@ -361,7 +361,7 @@ public class GameBoardTest extends TestCase {
     @Test
     void addAndGetCoinTest(){
         GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
-        testGameBoard.init(2);
+        testGameBoard.init(null,2);
         assertEquals(20, testGameBoard.getNumOfCoins());
 
         assertThrows(NumOfCoinsExceeded.class, () ->{testGameBoard.addCoin();});
@@ -382,7 +382,7 @@ public class GameBoardTest extends TestCase {
     @Test
     void setAndGetCurrentCharactersTest(){
         GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
-        testGameBoard.init(2);
+        testGameBoard.init(null,2);
 
         testGameBoard.setCurrentCharacter(new Character1());
         assertTrue(testGameBoard.getCurrentCharacter() instanceof Character1);
@@ -428,7 +428,7 @@ public class GameBoardTest extends TestCase {
     void addAndRemoveStudentInEntranceTest(){
         GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
         /*maxNumOfStudents is 7*/
-        testGameBoard.init(2);
+        testGameBoard.init(null,2);
 
         Player testPlayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE, 8);
 
@@ -507,7 +507,7 @@ public class GameBoardTest extends TestCase {
     @Test
     void addStudentAndRemoveStudentInDining(){
         GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
-        testGameBoard.init(2);
+        testGameBoard.init(null,2);
         Player testPlayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE, 8);
 
         /*test that there are no students at the beginning*/
@@ -566,7 +566,7 @@ public class GameBoardTest extends TestCase {
     void moveStudentToIslandTest(){
         GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
         Player testPlayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE, 8);
-        testGameBoard.init(2);
+        testGameBoard.init(null,2);
         testGameBoard.setCurrentPlayer(testPlayer);
 
         /*moving student from entrance to island*/
@@ -617,7 +617,7 @@ public class GameBoardTest extends TestCase {
     void useCloudTest(){
         GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
         Player testPlayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE, 8);
-        testGameBoard.init(2);
+        testGameBoard.init(null,2);
         testGameBoard.setCurrentPlayer(testPlayer);
 
         testGameBoard.refillClouds();
@@ -631,7 +631,7 @@ public class GameBoardTest extends TestCase {
     void addProfessorTest(){
         GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
         Player testPlayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE, 8);
-        testGameBoard.init(2);
+        testGameBoard.init(null,2);
         testGameBoard.setCurrentPlayer(testPlayer);
 
         testGameBoard.addProfessor(testPlayer, Color.RED);
@@ -642,7 +642,7 @@ public class GameBoardTest extends TestCase {
     void removeProfessorTest(){
         GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
         Player testPlayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE, 8);
-        testGameBoard.init(2);
+        testGameBoard.init(null,2);
         testGameBoard.setCurrentPlayer(testPlayer);
 
         testGameBoard.addProfessor(testPlayer, Color.RED);

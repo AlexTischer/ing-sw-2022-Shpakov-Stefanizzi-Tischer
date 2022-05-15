@@ -51,7 +51,7 @@ public class Game implements GameForClient{
                 throw new InvalidParameterException();
         }
         gameBoard = GameBoard.getInstanceOfGameBoard();
-        gameBoard.init(playersNames.size());
+        gameBoard.init(this, playersNames.size());
 
         this.advancedSettings=advancedSettings;
         if (advancedSettings) {
@@ -94,7 +94,7 @@ public class Game implements GameForClient{
 
     public void moveStudentToIsland(Color studentColor, int islandNumber){
         if (studentMove > (players.size() == 3? 4: 3))
-            throw new RuntimeException();
+            throw new WrongActionException();
 
         gameBoard.addStudentToIsland(gameBoard.getCurrentPlayer(), studentColor, islandNumber);
         studentMove++;
@@ -102,7 +102,7 @@ public class Game implements GameForClient{
 
     public void moveStudentToDining(Color studentColor){
         if (studentMove > (players.size() == 3? 4: 3))
-            throw new RuntimeException();
+            throw new WrongActionException();
 
         removeStudentFromEntrance(studentColor);
         addStudentToDining(gameBoard.getCurrentPlayer(), studentColor);
@@ -263,7 +263,7 @@ public class Game implements GameForClient{
 
     public void useCloud(int cloudNumber){
         if (studentMove != (players.size() == 3? 4: 3) || !motherNatureMove)
-            throw new RuntimeException();
+            throw new WrongActionException();
 
         gameBoard.useCloud(cloudNumber);
         useCloudMove = true;

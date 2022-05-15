@@ -1,9 +1,6 @@
 package modelChange;
 
-import client.model.ClientCharacter;
-import client.model.ClientCloud;
-import client.model.ClientGameBoard;
-import client.model.ClientIsland;
+import client.model.*;
 import server.model.*;
 import server.model.Character;
 
@@ -21,7 +18,7 @@ public class GameBoardChange extends ModelChange{
     private int positionOfMotherNature;
     private int numOfCoins;
     private String currentPlayerName;
-    private ArrayList<PlayerChange> players;
+    private ArrayList<ClientPlayer> clientPlayers;
 
     @Override
     public void execute(ClientGameBoard gameBoard){
@@ -34,9 +31,26 @@ public class GameBoardChange extends ModelChange{
         gameBoard.setPositionOfMotherNature(positionOfMotherNature);
         gameBoard.setNumOfCoins(numOfCoins);
         gameBoard.setCurrentPlayerName(currentPlayerName);
+
+        if (gameBoard.getPlayers()!=null) {
+            ArrayList<ClientPlayer> tempPlayers = new ArrayList<ClientPlayer>();
+            for (ClientPlayer p : gameBoard.getPlayers()) {
+                for (ClientPlayer q : clientPlayers) {
+                    if (p.getName().equals(q.getName())) {
+                        tempPlayers.add(q);
+                        break;
+                    }
+                }
+            }
+
+            gameBoard.setPlayers(tempPlayers);
+        }
+        else {
+            gameBoard.setPlayers(clientPlayers);
+        }
     }
 
-    public GameBoardChange(GameBoard gameBoard){
+    public GameBoardChange(GameBoard gameBoard, ArrayList<Player> players){
 
         //setting islands
         List<ClientIsland> clientIslands = new ArrayList<>();
@@ -98,5 +112,46 @@ public class GameBoardChange extends ModelChange{
         this.numOfCoins = gameBoard.getNumOfCoins();
         this.currentPlayerName = gameBoard.getCurrentPlayer().getName();
 
+        for(Player p : players){
+
+            ClientPlayer clientPlayer = new ClientPlayer();
+
+            /*setting ClientSchoolBoard*/
+            ClientSchoolBoard clientSchoolBoard = new ClientSchoolBoard();
+
+            //entrance
+            clientSchoolBoard.setEntrance(p.getSchoolBoard().getStudentsInEntrance());
+
+            //diningRoom
+            Map<Color, Integer> diningRoom = new HashMap<>();
+            for(Color c : Color.values()){
+                diningRoom.put(c,p.getSchoolBoard().getNumOfStudentsInDining(c));
+            }
+            clientSchoolBoard.setDiningRoom(diningRoom);
+
+            //professors
+            Map<Color, Integer> professors = new HashMap<>();
+            for(Color c : p.getSchoolBoard().getProfessorsColor()){
+                professors.put(c,1);
+            }
+            clientSchoolBoard.setProfessors(professors);
+
+            //numOfTowers
+            clientSchoolBoard.setNumOfTowers(p.getSchoolBoard().getNumOfTowers());
+
+            //towersColor
+            clientSchoolBoard.setTowersColor(p.getSchoolBoard().getTowersColor());
+
+
+            /*setting other player attributes*/
+            clientPlayer.setName(p.getName());
+            clientPlayer.setCoins(p.getCoins());
+            clientPlayer.setTowerColor(p.getTowerColor());
+            clientPlayer.setAssistantType(p.getAssistantType());
+            clientPlayer.setPlayedAssistant(p.getPlayedAssistant());
+            clientPlayer.setAssistants(p.getAssistants());
+
+            clientPlayers.add(clientPlayer);
+        }
     }
 }
