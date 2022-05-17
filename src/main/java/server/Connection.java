@@ -66,6 +66,7 @@ public class Connection implements Runnable{
                     String name = socketIn.readUTF();
                     //from this moment client needs to create model, view and controller
                     server.lobby(this, name);
+                    socketOut.writeChars("start");
                     break;
                 }
                 catch (IllegalArgumentException e){

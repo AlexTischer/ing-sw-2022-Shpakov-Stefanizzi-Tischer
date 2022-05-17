@@ -1,7 +1,7 @@
 package server.model;
 
 import exceptions.*;
-import modelChange.ModelChange;
+import modelChange.*;
 import server.controller.Game;
 import utils.Observable;
 
@@ -51,6 +51,7 @@ public class GameBoard extends Observable<ModelChange> {
         assistantDeck = new AssistantFactory().getAssistantDeck();
 
         numOfCoins = 20;
+
     }
 
     public static GameBoard getInstanceOfGameBoard() {
@@ -74,6 +75,20 @@ public class GameBoard extends Observable<ModelChange> {
         player.setAssistants(assistantDeck.popAssistants(player.getAssistantType()));
     }
 
+    public void refillClouds() {
+        for (Cloud cloud : clouds) {
+            for (int i = 0; i < cloud.getMaxNumOfStudents(); i++)
+                cloud.addStudent(instanceOfBag.extractStudent());
+        }
+        CloudsChange cloudsChange = new CloudsChange(clouds);
+        notify(cloudsChange);
+    }
+
+    public void sendGameBoardChange() {
+        GameBoardChange gameBoardChange = new GameBoardChange(this, game.getPlayers());
+        notify(gameBoardChange);
+    }
+
     public void moveMotherNature(int steps) {
         if (!currentCharacter.moveMotherNature(steps))
             throw new IllegalArgumentException("This number of steps is not allowed");
@@ -82,6 +97,8 @@ public class GameBoard extends Observable<ModelChange> {
         if(positionOfMotherNature<0){
             positionOfMotherNature += islands.size();
         }
+        MotherNatureChange motherNatureChange = new MotherNatureChange(positionOfMotherNature);
+        notify(motherNatureChange);
     }
 
     public Player getCurrentPlayer() {
@@ -90,6 +107,8 @@ public class GameBoard extends Observable<ModelChange> {
 
     public void setCurrentPlayer(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
+        CurrentPlayerChange currentPlayerChange = new CurrentPlayerChange(currentPlayer.getName());
+        notify(currentPlayerChange);
     }
 
     public void addStudentToIsland(Player player, Color studentColor, int islandNumber) {
@@ -97,26 +116,30 @@ public class GameBoard extends Observable<ModelChange> {
             throw new IllegalArgumentException("Error: invalid island number");
         player.removeStudentFromEntrance(studentColor);
         islands.get(islandNumber).addStudent(studentColor);
+        IslandChange islandChange = new IslandChange(islands.get(islandNumber), islandNumber);
+        notify(islandChange);
+        SchoolBoardChange schoolBoardChange = new SchoolBoardChange(player);
+        notify(schoolBoardChange);
     }
-
 
     public void addStudentToIsland(Color studentColor, int islandNumber){
         if (islandNumber < 0 || islandNumber > islands.size()-1)
             throw new IllegalArgumentException("Error: invalid island number");
-
         islands.get(islandNumber).addStudent(studentColor);
+        IslandChange islandChange = new IslandChange(islands.get(islandNumber), islandNumber);
+        notify(islandChange);
     }
 
     public void useCloud(int cloudNumber) {
-
         for (Color color : clouds.get(cloudNumber).getStudentsColors()) {
             currentPlayer.addStudentToEntrance(color);
         }
-
         clouds.get(cloudNumber).removeStudents();
-
+        CloudChange cloudChange = new CloudChange(clouds.get(cloudNumber), cloudNumber);
+        notify(cloudChange);
+        SchoolBoardChange schoolBoardChange = new SchoolBoardChange(currentPlayer);
+        notify(schoolBoardChange);
     }
-
     public int getNumOfIslands() {
         return islands.size();
     }
@@ -124,6 +147,7 @@ public class GameBoard extends Observable<ModelChange> {
     /* Merge islands with same towerColor and returns boolean
     True if at least 2 islands have been merged, False otherwise
     Executed each time any island gets conquered*/
+
     public boolean mergeIslands() {
 
         int oldNumOfIslands = islands.size();
@@ -155,36 +179,37 @@ public class GameBoard extends Observable<ModelChange> {
                 }
             }
         }
-
+        if(oldNumOfIslands != islands.size()) {
+            IslandsChange islandsChange = new IslandsChange(islands);
+            notify(islandsChange);
+        }
         return oldNumOfIslands != islands.size();
     }
-
-    public void refillClouds() {
-
-        for (Cloud cloud : clouds) {
-            for (int i = 0; i < cloud.getMaxNumOfStudents(); i++)
-                cloud.addStudent(instanceOfBag.extractStudent());
-        }
-
-    }
-
     /*returns the score of the player on particular island*/
+
     public int calculateInfluence(int islandNumber, Player player) {
         return currentCharacter.calculateInfluence(islands.get(islandNumber), islandNumber, player);
     }
 
     public void addProfessor(Player player, Color color) {
         player.addProfessor(color);
+        SchoolBoardChange schoolBoardChange = new SchoolBoardChange(player);
+        notify(schoolBoardChange);
     }
 
     public void removeProfessor(Player player, Color color) {
         player.removeProfessor(color);
+        SchoolBoardChange schoolBoardChange = new SchoolBoardChange(player);
+        notify(schoolBoardChange);
     }
 
     public void addStudentToEntrance(Player player, Color studentColor) {
 
-        if (player.getNumOfStudentsInEntrance() < maxNumOfStudentsInEntrance)
+        if (player.getNumOfStudentsInEntrance() < maxNumOfStudentsInEntrance) {
             player.addStudentToEntrance(studentColor);
+            SchoolBoardChange schoolBoardChange = new SchoolBoardChange(player);
+            notify(schoolBoardChange);
+        }
         else
             throw new NumOfStudentsExceeded();
     }
@@ -192,6 +217,8 @@ public class GameBoard extends Observable<ModelChange> {
     public void addTowersToIsland(int islandNumber, Player player){
         try {
             islands.get(islandNumber).setTowersColor(player.getTowerColor());
+            IslandChange islandChange = new IslandChange(islands.get(islandNumber), islandNumber);
+            notify(islandChange);
         }
         catch (UnsupportedOperationException e){
             /*there were no towers on island*/
@@ -201,21 +228,28 @@ public class GameBoard extends Observable<ModelChange> {
 
     public void removeStudentFromEntrance(Player player, Color studentColor) {
         player.removeStudentFromEntrance(studentColor);
+        SchoolBoardChange schoolBoardChange = new SchoolBoardChange(player);
+        notify(schoolBoardChange);
     }
 
     public void addStudentToDining(Player player, Color studentColor) throws NumOfStudentsExceeded {
         player.addStudentToDining(studentColor);
+        SchoolBoardChange schoolBoardChange = new SchoolBoardChange(player);
+        notify(schoolBoardChange);
     }
 
     public void removeStudentFromDining(Player player, Color studentColor) {
         player.removeStudentFromDining(studentColor);
+        SchoolBoardChange schoolBoardChange = new SchoolBoardChange(player);
+        notify(schoolBoardChange);
     }
 
     public void getCoin() throws NoEnoughCoinsException {
         if (numOfCoins <= 0)
             throw new NoEnoughCoinsException("The Game board has no coins available");
-
         numOfCoins--;
+        CoinsOfGameBoardChange coinsOfGameBoardChange = new CoinsOfGameBoardChange(numOfCoins);
+        notify(coinsOfGameBoardChange);
     }
 
     public void addCoin() throws NumOfCoinsExceeded {
@@ -223,6 +257,8 @@ public class GameBoard extends Observable<ModelChange> {
             throw new NumOfCoinsExceeded();
 
         numOfCoins++;
+        CoinsOfGameBoardChange coinsOfGameBoardChange = new CoinsOfGameBoardChange(numOfCoins);
+        notify(coinsOfGameBoardChange);
     }
 
     public void setNoEntry(int islandNumber, boolean noEntry) throws NoEntryException, NoEnoughEntryTilesException {
@@ -230,6 +266,8 @@ public class GameBoard extends Observable<ModelChange> {
             throw new IllegalArgumentException("Error: invalid island number");
 
         islands.get(islandNumber).setNoEntry(noEntry);
+        IslandChange islandChange = new IslandChange(islands.get(islandNumber), islandNumber);
+        notify(islandChange);
     }
 
     public Color getStudentFromBag() {
@@ -242,41 +280,54 @@ public class GameBoard extends Observable<ModelChange> {
             for (int i = 0; i < playedCharacters[characterNumber].getCost(); i++)
                 addCoin();
 
-            setCurrentCharacter(playedCharacters[characterNumber]);
+            currentCharacter=playedCharacters[characterNumber];
         } catch (NoEnoughCoinsException e) {
             e.printStackTrace();
         }
+        CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
+        notify(characterChange);
     }
 
     public void removeCoins(Player player, int cost){
         player.removeCoins(cost);
+        CoinsOfPlayerChange coinsOfPlayerChange = new CoinsOfPlayerChange(player);
+        notify(coinsOfPlayerChange);
     }
 
     public void addCoins(Player player, int coins){
         player.addCoins(coins);
+        CoinsOfPlayerChange coinsOfPlayerChange = new CoinsOfPlayerChange(player);
+        notify(coinsOfPlayerChange);
     }
-
 
     public void activateCharacter(int islandNumber) {
         currentCharacter.setSelectedIslandNumber(islandNumber);
         currentCharacter.execute();
+        CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
+        notify(characterChange);
     }
 
     public void activateCharacter(ArrayList<Color> toBeSwappedStudents, ArrayList<Color> selectedStudents) {
         currentCharacter.setSelectedStudents(selectedStudents);
         currentCharacter.setToBeSwappedStudents(toBeSwappedStudents);
         currentCharacter.execute();
+        CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
+        notify(characterChange);
     }
 
     public void activateCharacter(Color color, int islandNumber) {
         currentCharacter.setSelectedStudent(color);
         currentCharacter.setSelectedIslandNumber(islandNumber);
         currentCharacter.execute();
+        CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
+        notify(characterChange);
     }
 
     public void activateCharacter(Color color) {
         currentCharacter.setSelectedStudent(color);
         currentCharacter.execute();
+        CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
+        notify(characterChange);
     }
 
     public Character getCurrentCharacter() {
@@ -287,18 +338,26 @@ public class GameBoard extends Observable<ModelChange> {
         playedCharacters[i]=character;
     }
 
-    public void setCurrentCharacter(Character character) {
+    public void setCurrentCharacterToDefault(Character character) {
         currentCharacter=character;
+        CharacterChange characterChange = new CharacterChange(currentCharacter, -1);
+        notify(characterChange);
     }
 
     public void addNoEntryTile() {
         for (Character c : playedCharacters) {
             c.addNoEntryTile();
         }
+        CharactersChange charactersChange = new CharactersChange(playedCharacters);
+        notify(charactersChange);
     }
 
     public void addStudentToBag(Color studentColor){
         instanceOfBag.addStudent(studentColor);
+    }
+
+    public void setPlayedAssistantRank(int assistantRank, Player player){
+        player.setPlayedAssistantRank(assistantRank);
     }
 
     public boolean checkBagEmpty(){
@@ -333,13 +392,13 @@ public class GameBoard extends Observable<ModelChange> {
 
         return islands.get(numOfIsland).getTowersColor();
     }
-
     public boolean getNoEntryOnIsland(int numOfIsland){
         if (numOfIsland < 0 || numOfIsland > islands.size()-1)
             throw new IllegalArgumentException();
 
         return islands.get(numOfIsland).getNoEntry();
     }
+
     /*method that adds a tower or changes it`s color
     * note:not only one current player can conquer an island that MN stops on
     * but other players as well*/

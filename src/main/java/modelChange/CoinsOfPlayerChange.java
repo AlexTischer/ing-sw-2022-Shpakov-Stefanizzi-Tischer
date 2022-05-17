@@ -14,8 +14,8 @@ public class CoinsOfPlayerChange extends ModelChange{
         gameBoard.getPlayer(playerName).setCoins(numOfCoins);
     }
 
-    public CoinsOfPlayerChange(int numOfCoins, Player player){
-        this.numOfCoins = numOfCoins;
+    public CoinsOfPlayerChange(Player player){
+        this.numOfCoins = player.getCoins();
         playerName = player.getName();
     }
 }

@@ -17,6 +17,7 @@ public class ClientConnection {
     private ObjectOutputStream socketOut;
     private ClientController clientController;
     private boolean isActive;
+    private String name;
 
     public ClientConnection(Socket socket) {
         this.socket = socket;
@@ -99,16 +100,23 @@ public class ClientConnection {
 
         }
         else if (fromServer.equals("name")){
-            stdout.println("Please insert name of player:\n");
-            String name = stdin.nextLine();
-            socketOut.writeChars(name);
-            socketOut.flush();
+            while(fromServer.equals("name")){
+                stdout.println("Please insert name of player:\n");
+                name = stdin.nextLine();
+                socketOut.writeChars(name);
+                socketOut.flush();
+                fromServer = socketIn.readUTF();
+            }
+            if (!fromServer.equals("name") && !fromServer.equals("start")){
+                stdout.println("Error:\n");
+                this.close();
+            }
         }
-        else{
+        else if(!fromServer.equals("start")){
             stdout.println("Error:\n");
             this.close();
         }
-
-        this.close();
+        if(fromServer.equals("start"))
+            clientController.setClientName(name);
     }
 }

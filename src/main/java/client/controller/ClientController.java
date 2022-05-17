@@ -93,6 +93,15 @@ public class ClientController implements GameForClient{
         }
     }
 
+    public void setClientName(String clientName){
+        gameBoard.setClientName(clientName);}
 
+    public void pianificationPhase() {
+        //TODO ask view to ask user to choose Assistant
+    }
+
+    public void actionPhase() {
+        //TODO ask view to ask user to choose actions
+    }
 
 }

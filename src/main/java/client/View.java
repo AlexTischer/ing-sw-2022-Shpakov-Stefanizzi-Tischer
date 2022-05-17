@@ -8,4 +8,13 @@ public class View {
     public void attachController(ClientController controller){
         this.controller = controller;
     }
+
+
+    public void pianificationPhase() {
+        controller.pianificationPhase();
+    }
+
+    public void actionPhase() {
+        controller.actionPhase();
+    }
 }

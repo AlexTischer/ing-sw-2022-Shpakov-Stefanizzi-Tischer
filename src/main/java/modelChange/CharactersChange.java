@@ -4,7 +4,7 @@ import client.model.ClientCharacter;
 import client.model.ClientGameBoard;
 import server.model.Character;
 
-public class PlayedCharactersChange extends ModelChange{
+public class CharactersChange extends ModelChange{
 
     private ClientCharacter[] clientCharacters = new ClientCharacter[3];
 
@@ -13,7 +13,7 @@ public class PlayedCharactersChange extends ModelChange{
         gameBoard.setPlayedCharacters(clientCharacters);
     }
 
-    public PlayedCharactersChange(Character[] playedCharacters){
+    public CharactersChange(Character[] playedCharacters){
 
         for(int i=0; i<3; i++){
             clientCharacters[i].setCost(playedCharacters[i].getCost());

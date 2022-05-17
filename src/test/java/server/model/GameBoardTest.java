@@ -384,7 +384,7 @@ public class GameBoardTest extends TestCase {
         GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
         testGameBoard.init(null,2);
 
-        testGameBoard.setCurrentCharacter(new Character1());
+        testGameBoard.setCurrentCharacterToDefault(new Character1());
         assertTrue(testGameBoard.getCurrentCharacter() instanceof Character1);
     }
 

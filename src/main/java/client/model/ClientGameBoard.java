@@ -3,10 +3,7 @@ package client.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import client.View;
-import server.model.Character;
-
 public class ClientGameBoard {
     private View view;
     private List<ClientIsland> islands;
@@ -19,6 +16,8 @@ public class ClientGameBoard {
     private ArrayList<ClientPlayer> players;
     private String message;
     private List<String> userNames;
+
+    private String clientName;
 
     public List<ClientIsland> getIslands() {
         return islands;
@@ -71,6 +70,14 @@ public class ClientGameBoard {
 
     public void setCurrentPlayerName(String currentPlayerName) {
         this.currentPlayerName = currentPlayerName;
+        if(currentPlayerName.equals(clientName)){
+            if(getPlayer(currentPlayerName).getPlayedAssistant()==null){
+                view.pianificationPhase();
+            }
+            else {
+                view.actionPhase();
+            }
+        }
     }
 
     public ClientPlayer getPlayer(String playerName) {
@@ -96,9 +103,13 @@ public class ClientGameBoard {
 
     public void setMessage(String message){
         this.message = message;
-        notify();
     }
+
     public void attachView(View view){
         this.view = view;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
 }

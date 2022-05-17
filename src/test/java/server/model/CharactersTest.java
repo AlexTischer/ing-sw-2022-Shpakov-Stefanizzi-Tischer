@@ -33,7 +33,7 @@ public class CharactersTest extends TestCase {
         server.model.Character characterTest = new Character();
         characterTest.initialFill(gametest);
 
-        testGameBoard.setCurrentCharacter(characterTest);
+        testGameBoard.setCurrentCharacterToDefault(characterTest);
         characterTest.buy();
 
         gametest.addStudentToIsland(GREEN,2);
@@ -101,7 +101,7 @@ public class CharactersTest extends TestCase {
 
         Character1 character1test = new Character1();
         character1test.initialFill(gametest);
-        testGameBoard.setCurrentCharacter(character1test);
+        testGameBoard.setCurrentCharacterToDefault(character1test);
 
         character1test.buy();
 
@@ -127,7 +127,7 @@ public class CharactersTest extends TestCase {
 
         Character2 character2test = new Character2();
         character2test.initialFill(gametest);
-        testGameBoard.setCurrentCharacter(character2test);
+        testGameBoard.setCurrentCharacterToDefault(character2test);
 
         character2test.buy();
 
@@ -155,7 +155,7 @@ public class CharactersTest extends TestCase {
 
         Character3 character3test = new Character3();
         character3test.initialFill(gametest);
-        testGameBoard.setCurrentCharacter(character3test);
+        testGameBoard.setCurrentCharacterToDefault(character3test);
 
         character3test.buy();
 
@@ -191,7 +191,7 @@ public class CharactersTest extends TestCase {
 
         Character4 character4test = new Character4();
         character4test.initialFill(gametest);
-        testGameBoard.setCurrentCharacter(character4test);
+        testGameBoard.setCurrentCharacterToDefault(character4test);
 
         character4test.buy();
         gametest.activateCharacter(GREEN);
@@ -227,7 +227,7 @@ public class CharactersTest extends TestCase {
 
         Character5 character5test = new Character5();
         character5test.initialFill(gametest);
-        testGameBoard.setCurrentCharacter(character5test);
+        testGameBoard.setCurrentCharacterToDefault(character5test);
 
         try {
             character5test.buy();
@@ -267,7 +267,7 @@ public class CharactersTest extends TestCase {
 
         Character6 character6test = new Character6();
         character6test.initialFill(gametest);
-        testGameBoard.setCurrentCharacter(character6test);
+        testGameBoard.setCurrentCharacterToDefault(character6test);
 
         gametest.getPlayers().get(0).addStudentToDining(GREEN);
         gametest.getPlayers().get(0).addProfessor(GREEN);
@@ -295,7 +295,7 @@ public class CharactersTest extends TestCase {
 
         Character7 character7test = new Character7();
         character7test.initialFill(gametest);
-        testGameBoard.setCurrentCharacter(character7test);
+        testGameBoard.setCurrentCharacterToDefault(character7test);
         character7test.buy();
 
         /* adding some students to dining room */
@@ -381,7 +381,7 @@ public class CharactersTest extends TestCase {
 
         Character8 character8test = new Character8();
         character8test.initialFill(gametest);
-        testGameBoard.setCurrentCharacter(character8test);
+        testGameBoard.setCurrentCharacterToDefault(character8test);
 
         character8test.buy();
 
@@ -414,7 +414,7 @@ public class CharactersTest extends TestCase {
 
         Character8 character8test = new Character8();
         character8test.initialFill(gametest);
-        testGameBoard.setCurrentCharacter(character8test);
+        testGameBoard.setCurrentCharacterToDefault(character8test);
 
         character8test.buy();
 
@@ -445,7 +445,7 @@ public class CharactersTest extends TestCase {
 
         Character9 character9test = new Character9();
         character9test.initialFill(gametest);
-        testGameBoard.setCurrentCharacter(character9test);
+        testGameBoard.setCurrentCharacterToDefault(character9test);
         character9test.buy();
 
         /* adding students to entrance */
@@ -520,7 +520,7 @@ public class CharactersTest extends TestCase {
 
         Character10 character10test = new Character10();
         character10test.initialFill(gametest);
-        testGameBoard.setCurrentCharacter(character10test);
+        testGameBoard.setCurrentCharacterToDefault(character10test);
 
         character10test.buy();
 
@@ -547,7 +547,7 @@ public class CharactersTest extends TestCase {
 
         Character11 character11test = new Character11();
         character11test.initialFill(gametest);
-        testGameBoard.setCurrentCharacter(character11test);
+        testGameBoard.setCurrentCharacterToDefault(character11test);
 
         character11test.buy();
 
@@ -590,7 +590,7 @@ public class CharactersTest extends TestCase {
 
         Character12 character12test = new Character12();
         character12test.initialFill(gametest);
-        testGameBoard.setCurrentCharacter(character12test);
+        testGameBoard.setCurrentCharacterToDefault(character12test);
 
         character12test.buy();
 

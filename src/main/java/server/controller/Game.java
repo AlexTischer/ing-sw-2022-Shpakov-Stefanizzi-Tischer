@@ -62,7 +62,7 @@ public class Game implements GameForClient{
             }
         }
 
-        gameBoard.setCurrentCharacter(new Character());
+        gameBoard.setCurrentCharacterToDefault(new Character());
         gameBoard.getCurrentCharacter().initialFill(this);
 
         /*refill assistants of player*/
@@ -70,6 +70,8 @@ public class Game implements GameForClient{
             gameBoard.refillAssistants(p);
             gameBoard.refillEntrance(p);
         }
+
+        gameBoard.sendGameBoardChange();
 
         studentMove = 0;
         motherNatureMove = false;
@@ -271,7 +273,7 @@ public class Game implements GameForClient{
 
     public synchronized void useAssistant(int assistantRank){
         if(checkAssistant(assistantRank, gameBoard.getCurrentPlayer())){
-            gameBoard.getCurrentPlayer().setPlayedAssistantRank(assistantRank);
+            gameBoard.setPlayedAssistantRank(assistantRank, gameBoard.getCurrentPlayer());
             notifyAll();
         }else throw new RepeatedAssistantRankException();
         /*set the next player to chose assistant card*/
@@ -307,7 +309,7 @@ public class Game implements GameForClient{
         }
 
         for (Player p : players){
-            p.setPlayedAssistantRank(0);
+            gameBoard.setPlayedAssistantRank(0, p);
         }
     }
 
