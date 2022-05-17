@@ -5,7 +5,7 @@ import java.io.IOException;
 public class ClientApp {
 
     public static void main(String[] args) {
-        Client client = new Client("hostname", 0000);
+        Client client = new Client("192.168.43.6", 46582);
 
         try {
             client.run();

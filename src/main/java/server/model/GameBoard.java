@@ -358,14 +358,49 @@ public class GameBoard extends Observable<ModelChange> {
 
     public void setPlayedAssistantRank(int assistantRank, Player player){
         player.setPlayedAssistantRank(assistantRank);
+        AssistantChange assistantChange = new AssistantChange(player);
+        notify(assistantChange);
     }
 
     public boolean checkBagEmpty(){
         return instanceOfBag.checkEmpty();
     }
 
-    /*TEST METHODS*/
+    public TowerColor getTowersColorOnIsland(int numOfIsland){
+        if (numOfIsland < 0 || numOfIsland > islands.size()-1)
+            throw new IllegalArgumentException();
 
+        return islands.get(numOfIsland).getTowersColor();
+    }
+
+    public int getNumOfTowersOnIsland(int numOfIsland){
+        if (numOfIsland < 0 || numOfIsland > islands.size()-1)
+            throw new IllegalArgumentException();
+
+        return islands.get(numOfIsland).getNumOfTowers();
+    }
+
+    public int getPositionOfMotherNature(){
+        return positionOfMotherNature;
+    }
+
+    public int getNumOfMergedIslands(int islandNumber){
+        return islands.get(islandNumber).getNumOfIslands();
+    }
+
+    public List<Island> getIslands() {
+        return islands;
+    }
+
+    public List<Cloud> getClouds() {
+        return clouds;
+    }
+
+    public Character[] getPlayedCharacters() {
+        return playedCharacters;
+    }
+
+    /*TEST METHODS*/
     public int getNumOfClouds() { return clouds.size(); }
 
     public int getNumOfStudentsOnCloud(int numOfCloud){
@@ -379,19 +414,6 @@ public class GameBoard extends Observable<ModelChange> {
         return islands.get(numOfIsland).getNumOfStudents(studentColor);
     }
 
-    public int getNumOfTowersOnIsland(int numOfIsland){
-        if (numOfIsland < 0 || numOfIsland > islands.size()-1)
-            throw new IllegalArgumentException();
-
-        return islands.get(numOfIsland).getNumOfTowers();
-    }
-
-    public TowerColor getTowersColorOnIsland(int numOfIsland){
-        if (numOfIsland < 0 || numOfIsland > islands.size()-1)
-            throw new IllegalArgumentException();
-
-        return islands.get(numOfIsland).getTowersColor();
-    }
     public boolean getNoEntryOnIsland(int numOfIsland){
         if (numOfIsland < 0 || numOfIsland > islands.size()-1)
             throw new IllegalArgumentException();
@@ -416,10 +438,6 @@ public class GameBoard extends Observable<ModelChange> {
 
     }
 
-    public int getPositionOfMotherNature(){
-        return positionOfMotherNature;
-    }
-
     public void placeMotherNature(int numOfIsland){
         if (numOfIsland < 0 || numOfIsland > islands.size()-1)
             throw new IllegalArgumentException();
@@ -441,22 +459,6 @@ public class GameBoard extends Observable<ModelChange> {
         for (int i = 0; i < numOfIslands; i++) {
             player.removeTower();
         }
-    }
-
-    public int getNumOfMergedIslands(int islandNumber){
-        return islands.get(islandNumber).getNumOfIslands();
-    }
-
-    public List<Island> getIslands() {
-        return islands;
-    }
-
-    public List<Cloud> getClouds() {
-        return clouds;
-    }
-
-    public Character[] getPlayedCharacters() {
-        return playedCharacters;
     }
 }
 

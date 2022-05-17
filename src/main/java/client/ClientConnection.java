@@ -4,10 +4,7 @@ import client.controller.ClientController;
 import modelChange.ModelChange;
 import packets.Packet;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -61,28 +58,32 @@ public class ClientConnection {
     }
 
     public void init() throws IOException {
-        ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
+
         ObjectOutputStream socketOut = new ObjectOutputStream(socket.getOutputStream());
+        socketOut.flush();
+
+        ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
 
         //use stdin stdout just for easiness
         Scanner stdin = new Scanner(System.in);
-        PrintWriter stdout = new PrintWriter(System.out);
-
         String fromServer = socketIn.readUTF();
-        if (fromServer.equals("config")){
+        System.out.println(fromServer);
+        System.out.println(fromServer.equals("config"));
+        if (fromServer.equals("config")) {
+            System.out.println("config started" + fromServer);
             //let client insert a configuration
-            while (true){
+            while (true) {
                 try {
                     /*ask view to print the messages and request input*/
-                    stdout.println("Please insert number of players:\n");
+                    System.out.println("Please insert number of players:\n");
                     int numOfPlayer = Integer.parseInt(stdin.nextLine());
-                    stdout.println("Do you want to play with advanced settings ? y/yes n/no:\n");
+                    System.out.println("Do you want to play with advanced settings ? y/yes n/no:\n");
                     String advancedSettings = stdin.nextLine();
                     /*-------------*/
 
                     if (advancedSettings.equals("y"))
                         advancedSettings = "true";
-                    else if(advancedSettings.equals("n"))
+                    else if (advancedSettings.equals("n"))
                         advancedSettings = "false";
                     else
                         throw new IllegalArgumentException("Incorrect advanced settings response");
@@ -90,33 +91,33 @@ public class ClientConnection {
                     //send configurations to the server
                     socketOut.writeInt(numOfPlayer);
                     socketOut.flush();
-                    socketOut.writeChars(advancedSettings);
+                    socketOut.writeUTF(advancedSettings);
                     socketOut.flush();
-                }
-                catch (IllegalArgumentException e){
-                    stdout.println("Error. Info: " + e.getMessage() + "\nTry again!");
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Error. Info: " + e.getMessage() + "\nTry again!");
                 }
             }
 
-        }
-        else if (fromServer.equals("name")){
-            while(fromServer.equals("name")){
-                stdout.println("Please insert name of player:\n");
+        } else if (fromServer.equals("name")) {
+            while (fromServer.equals("name")) {
+                System.out.println("Please insert name of player:\n");
                 name = stdin.nextLine();
-                socketOut.writeChars(name);
+                socketOut.writeUTF(name);
                 socketOut.flush();
                 fromServer = socketIn.readUTF();
+                System.out.println("Client received from client: " + fromServer);
             }
-            if (!fromServer.equals("name") && !fromServer.equals("start")){
-                stdout.println("Error:\n");
+            if (!fromServer.equals("name") && !fromServer.equals("start")) {
+                System.out.println("Error:\n");
                 this.close();
             }
-        }
-        else if(!fromServer.equals("start")){
-            stdout.println("Error:\n");
+        } else if (!fromServer.equals("start")) {
+            System.out.println("Error:\n");
             this.close();
         }
-        if(fromServer.equals("start"))
+        if (fromServer.equals("start")) {
             clientController.setClientName(name);
+            System.out.println("Client sent name succesfully: ");
+        }
     }
 }

@@ -26,7 +26,9 @@ public class Connection implements Runnable{
 
     private void closeConnection(String msg){
         try{
-            socketOut.writeChars(msg);
+            socketOut.writeUTF(msg);
+            socketOut.flush();
+            socketOut.reset();
             clientSocket.close();
         }catch (IOException e){
             System.err.println(e.getMessage());
@@ -45,6 +47,8 @@ public class Connection implements Runnable{
     public void send(ModelChange modelChange) {
         try{
             socketOut.writeObject(modelChange);
+            socketOut.flush();
+            socketOut.reset();
         }
         catch (IOException e){
             e.printStackTrace();
@@ -55,18 +59,26 @@ public class Connection implements Runnable{
     public void run() {
         try{
             isActive = true;
-            socketIn = new ObjectInputStream(clientSocket.getInputStream());
             socketOut = new ObjectOutputStream(clientSocket.getOutputStream());
+
+            socketOut.flush();
+
+            socketIn = new ObjectInputStream(clientSocket.getInputStream());
 
             //waits till client insert correct name
             while(true){
                 try{
                     /*allows client to insert the name*/
-                    socketOut.writeChars("name");
+                    socketOut.writeUTF("name");
+                    socketOut.flush();
+                    socketOut.reset();
                     String name = socketIn.readUTF();
+                    System.out.println("Server received from client: " + name);
                     //from this moment client needs to create model, view and controller
                     server.lobby(this, name);
-                    socketOut.writeChars("start");
+                    socketOut.writeUTF("start");
+                    socketOut.flush();
+                    socketOut.reset();
                     break;
                 }
                 catch (IllegalArgumentException e){
@@ -87,8 +99,9 @@ public class Connection implements Runnable{
                 else{//control if client is alive
                     //I suppose it must be done on a separate thread
                     try {
-                        socketOut.writeByte(1);
+                        socketOut.writeUTF("1");
                         socketOut.flush();
+                        socketOut.reset();
                         /*set timeout so that if I don`t get the response, close the socket*/
                         clientSocket.setSoTimeout(10*1000);
                         /*execute it if response is sent*/
