@@ -60,30 +60,36 @@ public class Connection implements Runnable{
         try{
             isActive = true;
             socketOut = new ObjectOutputStream(clientSocket.getOutputStream());
-
             socketOut.flush();
-
             socketIn = new ObjectInputStream(clientSocket.getInputStream());
 
+            boolean nameReady = false;
             //waits till client insert correct name
-            while(true){
-                try{
-                    /*allows client to insert the name*/
-                    socketOut.writeUTF("name");
-                    socketOut.flush();
-                    socketOut.reset();
-                    String name = socketIn.readUTF();
-                    System.out.println("Server received from client: " + name);
-                    //from this moment client needs to create model, view and controller
+            while(!nameReady){
+                /*allows client to insert the name*/
+                socketOut.reset();
+                socketOut.writeUTF("name");
+                socketOut.flush();
+
+                String name = socketIn.readUTF();
+                System.out.println("Server received from client: " + name);
+                try {
                     server.lobby(this, name);
-                    socketOut.writeUTF("start");
-                    socketOut.flush();
-                    socketOut.reset();
-                    break;
                 }
                 catch (IllegalArgumentException e){
-                    continue;
+                    socketOut.reset();
+                    socketOut.writeUTF("This name \"" + name + "\" is already used. Please chose another name");
+                    socketOut.flush();
                 }
+
+                nameReady = true;
+                socketOut.reset();
+                socketOut.writeUTF("ok");
+                socketOut.flush();
+
+                socketOut.writeUTF("start");
+                socketOut.flush();
+                socketOut.reset();
             }
 
             while(isActive()){

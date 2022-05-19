@@ -75,6 +75,10 @@ public class Server {
             try {
                 /*receive new connection request*/
                 Socket socket = serverSocket.accept();
+                ObjectOutputStream socketOut = new ObjectOutputStream(socket.getOutputStream());
+                socketOut.flush();
+                ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
+
                 System.out.println("Connection number: " + (connections+1));
 
                 /*create connection for client*/
@@ -82,38 +86,31 @@ public class Server {
 
                 if (connections == 0){
 
-                    ObjectOutputStream socketOut = new ObjectOutputStream(socket.getOutputStream());
-                    socketOut.flush();
-
-                    ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
-
                     try {
                         /*allows client configurate the game settings since he is the first one*/
+                        socketOut.reset();
                         socketOut.writeUTF("config");
                         socketOut.flush();
-                        socketOut.reset();
                         numOfPlayers = Integer.parseInt(socketIn.readUTF());
                         System.out.println("Server received from client: " + numOfPlayers);
                         if ( numOfPlayers < 2 || numOfPlayers > 4)
                             throw new IllegalArgumentException();
                         //equals true unless string is equal to "false"
+                        socketOut.reset();
+                        socketOut.writeUTF("ok");
+                        socketOut.flush();
+
                         advancedSettings = Boolean.parseBoolean(socketIn.readUTF());
                         System.out.println("Server received from client: " + advancedSettings);
-                    }
-                    catch (NumberFormatException e){
-                        socketOut.writeUTF("Invalid parameter. Try again !");
-                        socketOut.flush();
                         socketOut.reset();
-                        /*disconnect client*/
-                        //client may have sent wrong parameter if it was cracked
+                        socketOut.writeUTF("ok");
+                        socketOut.flush();
+                    }
+                    catch (IllegalArgumentException e){
+                        socketOut.reset();
+                        socketOut.writeUTF("Incorrect number of players value. Please try again");
+                        socketOut.flush();
                         //the check is done also on the client side
-                        connection.close("Connection closed from server side, malicious client\nInvalid parameter provided");
-                    }
-                    catch(IllegalArgumentException e){
-                        socketOut.writeUTF("Invalid parameter. Try again !\n"+e.toString());
-                        socketOut.flush();
-                        socketOut.reset();
-                        connection.close("Connection closed from server side, malicious client\nInvalid parameter provided");
                     }
 
                 }

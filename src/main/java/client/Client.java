@@ -10,13 +10,13 @@ public class Client{
 
     private Socket socket;
     private ClientGameBoard gameBoard;
-    private String ip;
+    private String serverip;
     private int serverPort;
 
     private ClientController controller;
 
     public Client(String ip, int port){
-        this.ip = ip;
+        this.serverip = ip;
         this.serverPort = port;
 
         //create view, model, controller since when client receives "config"
@@ -28,12 +28,13 @@ public class Client{
 
         view.attachController(controller);
         controller.attachModel(model);
+        //attach view to controller in order to show simple messages at the start
         controller.attachView(view);
         model.attachView(view);
     }
 
     public void run() throws IOException {
-        Socket socket = new Socket(ip, serverPort);
+        Socket socket = new Socket(serverip, serverPort);
 
         System.out.println("Connection established with server: " + socket.getRemoteSocketAddress());
 

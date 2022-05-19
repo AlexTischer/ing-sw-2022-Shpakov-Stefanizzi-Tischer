@@ -6,6 +6,7 @@ import packets.Packet;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class ClientConnection {
@@ -36,8 +37,8 @@ public class ClientConnection {
     public void close(){
         /*first I close socket, then I deregister client from server*/
         System.out.println("Closing connection");
-        closeConnection();
         clientController.detachConnection();
+        closeConnection();
         System.out.println("Done!");
     }
 
@@ -46,13 +47,15 @@ public class ClientConnection {
     }
 
     public void send(Packet packet) throws IOException{
+        socketOut.reset();
         socketOut.writeObject(packet);
         socketOut.flush();
+        /*each send of packet is followed by read of model change*/
         try {
             ModelChange mc = (ModelChange) socketIn.readObject();
             clientController.changeModel(mc);
         } catch (ClassCastException | ClassNotFoundException e) {
-            /*client has sent wrong object type*/
+            /*server has sent wrong object type*/
             e.printStackTrace();
         }
     }
@@ -64,60 +67,100 @@ public class ClientConnection {
 
         ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
 
-        //use stdin stdout just for easiness
+        //use stdin just for easiness
         Scanner stdin = new Scanner(System.in);
+
         String fromServer = socketIn.readUTF();
-        System.out.println(fromServer);
-        System.out.println(fromServer.equals("config"));
-        if (fromServer.equals("config")) {
-            System.out.println("config started" + fromServer);
-            //let client insert a configuration
-            while (true) {
-                try {
-                    /*ask view to print the messages and request input*/
-                    System.out.println("Please insert number of players:\n");
-                    int numOfPlayer = Integer.parseInt(stdin.nextLine());
-                    System.out.println("Do you want to play with advanced settings ? y/yes n/no:\n");
-                    String advancedSettings = stdin.nextLine();
-                    /*-------------*/
 
-                    if (advancedSettings.equals("y"))
-                        advancedSettings = "true";
-                    else if (advancedSettings.equals("n"))
-                        advancedSettings = "false";
-                    else
-                        throw new IllegalArgumentException("Incorrect advanced settings response");
+        while (!fromServer.equals("start")) {
+            if (fromServer.equals("config")) {
+                System.out.println("config started " + fromServer);
+                //let client insert a configuration
+                /*ask view to print the messages and request input*/
+                boolean inputCorrect = false;
+                while (!inputCorrect) {
+                    try {
+                        System.out.println("Please insert number of players:\n");
+                        int numOfPlayers = Integer.parseInt(stdin.nextLine());
+                        if (numOfPlayers < 2 || numOfPlayers > 4)
+                            throw new IllegalArgumentException("Incorrect number of players value. Please try again");
 
-                    //send configurations to the server
-                    socketOut.writeInt(numOfPlayer);
+                        //send configurations to the server
+                        socketOut.reset();
+                        socketOut.writeInt(numOfPlayers);
+                        socketOut.flush();
+
+                        fromServer = socketIn.readUTF();
+                        if (fromServer.equals("ok")) {
+                            inputCorrect = true;
+                            System.out.println("Client received from server: " + fromServer);
+                        } else {
+                            inputCorrect = false;
+                            System.out.println("Error from server received: \n" + fromServer);
+                            continue;
+                        }
+
+                        System.out.println("Do you want to play with advanced settings ? y/yes n/no:\n");
+                        String advancedSettings = stdin.nextLine();
+                        /*-------------*/
+
+                        if (advancedSettings.toLowerCase(Locale.ROOT).equals("y"))
+                            advancedSettings = "true";
+                        else if (advancedSettings.toLowerCase(Locale.ROOT).equals("n"))
+                            advancedSettings = "false";
+                        else
+                            throw new IllegalArgumentException("Incorrect advanced settings response. Please try again");
+                        inputCorrect = true;
+
+
+
+                        socketOut.reset();
+                        socketOut.writeUTF(advancedSettings);
+                        socketOut.flush();
+
+                        fromServer = socketIn.readUTF();
+                        if (fromServer.equals("ok")) {
+                            inputCorrect = true;
+                            System.out.println("Client received from server: " + fromServer);
+                        } else {
+                            inputCorrect = false;
+                            System.out.println("Error from server received: \n" + fromServer);
+                            continue;
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Incorrect number of players value. Please try again");
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e);
+                    }
+
+                }
+
+            } else if (fromServer.equals("name")) {
+                boolean inputCorrect = false;
+                while (!inputCorrect) {
+                    System.out.println("Please insert name of player:\n");
+                    name = stdin.nextLine();
+
+                    socketOut.reset();
+                    socketOut.writeUTF(name);
                     socketOut.flush();
-                    socketOut.writeUTF(advancedSettings);
-                    socketOut.flush();
-                } catch (IllegalArgumentException e) {
-                    System.out.println("Error. Info: " + e.getMessage() + "\nTry again!");
+
+                    fromServer = socketIn.readUTF();
+                    if (fromServer.equals("ok")) {
+                        inputCorrect = true;
+                        System.out.println("\nClient received from server : " + fromServer + "\n");
+                    } else {
+                        inputCorrect = false;
+                        System.out.println("\nError from server received: " + fromServer + "\n");
+                    }
                 }
             }
+            else if (fromServer.equals("start")) {
+                clientController.setClientName(name);
+                System.out.println("Client sent name succesfully: ");
+            }
 
-        } else if (fromServer.equals("name")) {
-            while (fromServer.equals("name")) {
-                System.out.println("Please insert name of player:\n");
-                name = stdin.nextLine();
-                socketOut.writeUTF(name);
-                socketOut.flush();
-                fromServer = socketIn.readUTF();
-                System.out.println("Client received from client: " + fromServer);
-            }
-            if (!fromServer.equals("name") && !fromServer.equals("start")) {
-                System.out.println("Error:\n");
-                this.close();
-            }
-        } else if (!fromServer.equals("start")) {
-            System.out.println("Error:\n");
-            this.close();
-        }
-        if (fromServer.equals("start")) {
-            clientController.setClientName(name);
-            System.out.println("Client sent name succesfully: ");
+            fromServer = socketIn.readUTF();
         }
     }
 }

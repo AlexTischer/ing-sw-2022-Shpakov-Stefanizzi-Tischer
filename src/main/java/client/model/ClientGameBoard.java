@@ -19,6 +19,7 @@ public class ClientGameBoard {
 
     private String clientName;
 
+    /*Mike: inside each set method we need to update the view*/
     public List<ClientIsland> getIslands() {
         return islands;
     }
