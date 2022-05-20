@@ -9,6 +9,7 @@ import exceptions.RepeatedAssistantRankException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -71,6 +72,8 @@ public class Game implements GameForClient{
             gameBoard.refillEntrance(p);
         }
 
+        Collections.shuffle(players);
+        gameBoard.setCurrentPlayer(players.get(0));
         gameBoard.sendGameBoardChange();
 
         studentMove = 0;

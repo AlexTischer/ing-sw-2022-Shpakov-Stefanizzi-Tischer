@@ -11,14 +11,14 @@ import java.util.Map;
 
 public class GameBoardChange extends ModelChange{
 
-    private List<ClientIsland> islands;
-    private List<ClientCloud> clouds;
+    private ArrayList<ClientIsland> islands = new ArrayList<ClientIsland>();
+    private ArrayList<ClientCloud> clouds = new ArrayList<ClientCloud>();
     private int currentCharacter;
     private ClientCharacter[] playedCharacters = new ClientCharacter[3];
     private int positionOfMotherNature;
     private int numOfCoins;
     private String currentPlayerName;
-    private ArrayList<ClientPlayer> clientPlayers;
+    private ArrayList<ClientPlayer> clientPlayers = new ArrayList<ClientPlayer>();
 
     @Override
     public void execute(ClientGameBoard gameBoard){
@@ -53,7 +53,7 @@ public class GameBoardChange extends ModelChange{
     public GameBoardChange(GameBoard gameBoard, ArrayList<Player> players){
 
         //setting islands
-        List<ClientIsland> clientIslands = new ArrayList<>();
+        ArrayList<ClientIsland> clientIslands = new ArrayList<>();
 
         for(Island i : gameBoard.getIslands()){
             ClientIsland clientIsland = new ClientIsland();
@@ -73,7 +73,7 @@ public class GameBoardChange extends ModelChange{
         this.islands = clientIslands;
 
         //setting clouds
-        List<ClientCloud> clientClouds = new ArrayList<ClientCloud>();
+        ArrayList<ClientCloud> clientClouds = new ArrayList<ClientCloud>();
 
         for(Cloud c : gameBoard.getClouds()){
             ClientCloud clientCloud = new ClientCloud();
@@ -86,13 +86,17 @@ public class GameBoardChange extends ModelChange{
         Character[] serverCharacters = gameBoard.getPlayedCharacters();
 
         for(int i=0; i<3; i++){
-            playedCharacters[i].setCost(serverCharacters[i].getCost());
+            ClientCharacter character = new ClientCharacter();
+
+            character.setCost(serverCharacters[i].getCost());
 
             if(serverCharacters[i].getNoEntryTiles()!=-1)
-                playedCharacters[i].setNoEntryTiles(serverCharacters[i].getNoEntryTiles());
+                character.setNoEntryTiles(serverCharacters[i].getNoEntryTiles());
 
-            if(serverCharacters[i].getStudentsSlot()!=null)
-                playedCharacters[i].setStudents(serverCharacters[i].getStudentsSlot());
+
+            character.setStudents(serverCharacters[i].getStudentsSlot());
+
+            playedCharacters[i] = character;
         }
 
         //TODO check if it's all right

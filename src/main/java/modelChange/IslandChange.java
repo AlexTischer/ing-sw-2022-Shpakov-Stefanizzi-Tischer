@@ -6,6 +6,7 @@ import server.model.Color;
 import server.model.Island;
 import server.model.TowerColor;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,7 @@ public class IslandChange extends ModelChange{
 
     private int islandNumber;
     private int numOfIslands;
-    private Map<Color, Integer> students;
+    private Map<Color, Integer> students = new HashMap<Color, Integer>();
     private int numOfTowers;
     private TowerColor towersColor;
     private boolean noEntry;

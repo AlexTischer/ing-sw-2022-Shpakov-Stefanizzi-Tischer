@@ -46,7 +46,15 @@ public class Character1 extends Character {
 
     @Override
     public Color[] getStudentsSlot(){
-        return (Color[]) students.toArray();
+        Color[] toReturnStudents = null;
+        if (students != null){
+           toReturnStudents = new Color[students.size()];
+
+            for (int i = 0; i < students.size(); i++)
+                toReturnStudents[i] = students.get(i);
+        }
+
+        return toReturnStudents;
     }
 
     /*TEST METHODS*/

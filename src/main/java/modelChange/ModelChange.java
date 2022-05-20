@@ -2,7 +2,9 @@ package modelChange;
 
 import client.model.ClientGameBoard;
 
-public class ModelChange {
+import java.io.Serializable;
+
+public class ModelChange implements Serializable {
 
     public void execute(ClientGameBoard gameBoard) throws Exception {}
 }

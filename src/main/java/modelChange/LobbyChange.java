@@ -7,7 +7,7 @@ import java.util.List;
 
 /*gets used when client gets (dis)connected from lobby*/
 public class LobbyChange extends ModelChange{
-    private List<String> userNames = new ArrayList<String>();
+    private List<String> userNames;
 
 
     @Override

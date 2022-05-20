@@ -4,11 +4,12 @@ import client.model.ClientCloud;
 import client.model.ClientGameBoard;
 import server.model.Cloud;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CloudsChange extends ModelChange{
 
-    private List<ClientCloud> clientClouds;
+    private List<ClientCloud> clientClouds = new ArrayList<ClientCloud>();
 
     @Override
     public void execute(ClientGameBoard gameBoard){

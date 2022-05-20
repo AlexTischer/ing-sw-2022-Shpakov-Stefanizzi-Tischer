@@ -8,12 +8,13 @@ import server.model.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /*used when GameBoard changed all it`s players got changed
 * e.g. character card that changes all school boards*/
 public class PlayersChange extends ModelChange{
-    private ArrayList<ClientPlayer> clientPlayers;
+    private List<ClientPlayer> clientPlayers = new ArrayList<ClientPlayer>();
 
     @Override
     public void execute(ClientGameBoard gameBoard){

@@ -4,14 +4,15 @@ import client.model.ClientGameBoard;
 import server.model.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class SchoolBoardChange extends ModelChange{
 
     private String playerName;
     private ArrayList<Color> entrance;
-    private Map<Color,Integer> diningRoom;
-    private Map<Color,Integer> professors;
+    private Map<Color,Integer> diningRoom = new HashMap<Color, Integer>();
+    private Map<Color,Integer> professors = new HashMap<Color, Integer>();
     private int numOfTowers;
     private TowerColor towersColor;
 

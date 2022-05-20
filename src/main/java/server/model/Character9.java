@@ -87,7 +87,7 @@ public class Character9 extends Character {
 
     @Override
     public Color[] getStudentsSlot(){
-        return students;
+        return students.clone();
     }
 
 

@@ -16,13 +16,16 @@ public class CharactersChange extends ModelChange{
     public CharactersChange(Character[] playedCharacters){
 
         for(int i=0; i<3; i++){
-            clientCharacters[i].setCost(playedCharacters[i].getCost());
+            ClientCharacter character = new ClientCharacter();
+            character.setCost(playedCharacters[i].getCost());
 
             if(playedCharacters[i].getNoEntryTiles()!=-1)
-                clientCharacters[i].setNoEntryTiles(playedCharacters[i].getNoEntryTiles());
+                character.setNoEntryTiles(playedCharacters[i].getNoEntryTiles());
 
             if(playedCharacters[i].getStudentsSlot()!=null)
-                clientCharacters[i].setStudents(playedCharacters[i].getStudentsSlot());
+                character.setStudents(playedCharacters[i].getStudentsSlot());
+
+            clientCharacters[i] = character;
         }
     }
 }
