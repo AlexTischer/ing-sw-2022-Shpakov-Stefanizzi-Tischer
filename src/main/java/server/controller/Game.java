@@ -80,13 +80,13 @@ public class Game implements GameForClient{
         motherNatureMove = false;
         useCloudMove = false;
 
-        new Thread(() -> {
+    /*    new Thread(() -> {
             try {
                 playGame();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-        }).start();
+        }).start();*/
     }
 
     public Player getCurrentPlayer(){
@@ -274,10 +274,9 @@ public class Game implements GameForClient{
         useCloudMove = true;
     }
 
-    public synchronized void useAssistant(int assistantRank){
+    public void useAssistant(int assistantRank){
         if(checkAssistant(assistantRank, gameBoard.getCurrentPlayer())){
             gameBoard.setPlayedAssistantRank(assistantRank, gameBoard.getCurrentPlayer());
-            notifyAll();
         }else throw new RepeatedAssistantRankException();
         /*set the next player to chose assistant card*/
         gameBoard.setCurrentPlayer(players.get((players.indexOf(gameBoard.getCurrentPlayer())+1)%players.size()));
@@ -291,7 +290,7 @@ public class Game implements GameForClient{
 
 
     /*TODO need to control newRound(), i suppose there is a bug*/
-    private synchronized void newRound() throws InterruptedException {
+    private void newRound() throws InterruptedException {
         gameBoard.refillClouds();
         gameBoard.setCurrentPlayer(players.get(0));
 

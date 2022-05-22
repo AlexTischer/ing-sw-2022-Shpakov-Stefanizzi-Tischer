@@ -319,7 +319,7 @@ public class CharactersTest extends TestCase {
         selectedTest.add(BLUE);
         selectedTest.add(PINK);
 
-        gametest.activateCharacter(toBeSwappedTest,selectedTest);
+        gametest.activateCharacter(toBeSwappedTest, selectedTest);
 
         /* checking new entrance */
         assertEquals(testPlayer.getStudentsInEntrance().contains(RED), true);

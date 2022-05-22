@@ -100,6 +100,7 @@ public class ClientGameBoard {
 
     public void setUserNames(List<String> userNames) {
         this.userNames = userNames;
+        System.out.println(userNames.toString());
     }
 
     public void setMessage(String message){

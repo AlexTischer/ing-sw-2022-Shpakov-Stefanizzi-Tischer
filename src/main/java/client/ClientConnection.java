@@ -6,6 +6,8 @@ import packets.Packet;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
+import java.security.InvalidParameterException;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -19,6 +21,11 @@ public class ClientConnection {
 
     public ClientConnection(Socket socket) {
         this.socket = socket;
+        try {
+            socket.setSoTimeout(50*1000);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isActive() {
@@ -47,16 +54,34 @@ public class ClientConnection {
     }
 
     public void send(Packet packet) throws IOException{
-        socketOut.reset();
-        socketOut.writeObject(packet);
-        socketOut.flush();
-        /*each send of packet is followed by read of model change*/
-        try {
-            ModelChange mc = (ModelChange) socketIn.readObject();
-            clientController.changeModel(mc);
-        } catch (ClassCastException | ClassNotFoundException e) {
-            /*server has sent wrong object type*/
-            e.printStackTrace();
+        synchronized (this) {
+            socketOut.writeObject(packet);
+            socketOut.flush();
+            socketOut.reset();
+        }
+        /*each send of packet is followed by read of model change or pong message*/
+        Object fromServer = new Object();
+        boolean modelChangeReceived = false;
+
+        while (!modelChangeReceived) {
+            try {
+                fromServer = socketIn.readObject();
+                ModelChange mc = (ModelChange) fromServer;
+                clientController.changeModel(mc);
+                modelChangeReceived = true;
+            } catch (ClassCastException | ClassNotFoundException | InvalidParameterException e) {
+                /*server has sent wrong object type*/
+                try {
+                    if (!fromServer.equals("pong")){
+                        throw new IllegalArgumentException();
+                    }
+                }
+                catch (ClassCastException | IllegalArgumentException e2){
+                    //client didn't receive model change neither pong message during its game phase
+                    //anomalous server behaviour
+                    this.close();
+                }
+            }
         }
     }
 
@@ -71,8 +96,13 @@ public class ClientConnection {
         Scanner stdin = new Scanner(System.in);
 
         String fromServer = socketIn.readUTF();
+        //new Thread(new ConnectionTracker(this, socketOut, socketIn)).start();
 
         while (!fromServer.equals("start")) {
+            //if the pong message from server was received , client should wait for the next different message
+            while (fromServer.equals("pong")){
+                fromServer = socketIn.readUTF();
+            }
             if (fromServer.equals("config")) {
                 System.out.println("config started " + fromServer);
                 //let client insert a configuration
@@ -81,16 +111,28 @@ public class ClientConnection {
                 while (!inputCorrect) {
                     try {
                         System.out.println("Please insert number of players:\n");
+
                         int numOfPlayers = Integer.parseInt(stdin.nextLine());
-                        if (numOfPlayers < 2 || numOfPlayers > 4)
+                        stdin.reset();
+                        if (numOfPlayers >= 2 || numOfPlayers <= 4){
+                            //send configurations to the server
+                            //guarantee that ConnectionTracker doesn't write in socket at the same time
+                            synchronized (this) {
+                                socketOut.writeObject((Object)numOfPlayers);
+                                socketOut.flush();
+                                socketOut.reset();
+                            }
+                        }
+                        else
                             throw new IllegalArgumentException("Incorrect number of players value. Please try again");
 
-                        //send configurations to the server
-                        socketOut.reset();
-                        socketOut.writeInt(numOfPlayers);
-                        socketOut.flush();
 
                         fromServer = socketIn.readUTF();
+
+                        //if the pong message from server was received , client should wait for the next different message
+                        while(fromServer.equals("pong")){
+                            fromServer = socketIn.readUTF();
+                        }
                         if (fromServer.equals("ok")) {
                             inputCorrect = true;
                             System.out.println("Client received from server: " + fromServer);
@@ -100,25 +142,30 @@ public class ClientConnection {
                             continue;
                         }
 
-                        System.out.println("Do you want to play with advanced settings ? y/yes n/no:\n");
-                        String advancedSettings = stdin.nextLine();
-                        /*-------------*/
+                        System.out.println("\nDo you want to play with advanced settings ? y/yes n/no:");
 
-                        if (advancedSettings.toLowerCase(Locale.ROOT).equals("y"))
+                        String advancedSettings = stdin.nextLine();
+                        if (advancedSettings.toLowerCase(Locale.ROOT).equals("y")) {
                             advancedSettings = "true";
-                        else if (advancedSettings.toLowerCase(Locale.ROOT).equals("n"))
+                            inputCorrect = true;
+                        }
+                        else if (advancedSettings.toLowerCase(Locale.ROOT).equals("n")) {
                             advancedSettings = "false";
+                            inputCorrect = true;
+                        }
                         else
                             throw new IllegalArgumentException("Incorrect advanced settings response. Please try again");
-                        inputCorrect = true;
 
-
-
-                        socketOut.reset();
-                        socketOut.writeUTF(advancedSettings);
-                        socketOut.flush();
-
+                        //connectionTracker and ClientConnection should not write in socket at the same time
+                        synchronized (this) {
+                            socketOut.writeObject(advancedSettings);
+                            socketOut.flush();
+                            socketOut.reset();
+                        }
                         fromServer = socketIn.readUTF();
+                        while (fromServer.equals("pong")) {
+                            fromServer = socketIn.readUTF();
+                        }
                         if (fromServer.equals("ok")) {
                             inputCorrect = true;
                             System.out.println("Client received from server: " + fromServer);
@@ -135,32 +182,62 @@ public class ClientConnection {
 
                 }
 
-            } else if (fromServer.equals("name")) {
+            }
+            else if (fromServer.equals("name")) {
                 boolean inputCorrect = false;
                 while (!inputCorrect) {
                     System.out.println("Please insert name of player:\n");
                     name = stdin.nextLine();
 
-                    socketOut.reset();
-                    socketOut.writeUTF(name);
-                    socketOut.flush();
+                    //connectionTracker and ClientConnection should not write in socket at the same time
+                    synchronized (this) {
+                        socketOut.writeObject(name);
+                        socketOut.flush();
+                        socketOut.reset();
+                    }
 
-                    fromServer = socketIn.readUTF();
-                    if (fromServer.equals("ok")) {
-                        inputCorrect = true;
-                        System.out.println("\nClient received from server : " + fromServer + "\n");
-                    } else {
-                        inputCorrect = false;
-                        System.out.println("\nError from server received: " + fromServer + "\n");
+                    //Server added me to lobby if mu name is ok
+                    Object lobbyChange = new Object();
+
+                    boolean waitingLobbyChange = true;
+                    while (waitingLobbyChange) {
+                        try {
+                            lobbyChange = socketIn.readObject();
+                            clientController.changeModel((ModelChange) lobbyChange);
+                            inputCorrect = true;
+                        }
+                        catch (ClassCastException e) {
+                            try {
+                                fromServer = (String) lobbyChange;
+                                if (fromServer.equals("pong")) {
+                                    continue;
+                                }
+                                else if (fromServer.equals("start")){
+                                    waitingLobbyChange = false;
+                                }
+                                else{
+                                    System.out.println("Error from server received: \n" + fromServer);
+                                    waitingLobbyChange = false;
+                                }
+
+                            } catch (ClassCastException e2) {
+                                System.out.println("error class cast ex");
+                            }
+                        }
+                        catch (ClassNotFoundException e){
+                            System.out.println("error class not found ex");
+                        }
                     }
                 }
             }
-            else if (fromServer.equals("start")) {
+            if (fromServer.equals("start")) {
                 clientController.setClientName(name);
-                System.out.println("Client sent name succesfully: ");
+                System.out.println("Client sent name succesfully: " + name + "\nready to start the game");
+                //server ready
             }
-
-            fromServer = socketIn.readUTF();
+            else {
+                fromServer = socketIn.readUTF();
+            }
         }
     }
 }

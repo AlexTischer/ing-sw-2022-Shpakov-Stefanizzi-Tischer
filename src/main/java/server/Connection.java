@@ -1,5 +1,6 @@
 package server;
 
+import client.ConnectionTracker;
 import modelChange.ModelChange;
 import packets.Packet;
 
@@ -15,8 +16,11 @@ public class Connection implements Runnable{
     private Server server;
     private boolean isActive;
 
-    public Connection(Socket clientSocket, Server server) {
+
+    public Connection(Socket clientSocket, ObjectInputStream socketIn, ObjectOutputStream socketOut, Server server) {
         this.clientSocket = clientSocket;
+        this.socketIn = socketIn;
+        this.socketOut = socketOut;
         this.server = server;
     }
 
@@ -26,9 +30,6 @@ public class Connection implements Runnable{
 
     private void closeConnection(String msg){
         try{
-            socketOut.writeUTF(msg);
-            socketOut.flush();
-            socketOut.reset();
             clientSocket.close();
         }catch (IOException e){
             System.err.println(e.getMessage());
@@ -39,7 +40,7 @@ public class Connection implements Runnable{
     public void close(String msg){
         /*first I close socket, then I deregister client from server*/
         closeConnection(msg);
-        System.out.println("Deregistering client with ip" + clientSocket.getRemoteSocketAddress().toString());
+        System.out.println("Deregistering client with ip" + clientSocket.getRemoteSocketAddress());
         server.deregisterConnectionFromLobby(this);
         System.out.println("Done!");
     }
@@ -57,67 +58,91 @@ public class Connection implements Runnable{
 
     @Override
     public void run() {
+
+        System.out.println("I am connection. I have started !");
         try{
             isActive = true;
-            socketOut = new ObjectOutputStream(clientSocket.getOutputStream());
-            socketOut.flush();
-            socketIn = new ObjectInputStream(clientSocket.getInputStream());
 
             boolean nameReady = false;
+
             //waits till client insert correct name
+            socketOut.writeUTF("name");
+            socketOut.flush();
+            socketOut.reset();
+
+            Object fromClient = new Object();
             while(!nameReady){
                 /*allows client to insert the name*/
-                socketOut.reset();
-                socketOut.writeUTF("name");
-                socketOut.flush();
-
-                String name = socketIn.readUTF();
-                System.out.println("Server received from client: " + name);
                 try {
-                    server.lobby(this, name);
-                }
-                catch (IllegalArgumentException e){
-                    socketOut.reset();
-                    socketOut.writeUTF("This name \"" + name + "\" is already used. Please chose another name");
+                    fromClient = socketIn.readObject();
+                    //if client sent ping message, then i need to respond and wait for the next input
+                    if (fromClient.equals("ping")){
+                        socketOut.writeObject("pong");
+                        socketOut.flush();
+                        socketOut.reset();
+                        continue;
+                    }
+
+                    System.out.println("Server received from client: " + fromClient);
+                    try {
+                        server.lobby(this, (String) fromClient);
+                    }
+                    catch (IllegalArgumentException e){
+                        socketOut.writeObject("This name \"" + fromClient + "\" is already used. Please chose another name");
+                        socketOut.flush();
+                        socketOut.reset();
+                        continue;
+                    }
+
+                    System.out.println("Client " + fromClient + " added to lobby");
+
+                    synchronized (this) {
+                        while (!server.isGameReady()) {
+                            try {
+                                this.wait();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    socketOut.writeObject("start");
                     socketOut.flush();
+                    socketOut.reset();
+
+                    nameReady = true;
+                }
+                catch (ClassNotFoundException | ClassCastException e) {
+                    socketOut.writeObject("The name value is incorrect. Try again");
+                    socketOut.flush();
+                    socketOut.reset();
                 }
 
-                nameReady = true;
-                socketOut.reset();
-                socketOut.writeUTF("ok");
-                socketOut.flush();
 
-                socketOut.writeUTF("start");
-                socketOut.flush();
-                socketOut.reset();
             }
 
             while(isActive()){
                 if (server.isGameReady()) {
+                    fromClient = new Object();
                     try {
-                        Packet packet = (Packet) socketIn.readObject();
+                        fromClient = socketIn.readObject();
+                        Packet packet = (Packet)fromClient;
                         userVirtualView.sendPacket(packet);
-                    } catch (ClassCastException | ClassNotFoundException e) {
-                        /*client has sent wrong object type*/
-                        e.printStackTrace();
                     }
-                }
-                else{//control if client is alive
-                    //I suppose it must be done on a separate thread
-                    try {
-                        socketOut.writeUTF("1");
-                        socketOut.flush();
-                        socketOut.reset();
-                        /*set timeout so that if I don`t get the response, close the socket*/
-                        clientSocket.setSoTimeout(10*1000);
-                        /*execute it if response is sent*/
-                        byte ping = socketIn.readByte();
-
-                    } catch(IOException e){
-                        /*this exception gets caught in case client has closed it`s socket*/
-                        e.printStackTrace();
-                        server.deregisterConnectionFromLobby(this);
-                        close("Connection closed from server side. Dead client\nGood bye!");
+                    catch (ClassCastException | ClassNotFoundException e) {
+                        try {
+                            if (fromClient.equals("ping")){
+                                //client sent ping message, server responds with pong
+                                socketOut.writeUTF("pong");
+                                socketOut.flush();
+                                socketOut.reset();
+                            }
+                            else{
+                                throw new IllegalArgumentException();
+                            }
+                        }
+                        catch (ClassCastException | IllegalArgumentException e2){
+                            //client sent neither packet, neither "ping" string
+                        }
                     }
                 }
             }
@@ -127,4 +152,5 @@ public class Connection implements Runnable{
             close("Connection closed from server side, malicious client\nGood bye!");
         }
     }
+
 }
