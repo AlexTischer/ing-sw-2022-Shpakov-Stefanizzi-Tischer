@@ -9,7 +9,6 @@ import exceptions.RepeatedAssistantRankException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -80,13 +79,11 @@ public class Game implements GameForClient{
         motherNatureMove = false;
         useCloudMove = false;
 
-    /*    new Thread(() -> {
-            try {
-                playGame();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }).start();*/
+        try {
+            playGame();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Player getCurrentPlayer(){
@@ -274,12 +271,13 @@ public class Game implements GameForClient{
         useCloudMove = true;
     }
 
-    public void useAssistant(int assistantRank){
+    public synchronized void useAssistant(int assistantRank){
         if(checkAssistant(assistantRank, gameBoard.getCurrentPlayer())){
             gameBoard.setPlayedAssistantRank(assistantRank, gameBoard.getCurrentPlayer());
         }else throw new RepeatedAssistantRankException();
         /*set the next player to chose assistant card*/
         gameBoard.setCurrentPlayer(players.get((players.indexOf(gameBoard.getCurrentPlayer())+1)%players.size()));
+        this.notify();
     }
 
     private void playGame() throws InterruptedException {
@@ -290,13 +288,13 @@ public class Game implements GameForClient{
 
 
     /*TODO need to control newRound(), i suppose there is a bug*/
-    private void newRound() throws InterruptedException {
+    private synchronized void newRound() throws InterruptedException {
         gameBoard.refillClouds();
         gameBoard.setCurrentPlayer(players.get(0));
 
         for (Player p : players){
-            while(p.getPlayedAssistant()==null){
-                wait();
+                while (p.getPlayedAssistant() == null) {
+                    this.wait();
             }
         }
 
@@ -315,7 +313,7 @@ public class Game implements GameForClient{
         }
     }
 
-    private void newTurn(Player p) throws InterruptedException {
+    private void newTurn(Player p){
         /*virtual view controls current player before forwarding any method to controller*/
         gameBoard.setCurrentPlayer(p);
 

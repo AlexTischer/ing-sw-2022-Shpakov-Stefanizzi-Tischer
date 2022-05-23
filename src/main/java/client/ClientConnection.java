@@ -8,7 +8,6 @@ import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.security.InvalidParameterException;
-import java.util.Locale;
 import java.util.Scanner;
 
 public class ClientConnection {
@@ -21,11 +20,6 @@ public class ClientConnection {
 
     public ClientConnection(Socket socket) {
         this.socket = socket;
-        try {
-            socket.setSoTimeout(50*1000);
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
     }
 
     public boolean isActive() {
@@ -104,28 +98,19 @@ public class ClientConnection {
                 fromServer = socketIn.readUTF();
             }
             if (fromServer.equals("config")) {
-                System.out.println("config started " + fromServer);
+                System.out.println("ClientConnection says: config started " + fromServer);
                 //let client insert a configuration
                 /*ask view to print the messages and request input*/
                 boolean inputCorrect = false;
                 while (!inputCorrect) {
-                    try {
-                        System.out.println("Please insert number of players:\n");
-
-                        int numOfPlayers = Integer.parseInt(stdin.nextLine());
-                        stdin.reset();
-                        if (numOfPlayers >= 2 || numOfPlayers <= 4){
-                            //send configurations to the server
-                            //guarantee that ConnectionTracker doesn't write in socket at the same time
-                            synchronized (this) {
+                        int numOfPlayers = clientController.askNumOfPlayers();
+                        //send configurations to the server
+                        //guarantee that ConnectionTracker doesn't write in socket at the same time
+                        synchronized (this) {
                                 socketOut.writeObject((Object)numOfPlayers);
                                 socketOut.flush();
                                 socketOut.reset();
                             }
-                        }
-                        else
-                            throw new IllegalArgumentException("Incorrect number of players value. Please try again");
-
 
                         fromServer = socketIn.readUTF();
 
@@ -135,26 +120,19 @@ public class ClientConnection {
                         }
                         if (fromServer.equals("ok")) {
                             inputCorrect = true;
-                            System.out.println("Client received from server: " + fromServer);
+                            System.out.println("ClientConnection says: Client received from server:" + fromServer);
                         } else {
                             inputCorrect = false;
-                            System.out.println("Error from server received: \n" + fromServer);
+                            System.out.println("ClientConnection says: Error from server received:" + fromServer);
                             continue;
                         }
+                }
 
-                        System.out.println("\nDo you want to play with advanced settings ? y/yes n/no:");
+                inputCorrect=false;
 
-                        String advancedSettings = stdin.nextLine();
-                        if (advancedSettings.toLowerCase(Locale.ROOT).equals("y")) {
-                            advancedSettings = "true";
-                            inputCorrect = true;
-                        }
-                        else if (advancedSettings.toLowerCase(Locale.ROOT).equals("n")) {
-                            advancedSettings = "false";
-                            inputCorrect = true;
-                        }
-                        else
-                            throw new IllegalArgumentException("Incorrect advanced settings response. Please try again");
+                while (!inputCorrect) {
+
+                    String advancedSettings = clientController.askAdvancedSettings();
 
                         //connectionTracker and ClientConnection should not write in socket at the same time
                         synchronized (this) {
@@ -168,17 +146,12 @@ public class ClientConnection {
                         }
                         if (fromServer.equals("ok")) {
                             inputCorrect = true;
-                            System.out.println("Client received from server: " + fromServer);
+                            System.out.println("Client Connection says: Client received from server: " + fromServer);
                         } else {
                             inputCorrect = false;
-                            System.out.println("Error from server received: \n" + fromServer);
+                            System.out.println("Client Connection says: Error from server received: \n" + fromServer);
                             continue;
                         }
-                    } catch (NumberFormatException e) {
-                        System.out.println("Incorrect number of players value. Please try again");
-                    } catch (IllegalArgumentException e) {
-                        System.out.println(e);
-                    }
 
                 }
 
@@ -186,8 +159,7 @@ public class ClientConnection {
             else if (fromServer.equals("name")) {
                 boolean inputCorrect = false;
                 while (!inputCorrect) {
-                    System.out.println("Please insert name of player:\n");
-                    name = stdin.nextLine();
+                    name = clientController.askName();
 
                     //connectionTracker and ClientConnection should not write in socket at the same time
                     synchronized (this) {
@@ -216,24 +188,49 @@ public class ClientConnection {
                                     waitingLobbyChange = false;
                                 }
                                 else{
-                                    System.out.println("Error from server received: \n" + fromServer);
+                                    clientController.printMessage("Error from server received: \n" + fromServer);
                                     waitingLobbyChange = false;
                                 }
 
                             } catch (ClassCastException e2) {
-                                System.out.println("error class cast ex");
+                                System.out.println("Client Connection says: error class cast ex");
                             }
                         }
                         catch (ClassNotFoundException e){
-                            System.out.println("error class not found ex");
+                            System.out.println("Client Connection says: error class not found ex");
                         }
                     }
                 }
             }
             if (fromServer.equals("start")) {
                 clientController.setClientName(name);
-                System.out.println("Client sent name succesfully: " + name + "\nready to start the game");
-                //server ready
+                Object gameBoardChange = new Object();
+                boolean waitingGameBoardChange = true;
+                while (waitingGameBoardChange) {
+                    try {
+                        gameBoardChange = socketIn.readObject();
+                        clientController.changeModel((ModelChange) gameBoardChange);
+                        waitingGameBoardChange = false;
+                    } catch (ClassCastException e) {
+                        try {
+                            fromServer = (String) gameBoardChange;
+                            if (fromServer.equals("pong")) {
+                                continue;
+                            } else {
+                                System.out.println("ClientConnection says: Error from server received: \n" + fromServer);
+                                waitingGameBoardChange = false;
+                            }
+
+                        } catch (ClassCastException e2) {
+                            System.out.println("ClientConnection says: Error from server received: \n" + fromServer);
+                        }
+                    } catch (ClassNotFoundException e) {
+                        System.out.println("ClientConnection says: error class not found ex");
+                    }
+
+                    clientController.startGame();
+                    //server ready
+                }
             }
             else {
                 fromServer = socketIn.readUTF();

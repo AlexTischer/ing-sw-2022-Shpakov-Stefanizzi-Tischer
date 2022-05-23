@@ -1,11 +1,12 @@
 package server;
 
-import client.ConnectionTracker;
+
 import modelChange.ModelChange;
 import packets.Packet;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 
 //This class is clientHandler that manages client on a separate thread
 public class Connection implements Runnable{
@@ -22,6 +23,11 @@ public class Connection implements Runnable{
         this.socketIn = socketIn;
         this.socketOut = socketOut;
         this.server = server;
+        try {
+            clientSocket.setSoTimeout(15*1000);
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean isActive() {
@@ -101,7 +107,8 @@ public class Connection implements Runnable{
                             try {
                                 this.wait();
                             } catch (InterruptedException e) {
-                                e.printStackTrace();
+                                //e.printStackTrace();
+                                throw new IOException();
                             }
                         }
                     }
@@ -116,8 +123,6 @@ public class Connection implements Runnable{
                     socketOut.flush();
                     socketOut.reset();
                 }
-
-
             }
 
             while(isActive()){
@@ -148,6 +153,7 @@ public class Connection implements Runnable{
             }
         } catch(IOException e){
             System.err.println(e.getMessage());
+            System.out.println("got error" + e + ". \nClosing socket");
         } finally {
             close("Connection closed from server side, malicious client\nGood bye!");
         }

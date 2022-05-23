@@ -94,9 +94,16 @@ public class ClientController implements GameForClient{
     }
 
     public void setClientName(String clientName){
-        gameBoard.setClientName(clientName);}
+        gameBoard.setClientName(clientName);
+    }
+
+    public void startGame(){
+        view.printMessage("Ready to start the game!");
+    }
 
     public void pianificationPhase() {
+        System.out.println("ClientController says: Starting while(true) loop to keep client alive");
+        while(true){}
         //TODO ask view to ask user to choose Assistant
     }
 
@@ -104,4 +111,25 @@ public class ClientController implements GameForClient{
         //TODO ask view to ask user to choose actions
     }
 
+    public int askNumOfPlayers() {
+        int numOfPlayers;
+        numOfPlayers = view.askNumOfPlayers();
+        while (!( numOfPlayers >= 2 && numOfPlayers <= 4)){
+            view.printMessage("Incorrect number of players value. Please try again");
+            numOfPlayers = view.askNumOfPlayers();
+        }
+        return numOfPlayers;
+    }
+
+    public String askAdvancedSettings(){
+        return view.askAdvancedSettings();
+    }
+
+    public String askName(){
+        return view.askName();
+    }
+
+    public void printMessage(String message){
+        view.printMessage(message);
+    }
 }

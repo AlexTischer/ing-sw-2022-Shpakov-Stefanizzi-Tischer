@@ -5,6 +5,7 @@ import client.model.ClientGameBoard;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class Client{
 
@@ -21,7 +22,12 @@ public class Client{
 
         //create view, model, controller since when client receives "config"
         //it already needs to use those components to show strings to the view
-        view = new View();
+        //TODO
+        System.out.println("Do you want to use CLI or GUI?");
+        Scanner stdin = new Scanner(System.in);
+        if(stdin.nextLine().equals("CLI")){
+            view = new Cli();
+        }
         controller = new ClientController();
         //model is`not initialized , but it will be enough before the start of the game
         model = new ClientGameBoard();
@@ -42,9 +48,5 @@ public class Client{
         controller.attachConnection(connection);
         connection.attachController(controller);
         connection.init();
-
-        while (true){
-
-        }
     }
 }

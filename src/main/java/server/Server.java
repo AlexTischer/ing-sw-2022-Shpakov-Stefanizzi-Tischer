@@ -15,9 +15,9 @@ public class Server {
     private ServerSocket serverSocket;
     private Map<String, Connection> waitingConnection = new HashMap<>();
     private List<Connection> playingConnections = new ArrayList<Connection>();
-    private Integer numOfPlayers = 0;
+    private int numOfPlayers = 0;
     private boolean advancedSettings;
-
+    private int connections = 0;
     private boolean gameReady = false;
 
     public Server(int port) throws IOException{
@@ -48,7 +48,6 @@ public class Server {
                     waitingConnection.get(n).notify();
                 }
             }
-
         }
     }
 
@@ -56,14 +55,24 @@ public class Server {
     public void deregisterConnectionFromLobby(Connection connection) {
         /*remove connection from waiting playingConnections map*/
         for (String name: waitingConnection.keySet()){
-            if (waitingConnection.get(name) == connection)
-                waitingConnection.remove(name);
+            if (waitingConnection.get(name) == connection) {
+                synchronized (connection){
+                    waitingConnection.remove(name);
+                    System.out.println("I deregistered connection named:" + name);
+                }
+            }
         }
 
         ModelChange lobbyChange = new LobbyChange(waitingConnection.keySet().stream().toList());
         for (String name: waitingConnection.keySet()){
-            waitingConnection.get(name).send(lobbyChange);
+            synchronized (waitingConnection.get(name)){
+                waitingConnection.get(name).send(lobbyChange);
+            }
         }
+
+        connections--;
+        System.out.println("I deregistered connection");
+
     }
 
     /*receives ConnectionStatusChange of that particular client that became inactive or active*/
@@ -74,8 +83,6 @@ public class Server {
     }
 
     public void run(){
-        int connections = 0;
-
         System.out.println("Server listening on port: " + port);
 
         while(true){
@@ -141,7 +148,6 @@ public class Server {
                             socketOut.reset();
                             //the check is done also on the client side
                         }
-
                     }
 
                     socketOut.writeUTF("ok");
@@ -184,8 +190,8 @@ public class Server {
                     socketOut.writeUTF("ok");
                     socketOut.flush();
                     socketOut.reset();
-
                 }
+
                 connections++;
                 new Thread(new Connection(socket, socketIn, socketOut, this)).start();
                 System.out.println("Server created");
