@@ -5,7 +5,7 @@ import client.model.ClientGameBoard;
 import java.util.ArrayList;
 import java.util.List;
 
-/*gets used when client gets (dis)connected from lobby*/
+/*gets used when client gets (dis)connected from addToLobby*/
 public class LobbyChange extends ModelChange{
     private List<String> userNames;
 

@@ -8,15 +8,11 @@ import server.controller.Game;
 import server.model.Player;
 import utils.Observer;
 
-public class VirtualView implements Runnable, Observer<ModelChange> {
+public class VirtualView implements Observer<ModelChange> {
 
     private Game game;
     private Player player;
     private Connection clientConnection;
-    @Override
-    public void run() {
-
-    }
 
     @Override
     public void update(ModelChange message) {
@@ -42,6 +38,18 @@ public class VirtualView implements Runnable, Observer<ModelChange> {
             }
         }
 
+    }
+
+    public void attachGame(Game game){
+        this.game=game;
+    }
+
+    public void attachConnection(Connection connection){
+        this.clientConnection=connection;
+    }
+
+    public void attachPlayer(Player player){
+        this.player=player;
     }
 
     public Player getPlayer() {

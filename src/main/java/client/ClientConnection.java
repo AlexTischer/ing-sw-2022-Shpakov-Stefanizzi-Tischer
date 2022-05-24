@@ -89,6 +89,8 @@ public class ClientConnection {
         //use stdin just for easiness
         Scanner stdin = new Scanner(System.in);
 
+        new Thread(new ConnectionTracker(this, socketOut, socketIn)).start();
+
         String fromServer = socketIn.readUTF();
         //new Thread(new ConnectionTracker(this, socketOut, socketIn)).start();
 
@@ -98,7 +100,7 @@ public class ClientConnection {
                 fromServer = socketIn.readUTF();
             }
             if (fromServer.equals("config")) {
-                System.out.println("ClientConnection says: config started " + fromServer);
+//                System.out.println("ClientConnection says: config started " + fromServer);
                 //let client insert a configuration
                 /*ask view to print the messages and request input*/
                 boolean inputCorrect = false;
@@ -120,7 +122,7 @@ public class ClientConnection {
                         }
                         if (fromServer.equals("ok")) {
                             inputCorrect = true;
-                            System.out.println("ClientConnection says: Client received from server:" + fromServer);
+//                            System.out.println("ClientConnection says: Client received from server:" + fromServer);
                         } else {
                             inputCorrect = false;
                             System.out.println("ClientConnection says: Error from server received:" + fromServer);
@@ -146,10 +148,10 @@ public class ClientConnection {
                         }
                         if (fromServer.equals("ok")) {
                             inputCorrect = true;
-                            System.out.println("Client Connection says: Client received from server: " + fromServer);
+//                            System.out.println("ClientConnection says: Client received from server: " + fromServer);
                         } else {
                             inputCorrect = false;
-                            System.out.println("Client Connection says: Error from server received: \n" + fromServer);
+                            System.out.println("ClientConnection says: Error from server received: \n" + fromServer);
                             continue;
                         }
 
@@ -158,6 +160,7 @@ public class ClientConnection {
             }
             else if (fromServer.equals("name")) {
                 boolean inputCorrect = false;
+
                 while (!inputCorrect) {
                     name = clientController.askName();
 
@@ -168,7 +171,7 @@ public class ClientConnection {
                         socketOut.reset();
                     }
 
-                    //Server added me to lobby if mu name is ok
+                    //Server added me to addToLobby if mu name is ok
                     Object lobbyChange = new Object();
 
                     boolean waitingLobbyChange = true;
@@ -182,6 +185,7 @@ public class ClientConnection {
                             try {
                                 fromServer = (String) lobbyChange;
                                 if (fromServer.equals("pong")) {
+                                    System.out.println("ClientConnection says: server sent pong");
                                     continue;
                                 }
                                 else if (fromServer.equals("start")){
@@ -193,16 +197,17 @@ public class ClientConnection {
                                 }
 
                             } catch (ClassCastException e2) {
-                                System.out.println("Client Connection says: error class cast ex");
+//                                System.out.println("ClientConnection says: error class cast ex");
                             }
                         }
                         catch (ClassNotFoundException e){
-                            System.out.println("Client Connection says: error class not found ex");
+//                            System.out.println("ClientConnection says: error class not found ex");
                         }
                     }
                 }
             }
             if (fromServer.equals("start")) {
+                System.out.println("ClientConnection says: start received");
                 clientController.setClientName(name);
                 Object gameBoardChange = new Object();
                 boolean waitingGameBoardChange = true;
@@ -215,8 +220,10 @@ public class ClientConnection {
                         try {
                             fromServer = (String) gameBoardChange;
                             if (fromServer.equals("pong")) {
+                                System.out.println("ClientConnection says: server sent pong");
                                 continue;
-                            } else {
+                            }
+                            else {
                                 System.out.println("ClientConnection says: Error from server received: \n" + fromServer);
                                 waitingGameBoardChange = false;
                             }
@@ -229,7 +236,6 @@ public class ClientConnection {
                     }
 
                     clientController.startGame();
-                    //server ready
                 }
             }
             else {

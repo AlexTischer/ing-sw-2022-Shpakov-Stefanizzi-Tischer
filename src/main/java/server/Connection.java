@@ -6,7 +6,6 @@ import packets.Packet;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.SocketException;
 
 //This class is clientHandler that manages client on a separate thread
 public class Connection implements Runnable{
@@ -16,6 +15,7 @@ public class Connection implements Runnable{
     private VirtualView userVirtualView;
     private Server server;
     private boolean isActive;
+    private String name;
 
 
     public Connection(Socket clientSocket, ObjectInputStream socketIn, ObjectOutputStream socketOut, Server server) {
@@ -23,31 +23,24 @@ public class Connection implements Runnable{
         this.socketIn = socketIn;
         this.socketOut = socketOut;
         this.server = server;
-        try {
-            clientSocket.setSoTimeout(15*1000);
-        } catch (SocketException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public boolean isActive() {
         return isActive;
     }
 
-    private void closeConnection(String msg){
+    public void close(String msg){
         try{
             clientSocket.close();
         }catch (IOException e){
             System.err.println(e.getMessage());
         }
         isActive = false;
-    }
 
-    public void close(String msg){
         /*first I close socket, then I deregister client from server*/
-        closeConnection(msg);
-        System.out.println("Deregistering client with ip" + clientSocket.getRemoteSocketAddress());
-        server.deregisterConnectionFromLobby(this);
+
+        System.out.println("Deregistering client with ip: " + clientSocket.getRemoteSocketAddress());
+        server.deregisterConnectionFromLobby(server.currentConnection);
         System.out.println("Done!");
     }
 
@@ -58,7 +51,9 @@ public class Connection implements Runnable{
             socketOut.reset();
         }
         catch (IOException e){
-            e.printStackTrace();
+//            e.printStackTrace();
+            System.out.println("Caught IO Excepion");
+            server.currentConnection.close("wasn't able to send modelChange");
         }
     }
 
@@ -76,7 +71,7 @@ public class Connection implements Runnable{
             socketOut.flush();
             socketOut.reset();
 
-            Object fromClient = new Object();
+            Object fromClient;
             while(!nameReady){
                 /*allows client to insert the name*/
                 try {
@@ -91,32 +86,30 @@ public class Connection implements Runnable{
 
                     System.out.println("Server received from client: " + fromClient);
                     try {
-                        server.lobby(this, (String) fromClient);
+                        server.addToLobby(this, (String) fromClient);
+                        System.out.println("Client " + fromClient + " added to addToLobby");
+                        nameReady = true;
+                        name = (String)fromClient;
+                        clientSocket.setSoTimeout(10*1000);
+                        while (!server.isGameReady()) {
+                            fromClient = socketIn.readObject();
+                            //if client sent ping message, then i need to respond and wait for the next input
+                            if (fromClient.equals("ping")){
+                                System.out.println(name + " sent ping");
+                                socketOut.writeObject("pong");
+                                socketOut.flush();
+                                socketOut.reset();
+                            }
+                        }
+                        socketOut.writeObject("start");
+                        socketOut.flush();
+                        socketOut.reset();
                     }
                     catch (IllegalArgumentException e){
                         socketOut.writeObject("This name \"" + fromClient + "\" is already used. Please chose another name");
                         socketOut.flush();
                         socketOut.reset();
-                        continue;
                     }
-
-                    System.out.println("Client " + fromClient + " added to lobby");
-
-                    synchronized (this) {
-                        while (!server.isGameReady()) {
-                            try {
-                                this.wait();
-                            } catch (InterruptedException e) {
-                                //e.printStackTrace();
-                                throw new IOException();
-                            }
-                        }
-                    }
-                    socketOut.writeObject("start");
-                    socketOut.flush();
-                    socketOut.reset();
-
-                    nameReady = true;
                 }
                 catch (ClassNotFoundException | ClassCastException e) {
                     socketOut.writeObject("The name value is incorrect. Try again");
@@ -137,7 +130,8 @@ public class Connection implements Runnable{
                         try {
                             if (fromClient.equals("ping")){
                                 //client sent ping message, server responds with pong
-                                socketOut.writeUTF("pong");
+                                System.out.println(name + " sent ping");
+                                socketOut.writeObject("pong");
                                 socketOut.flush();
                                 socketOut.reset();
                             }

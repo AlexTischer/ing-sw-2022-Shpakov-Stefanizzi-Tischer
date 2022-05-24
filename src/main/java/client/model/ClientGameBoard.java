@@ -16,13 +16,13 @@ public class ClientGameBoard {
     private ArrayList<ClientPlayer> players;
     private String message;
     private List<String> userNames;
-
     private String clientName;
 
     /*Mike: inside each set method we need to update the view*/
     public List<ClientIsland> getIslands() {
         return islands;
     }
+
     public void setIslands(List<ClientIsland> islands) {
         this.islands = islands;
     }
@@ -40,6 +40,7 @@ public class ClientGameBoard {
     public ClientCharacter getCurrentCharacter() {
         return playedCharacters[currentCharacter];
     }
+
     public void setCurrentCharacter(int currentCharacter) {
         this.currentCharacter = currentCharacter;
     }
@@ -47,6 +48,7 @@ public class ClientGameBoard {
     public ClientCharacter[] getPlayedCharacters() {
         return playedCharacters;
     }
+
     public void setPlayedCharacters(ClientCharacter[] playedCharacters) {
         this.playedCharacters = playedCharacters;
     }
@@ -54,6 +56,7 @@ public class ClientGameBoard {
     public int getPositionOfMotherNature() {
         return positionOfMotherNature;
     }
+
     public void setPositionOfMotherNature(int positionOfMotherNature) {
         this.positionOfMotherNature = positionOfMotherNature;
     }
@@ -61,6 +64,7 @@ public class ClientGameBoard {
     public int getNumOfCoins() {
         return numOfCoins;
     }
+
     public void setNumOfCoins(int numOfCoins) {
         this.numOfCoins = numOfCoins;
     }

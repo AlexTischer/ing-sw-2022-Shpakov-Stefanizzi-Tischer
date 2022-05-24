@@ -22,7 +22,7 @@ public class ConnectionTracker implements Runnable{
         try {
             while (true) {
                 synchronized (connection) {
-                    socketOut.writeUTF("ping");
+                    socketOut.writeObject("ping");
                     socketOut.flush();
                     socketOut.reset();
                 }

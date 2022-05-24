@@ -9,51 +9,65 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Server {
     private int port;
     private ServerSocket serverSocket;
     private Map<String, Connection> waitingConnection = new HashMap<>();
-    private List<Connection> playingConnections = new ArrayList<Connection>();
+    private List<VirtualView> playingClients = new ArrayList<VirtualView>();
     private int numOfPlayers = 0;
     private boolean advancedSettings;
     private int connections = 0;
     private boolean gameReady = false;
+    public Connection currentConnection;
 
     public Server(int port) throws IOException{
         this.port=port;
         serverSocket = new ServerSocket(port);
     }
 
-    public void lobby(Connection connection, String name){
-
-        if (waitingConnection.keySet().contains(name.toLowerCase(Locale.ROOT)))
+    public void addToLobby(Connection connection, String name){
+//        System.out.println("Server says: before if: " + waitingConnection.keySet().stream().toList());
+        if (waitingConnection.keySet().stream().map(s -> s.toLowerCase(Locale.ROOT)).collect(Collectors.toList()).contains(name.toLowerCase(Locale.ROOT))) {
+            System.out.println("Server says: name already used");
             throw new IllegalArgumentException();
-        else
+        }
+        else {
             waitingConnection.put(name, connection);
 
-        //notify other clients that list of clients in lobby has changed
-        ModelChange lobbyChange = new LobbyChange(waitingConnection.keySet().stream().toList());
-        for (String n: waitingConnection.keySet()){
-            synchronized (waitingConnection.get(n)) {
-                waitingConnection.get(n).send(lobbyChange);
-            }
-        }
-
-        if (waitingConnection.size() == numOfPlayers){
-            gameReady = true;
-            /*create game and other classes*/
-            for (String n: waitingConnection.keySet()){
+            //notify other clients that list of clients in addToLobby has changed
+            ModelChange lobbyChange = new LobbyChange(waitingConnection.keySet().stream().toList());
+            for (String n : waitingConnection.keySet()) {
                 synchronized (waitingConnection.get(n)) {
-                    waitingConnection.get(n).notify();
+                    this.currentConnection = waitingConnection.get(n);
+                    waitingConnection.get(n).send(lobbyChange);
                 }
             }
+
+            if (waitingConnection.size() == numOfPlayers) {
+                gameReady = true;
+                /*create game and other classes*/
+                for (String n : waitingConnection.keySet()) {
+                    synchronized (waitingConnection.get(n)) {
+                        waitingConnection.get(n).notifyAll();
+                    }
+                }
+                createGame();
+            }
+        }
+//        System.out.println("Server says: after else:" + waitingConnection.keySet().stream().toList());
+    }
+
+    private void createGame(){
+        for(Connection c : waitingConnection.values()){
+
         }
     }
 
-    /*only for lobby*/
+    /*only for addToLobby*/
     public void deregisterConnectionFromLobby(Connection connection) {
-        /*remove connection from waiting playingConnections map*/
+        /*remove connection from waiting playingClients map*/
         for (String name: waitingConnection.keySet()){
             if (waitingConnection.get(name) == connection) {
                 synchronized (connection){
@@ -64,6 +78,7 @@ public class Server {
         }
 
         ModelChange lobbyChange = new LobbyChange(waitingConnection.keySet().stream().toList());
+
         for (String name: waitingConnection.keySet()){
             synchronized (waitingConnection.get(name)){
                 waitingConnection.get(name).send(lobbyChange);
@@ -77,8 +92,8 @@ public class Server {
 
     /*receives ConnectionStatusChange of that particular client that became inactive or active*/
     public void changeConnectionStatus(ModelChange playerConnectionStatus){
-        for (Connection c: playingConnections){
-            c.send(playerConnectionStatus);
+        for (VirtualView client: playingClients){
+            client.update(playerConnectionStatus);
         }
     }
 
@@ -102,6 +117,21 @@ public class Server {
 
                     Object fromClient = new Object();
                     String pingMessage = "";
+
+                    try {
+                        //if it is not a string , ClassCastException gets raised
+                        fromClient = socketIn.readObject();
+                        if (fromClient.equals("ping")) {
+                            System.out.println("Server received Ping from Client");
+                            //client sent ping message, server responds with pong
+                            socketOut.writeUTF("pong");
+                            socketOut.flush();
+                            socketOut.reset();
+                        }
+                    }
+                    catch(ClassNotFoundException | ClassCastException e){
+                        System.out.println("Error received from first client");
+                        }
 
                     /*allows client configurate the game settings since he is the first one*/
                     socketOut.writeUTF("config");
@@ -133,7 +163,8 @@ public class Server {
                                         socketOut.writeUTF("pong");
                                         socketOut.flush();
                                         socketOut.reset();
-                                    } else {
+                                    }
+                                    else {
                                         //throw exception asking client to insert again
                                         throw new IllegalArgumentException();
                                     }
