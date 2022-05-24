@@ -9,6 +9,7 @@ import exceptions.RepeatedAssistantRankException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,9 +30,9 @@ public class Game implements GameForClient{
         return instanceOfGame;
     }
 
-    public void init(ArrayList<String> playersNames, boolean advancedSettings, CharacterDeck characterDeck){
+    public void init(List<String> playersNames, boolean advancedSettings, CharacterDeck characterDeck){
         players = new ArrayList<Player>();
-        switch (playersNames.size()){
+        switch (playersNames.size()) {
             case 2:
                 this.players.add(new Player(playersNames.get(0), TowerColor.WHITE, AssistantType.ONE, 8));
                 this.players.add(new Player(playersNames.get(1), TowerColor.BLACK, AssistantType.TWO, 8));
@@ -50,10 +51,13 @@ public class Game implements GameForClient{
             default:
                 throw new InvalidParameterException();
         }
+
         gameBoard = GameBoard.getInstanceOfGameBoard();
         gameBoard.init(this, playersNames.size());
 
-        this.advancedSettings=advancedSettings;
+        System.out.println("I have created and initialized gameBoard" + gameBoard);
+
+        this.advancedSettings = advancedSettings;
         if (advancedSettings) {
             for (int i = 0; i < 3; i++) {
                 Character c = characterDeck.popCharacter();
@@ -66,24 +70,29 @@ public class Game implements GameForClient{
         gameBoard.getCurrentCharacter().initialFill(this);
 
         /*refill assistants of player*/
-        for(Player p: players){
+        for (Player p : players) {
             gameBoard.refillAssistants(p);
             gameBoard.refillEntrance(p);
         }
 
         Collections.shuffle(players);
         gameBoard.setCurrentPlayer(players.get(0));
-        gameBoard.sendGameBoardChange();
+        //gameBoard.sendGameBoardChange();
+
 
         studentMove = 0;
         motherNatureMove = false;
         useCloudMove = false;
 
-        try {
-            playGame();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        //create separate thread that will wait until all clients insert assistants and execute action phase
+        //it will execute until game ends
+        new Thread(() -> {
+            try {
+                playGame();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     public Player getCurrentPlayer(){
@@ -271,13 +280,15 @@ public class Game implements GameForClient{
         useCloudMove = true;
     }
 
+    //sets assistant of current player and makes the next player current to let him call use assistant from virtual view
     public synchronized void useAssistant(int assistantRank){
-        if(checkAssistant(assistantRank, gameBoard.getCurrentPlayer())){
+        if (checkAssistant(assistantRank, gameBoard.getCurrentPlayer())) {
             gameBoard.setPlayedAssistantRank(assistantRank, gameBoard.getCurrentPlayer());
-        }else throw new RepeatedAssistantRankException();
+        } else throw new RepeatedAssistantRankException();
         /*set the next player to chose assistant card*/
-        gameBoard.setCurrentPlayer(players.get((players.indexOf(gameBoard.getCurrentPlayer())+1)%players.size()));
-        this.notify();
+        gameBoard.setCurrentPlayer(players.get((players.indexOf(gameBoard.getCurrentPlayer()) + 1) % players.size()));
+        this.notifyAll();
+
     }
 
     private void playGame() throws InterruptedException {
@@ -292,9 +303,10 @@ public class Game implements GameForClient{
         gameBoard.refillClouds();
         gameBoard.setCurrentPlayer(players.get(0));
 
-        for (Player p : players){
-                while (p.getPlayedAssistant() == null) {
-                    this.wait();
+        /*planing phase*/
+        for (Player p : players) {
+            while (p.getPlayedAssistant() == null) {
+                this.wait();
             }
         }
 
@@ -302,13 +314,14 @@ public class Game implements GameForClient{
         is started by player that played the card with the lowest rank*/
         Collections.sort(players);
 
-        for(Player p : players){
-            if(!checkEndGame()){
+        /*action phase*/
+        for (Player p : players) {
+            if (!checkEndGame()) {
                 newTurn(p);
             }
         }
 
-        for (Player p : players){
+        for (Player p : players) {
             gameBoard.setPlayedAssistantRank(0, p);
         }
     }

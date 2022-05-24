@@ -2,6 +2,8 @@ package server;
 
 import modelChange.LobbyChange;
 import modelChange.ModelChange;
+import server.controller.CharacterDeck;
+import server.controller.Game;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -18,9 +20,9 @@ public class Server {
     private List<VirtualView> playingClients = new ArrayList<VirtualView>();
     private int numOfPlayers = 0;
     private boolean advancedSettings;
-    private int connections = 0;
+    private int numOfConnections = 0;
     private boolean gameReady = false;
-    public Connection currentConnection;
+    //public Connection currentConnection;
 
     public Server(int port) throws IOException{
         this.port=port;
@@ -39,54 +41,69 @@ public class Server {
             //notify other clients that list of clients in addToLobby has changed
             ModelChange lobbyChange = new LobbyChange(waitingConnection.keySet().stream().toList());
             for (String n : waitingConnection.keySet()) {
-                synchronized (waitingConnection.get(n)) {
-                    this.currentConnection = waitingConnection.get(n);
-                    waitingConnection.get(n).send(lobbyChange);
-                }
+                waitingConnection.get(n).send(lobbyChange);
             }
 
             if (waitingConnection.size() == numOfPlayers) {
                 gameReady = true;
-                /*create game and other classes*/
-                for (String n : waitingConnection.keySet()) {
-                    synchronized (waitingConnection.get(n)) {
-                        waitingConnection.get(n).notifyAll();
-                    }
-                }
-                createGame();
+                //createGame();
             }
         }
 //        System.out.println("Server says: after else:" + waitingConnection.keySet().stream().toList());
     }
 
     private void createGame(){
-        for(Connection c : waitingConnection.values()){
+        //TODO debug because there is an error
+        Game game = Game.getInstanceOfGame();
 
+        playingClients = new ArrayList<VirtualView>(waitingConnection.keySet().size());
+
+        //attach connection and controller to each virtual view
+        for(String name: waitingConnection.keySet()){
+            VirtualView client = new VirtualView();
+
+            client.attachConnection(waitingConnection.get(name));
+            client.attachGame(game);
+            playingClients.add(client);
         }
+
+        //init only after i have connected virtual views to game in order to send gameboard change
+        //initializes controller and automatically launches thread
+        //that will wait in game phases until the end of player move
+        //e.g. thread will wait until all players insert assistant card
+        game.init(waitingConnection.keySet().stream().toList(), advancedSettings, new CharacterDeck());
+
+        //add all virtual views as observers to gameBoard in order to send modelChange
+        for(VirtualView client: playingClients){
+            game.getGameBoard().addObserver(client);
+        }
+
+        //send modelChange to all clients
+        game.getGameBoard().sendGameBoardChange();
     }
 
     /*only for addToLobby*/
     public void deregisterConnectionFromLobby(Connection connection) {
         /*remove connection from waiting playingClients map*/
-        for (String name: waitingConnection.keySet()){
+
+        //save oldKeys because map may be modified during execution
+        Set<String> oldKeys = new TreeSet<String>(waitingConnection.keySet());
+
+        for (String name: oldKeys){
             if (waitingConnection.get(name) == connection) {
-                synchronized (connection){
-                    waitingConnection.remove(name);
-                    System.out.println("I deregistered connection named:" + name);
-                }
+                waitingConnection.remove(name);
+                System.out.println("Server: I deregistered connection named:" + name);
             }
         }
 
         ModelChange lobbyChange = new LobbyChange(waitingConnection.keySet().stream().toList());
 
         for (String name: waitingConnection.keySet()){
-            synchronized (waitingConnection.get(name)){
-                waitingConnection.get(name).send(lobbyChange);
-            }
+            waitingConnection.get(name).send(lobbyChange);
         }
 
-        connections--;
-        System.out.println("I deregistered connection");
+        numOfConnections--;
+        System.out.println("Server: I deregistered connection");
 
     }
 
@@ -99,7 +116,10 @@ public class Server {
 
     public void run(){
         System.out.println("Server listening on port: " + port);
+        //server sends strings to each client with writeUTF() until it gets added to lobby
+        //then it sends objects with writeObject() in connection class
 
+        //continue to accept clients until there is space for them in the game
         while(true){
             try {
                 /*receive new connection request*/
@@ -109,20 +129,20 @@ public class Server {
                 ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
 
                 //if server doesn't receive any message from client in 10 sec, then socket gets closed
-                //socket.setSoTimeout(10*1000);
+                socket.setSoTimeout(10*1000);
 
-                System.out.println("Connection number: " + (connections+1));
+                System.out.println("Connection number: " + (numOfConnections +1));
 
-                if (connections == 0){
+                if (numOfConnections == 0){
 
                     Object fromClient = new Object();
-                    String pingMessage = "";
 
                     try {
                         //if it is not a string , ClassCastException gets raised
                         fromClient = socketIn.readObject();
+                        //server sends config message only after it received ping from client
                         if (fromClient.equals("ping")) {
-                            System.out.println("Server received Ping from Client");
+                            System.out.println("Server received ping from first client");
                             //client sent ping message, server responds with pong
                             socketOut.writeUTF("pong");
                             socketOut.flush();
@@ -131,7 +151,7 @@ public class Server {
                     }
                     catch(ClassNotFoundException | ClassCastException e){
                         System.out.println("Error received from first client");
-                        }
+                    }
 
                     /*allows client configurate the game settings since he is the first one*/
                     socketOut.writeUTF("config");
@@ -157,8 +177,7 @@ public class Server {
                             } catch (ClassNotFoundException | ClassCastException e) {
                                 try {
                                     //if it is not a string , ClassCastException gets raised
-                                    pingMessage = (String) fromClient;
-                                    if (pingMessage.equals("ping")) {
+                                    if (fromClient.equals("ping")) {
                                         //client sent ping message, server responds with pong
                                         socketOut.writeUTF("pong");
                                         socketOut.flush();
@@ -185,21 +204,21 @@ public class Server {
                     socketOut.flush();
                     socketOut.reset();
 
-                    //equals true if the string is equal to "true" and false if string is equal to "false"
+                    //advanced settings equals true if the string is equal to "true" and false if string is equal to "false"
                     boolean settingsCorrect = false;
 
                     while (!settingsCorrect){
                         try{
                             fromClient = socketIn.readObject();
-                            if ( ((String)fromClient).equals("true") ){
+                            if ( fromClient.equals("true") ){
                                 advancedSettings = true;
                                 settingsCorrect = true;
                             }
-                            else if (((String)fromClient).equals("false") ){
+                            else if (fromClient.equals("false") ){
                                 advancedSettings = false;
                                 settingsCorrect = true;
                             }
-                            else if ( ((String)fromClient).equals("ping") ){
+                            else if ( fromClient.equals("ping") ){
                                 //client sent ping message, server responds with pong
                                 socketOut.writeUTF("pong");
                                 socketOut.flush();
@@ -217,13 +236,13 @@ public class Server {
                         }
                     }
 
-                    System.out.println("Server received from client: " + advancedSettings);
+                    System.out.println("Server received from first client advanced settings: " + advancedSettings);
                     socketOut.writeUTF("ok");
                     socketOut.flush();
                     socketOut.reset();
                 }
 
-                connections++;
+                numOfConnections++;
                 new Thread(new Connection(socket, socketIn, socketOut, this)).start();
                 System.out.println("Server created");
 

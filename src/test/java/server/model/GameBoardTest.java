@@ -391,14 +391,19 @@ public class GameBoardTest extends TestCase {
     @Test
     void setAndBuyCharacters(){
         Game gametest = Game.getInstanceOfGame();
-        Player testplayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE,8);
         ArrayList<String> playersNames = new ArrayList<String>();
         playersNames.add("a");
         playersNames.add("b");
         CharacterDeck characterDeck = new CharacterDeck();
+
+        //init must be run on separate thread since it waits the call of useAssistant for each player
         gametest.init(playersNames,true, characterDeck);
+
+        gametest.useAssistant(1);
+        gametest.useAssistant(2);
+
+
         GameBoard testGameBoard = gametest.getGameBoard();
-        testGameBoard.setCurrentPlayer(testplayer);
 
         Character1 character1 = new Character1();
         character1.initialFill(gametest);
@@ -413,7 +418,7 @@ public class GameBoardTest extends TestCase {
         testGameBoard.setPlayedCharacters(1, character2);
         testGameBoard.setPlayedCharacters(2, character3);
 
-        testGameBoard.addCoins(testplayer, 10);
+        testGameBoard.addCoins(gametest.getCurrentPlayer(), 10);
 
         testGameBoard.buyCharacter(0);
 

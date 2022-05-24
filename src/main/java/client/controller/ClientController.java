@@ -101,7 +101,7 @@ public class ClientController implements GameForClient{
         view.printMessage("Ready to start the game!");
     }
 
-    public void pianificationPhase() {
+    public void planningPhase() {
         System.out.println("ClientController says: Starting while(true) loop to keep client alive");
         while(true){}
         //TODO ask view to ask user to choose Assistant

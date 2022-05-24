@@ -1,6 +1,7 @@
 package server;
 
 
+import modelChange.ConnectionStatusChange;
 import modelChange.ModelChange;
 import packets.Packet;
 
@@ -29,18 +30,23 @@ public class Connection implements Runnable{
         return isActive;
     }
 
-    public void close(String msg){
+    public void close(){
+        /*first I deregister client from server and then close socket*/
+        System.out.println("Deregistering client with ip: " + clientSocket.getRemoteSocketAddress() + " and name: " + name);
+
+        isActive = false;
+        //deregistering is different based on whether game is already started
+        if (server.isGameReady())
+            server.changeConnectionStatus(new ConnectionStatusChange(name, false));
+        else
+            server.deregisterConnectionFromLobby(this);
+
         try{
             clientSocket.close();
         }catch (IOException e){
             System.err.println(e.getMessage());
         }
-        isActive = false;
 
-        /*first I close socket, then I deregister client from server*/
-
-        System.out.println("Deregistering client with ip: " + clientSocket.getRemoteSocketAddress());
-        server.deregisterConnectionFromLobby(server.currentConnection);
         System.out.println("Done!");
     }
 
@@ -52,14 +58,15 @@ public class Connection implements Runnable{
         }
         catch (IOException e){
 //            e.printStackTrace();
-            System.out.println("Caught IO Excepion");
-            server.currentConnection.close("wasn't able to send modelChange");
+            System.out.println("Caught IO Exception");
+            this.close();
+
         }
     }
 
     @Override
     public void run() {
-
+        //receives client name, sends lobby change and receives client packets during the game
         System.out.println("I am connection. I have started !");
         try{
             isActive = true;
@@ -70,14 +77,16 @@ public class Connection implements Runnable{
             socketOut.writeUTF("name");
             socketOut.flush();
             socketOut.reset();
+            Object fromClient = new Object();
 
-            Object fromClient;
+            //receives object from client with readObject() and sends object to client with writeObject()
             while(!nameReady){
                 /*allows client to insert the name*/
                 try {
                     fromClient = socketIn.readObject();
                     //if client sent ping message, then i need to respond and wait for the next input
                     if (fromClient.equals("ping")){
+                        System.out.println(name + " sent ping");
                         socketOut.writeObject("pong");
                         socketOut.flush();
                         socketOut.reset();
@@ -87,10 +96,11 @@ public class Connection implements Runnable{
                     System.out.println("Server received from client: " + fromClient);
                     try {
                         server.addToLobby(this, (String) fromClient);
-                        System.out.println("Client " + fromClient + " added to addToLobby");
+                        System.out.println("Client " + fromClient + " added to Lobby");
                         nameReady = true;
                         name = (String)fromClient;
-                        clientSocket.setSoTimeout(10*1000);
+
+                        //wait until enough number of clients connect
                         while (!server.isGameReady()) {
                             fromClient = socketIn.readObject();
                             //if client sent ping message, then i need to respond and wait for the next input
@@ -118,6 +128,7 @@ public class Connection implements Runnable{
                 }
             }
 
+            //wait for client packets and forward them to virtualView
             while(isActive()){
                 if (server.isGameReady()) {
                     fromClient = new Object();
@@ -141,15 +152,46 @@ public class Connection implements Runnable{
                         }
                         catch (ClassCastException | IllegalArgumentException e2){
                             //client sent neither packet, neither "ping" string
+                            socketOut.writeObject("The packet or ping message is incorrect.");
+                            socketOut.flush();
+                            socketOut.reset();
+                            //TODO manage exception raising if information sent from client is suspicious
+                        }
+                    }
+                }
+                else{
+                    //even if server is not ready, I should be able to respond to ping messages
+                    try {
+                        fromClient = socketIn.readObject();
+                    }
+                    catch (ClassCastException | ClassNotFoundException e) {
+                        try {
+                            if (fromClient.equals("ping")){
+                                //client sent ping message, server responds with pong
+                                System.out.println(name + " sent ping");
+                                socketOut.writeObject("pong");
+                                socketOut.flush();
+                                socketOut.reset();
+                            }
+                            else{
+                                throw new IllegalArgumentException();
+                            }
+                        }
+                        catch (ClassCastException | IllegalArgumentException e2){
+                            //client sent neither packet, neither "ping" string
+                            socketOut.writeObject("The ping message is incorrect. Try again");
+                            socketOut.flush();
+                            socketOut.reset();
                         }
                     }
                 }
             }
-        } catch(IOException e){
+        }
+        catch(IOException e){
             System.err.println(e.getMessage());
-            System.out.println("got error" + e + ". \nClosing socket");
+            System.out.println("Closing socket of " + name);
         } finally {
-            close("Connection closed from server side, malicious client\nGood bye!");
+            this.close();
         }
     }
 

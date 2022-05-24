@@ -25,13 +25,13 @@ public class VirtualView implements Observer<ModelChange> {
         //disconnect malicious client that tries to make an action when it`s not his turn
         //or sends exception back to the client in case of error
         if (player != game.getCurrentPlayer())
-            clientConnection.close("Connection closed from server side, malicious client\nIt`s not your turn to play");
+            clientConnection.close();
         else {
             try{
                 game.usePacket(packet);
             }
             catch (WrongActionException e){
-                clientConnection.close("Connection closed from server side, malicious client\nThe action phase actions sequence is not correct");
+                clientConnection.close();
             }
             catch (Exception e){
                 clientConnection.send(new ExceptionChange(e));

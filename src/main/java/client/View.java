@@ -11,7 +11,7 @@ public abstract class View {
 
 
     public void pianificationPhase() {
-        controller.pianificationPhase();
+        controller.planningPhase();
     }
 
     public void actionPhase() {

@@ -43,7 +43,7 @@ public class Client{
         Socket socket = new Socket(serverIp, serverPort);
 
         System.out.println("Connection established with server: " + socket.getRemoteSocketAddress());
-
+        System.out.println("Waiting for configuration");
         ClientConnection connection = new ClientConnection(socket);
         controller.attachConnection(connection);
         connection.attachController(controller);

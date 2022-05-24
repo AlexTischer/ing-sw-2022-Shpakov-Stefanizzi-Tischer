@@ -17,7 +17,8 @@ public class ConnectionStatusChange extends ModelChange{
         }
     }
 
-    public ConnectionStatusChange(boolean status) {
+    public ConnectionStatusChange(String name, boolean status) {
+        this.name = name;
         this.status = status;
     }
 }

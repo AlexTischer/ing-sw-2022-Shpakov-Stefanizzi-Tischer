@@ -80,7 +80,8 @@ public class ClientConnection {
     }
 
     public void init() throws IOException {
-
+        //client receives strings from server with readUTF() until it gets added to lobby
+        //then it receives objects with readObject()
         ObjectOutputStream socketOut = new ObjectOutputStream(socket.getOutputStream());
         socketOut.flush();
 
@@ -97,68 +98,69 @@ public class ClientConnection {
         while (!fromServer.equals("start")) {
             //if the pong message from server was received , client should wait for the next different message
             while (fromServer.equals("pong")){
+                System.out.println("ClientConnection says: Client received from server:" + fromServer);
                 fromServer = socketIn.readUTF();
             }
             if (fromServer.equals("config")) {
-//                System.out.println("ClientConnection says: config started " + fromServer);
+                //System.out.println("ClientConnection says: config started " + fromServer);
                 //let client insert a configuration
                 /*ask view to print the messages and request input*/
                 boolean inputCorrect = false;
                 while (!inputCorrect) {
-                        int numOfPlayers = clientController.askNumOfPlayers();
-                        //send configurations to the server
-                        //guarantee that ConnectionTracker doesn't write in socket at the same time
-                        synchronized (this) {
-                                socketOut.writeObject((Object)numOfPlayers);
-                                socketOut.flush();
-                                socketOut.reset();
-                            }
+                    int numOfPlayers = clientController.askNumOfPlayers();
+                    //send configurations to the server
+                    //guarantee that ConnectionTracker doesn't write in socket at the same time
+                    synchronized (this) {
+                            socketOut.writeObject((Object)numOfPlayers);
+                            socketOut.flush();
+                            socketOut.reset();
+                    }
 
+                    fromServer = socketIn.readUTF();
+
+                    //if the pong message from server was received , client should wait for the next different message
+                    while(fromServer.equals("pong")){
                         fromServer = socketIn.readUTF();
-
-                        //if the pong message from server was received , client should wait for the next different message
-                        while(fromServer.equals("pong")){
-                            fromServer = socketIn.readUTF();
-                        }
-                        if (fromServer.equals("ok")) {
-                            inputCorrect = true;
-//                            System.out.println("ClientConnection says: Client received from server:" + fromServer);
-                        } else {
-                            inputCorrect = false;
-                            System.out.println("ClientConnection says: Error from server received:" + fromServer);
-                            continue;
-                        }
+                    }
+                    if (fromServer.equals("ok")) {
+                        inputCorrect = true;
+                        System.out.println("ClientConnection says: Client received from server:" + fromServer);
+                    } else {
+                        inputCorrect = false;
+                        System.out.println("ClientConnection says: Error from server received:" + fromServer);
+                        continue;
+                    }
                 }
 
-                inputCorrect=false;
+                inputCorrect = false;
 
                 while (!inputCorrect) {
 
                     String advancedSettings = clientController.askAdvancedSettings();
 
-                        //connectionTracker and ClientConnection should not write in socket at the same time
-                        synchronized (this) {
-                            socketOut.writeObject(advancedSettings);
-                            socketOut.flush();
-                            socketOut.reset();
-                        }
+                    //connectionTracker and ClientConnection should not write in socket at the same time
+                    synchronized (this) {
+                        socketOut.writeObject(advancedSettings);
+                        socketOut.flush();
+                        socketOut.reset();
+                    }
+
+                    fromServer = socketIn.readUTF();
+                    while (fromServer.equals("pong")) {
                         fromServer = socketIn.readUTF();
-                        while (fromServer.equals("pong")) {
-                            fromServer = socketIn.readUTF();
-                        }
-                        if (fromServer.equals("ok")) {
-                            inputCorrect = true;
-//                            System.out.println("ClientConnection says: Client received from server: " + fromServer);
-                        } else {
-                            inputCorrect = false;
-                            System.out.println("ClientConnection says: Error from server received: \n" + fromServer);
-                            continue;
-                        }
+                    }
+                    if (fromServer.equals("ok")) {
+                        inputCorrect = true;
+                        System.out.println("ClientConnection says: Client received from server: " + fromServer);
+                    } else {
+                        inputCorrect = false;
+                        System.out.println("ClientConnection says: Error from server received: \n" + fromServer);
+                    }
 
                 }
 
             }
-            else if (fromServer.equals("name")) {
+            if (fromServer.equals("name")) {
                 boolean inputCorrect = false;
 
                 while (!inputCorrect) {
@@ -171,7 +173,7 @@ public class ClientConnection {
                         socketOut.reset();
                     }
 
-                    //Server added me to addToLobby if mu name is ok
+                    //Server added me to addToLobby if my name is ok
                     Object lobbyChange = new Object();
 
                     boolean waitingLobbyChange = true;
@@ -201,7 +203,7 @@ public class ClientConnection {
                             }
                         }
                         catch (ClassNotFoundException e){
-//                            System.out.println("ClientConnection says: error class not found ex");
+                            System.out.println("ClientConnection says: error class not found ex");
                         }
                     }
                 }
@@ -209,15 +211,19 @@ public class ClientConnection {
             if (fromServer.equals("start")) {
                 System.out.println("ClientConnection says: start received");
                 clientController.setClientName(name);
+
                 Object gameBoardChange = new Object();
                 boolean waitingGameBoardChange = true;
+
                 while (waitingGameBoardChange) {
                     try {
                         gameBoardChange = socketIn.readObject();
                         clientController.changeModel((ModelChange) gameBoardChange);
                         waitingGameBoardChange = false;
+                        System.out.println("ClientConnection says: Gameboard change received and executed");
                     } catch (ClassCastException e) {
                         try {
+                            //after start, can receive only gameBoardChange or pong messages
                             fromServer = (String) gameBoardChange;
                             if (fromServer.equals("pong")) {
                                 System.out.println("ClientConnection says: server sent pong");
@@ -226,10 +232,12 @@ public class ClientConnection {
                             else {
                                 System.out.println("ClientConnection says: Error from server received: \n" + fromServer);
                                 waitingGameBoardChange = false;
+
                             }
 
                         } catch (ClassCastException e2) {
-                            System.out.println("ClientConnection says: Error from server received: \n" + fromServer);
+                            System.out.println("ClientConnection says: Error from server side");
+                            //TODO manage client closing in case server sent suspicious response
                         }
                     } catch (ClassNotFoundException e) {
                         System.out.println("ClientConnection says: error class not found ex");
