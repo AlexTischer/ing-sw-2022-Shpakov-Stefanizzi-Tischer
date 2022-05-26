@@ -1,11 +1,10 @@
 package client.model;
 
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import client.View;
-public class ClientGameBoard implements Serializable {
+import client.view.View;
+public class ClientGameBoard {
     private View view;
     private List<ClientIsland> islands;
     private List<ClientCloud> clouds;
@@ -13,7 +12,7 @@ public class ClientGameBoard implements Serializable {
     private ClientCharacter playedCharacters[];
     private int positionOfMotherNature;
     private int numOfCoins;
-    private String currentPlayerName = "";
+    private String currentPlayerName;
     private ArrayList<ClientPlayer> players;
     private String message;
     private List<String> userNames;
@@ -26,7 +25,6 @@ public class ClientGameBoard implements Serializable {
 
     public void setIslands(List<ClientIsland> islands) {
         this.islands = islands;
-        System.out.println("setting islands");
     }
 
     public List<ClientCloud> getClouds() {
@@ -37,7 +35,6 @@ public class ClientGameBoard implements Serializable {
 
     public void setClouds(List<ClientCloud> clouds) {
         this.clouds = clouds;
-        System.out.println("setting clouds");
     }
 
     public ClientCharacter getCurrentCharacter() {
@@ -46,11 +43,6 @@ public class ClientGameBoard implements Serializable {
 
     public void setCurrentCharacter(int currentCharacter) {
         this.currentCharacter = currentCharacter;
-        System.out.println("setting character");
-    }
-
-    public String getClientName(){
-        return clientName;
     }
 
     public ClientCharacter[] getPlayedCharacters() {
@@ -75,7 +67,6 @@ public class ClientGameBoard implements Serializable {
 
     public void setNumOfCoins(int numOfCoins) {
         this.numOfCoins = numOfCoins;
-        System.out.println("set num of coins");
     }
 
     public String getCurrentPlayerName() {
@@ -84,9 +75,15 @@ public class ClientGameBoard implements Serializable {
 
     public void setCurrentPlayerName(String currentPlayerName) {
         this.currentPlayerName = currentPlayerName;
-        view.startTurn();
+        if(currentPlayerName.equals(clientName)){
+            if(getPlayer(currentPlayerName).getPlayedAssistant()==null){
+                view.pianificationPhase();
+            }
+            else {
+                view.actionPhase();
+            }
+        }
     }
-
 
     public ClientPlayer getPlayer(String playerName) {
         for(ClientPlayer p : players){

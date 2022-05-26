@@ -9,7 +9,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class ClientConnection {
+public class  ClientConnection {
     private Socket socket;
     private ObjectInputStream socketIn;
     private ObjectOutputStream socketOut;

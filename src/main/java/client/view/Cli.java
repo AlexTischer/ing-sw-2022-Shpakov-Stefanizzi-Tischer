@@ -1,6 +1,4 @@
-package client;
-
-import client.controller.ClientController;
+package client.view;
 
 import java.util.Locale;
 import java.util.Scanner;

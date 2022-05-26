@@ -6,7 +6,18 @@ import java.util.List;
 import java.util.Random;
 
 public enum Color {
-RED, YELLOW, BLUE, GREEN, PINK;
+
+    RED("\u001b[31m"),
+    YELLOW("\u001b[33m"),
+    BLUE("\u001b[34m"),
+    GREEN("\u001b[32m"),
+    PINK("\u001b[35m");
+
+    public final String label;
+
+    Color(String label) {
+        this.label = label;
+    }
 
     private static final List<Color> VALUES =
             Collections.unmodifiableList(Arrays.asList(values()));
