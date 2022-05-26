@@ -41,7 +41,6 @@ public class Client{
 
     public void run() throws IOException {
         Socket socket = new Socket(serverIp, serverPort);
-
         System.out.println("Connection established with server: " + socket.getRemoteSocketAddress());
         System.out.println("Waiting for configuration");
         ClientConnection connection = new ClientConnection(socket);

@@ -393,7 +393,7 @@ public class CharactersTest extends TestCase {
         gametest.moveStudentToDining(Color.GREEN);
         gametest.moveStudentToDining(Color.GREEN);
 
-        testGameBoard.placeMotherNature(3);
+        testGameBoard.placeMotherNatureTEST(3);
         gametest.moveMotherNature(3);
 
         assertEquals(testGameBoard.getPositionOfMotherNature(), 6);
@@ -426,7 +426,7 @@ public class CharactersTest extends TestCase {
         gametest.moveStudentToDining(Color.GREEN);
         gametest.moveStudentToDining(Color.GREEN);
 
-        testGameBoard.placeMotherNature(3);
+        testGameBoard.placeMotherNatureTEST(3);
 
         gametest.moveMotherNature(-1);
         assertEquals(testGameBoard.getPositionOfMotherNature(), 2);

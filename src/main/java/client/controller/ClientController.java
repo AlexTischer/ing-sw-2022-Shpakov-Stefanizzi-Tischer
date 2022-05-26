@@ -3,6 +3,7 @@ package client.controller;
 import client.ClientConnection;
 import client.View;
 import client.model.ClientGameBoard;
+import exceptions.EndOfChangesException;
 import modelChange.ModelChange;
 import packets.*;
 import server.model.Color;
@@ -15,7 +16,6 @@ public class ClientController implements GameForClient{
     private ClientGameBoard gameBoard;
     private ClientConnection connection;
     private boolean connectionActive;
-
     public void attachConnection(ClientConnection connection){
         this.connection = connection;
     }
@@ -27,6 +27,8 @@ public class ClientController implements GameForClient{
     public void attachView(View view){
         this.view = view;
     }
+
+
 
     //gets executed when connection is lost
     public void detachConnection(){
@@ -97,17 +99,36 @@ public class ClientController implements GameForClient{
         gameBoard.setClientName(clientName);
     }
 
-    public void startGame(){
-        view.printMessage("Ready to start the game!");
+    public void startTurn(){
+        if(gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())){
+            //my turn
+            if(gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getPlayedAssistant()==null){
+                view.planningPhase();
+            }
+            else {
+                view.actionPhase();
+            }
+        }
+        else{
+            try {
+                connection.waitModelChange();
+            }
+            catch (IOException e) {
+                System.out.println("closing connection due to exception in receiving updates");
+                connection.close();
+            }
+        }
     }
 
     public void planningPhase() {
-        System.out.println("ClientController says: Starting while(true) loop to keep client alive");
+        System.out.println("ClientController says: Starting while(true) loop in planning phase to keep client alive");
         while(true){}
         //TODO ask view to ask user to choose Assistant
     }
 
     public void actionPhase() {
+        System.out.println("ClientController says: Starting while(true) loop in action phase to keep client alive");
+        while(true){}
         //TODO ask view to ask user to choose actions
     }
 
@@ -132,4 +153,5 @@ public class ClientController implements GameForClient{
     public void printMessage(String message){
         view.printMessage(message);
     }
+
 }

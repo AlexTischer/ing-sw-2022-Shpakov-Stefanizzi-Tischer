@@ -216,7 +216,7 @@ public class GameTest extends TestCase {
         testGameBoard.refillAssistants(testplayer);
         //character with rank 8 has 4 steps
         testplayer.setPlayedAssistantRank(8);
-        testGameBoard.placeMotherNature(2);
+        testGameBoard.placeMotherNatureTEST(2);
 
         testGameBoard.addStudentToEntrance(testplayer, Color.GREEN);
         testGameBoard.addStudentToEntrance(testplayer, Color.GREEN);
@@ -244,7 +244,7 @@ public class GameTest extends TestCase {
         testGameBoard.refillAssistants(testplayer);
         //character with rank 8 has 4 steps
         testplayer.setPlayedAssistantRank(8);
-        testGameBoard.placeMotherNature(2);
+        testGameBoard.placeMotherNatureTEST(2);
 
         testGameBoard.addStudentToEntrance(testplayer, Color.GREEN);
         testGameBoard.addStudentToEntrance(testplayer, Color.GREEN);
@@ -255,7 +255,7 @@ public class GameTest extends TestCase {
         game.moveStudentToDining(Color.GREEN);
 
         testplayer.setPlayedAssistantRank(6);
-        testGameBoard.placeMotherNature(1);
+        testGameBoard.placeMotherNatureTEST(1);
         game.moveMotherNature(-2);
         assertEquals(testGameBoard.getPositionOfMotherNature(),11);
 

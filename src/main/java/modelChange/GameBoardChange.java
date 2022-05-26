@@ -30,7 +30,8 @@ public class GameBoardChange extends ModelChange{
 
         gameBoard.setPositionOfMotherNature(positionOfMotherNature);
         gameBoard.setNumOfCoins(numOfCoins);
-        gameBoard.setCurrentPlayerName(currentPlayerName);
+
+        //players has to be set on ClientGameBoard always with the same order, whilst on server the arraylist gets reordered round by round (based on played Assistant rank).
 
         if (gameBoard.getPlayers()!=null) {
             ArrayList<ClientPlayer> tempPlayers = new ArrayList<ClientPlayer>();
@@ -48,6 +49,8 @@ public class GameBoardChange extends ModelChange{
         else {
             gameBoard.setPlayers(clientPlayers);
         }
+
+        gameBoard.setCurrentPlayerName(currentPlayerName);
     }
 
     public GameBoardChange(GameBoard gameBoard, ArrayList<Player> players){
@@ -84,6 +87,9 @@ public class GameBoardChange extends ModelChange{
 
         //setting playedCharacters
         Character[] serverCharacters = gameBoard.getPlayedCharacters();
+
+
+        //TODO: if advanced settings are not selected, serverCharacters[i] is null
 
         for(int i=0; i<3; i++){
             ClientCharacter character = new ClientCharacter();

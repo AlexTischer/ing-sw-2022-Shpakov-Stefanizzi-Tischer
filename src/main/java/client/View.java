@@ -10,7 +10,7 @@ public abstract class View {
     }
 
 
-    public void pianificationPhase() {
+    public void planningPhase() {
         controller.planningPhase();
     }
 
@@ -24,4 +24,8 @@ public abstract class View {
     public abstract void printMessage(String message);
 
     public abstract String askName();
+
+    public void startTurn() {
+        controller.startTurn();
+    }
 }

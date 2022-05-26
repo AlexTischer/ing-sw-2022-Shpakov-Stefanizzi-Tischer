@@ -2,7 +2,9 @@ package client.model;
 
 import server.model.Color;
 
-public class ClientCharacter {
+import java.io.Serializable;
+
+public class ClientCharacter implements Serializable {
 
     private int cost;
     private int noEntryTiles;

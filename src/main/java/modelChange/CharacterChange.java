@@ -1,6 +1,5 @@
 package modelChange;
 
-import client.model.ClientCharacter;
 import client.model.ClientGameBoard;
 import server.model.Character;
 import server.model.Color;

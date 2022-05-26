@@ -5,7 +5,9 @@ import server.model.AssistantType;
 import server.model.SchoolBoard;
 import server.model.TowerColor;
 
-public class ClientPlayer {
+import java.io.Serializable;
+
+public class ClientPlayer implements Serializable {
 
     private String name;
     private ClientSchoolBoard schoolBoard;

@@ -22,14 +22,27 @@ public class Server {
     private boolean advancedSettings;
     private int numOfConnections = 0;
     private boolean gameReady = false;
-    //public Connection currentConnection;
 
     public Server(int port) throws IOException{
         this.port=port;
         serverSocket = new ServerSocket(port);
     }
 
-    public void addToLobby(Connection connection, String name){
+
+    public void addClient(Connection connection, String name){
+        if(!gameReady){
+            addToLobby(connection, name);
+        }
+        else{
+            for(VirtualView v : playingClients){
+                if (v.getPlayer().getName().equals(name) && !v.isActive()){
+                    v.attachConnection(connection);
+                }
+            }
+        }
+    }
+
+    private void addToLobby(Connection connection, String name){
 //        System.out.println("Server says: before if: " + waitingConnection.keySet().stream().toList());
         if (waitingConnection.keySet().stream().map(s -> s.toLowerCase(Locale.ROOT)).collect(Collectors.toList()).contains(name.toLowerCase(Locale.ROOT))) {
             System.out.println("Server says: name already used");
@@ -46,7 +59,7 @@ public class Server {
 
             if (waitingConnection.size() == numOfPlayers) {
                 gameReady = true;
-                //createGame();
+                createGame();
             }
         }
 //        System.out.println("Server says: after else:" + waitingConnection.keySet().stream().toList());
@@ -73,6 +86,7 @@ public class Server {
         //e.g. thread will wait until all players insert assistant card
         game.init(waitingConnection.keySet().stream().toList(), advancedSettings, new CharacterDeck());
 
+
         //add all virtual views as observers to gameBoard in order to send modelChange
         for(VirtualView client: playingClients){
             game.getGameBoard().addObserver(client);
@@ -80,10 +94,12 @@ public class Server {
 
         //send modelChange to all clients
         game.getGameBoard().sendGameBoardChange();
+
+        game.launchGame();
     }
 
     /*only for addToLobby*/
-    public void deregisterConnectionFromLobby(Connection connection) {
+    public void removeFromLobby(Connection connection) {
         /*remove connection from waiting playingClients map*/
 
         //save oldKeys because map may be modified during execution
@@ -103,6 +119,7 @@ public class Server {
         }
 
         numOfConnections--;
+        gameReady = false;
         System.out.println("Server: I deregistered connection");
 
     }

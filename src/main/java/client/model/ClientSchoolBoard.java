@@ -3,10 +3,11 @@ package client.model;
 import server.model.Color;
 import server.model.TowerColor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class ClientSchoolBoard {
+public class ClientSchoolBoard implements Serializable {
 
     private ArrayList<Color> entrance;
     private Map<Color,Integer> diningRoom;

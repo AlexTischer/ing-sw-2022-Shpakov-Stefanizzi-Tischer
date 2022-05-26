@@ -36,10 +36,12 @@ public class Connection implements Runnable{
 
         isActive = false;
         //deregistering is different based on whether game is already started
-        if (server.isGameReady())
+        if (server.isGameReady()) {
             server.changeConnectionStatus(new ConnectionStatusChange(name, false));
-        else
-            server.deregisterConnectionFromLobby(this);
+        }
+        else {
+            server.removeFromLobby(this);
+        }
 
         try{
             clientSocket.close();
@@ -51,16 +53,16 @@ public class Connection implements Runnable{
     }
 
     public void send(ModelChange modelChange) {
-        try{
-            socketOut.writeObject(modelChange);
-            socketOut.flush();
-            socketOut.reset();
-        }
-        catch (IOException e){
-//            e.printStackTrace();
-            System.out.println("Caught IO Exception");
-            this.close();
-
+        if (isActive) {
+            try {
+                socketOut.writeObject(modelChange);
+                socketOut.flush();
+                socketOut.reset();
+            } catch (IOException e) {
+                //e.printStackTrace();
+                System.out.println("Caught IO Exception");
+                this.close();
+            }
         }
     }
 
@@ -95,8 +97,8 @@ public class Connection implements Runnable{
 
                     System.out.println("Server received from client: " + fromClient);
                     try {
-                        server.addToLobby(this, (String) fromClient);
-                        System.out.println("Client " + fromClient + " added to Lobby");
+                        server.addClient(this, (String) fromClient);
+                        System.out.println("Client " + fromClient + " added Client");
                         nameReady = true;
                         name = (String)fromClient;
 

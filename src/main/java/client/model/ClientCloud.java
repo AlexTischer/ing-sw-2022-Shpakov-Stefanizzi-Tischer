@@ -2,9 +2,10 @@ package client.model;
 
 import server.model.Color;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ClientCloud {
+public class ClientCloud implements Serializable {
 
     private ArrayList<Color> students;
 

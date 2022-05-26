@@ -3,9 +3,10 @@ package client.model;
 import server.model.Color;
 import server.model.TowerColor;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class ClientIsland {
+public class ClientIsland implements Serializable {
     private int numOfIslands;
     private Map<Color, Integer> students;
     private int numOfTowers;

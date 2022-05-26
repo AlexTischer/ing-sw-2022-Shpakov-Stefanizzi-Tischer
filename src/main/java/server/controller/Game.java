@@ -55,7 +55,7 @@ public class Game implements GameForClient{
         gameBoard = GameBoard.getInstanceOfGameBoard();
         gameBoard.init(this, playersNames.size());
 
-        System.out.println("I have created and initialized gameBoard" + gameBoard);
+        System.out.println("Game Says: I have created and initialized gameBoard" + gameBoard);
 
         this.advancedSettings = advancedSettings;
         if (advancedSettings) {
@@ -78,8 +78,9 @@ public class Game implements GameForClient{
         Collections.shuffle(players);
         gameBoard.setCurrentPlayer(players.get(0));
         //gameBoard.sendGameBoardChange();
+    }
 
-
+    public void launchGame(){
         studentMove = 0;
         motherNatureMove = false;
         useCloudMove = false;
@@ -103,21 +104,23 @@ public class Game implements GameForClient{
         return players;
     }
 
-    public void moveStudentToIsland(Color studentColor, int islandNumber){
+    public synchronized void moveStudentToIsland(Color studentColor, int islandNumber){
         if (studentMove > (players.size() == 3? 4: 3))
             throw new WrongActionException();
 
         gameBoard.addStudentToIsland(gameBoard.getCurrentPlayer(), studentColor, islandNumber);
         studentMove++;
+        this.notify();
     }
 
-    public void moveStudentToDining(Color studentColor){
+    public synchronized void moveStudentToDining(Color studentColor){
         if (studentMove > (players.size() == 3? 4: 3))
             throw new WrongActionException();
 
         removeStudentFromEntrance(studentColor);
         addStudentToDining(gameBoard.getCurrentPlayer(), studentColor);
         studentMove++;
+        this.notify();
     }
 
     public void addStudentToDining(Player player, Color studentColor){
@@ -147,7 +150,7 @@ public class Game implements GameForClient{
         Player loser = players.get(0);
 
         int masterInfluence = 0;
-        int influenceToCompare = 0;
+        int influenceToCompare;
 
         /*if an island has noEntry tile on it, then the island does not get conquered*/
         if (calculateInfluence(islandNumber, master) == -1)
@@ -244,12 +247,13 @@ public class Game implements GameForClient{
             }
     }
 
-    public void moveMotherNature(int steps){
+    public synchronized void moveMotherNature(int steps){
         if (studentMove != (players.size() == 3? 4: 3) || motherNatureMove)
             throw new WrongActionException();
 
         gameBoard.moveMotherNature(steps);
         motherNatureMove = true;
+        this.notify();
     }
 
     public void buyCharacter(int characterNumber){
@@ -272,12 +276,13 @@ public class Game implements GameForClient{
         gameBoard.activateCharacter(color);
     }
 
-    public void useCloud(int cloudNumber){
+    public synchronized void useCloud(int cloudNumber){
         if (studentMove != (players.size() == 3? 4: 3) || !motherNatureMove)
             throw new WrongActionException();
 
         gameBoard.useCloud(cloudNumber);
         useCloudMove = true;
+        this.notify();
     }
 
     //sets assistant of current player and makes the next player current to let him call use assistant from virtual view
@@ -326,16 +331,16 @@ public class Game implements GameForClient{
         }
     }
 
-    private void newTurn(Player p){
+    private void newTurn(Player p) throws InterruptedException {
         /*virtual view controls current player before forwarding any method to controller*/
         gameBoard.setCurrentPlayer(p);
-
-        while (studentMove != (players.size() == 3? 4: 3) || !motherNatureMove || !useCloudMove);
+        while (studentMove != (players.size() == 3? 4: 3) || !motherNatureMove || !useCloudMove){
+            this.wait();
+        }
 
         studentMove = 0;
         motherNatureMove = false;
         useCloudMove = false;
-
     }
 
     /*check whether a player can play an assistant with a certain rank*/

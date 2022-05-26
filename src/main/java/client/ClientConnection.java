@@ -1,13 +1,12 @@
 package client;
 
 import client.controller.ClientController;
+import exceptions.EndOfChangesException;
 import modelChange.ModelChange;
 import packets.Packet;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.SocketException;
-import java.security.InvalidParameterException;
 import java.util.Scanner;
 
 public class ClientConnection {
@@ -52,43 +51,53 @@ public class ClientConnection {
             socketOut.writeObject(packet);
             socketOut.flush();
             socketOut.reset();
+            waitModelChange();
         }
         /*each send of packet is followed by read of model change or pong message*/
-        Object fromServer = new Object();
-        boolean modelChangeReceived = false;
 
-        while (!modelChangeReceived) {
+    }
+
+    public void waitModelChange() throws IOException{
+        Object modelChange = new Object();
+        boolean waitingModelChange = true;
+
+        while (waitingModelChange) {
             try {
-                fromServer = socketIn.readObject();
-                ModelChange mc = (ModelChange) fromServer;
-                clientController.changeModel(mc);
-                modelChangeReceived = true;
-            } catch (ClassCastException | ClassNotFoundException | InvalidParameterException e) {
-                /*server has sent wrong object type*/
+                modelChange = socketIn.readObject();
+                clientController.changeModel((ModelChange) modelChange);
+                System.out.println("ClientConnection says: ModelChange received and executed " + modelChange.getClass());
+                } catch (ClassCastException e) {
                 try {
-                    if (!fromServer.equals("pong")){
-                        throw new IllegalArgumentException();
+                    //after start, can receive only gameBoardChange or pong messages
+                    String fromServer = (String) modelChange;
+                    if (fromServer.equals("pong")) {
+                        System.out.println("ClientConnection says: server sent pong");
+                        continue;
                     }
+                    else {
+                        System.out.println("ClientConnection says: Error from server received: \n" + fromServer);
+                        waitingModelChange = false;
+                    }
+
+                } catch (ClassCastException e2) {
+                    System.out.println("ClientConnection says: Error from server side");
                 }
-                catch (ClassCastException | IllegalArgumentException e2){
-                    //client didn't receive model change neither pong message during its game phase
-                    //anomalous server behaviour
-                    this.close();
-                }
+            } catch (ClassNotFoundException e) {
+                System.out.println("ClientConnection says: error class not found ex");
+            } catch (EndOfChangesException e){
+                waitingModelChange = false;
             }
         }
+
     }
 
     public void init() throws IOException {
         //client receives strings from server with readUTF() until it gets added to lobby
         //then it receives objects with readObject()
-        ObjectOutputStream socketOut = new ObjectOutputStream(socket.getOutputStream());
+        socketOut = new ObjectOutputStream(socket.getOutputStream());
         socketOut.flush();
 
-        ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
-
-        //use stdin just for easiness
-        Scanner stdin = new Scanner(System.in);
+        socketIn = new ObjectInputStream(socket.getInputStream());
 
         new Thread(new ConnectionTracker(this, socketOut, socketIn)).start();
 
@@ -211,40 +220,7 @@ public class ClientConnection {
             if (fromServer.equals("start")) {
                 System.out.println("ClientConnection says: start received");
                 clientController.setClientName(name);
-
-                Object gameBoardChange = new Object();
-                boolean waitingGameBoardChange = true;
-
-                while (waitingGameBoardChange) {
-                    try {
-                        gameBoardChange = socketIn.readObject();
-                        clientController.changeModel((ModelChange) gameBoardChange);
-                        waitingGameBoardChange = false;
-                        System.out.println("ClientConnection says: Gameboard change received and executed");
-                    } catch (ClassCastException e) {
-                        try {
-                            //after start, can receive only gameBoardChange or pong messages
-                            fromServer = (String) gameBoardChange;
-                            if (fromServer.equals("pong")) {
-                                System.out.println("ClientConnection says: server sent pong");
-                                continue;
-                            }
-                            else {
-                                System.out.println("ClientConnection says: Error from server received: \n" + fromServer);
-                                waitingGameBoardChange = false;
-
-                            }
-
-                        } catch (ClassCastException e2) {
-                            System.out.println("ClientConnection says: Error from server side");
-                            //TODO manage client closing in case server sent suspicious response
-                        }
-                    } catch (ClassNotFoundException e) {
-                        System.out.println("ClientConnection says: error class not found ex");
-                    }
-
-                    clientController.startGame();
-                }
+                clientController.startTurn();
             }
             else {
                 fromServer = socketIn.readUTF();

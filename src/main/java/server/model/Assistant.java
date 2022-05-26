@@ -1,6 +1,8 @@
 package server.model;
 
-public class Assistant {
+import java.io.Serializable;
+
+public class Assistant implements Serializable {
     private int rank;
     private int movements;
     private AssistantType type;

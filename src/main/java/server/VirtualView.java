@@ -55,4 +55,8 @@ public class VirtualView implements Observer<ModelChange> {
     public Player getPlayer() {
         return player;
     }
+
+    public boolean isActive(){
+        return clientConnection.isActive();
+    }
 }

@@ -72,7 +72,7 @@ public class GameBoardTest extends TestCase {
         /**MERGE 2 CONSECUTIVE ISLANDS**/
 
         /*moving MN to the 2 island*/
-        testGameBoard.placeMotherNature(1);
+        testGameBoard.placeMotherNatureTEST(1);
 
         /*test merging 2 islands*/
         testGameBoard.addStudentToIsland(Color.GREEN, 0);
@@ -112,7 +112,7 @@ public class GameBoardTest extends TestCase {
         /**MERGE THE LAST AND THE FIRST ISLANDS**/
 
         /*place MN on the last island and conquer it*/
-        testGameBoard.placeMotherNature(10);
+        testGameBoard.placeMotherNatureTEST(10);
 
         testGameBoard.addStudentToIsland(Color.PINK, 10);
         testGameBoard.addStudentToIsland(Color.BLUE, 10);
@@ -148,7 +148,7 @@ public class GameBoardTest extends TestCase {
         /**TEST THAT NON-CONSECUTIVE ISLANDS ARE NOT MERGED**/
 
         /*place MN on the last island*/
-        testGameBoard.placeMotherNature(9);
+        testGameBoard.placeMotherNatureTEST(9);
 
         testGameBoard.addStudentToIsland(Color.PINK, 7);
         testGameBoard.addStudentToIsland(Color.BLUE, 7);
