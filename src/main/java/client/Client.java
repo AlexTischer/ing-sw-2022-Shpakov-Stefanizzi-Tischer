@@ -2,6 +2,8 @@ package client;
 
 import client.controller.ClientController;
 import client.model.ClientGameBoard;
+import client.view.Cli;
+import client.view.View;
 
 import java.io.IOException;
 import java.net.Socket;

@@ -1,7 +1,7 @@
 package client.controller;
 
 import client.ClientConnection;
-import client.View;
+import client.view.View;
 import client.model.ClientGameBoard;
 import modelChange.ModelChange;
 import packets.*;

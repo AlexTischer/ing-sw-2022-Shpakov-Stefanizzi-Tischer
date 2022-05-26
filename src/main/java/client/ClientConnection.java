@@ -10,7 +10,7 @@ import java.net.SocketException;
 import java.security.InvalidParameterException;
 import java.util.Scanner;
 
-public class ClientConnection {
+public class  ClientConnection {
     private Socket socket;
     private ObjectInputStream socketIn;
     private ObjectOutputStream socketOut;

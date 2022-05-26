@@ -3,7 +3,7 @@ package client.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import client.View;
+import client.view.View;
 public class ClientGameBoard {
     private View view;
     private List<ClientIsland> islands;
