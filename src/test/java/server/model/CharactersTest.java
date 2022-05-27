@@ -422,12 +422,15 @@ public class CharactersTest extends TestCase {
         testGameBoard.addStudentToEntrance(testPlayer, Color.GREEN);
         testGameBoard.addStudentToEntrance(testPlayer, Color.GREEN);
 
+        gametest.setStudentMove(0);
         gametest.moveStudentToDining(Color.GREEN);
         gametest.moveStudentToDining(Color.GREEN);
         gametest.moveStudentToDining(Color.GREEN);
 
         testGameBoard.placeMotherNatureTEST(3);
 
+
+        gametest.setMotherNatureMove(false);
         gametest.moveMotherNature(-1);
         assertEquals(testGameBoard.getPositionOfMotherNature(), 2);
 

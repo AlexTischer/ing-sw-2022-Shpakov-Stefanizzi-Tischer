@@ -406,4 +406,13 @@ public class Game implements GameForClient{
         gameBoard.addStudentToEntrance(player, studentColor);
     }
 
+    public void setStudentMove(int studentMove){
+        this.studentMove = studentMove;
+    }
+
+    public void setMotherNatureMove(boolean motherNatureMove){
+        this.motherNatureMove=motherNatureMove;
+    }
+
+
 }

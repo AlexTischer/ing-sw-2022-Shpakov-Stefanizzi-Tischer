@@ -100,6 +100,8 @@ public class GameTest extends TestCase {
 
         assertEquals(game.calculateInfluence(0, testplayer), 0);
 
+        game.setStudentMove(0);
+
         game.moveStudentToIsland(Color.GREEN, 0);
         game.moveStudentToIsland(Color.GREEN, 0);
         game.moveStudentToIsland(Color.BLUE, 0);
@@ -117,6 +119,9 @@ public class GameTest extends TestCase {
         testGameBoard.setCurrentPlayer(testplayer);
 
         testplayer.addStudentToEntrance(Color.GREEN);
+
+        game.setStudentMove(0);
+
         game.moveStudentToDining(Color.GREEN);
 
         assertEquals(testplayer.getNumOfStudentsInDining(Color.GREEN), 1);
@@ -222,9 +227,13 @@ public class GameTest extends TestCase {
         testGameBoard.addStudentToEntrance(testplayer, Color.GREEN);
         testGameBoard.addStudentToEntrance(testplayer, Color.GREEN);
 
+        game.setStudentMove(0);
+
         game.moveStudentToDining(Color.GREEN);
         game.moveStudentToDining(Color.GREEN);
         game.moveStudentToDining(Color.GREEN);
+
+        game.setMotherNatureMove(false);
 
         game.moveMotherNature(3);
         assertEquals(testGameBoard.getPositionOfMotherNature(),5);
@@ -250,12 +259,16 @@ public class GameTest extends TestCase {
         testGameBoard.addStudentToEntrance(testplayer, Color.GREEN);
         testGameBoard.addStudentToEntrance(testplayer, Color.GREEN);
 
+        game.setStudentMove(0);
+
         game.moveStudentToDining(Color.GREEN);
         game.moveStudentToDining(Color.GREEN);
         game.moveStudentToDining(Color.GREEN);
 
         testplayer.setPlayedAssistantRank(6);
         testGameBoard.placeMotherNatureTEST(1);
+
+        game.setMotherNatureMove(false);
         game.moveMotherNature(-2);
         assertEquals(testGameBoard.getPositionOfMotherNature(),11);
 
