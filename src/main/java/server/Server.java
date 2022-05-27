@@ -86,16 +86,21 @@ public class Server {
         //e.g. thread will wait until all players insert assistant card
         game.init(waitingConnection.keySet().stream().toList(), advancedSettings, new CharacterDeck());
 
-
-        //add all virtual views as observers to gameBoard in order to send modelChange
-        for(VirtualView client: playingClients){
-            game.getGameBoard().addObserver(client);
-        }
-
-        //send modelChange to all clients
-        game.getGameBoard().sendGameBoardChange();
-
         game.launchGame();
+
+        synchronized (game) {
+            //add all virtual views as observers to gameBoard in order to send modelChange
+            for (VirtualView client : playingClients) {
+                game.getGameBoard().addObserver(client);
+            }
+
+            for (VirtualView client : playingClients) {
+                client.sendStart();
+            }
+
+            //send modelChange to all clients
+            game.getGameBoard().sendGameBoardChange();
+        }
     }
 
     /*only for addToLobby*/

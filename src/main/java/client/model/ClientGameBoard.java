@@ -12,19 +12,24 @@ public class ClientGameBoard {
     private ClientCharacter playedCharacters[];
     private int positionOfMotherNature;
     private int numOfCoins;
-    private String currentPlayerName;
+    private String currentPlayerName = "a";
     private ArrayList<ClientPlayer> players;
     private String message;
     private List<String> userNames;
-    private String clientName;
+    private String clientName = "b";
 
     /*Mike: inside each set method we need to update the view*/
     public List<ClientIsland> getIslands() {
         return islands;
     }
 
+    public String getClientName() {
+        return clientName;
+    }
+
     public void setIslands(List<ClientIsland> islands) {
         this.islands = islands;
+        System.out.println("setting islands");
     }
 
     public List<ClientCloud> getClouds() {
@@ -35,6 +40,7 @@ public class ClientGameBoard {
 
     public void setClouds(List<ClientCloud> clouds) {
         this.clouds = clouds;
+        System.out.println("setting clouds");
     }
 
     public ClientCharacter getCurrentCharacter() {
@@ -43,6 +49,8 @@ public class ClientGameBoard {
 
     public void setCurrentCharacter(int currentCharacter) {
         this.currentCharacter = currentCharacter;
+
+        System.out.println("setting current Character");
     }
 
     public ClientCharacter[] getPlayedCharacters() {
@@ -51,6 +59,8 @@ public class ClientGameBoard {
 
     public void setPlayedCharacters(ClientCharacter[] playedCharacters) {
         this.playedCharacters = playedCharacters;
+
+        System.out.println("setting played character");
     }
 
     public int getPositionOfMotherNature() {
@@ -59,6 +69,8 @@ public class ClientGameBoard {
 
     public void setPositionOfMotherNature(int positionOfMotherNature) {
         this.positionOfMotherNature = positionOfMotherNature;
+
+        System.out.println("setting position of MN");
     }
 
     public int getNumOfCoins() {
@@ -67,6 +79,8 @@ public class ClientGameBoard {
 
     public void setNumOfCoins(int numOfCoins) {
         this.numOfCoins = numOfCoins;
+
+        System.out.println("setting numOfCoins");
     }
 
     public String getCurrentPlayerName() {
@@ -75,14 +89,9 @@ public class ClientGameBoard {
 
     public void setCurrentPlayerName(String currentPlayerName) {
         this.currentPlayerName = currentPlayerName;
-        if(currentPlayerName.equals(clientName)){
-            if(getPlayer(currentPlayerName).getPlayedAssistant()==null){
-                view.pianificationPhase();
-            }
-            else {
-                view.actionPhase();
-            }
-        }
+        view.startTurn();
+
+        System.out.println("setting current player name");
     }
 
     public ClientPlayer getPlayer(String playerName) {
@@ -96,6 +105,8 @@ public class ClientGameBoard {
 
     public void setPlayers(ArrayList<ClientPlayer> players) {
         this.players = players;
+
+        System.out.println("setting players");
     }
 
     public ArrayList<ClientPlayer> getPlayers() {
@@ -105,10 +116,14 @@ public class ClientGameBoard {
     public void setUserNames(List<String> userNames) {
         this.userNames = userNames;
         System.out.println(userNames.toString());
+
+        System.out.println("setting userNames");
     }
 
     public void setMessage(String message){
         this.message = message;
+
+        System.out.println("setting message");
     }
 
     public void attachView(View view){
@@ -117,5 +132,7 @@ public class ClientGameBoard {
 
     public void setClientName(String clientName) {
         this.clientName = clientName;
+
+        System.out.println("setting client name");
     }
 }

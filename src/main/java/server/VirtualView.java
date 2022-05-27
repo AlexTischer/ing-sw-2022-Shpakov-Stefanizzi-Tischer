@@ -40,6 +40,10 @@ public class VirtualView implements Observer<ModelChange> {
 
     }
 
+    public void sendStart(){
+        clientConnection.sendStart();
+    }
+
     public void attachGame(Game game){
         this.game=game;
     }

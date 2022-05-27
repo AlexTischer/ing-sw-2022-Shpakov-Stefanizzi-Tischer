@@ -9,15 +9,6 @@ public abstract class View {
         this.controller = controller;
     }
 
-
-    public void planningPhase() {
-        controller.planningPhase();
-    }
-
-    public void actionPhase() {
-        controller.actionPhase();
-    }
-
     public abstract int askNumOfPlayers();
 
     public abstract String askAdvancedSettings();

@@ -103,10 +103,10 @@ public class ClientController implements GameForClient{
         if(gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())){
             //my turn
             if(gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getPlayedAssistant()==null){
-                view.planningPhase();
+                planningPhase();
             }
             else {
-                view.actionPhase();
+                actionPhase();
             }
         }
         else{

@@ -80,7 +80,7 @@ public class Game implements GameForClient{
         //gameBoard.sendGameBoardChange();
     }
 
-    public void launchGame(){
+    public synchronized void launchGame(){
         studentMove = 0;
         motherNatureMove = false;
         useCloudMove = false;
@@ -296,7 +296,7 @@ public class Game implements GameForClient{
 
     }
 
-    private void playGame() throws InterruptedException {
+    private synchronized void playGame() throws InterruptedException {
         while(!checkEndGame()){
             newRound();
         }
@@ -304,7 +304,7 @@ public class Game implements GameForClient{
 
 
     /*TODO need to control newRound(), i suppose there is a bug*/
-    private synchronized void newRound() throws InterruptedException {
+    private void newRound() throws InterruptedException {
         gameBoard.refillClouds();
         gameBoard.setCurrentPlayer(players.get(0));
 

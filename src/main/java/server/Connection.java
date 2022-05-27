@@ -113,9 +113,6 @@ public class Connection implements Runnable{
                                 socketOut.reset();
                             }
                         }
-                        socketOut.writeObject("start");
-                        socketOut.flush();
-                        socketOut.reset();
                     }
                     catch (IllegalArgumentException e){
                         socketOut.writeObject("This name \"" + fromClient + "\" is already used. Please chose another name");
@@ -197,4 +194,15 @@ public class Connection implements Runnable{
         }
     }
 
+    public void sendStart() {
+        if (isActive) {
+            try {
+                socketOut.writeObject("start");
+                socketOut.flush();
+                socketOut.reset();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }
