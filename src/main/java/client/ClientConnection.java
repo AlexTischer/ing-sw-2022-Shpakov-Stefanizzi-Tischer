@@ -51,7 +51,15 @@ public class  ClientConnection {
             socketOut.writeObject(packet);
             socketOut.flush();
             socketOut.reset();
-            waitModelChange();
+            boolean waitEndOfChanges = true;
+            while(waitEndOfChanges){
+                try {
+                    waitModelChange();
+                }
+                catch (EndOfChangesException e){
+                    waitEndOfChanges = false;
+                }
+            }
         }
         /*each send of packet is followed by read of model change or pong message*/
 
@@ -59,9 +67,7 @@ public class  ClientConnection {
 
     public void waitModelChange() throws IOException{
         Object modelChange = new Object();
-        boolean waitingModelChange = true;
 
-        while (waitingModelChange) {
             try {
                 modelChange = socketIn.readObject();
                 clientController.changeModel((ModelChange) modelChange);
@@ -72,11 +78,9 @@ public class  ClientConnection {
                     String fromServer = (String) modelChange;
                     if (fromServer.equals("pong")) {
                         System.out.println("ClientConnection says: server sent pong");
-                        continue;
                     }
                     else {
                         System.out.println("ClientConnection says: Error from server received: \n" + fromServer);
-                        waitingModelChange = false;
                     }
 
                 } catch (ClassCastException e2) {
@@ -84,11 +88,7 @@ public class  ClientConnection {
                 }
             } catch (ClassNotFoundException e) {
                 System.out.println("ClientConnection says: error class not found ex");
-            } catch (EndOfChangesException e){
-                waitingModelChange = false;
             }
-        }
-
     }
 
     public void init() throws IOException {

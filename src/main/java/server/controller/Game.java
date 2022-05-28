@@ -80,7 +80,7 @@ public class Game implements GameForClient{
         //gameBoard.sendGameBoardChange();
     }
 
-    public synchronized void launchGame(){
+    public void launchGame(){
         studentMove = 0;
         motherNatureMove = false;
         useCloudMove = false;
@@ -307,6 +307,8 @@ public class Game implements GameForClient{
     private void newRound() throws InterruptedException {
         gameBoard.refillClouds();
         gameBoard.setCurrentPlayer(players.get(0));
+
+        this.notifyAll();
 
         /*planing phase*/
         for (Player p : players) {

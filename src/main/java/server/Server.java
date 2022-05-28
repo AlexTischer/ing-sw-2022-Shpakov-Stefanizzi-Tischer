@@ -86,9 +86,16 @@ public class Server {
         //e.g. thread will wait until all players insert assistant card
         game.init(waitingConnection.keySet().stream().toList(), advancedSettings, new CharacterDeck());
 
-        game.launchGame();
-
         synchronized (game) {
+
+            game.launchGame();
+
+            try {
+                game.wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
             //add all virtual views as observers to gameBoard in order to send modelChange
             for (VirtualView client : playingClients) {
                 game.getGameBoard().addObserver(client);

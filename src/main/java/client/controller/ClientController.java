@@ -110,12 +110,15 @@ public class ClientController implements GameForClient{
             }
         }
         else{
-            try {
-                connection.waitModelChange();
-            }
-            catch (IOException e) {
-                System.out.println("closing connection due to exception in receiving updates");
-                connection.close();
+            while(!gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())) {
+                try {
+                    connection.waitModelChange();
+                } catch (IOException e) {
+                    System.out.println("ClientController says: closing connection due to exception in receiving updates");
+                    connection.close();
+                } catch (EndOfChangesException e) {
+                    continue;
+                }
             }
         }
     }
