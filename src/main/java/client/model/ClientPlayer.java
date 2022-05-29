@@ -6,6 +6,8 @@ import server.model.SchoolBoard;
 import server.model.TowerColor;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 
 public class ClientPlayer implements Serializable {
 
@@ -78,4 +80,7 @@ public class ClientPlayer implements Serializable {
         this.connectionStatus = connectionStatus;
     }
 
+    public List<Integer> getAssistantsRanks(){
+        return Arrays.stream(assistants).filter(a -> a!=null).map(a -> a.getRank()).toList();
+    }
 }

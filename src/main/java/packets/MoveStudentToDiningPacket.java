@@ -5,18 +5,13 @@ import server.model.Color;
 
 public class MoveStudentToDiningPacket extends Packet{
 
+    private Color studentColor;
+
+    public MoveStudentToDiningPacket(Color studentColor){
+        this.studentColor=studentColor;
+    }
     @Override
     public void execute(GameForClient game) {
-
-        Color studentColor;
-
-        try{
-            studentColor = (Color)getParameters().get(0);
-        }
-        catch (ClassCastException e){
-            throw new ClassCastException("Invalid arguments");
-        }
-
         game.moveStudentToDining(studentColor);
     }
 }

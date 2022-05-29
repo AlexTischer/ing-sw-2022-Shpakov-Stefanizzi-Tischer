@@ -13,7 +13,7 @@ public interface GameForClient {
 
     public void moveMotherNature(int steps);
 
-    public void useAssistant(int assistantRank);
+    public void useAssistant();
 
     public void buyCharacter(int characterNumber);
 

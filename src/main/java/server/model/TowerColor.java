@@ -7,13 +7,16 @@ import java.util.Random;
 
 public enum TowerColor {
 
-    WHITE("\u001b[37m"),
-    BLACK("\u001b[30m"),
-    GREY("\u001b[30;1m");
+    WHITE("\u001b[37m", "white"),
+    BLACK("\u001b[30m", "black"),
+    GREY("\u001b[30;1m", "grey");
 
+
+    public final String ansi;
     public final String label;
 
-    private TowerColor(String label) {
+    private TowerColor(String ansi, String label) {
+        this.ansi = ansi;
         this.label = label;
     }
 

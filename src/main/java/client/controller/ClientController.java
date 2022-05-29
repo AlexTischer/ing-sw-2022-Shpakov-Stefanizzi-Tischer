@@ -1,17 +1,23 @@
 package client.controller;
 
 import client.ClientConnection;
+import client.model.ClientPlayer;
 import client.view.View;
 import client.model.ClientGameBoard;
 import exceptions.EndOfChangesException;
+import exceptions.RepeatedAssistantRankException;
+import exceptions.WrongActionException;
 import modelChange.ModelChange;
-import org.junit.jupiter.api.MethodOrderer;
 import packets.*;
+import server.model.Assistant;
 import server.model.Color;
+import server.model.Player;
 
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ClientController implements GameForClient{
     private View view;
@@ -40,14 +46,7 @@ public class ClientController implements GameForClient{
 
     //TODO fill methods with packet creation
     public void moveStudentToIsland(Color studentColor, int islandNumber){
-        Packet packet = new MoveStudentToIslandPacket();
-        /*...*/
-        try {
-            this.connection.send(packet);
-        }
-        catch (IOException e){
-            e.printStackTrace();
-        }
+
     }
 
     public void moveStudentToDining(Color studentColor){
@@ -62,8 +61,54 @@ public class ClientController implements GameForClient{
 
     }
 
-    public void useAssistant(int assistantRank){
+    private boolean checkAssistant(int assistantRank, ClientPlayer player){
+        Set<Integer> playedAssistantsRanks = gameBoard.getPlayers().stream().filter(p -> p!=player && p.getPlayedAssistant()!=null).
+                map(p -> p.getPlayedAssistant().getRank()).collect(Collectors.toSet());
 
+        /*if a player wants to play rank not contained in his hand, then return false*/
+        if (!player.getAssistantsRanks().contains(assistantRank))
+            return false;
+
+        /*if a player decides to play an assistant with rank already played by someone,
+        it is allowable only when player has no other options*/
+        if (playedAssistantsRanks.contains(assistantRank)){
+            for (int rank: player.getAssistantsRanks()) {
+                /*if player has an assistant with rank not yet played*/
+                if (!playedAssistantsRanks.contains(rank))
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void useAssistant(){
+        int assistantRank = view.askAssistant();
+
+        //checking if assistant rank is available
+        if(gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getAssistants()[assistantRank]!=null){
+
+            //checking if another player has already played the same rank
+            boolean alreadyPlayed = checkAssistant(assistantRank,gameBoard.getPlayer(gameBoard.getCurrentPlayerName()));
+
+            //if not, generate the Packet
+            if(alreadyPlayed) {
+
+                Packet packet = new UseAssistantPacket(assistantRank);
+                try {
+                    this.connection.send(packet);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            else {
+                throw new RepeatedAssistantRankException();
+            }
+        }
+        else{
+            throw new InvalidParameterException("You don't have this assistant");
+        }
     }
 
     public void buyCharacter(int characterNumber){
@@ -87,7 +132,6 @@ public class ClientController implements GameForClient{
     }
 
     public void changeModel(ModelChange change){
-
         try {
             change.execute(gameBoard);
         }
@@ -103,13 +147,13 @@ public class ClientController implements GameForClient{
 
     public void startTurn(){
         if(gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())){
-            System.out.println("Client Controller says: this is my turn - " + connection.getName());
+            //my turn
             if(gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getPlayedAssistant()==null){
                 planningPhase();
             }
-
-            //action phase must be necessarily done after planning phase
-            actionPhase();
+            else {
+                actionPhase();
+            }
         }
         else{
             while(!gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())) {
@@ -119,7 +163,6 @@ public class ClientController implements GameForClient{
                     System.out.println("ClientController says: closing connection due to exception in receiving updates");
                     connection.close();
                 } catch (EndOfChangesException e) {
-                    System.out.println("ClientController says: I have received and caught EndOfChangesException");
                     continue;
                 }
             }
@@ -127,24 +170,100 @@ public class ClientController implements GameForClient{
     }
 
     public void planningPhase() {
-        System.out.println("ClientController says: in planning phase to send use assistant");
-
-        try {
-            //TODO insert control of client game board and parameters sent from view
-            connection.send(new UseAssistantPacket(gameBoard.getClientName().length()));
-            System.out.println("ClientController says: I sent useAssistantPacket");
+        System.out.println("ClientController says: Starting while(true) loop in planning phase to keep client alive");
+        boolean correctAssistant = false;
+        while(!correctAssistant) {
+            try {
+                useAssistant();
+                correctAssistant = true;
+                System.out.println("Assistant selected correctly");
+            }catch (InvalidParameterException e){
+                printMessage(e.getMessage());
+            }catch (RepeatedAssistantRankException e){
+                printMessage(e.getMessage());
+            }
         }
-        catch (IOException e) {
-            System.out.println("Packet sending went bad");
-        }
-        //TODO ask view to ask user to choose Assistant
+    }
 
+    private void moveStudents(boolean characterActivated){
+        int studentMoves = 0;
+        Color studentColor;
+        boolean correctStudent;
+        boolean correctDestination;
+
+        while (studentMoves<=3){
+            correctStudent = false;
+            correctDestination = false;
+
+            if (view.chooseActionStudent(characterActivated) == 1) {
+
+                //client has chosen to move a student
+                while (!correctStudent) {
+
+                    //asking the color of the student
+                    studentColor = view.askStudentColor();
+
+                    //checking if client has the selected student
+                    if (gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getSchoolBoard().getEntrance().contains(studentColor)) {
+
+                        correctStudent = true;
+                        //asking the destination for the student
+                        while (!correctDestination) {
+                            int destination = view.askStudentDestination();
+
+                            //if destination == 0, move the student to dining room
+                            if (destination == 0) {
+                                try {
+                                    //TODO check if dining room is full
+                                    connection.send(new MoveStudentToDiningPacket(studentColor));
+                                    correctDestination = true;
+                                    studentMoves++;
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+
+                            //if destination is [1-12]
+                            } else {
+
+                                //check if the island with the given destination exist
+                                if(gameBoard.getIslands().size()>=destination){
+                                    try {
+                                        connection.send(new MoveStudentToIslandPacket(studentColor, destination));
+                                        correctDestination = true;
+                                        studentMoves++;
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+
+                                //if not, retry
+                                else{
+                                    System.out.println("This island does not exist, select another destination");
+                                }
+                            }
+                        }
+                    } else {
+                        System.out.println("Student does not exist, try again");
+                    }
+                }
+            }
+
+
+            //TODO ask for character activation
+            //chooseActionStudent returned 2
+            else{
+
+            }
+
+        }
     }
 
     public void actionPhase() {
         System.out.println("ClientController says: Starting while(true) loop in action phase to keep client alive");
-        while(true){}
+        boolean characterActivated = false;
         //TODO ask view to ask user to choose actions
+        moveStudents(characterActivated);
+
     }
 
     public int askNumOfPlayers() {

@@ -7,16 +7,27 @@ import java.util.Random;
 
 public enum Color {
 
-    RED("\u001b[31m"),
-    YELLOW("\u001b[33m"),
-    BLUE("\u001b[34m"),
-    GREEN("\u001b[32m"),
-    PINK("\u001b[35m");
+    /*
+    GREEN("green"),
+    RED("red"),
+    YELLOW("yellow"),
+    PINK("pink"),
+    BLUE("blue");
+    */
 
+    GREEN("\u001b[32m", "green"),
+    RED("\u001b[31m", "red"),
+    YELLOW("\u001b[33m", "yellow"),
+    PINK("\u001b[35m", "pink"),
+    BLUE("\u001b[34m", "blue");
+
+    public final String ansi;
     public final String label;
 
-    Color(String label) {
+    Color(String ansi , String label) {
+        this.ansi = ansi;
         this.label = label;
+
     }
 
     private static final List<Color> VALUES =
