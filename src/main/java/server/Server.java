@@ -4,6 +4,7 @@ import modelChange.LobbyChange;
 import modelChange.ModelChange;
 import server.controller.CharacterDeck;
 import server.controller.Game;
+import server.model.Player;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -17,7 +18,7 @@ public class Server {
     private int port;
     private ServerSocket serverSocket;
     private Map<String, Connection> waitingConnection = new HashMap<>();
-    private List<VirtualView> playingClients = new ArrayList<VirtualView>();
+    private List<VirtualView> virtualViews = new ArrayList<VirtualView>();
     private int numOfPlayers = 0;
     private boolean advancedSettings;
     private int numOfConnections = 0;
@@ -29,12 +30,12 @@ public class Server {
     }
 
 
-    public void addClient(Connection connection, String name){
+    public void addClient(Connection connection, String name) throws InterruptedException {
         if(!gameReady){
             addToLobby(connection, name);
         }
         else{
-            for(VirtualView v : playingClients){
+            for(VirtualView v : virtualViews){
                 if (v.getPlayer().getName().equals(name) && !v.isActive()){
                     v.attachConnection(connection);
                 }
@@ -42,8 +43,8 @@ public class Server {
         }
     }
 
-    private void addToLobby(Connection connection, String name){
-//        System.out.println("Server says: before if: " + waitingConnection.keySet().stream().toList());
+    private void addToLobby(Connection connection, String name) throws InterruptedException{
+
         if (waitingConnection.keySet().stream().map(s -> s.toLowerCase(Locale.ROOT)).collect(Collectors.toList()).contains(name.toLowerCase(Locale.ROOT))) {
             System.out.println("Server says: name already used");
             throw new IllegalArgumentException();
@@ -65,54 +66,56 @@ public class Server {
 //        System.out.println("Server says: after else:" + waitingConnection.keySet().stream().toList());
     }
 
-    private void createGame(){
-        //TODO debug because there is an error
+    private void createGame() throws InterruptedException{
         Game game = Game.getInstanceOfGame();
 
-        playingClients = new ArrayList<VirtualView>(waitingConnection.keySet().size());
+        virtualViews = new ArrayList<VirtualView>(waitingConnection.keySet().size());
 
         //attach connection and controller to each virtual view
         for(String name: waitingConnection.keySet()){
-            VirtualView client = new VirtualView();
+            VirtualView view = new VirtualView();
 
-            client.attachConnection(waitingConnection.get(name));
-            client.attachGame(game);
-            playingClients.add(client);
+            view.attachConnection(waitingConnection.get(name));
+            waitingConnection.get(name).attachView(view);
+            view.attachGame(game);
+            virtualViews.add(view);
         }
 
-        //init only after i have connected virtual views to game in order to send gameboard change
-        //initializes controller and automatically launches thread
-        //that will wait in game phases until the end of player move
-        //e.g. thread will wait until all players insert assistant card
         game.init(waitingConnection.keySet().stream().toList(), advancedSettings, new CharacterDeck());
 
-        synchronized (game) {
-
-            game.launchGame();
-
-            try {
-                game.wait();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+        //attach player to each virtual view
+        for (Player p: game.getPlayers()){
+            for (VirtualView view: virtualViews ){
+                if (p.getName().equals(view.getClientName())){
+                    view.attachPlayer(p);
+                }
             }
+        }
+
+        synchronized (game) {
+            //launches thread that will wait for client actions
+            //e.g. thread will wait until all players insert assistant card
+            game.launchGame();
+            game.wait();
 
             //add all virtual views as observers to gameBoard in order to send modelChange
-            for (VirtualView client : playingClients) {
+            for (VirtualView client : virtualViews) {
                 game.getGameBoard().addObserver(client);
             }
 
-            for (VirtualView client : playingClients) {
+            //first send start and only then send gameBoardChange to all clients
+            for (VirtualView client : virtualViews) {
                 client.sendStart();
             }
 
-            //send modelChange to all clients
+            //send general modelChange to all clients
             game.getGameBoard().sendGameBoardChange();
         }
     }
 
     /*only for addToLobby*/
     public void removeFromLobby(Connection connection) {
-        /*remove connection from waiting playingClients map*/
+        /*remove connection from waiting virtualViews map*/
 
         //save oldKeys because map may be modified during execution
         Set<String> oldKeys = new TreeSet<String>(waitingConnection.keySet());
@@ -138,7 +141,7 @@ public class Server {
 
     /*receives ConnectionStatusChange of that particular client that became inactive or active*/
     public void changeConnectionStatus(ModelChange playerConnectionStatus){
-        for (VirtualView client: playingClients){
+        for (VirtualView client: virtualViews){
             client.update(playerConnectionStatus);
         }
     }
@@ -158,7 +161,7 @@ public class Server {
                 ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
 
                 //if server doesn't receive any message from client in 10 sec, then socket gets closed
-                socket.setSoTimeout(10*1000);
+                //socket.setSoTimeout(10*1000);
 
                 System.out.println("Connection number: " + (numOfConnections +1));
 

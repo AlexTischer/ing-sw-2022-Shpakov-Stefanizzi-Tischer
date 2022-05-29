@@ -2,9 +2,10 @@ package packets;
 
 import server.controller.GameForClient;
 
+import java.io.Serializable;
 import java.util.List;
 
-public abstract class Packet {
+public abstract class Packet implements Serializable {
 
     private List<Object> parameters;
 

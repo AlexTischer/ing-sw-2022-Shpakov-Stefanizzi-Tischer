@@ -144,6 +144,7 @@ public class Game implements GameForClient{
         return gameBoard.getStudentFromBag();
     }
 
+    //method that reassigns island and puts certain tower on it
     public void reassignIsland(int islandNumber){
         /*no players with 0 towers allowed except in case of 4 player game*/
         Player master = players.get(0);
@@ -288,11 +289,13 @@ public class Game implements GameForClient{
     //sets assistant of current player and makes the next player current to let him call use assistant from virtual view
     public synchronized void useAssistant(int assistantRank){
         if (checkAssistant(assistantRank, gameBoard.getCurrentPlayer())) {
+            //sends 1 model change
             gameBoard.setPlayedAssistantRank(assistantRank, gameBoard.getCurrentPlayer());
         } else throw new RepeatedAssistantRankException();
         /*set the next player to chose assistant card*/
+        //sends 2 model change that executes newTurn on a client side
         gameBoard.setCurrentPlayer(players.get((players.indexOf(gameBoard.getCurrentPlayer()) + 1) % players.size()));
-        this.notifyAll();
+        this.notify();
 
     }
 
@@ -300,17 +303,21 @@ public class Game implements GameForClient{
         while(!checkEndGame()){
             newRound();
         }
+
+        //TODO manage end of game
     }
 
 
-    /*TODO need to control newRound(), i suppose there is a bug*/
     private void newRound() throws InterruptedException {
         gameBoard.refillClouds();
         gameBoard.setCurrentPlayer(players.get(0));
 
+        //wake up server thread that waits for refill clouds and set currentPlayer to happen
+        //only after that server thread will attach virtual views to gameBoard
         this.notifyAll();
 
         /*planing phase*/
+        //players are sorted in order in which they should play assistant card
         for (Player p : players) {
             while (p.getPlayedAssistant() == null) {
                 this.wait();
@@ -319,6 +326,7 @@ public class Game implements GameForClient{
 
         /*sorts players based on rank, from lowest to highest so that the next turn
         is started by player that played the card with the lowest rank*/
+        //TODO control it
         Collections.sort(players);
 
         /*action phase*/
@@ -336,7 +344,9 @@ public class Game implements GameForClient{
     private void newTurn(Player p) throws InterruptedException {
         /*virtual view controls current player before forwarding any method to controller*/
         gameBoard.setCurrentPlayer(p);
+
         while (studentMove != (players.size() == 3? 4: 3) || !motherNatureMove || !useCloudMove){
+            //need to wait until all 3 conditions are satisfied
             this.wait();
         }
 
@@ -380,7 +390,7 @@ public class Game implements GameForClient{
             if(p.checkEmptyTowers()){
                 if(players.size()>3){
                     for (Player q : players){
-                        if (!p.equals(q) && p.getTowerColor()==q.getTowerColor() && q.checkEmptyTowers())
+                        if (!p.equals(q) && p.getTowerColor().equals(q.getTowerColor()) && q.checkEmptyTowers())
                             return true;
                     }
                 } else return true;

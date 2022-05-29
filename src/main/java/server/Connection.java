@@ -97,10 +97,10 @@ public class Connection implements Runnable{
 
                     System.out.println("Server received from client: " + fromClient);
                     try {
+                        name = (String)fromClient;
                         server.addClient(this, (String) fromClient);
                         System.out.println("Client " + fromClient + " added Client");
                         nameReady = true;
-                        name = (String)fromClient;
 
                         //wait until enough number of clients connect
                         while (!server.isGameReady()) {
@@ -134,6 +134,7 @@ public class Connection implements Runnable{
                     try {
                         fromClient = socketIn.readObject();
                         Packet packet = (Packet)fromClient;
+                        System.out.println("Connection says: I have received packet " + packet.getClass());
                         userVirtualView.sendPacket(packet);
                     }
                     catch (ClassCastException | ClassNotFoundException e) {
@@ -189,7 +190,12 @@ public class Connection implements Runnable{
         catch(IOException e){
             System.err.println(e.getMessage());
             System.out.println("Closing socket of " + name);
-        } finally {
+        }
+        catch(InterruptedException e){
+            System.err.println(e.getMessage());
+            System.out.println("Closing socket of " + name);
+        }
+        finally {
             this.close();
         }
     }
@@ -204,5 +210,13 @@ public class Connection implements Runnable{
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public void attachView(VirtualView view){
+        this.userVirtualView = view;
+    }
+
+    public String getClientName() {
+        return name;
     }
 }

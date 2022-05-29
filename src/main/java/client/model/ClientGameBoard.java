@@ -89,9 +89,8 @@ public class ClientGameBoard {
 
     public void setCurrentPlayerName(String currentPlayerName) {
         this.currentPlayerName = currentPlayerName;
-        view.startTurn();
-
         System.out.println("setting current player name");
+        view.startTurn();
     }
 
     public ClientPlayer getPlayer(String playerName) {

@@ -5,11 +5,13 @@ import client.view.View;
 import client.model.ClientGameBoard;
 import exceptions.EndOfChangesException;
 import modelChange.ModelChange;
+import org.junit.jupiter.api.MethodOrderer;
 import packets.*;
 import server.model.Color;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ClientController implements GameForClient{
     private View view;
@@ -101,13 +103,13 @@ public class ClientController implements GameForClient{
 
     public void startTurn(){
         if(gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())){
-            //my turn
+            System.out.println("Client Controller says: this is my turn - " + connection.getName());
             if(gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getPlayedAssistant()==null){
                 planningPhase();
             }
-            else {
-                actionPhase();
-            }
+
+            //action phase must be necessarily done after planning phase
+            actionPhase();
         }
         else{
             while(!gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())) {
@@ -117,6 +119,7 @@ public class ClientController implements GameForClient{
                     System.out.println("ClientController says: closing connection due to exception in receiving updates");
                     connection.close();
                 } catch (EndOfChangesException e) {
+                    System.out.println("ClientController says: I have received and caught EndOfChangesException");
                     continue;
                 }
             }
@@ -124,9 +127,18 @@ public class ClientController implements GameForClient{
     }
 
     public void planningPhase() {
-        System.out.println("ClientController says: Starting while(true) loop in planning phase to keep client alive");
-        while(true){}
+        System.out.println("ClientController says: in planning phase to send use assistant");
+
+        try {
+            //TODO insert control of client game board and parameters sent from view
+            connection.send(new UseAssistantPacket(gameBoard.getClientName().length()));
+            System.out.println("ClientController says: I sent useAssistantPacket");
+        }
+        catch (IOException e) {
+            System.out.println("Packet sending went bad");
+        }
         //TODO ask view to ask user to choose Assistant
+
     }
 
     public void actionPhase() {

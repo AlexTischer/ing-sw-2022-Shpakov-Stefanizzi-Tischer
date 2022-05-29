@@ -4,17 +4,13 @@ import server.controller.GameForClient;
 
 public class UseAssistantPacket extends Packet{
 
+    private int assistantRank;
+    public UseAssistantPacket(int assistantRank) {
+        this.assistantRank = assistantRank;
+    }
+
     @Override
     public void execute(GameForClient game) {
-        int assistantRank;
-
-        try{
-            assistantRank = (int)getParameters().get(0);
-        }
-        catch (ClassCastException e){
-            throw new ClassCastException("Invalid arguments");
-        }
-
         game.useAssistant(assistantRank);
     }
 }

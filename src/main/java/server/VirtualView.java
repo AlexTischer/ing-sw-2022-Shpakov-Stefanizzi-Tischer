@@ -1,5 +1,6 @@
 package server;
 
+import exceptions.RepeatedAssistantRankException;
 import exceptions.WrongActionException;
 import modelChange.ExceptionChange;
 import modelChange.ModelChange;
@@ -21,17 +22,26 @@ public class VirtualView implements Observer<ModelChange> {
 
     public void sendPacket(Packet packet) {
         /*send message to client*/
+        System.out.println("Virtual View says: I am in sendPacket(). I have received " + packet.getClass());
+        System.out.println("My player is " + player.getName() + "\nCurrent player is " + game.getCurrentPlayer().getName());
 
-        //disconnect malicious client that tries to make an action when it`s not his turn
-        //or sends exception back to the client in case of error
-        if (player != game.getCurrentPlayer())
-            clientConnection.close();
+        //sends exception back to the client in case of error
+        if (!player.getName().equals(game.getCurrentPlayer().getName())) {
+            System.out.println(player.getName() + " is not current player");
+            //clientConnection.close();
+            //TODO manage exceptions in different way
+        }
         else {
             try{
                 game.usePacket(packet);
             }
             catch (WrongActionException e){
-                clientConnection.close();
+                //clientConnection.close();
+                //TODO manage exceptions in different way
+            }
+            catch (RepeatedAssistantRankException e){
+                //client cannot use this assistant
+                clientConnection.send(new ExceptionChange(e));
             }
             catch (Exception e){
                 clientConnection.send(new ExceptionChange(e));
@@ -62,5 +72,9 @@ public class VirtualView implements Observer<ModelChange> {
 
     public boolean isActive(){
         return clientConnection.isActive();
+    }
+
+    public String getClientName(){
+        return clientConnection.getClientName();
     }
 }

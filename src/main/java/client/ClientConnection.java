@@ -15,6 +15,11 @@ public class  ClientConnection {
     private ObjectOutputStream socketOut;
     private ClientController clientController;
     private boolean isActive;
+
+    public String getName() {
+        return name;
+    }
+
     private String name;
 
     public ClientConnection(Socket socket) {
@@ -51,14 +56,15 @@ public class  ClientConnection {
             socketOut.writeObject(packet);
             socketOut.flush();
             socketOut.reset();
-            boolean waitEndOfChanges = true;
-            while(waitEndOfChanges){
-                try {
-                    waitModelChange();
-                }
-                catch (EndOfChangesException e){
-                    waitEndOfChanges = false;
-                }
+        }
+
+        boolean waitEndOfChanges = true;
+        while(waitEndOfChanges){
+            try {
+                waitModelChange();
+            }
+            catch (EndOfChangesException e){
+                waitEndOfChanges = false;
             }
         }
         /*each send of packet is followed by read of model change or pong message*/
@@ -71,8 +77,8 @@ public class  ClientConnection {
             try {
                 modelChange = socketIn.readObject();
                 clientController.changeModel((ModelChange) modelChange);
-                System.out.println("ClientConnection says: ModelChange received and executed " + modelChange.getClass());
-                } catch (ClassCastException e) {
+            }
+            catch (ClassCastException e) {
                 try {
                     //after start, can receive only gameBoardChange or pong messages
                     String fromServer = (String) modelChange;
@@ -82,11 +88,12 @@ public class  ClientConnection {
                     else {
                         System.out.println("ClientConnection says: Error from server received: \n" + fromServer);
                     }
-
-                } catch (ClassCastException e2) {
+                }
+                catch (ClassCastException e2) {
                     System.out.println("ClientConnection says: Error from server side");
                 }
-            } catch (ClassNotFoundException e) {
+            }
+            catch (ClassNotFoundException e) {
                 System.out.println("ClientConnection says: error class not found ex");
             }
     }

@@ -89,8 +89,8 @@ public class GameBoard extends Observable<ModelChange> {
     public void sendGameBoardChange() {
         GameBoardChange gameBoardChange = new GameBoardChange(this, game.getPlayers());
         notify(gameBoardChange);
-        ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        notify(exceptionChange);
+        //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
+        //notify(exceptionChange);
     }
 
     public void moveMotherNature(int steps) {
@@ -115,8 +115,6 @@ public class GameBoard extends Observable<ModelChange> {
         this.currentPlayer = currentPlayer;
         CurrentPlayerChange currentPlayerChange = new CurrentPlayerChange(currentPlayer.getName());
         notify(currentPlayerChange);
-        ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        notify(exceptionChange);
     }
 
     public void addStudentToIsland(Player player, Color studentColor, int islandNumber) {
@@ -414,8 +412,6 @@ public class GameBoard extends Observable<ModelChange> {
         player.setPlayedAssistantRank(assistantRank);
         AssistantChange assistantChange = new AssistantChange(player);
         notify(assistantChange);
-        ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        notify(exceptionChange);
     }
 
     public boolean checkBagEmpty(){
