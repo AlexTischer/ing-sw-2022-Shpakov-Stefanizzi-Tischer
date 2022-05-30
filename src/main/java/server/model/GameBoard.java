@@ -36,6 +36,7 @@ public class GameBoard extends Observable<ModelChange> {
             islands.add(i, new Island());
         }
 
+        /*position of MN from 0 to 11*/
         positionOfMotherNature = new Random().nextInt(12);
 
         instanceOfBag = new Bag();
@@ -86,6 +87,14 @@ public class GameBoard extends Observable<ModelChange> {
         notify(exceptionChange);
     }
 
+    /*fill each island with 1 student except the island with MN and opposite to it*/
+    public void refillIslands(){
+        for (int i = 0; i < islands.size(); i++){
+            if ( i != positionOfMotherNature && i != ( (positionOfMotherNature + 6) %islands.size() ) )
+                islands.get(i).addStudent(instanceOfBag.extractStudentForIslands());
+        }
+    }
+
     public void sendGameBoardChange() {
         GameBoardChange gameBoardChange = new GameBoardChange(this, game.getPlayers());
         notify(gameBoardChange);
@@ -126,6 +135,7 @@ public class GameBoard extends Observable<ModelChange> {
         notify(islandChange);
         SchoolBoardChange schoolBoardChange = new SchoolBoardChange(player);
         notify(schoolBoardChange);
+        //send endOfChanges to let client know that there will be no further model changes corresponding to received packet
         ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
         notify(exceptionChange);
     }
@@ -235,6 +245,7 @@ public class GameBoard extends Observable<ModelChange> {
     }
 
     public void addTowersToIsland(int islandNumber, Player player){
+        //method invoked by reassign island
         try {
             islands.get(islandNumber).setTowersColor(player.getTowerColor());
             IslandChange islandChange = new IslandChange(islands.get(islandNumber), islandNumber);
@@ -341,6 +352,9 @@ public class GameBoard extends Observable<ModelChange> {
     }
 
     public void activateCharacter(int islandNumber) {
+        if (islandNumber < 0 || islandNumber > islands.size()-1)
+            throw new IllegalArgumentException("Error: invalid island number");
+
         currentCharacter.setSelectedIslandNumber(islandNumber);
         currentCharacter.execute();
         CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
@@ -350,6 +364,7 @@ public class GameBoard extends Observable<ModelChange> {
     }
 
     public void activateCharacter(ArrayList<Color> toBeSwappedStudents, ArrayList<Color> selectedStudents) {
+
         currentCharacter.setSelectedStudents(selectedStudents);
         currentCharacter.setToBeSwappedStudents(toBeSwappedStudents);
         currentCharacter.execute();
@@ -360,6 +375,9 @@ public class GameBoard extends Observable<ModelChange> {
     }
 
     public void activateCharacter(Color color, int islandNumber) {
+        if (islandNumber < 0 || islandNumber > islands.size()-1)
+            throw new IllegalArgumentException("Error: invalid island number");
+
         currentCharacter.setSelectedStudent(color);
         currentCharacter.setSelectedIslandNumber(islandNumber);
         currentCharacter.execute();

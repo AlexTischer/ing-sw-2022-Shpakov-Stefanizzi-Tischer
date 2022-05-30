@@ -82,6 +82,8 @@ public class Server {
         }
 
         game.init(waitingConnection.keySet().stream().toList(), advancedSettings, new CharacterDeck());
+        //refill islands with 1 students each
+        game.getGameBoard().refillIslands();
 
         //attach player to each virtual view
         for (Player p: game.getPlayers()){
@@ -96,6 +98,8 @@ public class Server {
             //launches thread that will wait for client actions
             //e.g. thread will wait until all players insert assistant card
             game.launchGame();
+
+            //waits until game thread comes in waiting for useAssistant command state
             game.wait();
 
             //add all virtual views as observers to gameBoard in order to send modelChange

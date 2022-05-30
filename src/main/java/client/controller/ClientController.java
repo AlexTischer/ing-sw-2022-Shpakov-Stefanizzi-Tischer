@@ -44,7 +44,7 @@ public class ClientController {
         connectionActive = false;
     }
 
-        public void changeModel(ModelChange change){
+    public void changeModel(ModelChange change){
         change.execute(gameBoard);
     }
 
@@ -68,16 +68,16 @@ public class ClientController {
             while(!gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())) {
                 try {
                     connection.waitModelChange();
-                } catch (IOException e) {
-                    System.out.println("ClientController says: closing connection due to exception in receiving updates");
+                }
+                catch (IOException e) {
+                    System.out.println("ClientController says: closing connection due IOException");
                     connection.close();
-                } catch (EndOfChangesException e) {
+                }
+                catch (EndOfChangesException e) {
                     System.out.println("ClientController says: I have received and caught EndOfChangesException");
 
                     //Once all the changes for a client move have been received, it's possible to show them on the View.
                     gameBoard.showOnView();
-
-                    continue;
                 }
             }
         }
@@ -114,14 +114,12 @@ public class ClientController {
 
             //if not, generate the Packet
             if(alreadyPlayed) {
-
                 Packet packet = new UseAssistantPacket(assistantRank);
                 try {
                     this.connection.send(packet);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
             else {
                 throw new RepeatedAssistantRankException();
@@ -133,16 +131,15 @@ public class ClientController {
     }
 
     public void planningPhase() {
-        System.out.println("ClientController says: planning phase");
+        System.out.println("ClientController says: " +gameBoard.getClientName() + " is in planning phase");
         boolean correctAssistant = false;
         while(!correctAssistant) {
             try {
                 useAssistant();
                 correctAssistant = true;
                 System.out.println("Assistant selected correctly");
-            }catch (InvalidParameterException e){
-                printMessage(e.getMessage());
-            }catch (RepeatedAssistantRankException e){
+            }
+            catch (InvalidParameterException | RepeatedAssistantRankException e){
                 printMessage(e.getMessage());
             }
         }
@@ -177,7 +174,7 @@ public class ClientController {
                             //if destination == 0, move the student to dining room
                             if (destination == 0) {
                                 try {
-                                    //TODO check if dining room is full
+                                    //TODO check if dining room is full and handle any other exception received from server
                                     connection.send(new MoveStudentToDiningPacket(studentColor));
                                     correctDestination = true;
                                     studentMoves++;
@@ -187,11 +184,11 @@ public class ClientController {
 
                             //if destination is [1-12]
                             } else {
-
                                 //check if the island with the given destination exist
                                 if(gameBoard.getIslands().size()>=destination){
                                     try {
-                                        connection.send(new MoveStudentToIslandPacket(studentColor, destination));
+                                        //decrement destination because on server side counting starts from 0
+                                        connection.send(new MoveStudentToIslandPacket(studentColor, destination-1));
                                         correctDestination = true;
                                         studentMoves++;
                                     } catch (IOException e) {
@@ -226,7 +223,14 @@ public class ClientController {
         if (view.chooseActionMotherNature(characterActivated) == 1) {
             boolean correctMotherNature = false;
             while(!correctMotherNature){
-
+                System.out.println("Inside move mother nature while loop");
+                synchronized (this) {
+                    try {
+                        this.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
         //TODO ask for character activation
