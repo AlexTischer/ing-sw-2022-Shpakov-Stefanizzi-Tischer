@@ -3,7 +3,7 @@ package server.model;
 import server.controller.Game;
 import exceptions.NoEnoughCoinsException;
 
-/** calculate influence without moving mother nature*/
+/** resolves an island without moving mother nature*/
 public class Character12 extends Character {
     protected int selectedIslandNumber;
     private int cost = 3;

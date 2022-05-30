@@ -67,11 +67,15 @@ public class Cli extends View {
         int input;
 
         while(true){
-            input = Integer.parseInt(stdin.nextLine());
-            if(0<input && input<=10){
-                return input;
+            try {
+                input = Integer.parseInt(stdin.nextLine());
+                if (0 < input && input <= 10) {
+                    return input;
+                } else {
+                    throw new NumberFormatException();
+                }
             }
-            else {
+            catch (NumberFormatException e){
                 System.out.println("Incorrect value, try again");
             }
         }
@@ -85,11 +89,16 @@ public class Cli extends View {
             int input;
 
             while(true){
-                input = Integer.parseInt(stdin.nextLine());
-                if(input == 1 || input == 2){
-                    return input;
+                try {
+                    input = Integer.parseInt(stdin.nextLine());
+                    if (input == 1 || input == 2) {
+                        return input;
+                    }
+                    else {
+                        throw new NumberFormatException();
+                    }
                 }
-                else {
+                catch (NumberFormatException e){
                     System.out.println("Incorrect value, try again");
                 }
             }
@@ -142,13 +151,18 @@ public class Cli extends View {
 
         while(true){
 
-            input = Integer.parseInt(stdin.nextLine());
-            if(0 <= input && input <= 12){
-                return input;
+            try {
+                input = Integer.parseInt(stdin.nextLine());
+                if(0 <= input && input <= 12){
+                    return input;
+                }
+                else
+                    throw new NumberFormatException();
             }
-            else {
+            catch (NumberFormatException e){
                 System.out.println("Incorrect value, try again");
             }
+
         }
     }
 

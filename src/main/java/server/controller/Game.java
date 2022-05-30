@@ -55,8 +55,6 @@ public class Game implements GameForClient{
         gameBoard = GameBoard.getInstanceOfGameBoard();
         gameBoard.init(this, playersNames.size());
 
-        System.out.println("Game Says: I have created and initialized gameBoard" + gameBoard);
-
         this.advancedSettings = advancedSettings;
         if (advancedSettings) {
             Character[] playedCharacters = new Character[3];
@@ -70,7 +68,7 @@ public class Game implements GameForClient{
         gameBoard.setCurrentCharacterToDefault(new Character());
         gameBoard.getCurrentCharacter().initialFill(this);
 
-        /*refill assistants of player*/
+        /*refill assistants of players*/
         for (Player p : players) {
             gameBoard.refillAssistants(p);
             gameBoard.refillEntrance(p);
@@ -78,7 +76,6 @@ public class Game implements GameForClient{
 
         Collections.shuffle(players);
         gameBoard.setCurrentPlayer(players.get(0));
-        //gameBoard.sendGameBoardChange();
     }
 
     public void launchGame(){
@@ -241,19 +238,18 @@ public class Game implements GameForClient{
     }
 
     public void setNoEntry(int islandNumber, boolean noEntry){
-        try {
-            gameBoard.setNoEntry(islandNumber, noEntry);
-        }
-
-        catch (NoEntryException e){
-            }
+        gameBoard.setNoEntry(islandNumber, noEntry);
     }
 
     public synchronized void moveMotherNature(int steps){
-        if (studentMove != (players.size() == 3? 4: 3) || motherNatureMove)
+        if (studentMove != (players.size() == 3? 4: 3) || motherNatureMove) {
+            //client can't make this action if students weren't moved or if mother nature was already moved
             throw new WrongActionException();
+        }
 
         gameBoard.moveMotherNature(steps);
+        //each time a client moves MN, I need to try to resolve an island because it might be conquered
+        reassignIsland(gameBoard.getPositionOfMotherNature());
         motherNatureMove = true;
         this.notify();
     }
@@ -279,9 +275,11 @@ public class Game implements GameForClient{
     }
 
     public synchronized void useCloud(int cloudNumber){
-        if (studentMove != (players.size() == 3? 4: 3) || !motherNatureMove)
+        if (studentMove != (players.size() == 3? 4: 3) || !motherNatureMove || useCloudMove) {
+            //client can't make this action if students weren't moved
+            //or if mother nature wasn't already moved or cloud was already used
             throw new WrongActionException();
-
+        }
         gameBoard.useCloud(cloudNumber);
         useCloudMove = true;
         this.notify();
@@ -289,15 +287,26 @@ public class Game implements GameForClient{
 
     //sets assistant of current player and makes the next player current to let him call use assistant from virtual view
     public synchronized void useAssistant(int assistantRank){
+
+        //checks if player can use this assistant
         if (checkAssistant(assistantRank, gameBoard.getCurrentPlayer())) {
             //sends 1 model change
             gameBoard.setPlayedAssistantRank(assistantRank, gameBoard.getCurrentPlayer());
-        } else throw new RepeatedAssistantRankException();
-        /*set the next player to chose assistant card*/
-        //sends 2 model change that executes newTurn on a client side
-        gameBoard.setCurrentPlayer(players.get((players.indexOf(gameBoard.getCurrentPlayer()) + 1) % players.size()));
-        this.notify();
+        }
+        else
+            throw new RepeatedAssistantRankException();
 
+        if (players.indexOf(gameBoard.getCurrentPlayer()) + 1 < players.size()) {
+            //set the next player to chose assistant card
+            //do this operation for all player except the last one,
+            //because the next current player must be defined based on assistants ranks played
+
+            //sends model change that executes newTurn on a client side
+            gameBoard.setCurrentPlayer(players.get((players.indexOf(gameBoard.getCurrentPlayer()) + 1) % players.size()));
+        }
+
+        //notifies a waiting thread in newRound
+        this.notify();
     }
 
     private synchronized void playGame() throws InterruptedException {
@@ -306,6 +315,7 @@ public class Game implements GameForClient{
         }
 
         //TODO manage end of game
+        //GameBoard might send endOfGameChange
     }
 
 
@@ -321,13 +331,13 @@ public class Game implements GameForClient{
         //players are sorted in order in which they should play assistant card
         for (Player p : players) {
             while (p.getPlayedAssistant() == null) {
+                //waits until client doesn't insert assistant card
                 this.wait();
             }
         }
 
         /*sorts players based on rank, from lowest to highest so that the next turn
         is started by player that played the card with the lowest rank*/
-        //TODO control it
         Collections.sort(players);
 
         /*action phase*/
@@ -348,6 +358,7 @@ public class Game implements GameForClient{
 
         while (studentMove != (players.size() == 3? 4: 3) || !motherNatureMove || !useCloudMove){
             //need to wait until all 3 conditions are satisfied
+            //thread gets waked up by other threads that invoke moveStudent(), moveMN() and useCloud()
             this.wait();
         }
 

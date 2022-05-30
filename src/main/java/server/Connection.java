@@ -147,7 +147,7 @@ public class Connection implements Runnable{
                                 socketOut.reset();
                             }
                             else{
-                                throw new IllegalArgumentException();
+                                throw new IllegalArgumentException("Anomalous object received from client "+name);
                             }
                         }
                         catch (ClassCastException | IllegalArgumentException e2){
@@ -187,15 +187,10 @@ public class Connection implements Runnable{
                 }
             }
         }
-        catch(IOException e){
+        catch(IOException | InterruptedException e){
             System.err.println(e.getMessage());
             System.out.println("Closing socket of " + name);
-        }
-        catch(InterruptedException e){
-            System.err.println(e.getMessage());
-            System.out.println("Closing socket of " + name);
-        }
-        finally {
+        } finally {
             this.close();
         }
     }
