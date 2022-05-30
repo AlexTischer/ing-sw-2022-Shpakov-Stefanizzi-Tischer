@@ -27,7 +27,7 @@ public class Character6 extends Character {
                     leader = player;
             }
 
-            if (game.getCurrentPlayer().equals(leader)){
+            if (game.getCurrentPlayer().equals(leader) && leader.getNumOfStudentsInDining(color) > 0){
                 game.getGameBoard().addProfessor(leader, color);
 
                 for (Player player: game.getPlayers())
