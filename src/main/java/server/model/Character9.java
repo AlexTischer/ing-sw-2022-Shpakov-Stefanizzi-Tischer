@@ -15,6 +15,7 @@ public class Character9 extends Character {
     private List<Color> toBeSwappedStudents;
     private int maxNumOfStudents = 6;
     private int cost = 1;
+    protected int id = 9;
 
     public void initialFill(Game game){
         super.initialFill(game);
@@ -91,4 +92,13 @@ public class Character9 extends Character {
     }
 
 
+    @Override
+    public int getCost() {
+        return cost;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
 }

@@ -9,6 +9,7 @@ import static java.lang.Math.abs;
 public class Character8 extends Character {
 
     private int cost = 1;
+    protected int id = 8;
 
     @Override
     public void initialFill(Game game){
@@ -26,4 +27,13 @@ public class Character8 extends Character {
         cost = 2;
     }
 
+    @Override
+    public int getCost() {
+        return cost;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
 }

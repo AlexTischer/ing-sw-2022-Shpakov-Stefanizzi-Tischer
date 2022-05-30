@@ -7,6 +7,7 @@ public class Character4 extends Character {
 
     private Color selectedStudent;
     private int cost = 3;
+    protected int id = 4;
 
 
 
@@ -39,6 +40,16 @@ public class Character4 extends Character {
     public void buy() throws NoEnoughCoinsException {
         game.getGameBoard().removeCoins(game.getCurrentPlayer(), cost);
         cost = 4;
+    }
+
+    @Override
+    public int getCost() {
+        return cost;
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 
 

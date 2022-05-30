@@ -30,7 +30,9 @@ public class GameBoard extends Observable<ModelChange> {
     number of students to be in the bag( by default 130 ) */
     public void init(Game game, int numOfPlayers) {
         this.game = game;
+
         playedCharacters = new Character[3];
+
         islands = new ArrayList<Island>(12);
         for (int i = 0; i < 12; i++) {
             islands.add(i, new Island());
@@ -51,6 +53,13 @@ public class GameBoard extends Observable<ModelChange> {
         assistantDeck = new AssistantFactory().getAssistantDeck();
 
         numOfCoins = 20;
+
+        //initializing islands
+        for(int i=0; i<12; i++){
+            if(i!=positionOfMotherNature && i!=oppositeIsland(positionOfMotherNature)){
+                islands.get(i).addStudent(instanceOfBag.extractStudent());
+            }
+        }
 
     }
 
@@ -382,8 +391,8 @@ public class GameBoard extends Observable<ModelChange> {
         return currentCharacter;
     }
 
-    public void setPlayedCharacters(int i, Character character) {
-        playedCharacters[i]=character;
+    public void setPlayedCharacters(Character[] characters) {
+        playedCharacters = characters;
     }
 
     public void setCurrentCharacterToDefault(Character character) {
@@ -510,6 +519,16 @@ public class GameBoard extends Observable<ModelChange> {
     public void removeTowersFromPlayer(int numOfIslands, Player player) {
         for (int i = 0; i < numOfIslands; i++) {
             player.removeTower();
+        }
+    }
+
+    private int oppositeIsland(int n){
+        n = n-6;
+        if(n<0){
+            return n+12;
+        }
+        else{
+            return n;
         }
     }
 }

@@ -59,10 +59,11 @@ public class Game implements GameForClient{
 
         this.advancedSettings = advancedSettings;
         if (advancedSettings) {
+            Character[] playedCharacters = new Character[3];
             for (int i = 0; i < 3; i++) {
-                Character c = characterDeck.popCharacter();
-                c.initialFill(this);
-                gameBoard.setPlayedCharacters(i, c);
+                playedCharacters[i] = characterDeck.popCharacter();
+                playedCharacters[i].initialFill(this);
+                gameBoard.setPlayedCharacters(playedCharacters);
             }
         }
 

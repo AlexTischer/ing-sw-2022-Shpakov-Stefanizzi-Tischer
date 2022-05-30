@@ -18,6 +18,7 @@ public class CharactersChange extends ModelChange{
         for(int i=0; i<3; i++){
             ClientCharacter character = new ClientCharacter();
             character.setCost(playedCharacters[i].getCost());
+            character.setId(playedCharacters[i].getCost());
 
             if(playedCharacters[i].getNoEntryTiles()!=-1)
                 character.setNoEntryTiles(playedCharacters[i].getNoEntryTiles());

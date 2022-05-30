@@ -75,6 +75,8 @@ public class GameBoardTest extends TestCase {
         testGameBoard.placeMotherNatureTEST(1);
 
         /*test merging 2 islands*/
+
+        //removing init students on islands
         testGameBoard.addStudentToIsland(Color.GREEN, 0);
         testGameBoard.addStudentToIsland(Color.RED, 0);
         testGameBoard.addStudentToIsland(Color.GREEN, 1);
@@ -414,9 +416,11 @@ public class GameBoardTest extends TestCase {
         Character3 character3 = new Character3();
         character3.initialFill(gametest);
 
-        testGameBoard.setPlayedCharacters(0, character1);
-        testGameBoard.setPlayedCharacters(1, character2);
-        testGameBoard.setPlayedCharacters(2, character3);
+        Character[] characters = new Character[3];
+        characters[0] = character1;
+        characters[1] = character2;
+        characters[2] = character3;
+        testGameBoard.setPlayedCharacters(characters);
 
         testGameBoard.addCoins(gametest.getCurrentPlayer(), 10);
 

@@ -87,14 +87,13 @@ public class GameBoardChange extends ModelChange{
 
         //setting playedCharacters
         Character[] serverCharacters = gameBoard.getPlayedCharacters();
-
-
         //TODO: if advanced settings are not selected, serverCharacters[i] is null
 
         for(int i=0; i<3; i++){
             ClientCharacter character = new ClientCharacter();
 
             character.setCost(serverCharacters[i].getCost());
+            character.setId(serverCharacters[i].getId());
 
             if(serverCharacters[i].getNoEntryTiles()!=-1)
                 character.setNoEntryTiles(serverCharacters[i].getNoEntryTiles());

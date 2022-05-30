@@ -10,6 +10,8 @@ public class ClientCharacter implements Serializable {
     private int noEntryTiles;
     private Color[] students;
 
+    private int id;
+
     public int getCost() {
         return cost;
     }
@@ -32,5 +34,13 @@ public class ClientCharacter implements Serializable {
 
     public void setStudents(Color[] students) {
         this.students = students;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

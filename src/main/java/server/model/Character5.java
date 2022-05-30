@@ -8,6 +8,7 @@ public class Character5 extends Character {
     private int noEntryTiles;
     protected int selectedIslandNumber;
     private int cost = 2;
+    protected int id = 5;
 
     @Override
     public void initialFill(Game game){
@@ -44,6 +45,16 @@ public class Character5 extends Character {
     public void buy() throws NoEnoughCoinsException {
         game.getGameBoard().removeCoins(game.getCurrentPlayer(), cost);
         cost = 3;
+    }
+
+    @Override
+    public int getCost() {
+        return cost;
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 
 

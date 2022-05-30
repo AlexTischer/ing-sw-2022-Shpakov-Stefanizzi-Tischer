@@ -11,7 +11,8 @@ import static java.lang.Math.abs;
 
 public class Character {
     protected Game game;
-    private int cost;
+    protected int cost;
+    protected int id;
 
 
     public int calculateInfluence(Island island, int islandNumber, Player player) throws NoEntryException {
@@ -90,5 +91,9 @@ public class Character {
 
     public Color[] getStudentsSlot(){
         return null;
+    }
+
+    public int getId() {
+        return id;
     }
 }

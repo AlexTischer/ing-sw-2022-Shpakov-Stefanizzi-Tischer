@@ -8,7 +8,7 @@ import exceptions.NoEnoughCoinsException;
 public class Character2 extends Character {
 
     private int cost = 2;
-
+    protected int id = 2;
     @Override
     public void initialFill(Game game){
         super.initialFill(game);
@@ -39,5 +39,14 @@ public class Character2 extends Character {
         cost = 3;
     }
 
+    @Override
+    public int getCost() {
+        return cost;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
 
 }

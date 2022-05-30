@@ -7,6 +7,7 @@ import exceptions.NoEnoughCoinsException;
 public class Character12 extends Character {
     protected int selectedIslandNumber;
     private int cost = 3;
+    protected int id = 12;
 
     @Override
     public void initialFill(Game game){
@@ -27,6 +28,16 @@ public class Character12 extends Character {
     public void buy() throws NoEnoughCoinsException {
         game.getGameBoard().removeCoins(game.getCurrentPlayer(), cost);
         cost = 4;
+    }
+
+    @Override
+    public int getCost() {
+        return cost;
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 
 }

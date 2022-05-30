@@ -13,10 +13,19 @@ import java.util.Locale;
 public class Printer {
 
     public void showModel(ClientGameBoard gameBoard){
-        printIslands(gameBoard.getIslands());
+        System.out.print("Islands:\n");
+        printIslands(gameBoard.getIslands(), gameBoard.getPositionOfMotherNature());
+
+        System.out.print("\nSchoolboards:\n");
         printSchoolBoards(gameBoard.getPlayers(), gameBoard.getCurrentPlayerName());
+
+        System.out.print("\nClouds:\n");
         printClouds(gameBoard.getClouds());
+
+        System.out.print("\nCharacters:\n");
         printCharacters(gameBoard.getPlayedCharacters());
+
+        System.out.print("\nAssistants:\n");
         printAssistants(gameBoard.getPlayer(gameBoard.getClientName()).getAssistants());
     }
 
@@ -32,9 +41,9 @@ public class Printer {
         System.out.print(AnsiKeys.COLOR_RESET);
     }
 
-    private void printIslands(List<ClientIsland> islands){
+    private void printIslands(List<ClientIsland> islands, int positionOfMotherNature){
         printIslandLine1(islands);
-        printIslandLine2(islands);
+        printIslandLine2(islands, positionOfMotherNature);
         printIslandLine3(islands);
         printIslandLine4(islands);
         printIslandLine5(islands);
@@ -48,6 +57,9 @@ public class Printer {
         printSchoolBoardLine5(clientPlayers, currentPlayerName);
         printSchoolBoardLine6(clientPlayers, currentPlayerName);
         printSchoolBoardLine7(clientPlayers, currentPlayerName);
+        printSchoolBoardLine8(clientPlayers, currentPlayerName);
+        printSchoolBoardLine9(clientPlayers, currentPlayerName);
+        printSchoolBoardLine10(clientPlayers, currentPlayerName);
     }
 
     private void printClouds(List<ClientCloud> clientClouds){
@@ -90,9 +102,21 @@ public class Printer {
         System.out.print("\n");
     }
 
-    private void printIslandLine2(List<ClientIsland> islands) {
+    private void printIslandLine2(List<ClientIsland> islands, int positionOfMotherNature) {
+        int cnt = 0;
         for (ClientIsland island : islands) {
-            System.out.print("║ MN ");
+
+            System.out.print("║ ");
+
+            if(cnt==positionOfMotherNature) {
+                System.out.print("MN");
+            }
+            else{
+                System.out.print("  ");
+            }
+
+            System.out.print(" ");
+
 
             if(island.isNoEntry()){
                 printColored("X", AnsiKeys.COLOR_BRIGHT_RED);
@@ -103,6 +127,8 @@ public class Printer {
 
             System.out.print(" ║");
             System.out.print(" ");
+
+            cnt++;
         }
         System.out.print("\n");
     }
@@ -114,6 +140,7 @@ public class Printer {
 
             if(island.getNumOfTowers()>0) {
                 System.out.print(island.getNumOfTowers());
+                System.out.print(AnsiKeys.COLOR_BACKGROUND_GREEN);
                 printColored("T", island.getTowersColor().ansi);
             }
             else{
@@ -178,16 +205,16 @@ public class Printer {
    /* SCHOOLBOARD LAYOUT
 
 
-    System.out.println("+-----------------------------------+\n" +
-            "|Name.............  Coins: xx       |\n" +
-            "|+----+------------+---+----+       |\n" +
-            "|| ii | pppppppppp | P | TT |  +--+ |\n" +
-            "|| ii | pppppppppp | P | TT |  |R | |\n" +
-            "|| ii | pppppppppp | P | TT |  |  | |\n" +
-            "|| ii | pppppppppp | P | TT |  |St| |\n" +
-            "|| ii | pppppppppp | P | TT |  +--+ |\n" +
-            "|+----+------------+---+----+       |\n" +
-            "+-----------------------------------+");
+    System.out.println("+-----------------------------------+\n" +      1
+            "|Name.............  Coins: xx       |\n" +           2
+            "|+----+------------+---+----+       |\n" +     done  3
+            "|| ii | pppppppppp | P | TT |  +--+ |\n" +     done  4
+            "|| ii | pppppppppp | P | TT |  |R | |\n" +     done  5
+            "|| ii | pppppppppp | P | TT |  |  | |\n" +     done  6
+            "|| ii | pppppppppp | P | TT |  |St| |\n" +     done  7
+            "|| ii | pppppppppp | P | TT |  +--+ |\n" +     done  8
+            "|+----+------------+---+----+       |\n" +     done  9
+            "+-----------------------------------+");    10
 }
 
 
@@ -200,16 +227,98 @@ public class Printer {
 
     private void printSchoolBoardLine1(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
 
-        for(int i=0; i<clientPlayers.size();i++){
-            System.out.print("╔════╦════════════╦═══╦════╗");
+        String frameColor;
+
+        for(ClientPlayer clientPlayer : clientPlayers){
+
+            //setting frame color for current player
+            if(clientPlayer.getName().equals(currentPlayerName)){
+                frameColor = AnsiKeys.CURRENTPLAYER_FRAME_COLOR;
+            }
+            else {
+                frameColor = AnsiKeys.COLOR_RESET;
+            }
+
+            printColored("╔══════════════════════════════════╗", frameColor);
+            System.out.print("  ");
+        }
+        System.out.print("\n");
+
+    }
+
+    private void printSchoolBoardLine2(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
+
+        String frameColor;
+
+        for(ClientPlayer clientPlayer : clientPlayers) {
+
+            //setting frame color for current player
+            if (clientPlayer.getName().equals(currentPlayerName)) {
+                frameColor = AnsiKeys.CURRENTPLAYER_FRAME_COLOR;
+            } else {
+                frameColor = AnsiKeys.COLOR_RESET;
+            }
+
+            printColored("║", frameColor);
+
+            System.out.print("Name: ");
+
+            if(clientPlayer.getName().length()<=13){
+                System.out.printf("%-14s", clientPlayer.getName());
+            }
+            else{
+                System.out.print(clientPlayer.getName().substring(0,9));
+                System.out.print("... ");
+            }
+
+            System.out.print("Coins: ");
+            System.out.printf("%2s", clientPlayer.getCoins());
+
+            printColored("     ║", frameColor);
+
             System.out.print("  ");
         }
         System.out.print("\n");
     }
 
-    private void printSchoolBoardLine2(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
+    private void printSchoolBoardLine3(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
+
+        String frameColor;
 
         for(ClientPlayer clientPlayer : clientPlayers){
+
+            //setting frame color for current player
+            if(clientPlayer.getName().equals(currentPlayerName)){
+                frameColor = AnsiKeys.CURRENTPLAYER_FRAME_COLOR;
+            }
+            else {
+                frameColor = AnsiKeys.COLOR_RESET;
+            }
+
+            printColored("║", frameColor);
+            System.out.print("╔════╦════════════╦═══╦════╗      ");
+
+            printColored("║", frameColor);
+            System.out.print("  ");
+        }
+        System.out.print("\n");
+    }
+
+    private void printSchoolBoardLine4(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
+
+        String frameColor;
+
+        for(ClientPlayer clientPlayer : clientPlayers){
+
+            //setting frame color for current player
+            if(clientPlayer.getName().equals(currentPlayerName)){
+                frameColor = AnsiKeys.CURRENTPLAYER_FRAME_COLOR;
+            }
+            else {
+                frameColor = AnsiKeys.COLOR_RESET;
+            }
+
+            printColored("║", frameColor);
 
             System.out.print("║ ");
             //printing first & second entrance item (if they exist)
@@ -243,7 +352,7 @@ public class Printer {
             System.out.print(" ║");
 
             //adding background
-            System.out.print("\u001b[42m");
+            System.out.print(AnsiKeys.COLOR_BACKGROUND_GREEN);
             System.out.print(" ");
             //printing first & second tower (if they exist)
             printTowerTableItems(clientPlayer.getSchoolBoard().getNumOfTowers(), clientPlayer.getSchoolBoard().getTowersColor(), 1);
@@ -251,16 +360,38 @@ public class Printer {
             System.out.print(" ");
             System.out.print(AnsiKeys.COLOR_RESET);
 
-            System.out.print("║");
+            System.out.print("║ ");
+
+            //printing played assistant if exists
+            if(clientPlayer.getPlayedAssistant()!=null) {
+                System.out.print("╔══╗");
+            }
+            else {
+                System.out.print("    ");
+            }
+
+            printColored(" ║", frameColor);
 
             System.out.print("  ");
         }
         System.out.print("\n");
     }
 
-    private void printSchoolBoardLine3(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
+    private void printSchoolBoardLine5(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
+
+        String frameColor;
 
         for(ClientPlayer clientPlayer : clientPlayers){
+
+            //setting frame color for current player
+            if(clientPlayer.getName().equals(currentPlayerName)){
+                frameColor = AnsiKeys.CURRENTPLAYER_FRAME_COLOR;
+            }
+            else {
+                frameColor = AnsiKeys.COLOR_RESET;
+            }
+
+            printColored("║", frameColor);
 
             System.out.print("║ ");
             //printing first & second entrance item (if they exist)
@@ -294,7 +425,7 @@ public class Printer {
             System.out.print(" ║");
 
             //adding background
-            System.out.print("\u001b[42m");
+            System.out.print(AnsiKeys.COLOR_BACKGROUND_GREEN);
             System.out.print(" ");
             //printing first & second tower (if they exist)
             printTowerTableItems(clientPlayer.getSchoolBoard().getNumOfTowers(), clientPlayer.getSchoolBoard().getTowersColor(), 3);
@@ -302,17 +433,40 @@ public class Printer {
             System.out.print(" ");
             System.out.print(AnsiKeys.COLOR_RESET);
 
-            System.out.print("║");
+            System.out.print("║ ");
+
+            //printing played assistant if exists
+            if(clientPlayer.getPlayedAssistant()!=null) {
+                System.out.print("║");
+                System.out.print(clientPlayer.getPlayedAssistant().getRank());
+                System.out.print(" ║");
+            }
+            else {
+                System.out.print("    ");
+            }
+
+            printColored(" ║", frameColor);
 
             System.out.print("  ");
         }
         System.out.print("\n");
     }
 
-    private void printSchoolBoardLine4(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
+    private void printSchoolBoardLine6(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
+
+        String frameColor;
 
         for(ClientPlayer clientPlayer : clientPlayers){
 
+            //setting frame color for current player
+            if(clientPlayer.getName().equals(currentPlayerName)){
+                frameColor = AnsiKeys.CURRENTPLAYER_FRAME_COLOR;
+            }
+            else {
+                frameColor = AnsiKeys.COLOR_RESET;
+            }
+
+            printColored("║", frameColor);
             System.out.print("║ ");
             //printing first & second entrance item (if they exist)
             printEntranceStudents(clientPlayer.getSchoolBoard().getEntrance(), 5);
@@ -344,7 +498,7 @@ public class Printer {
 
             System.out.print(" ║");
 
-            System.out.print("\u001b[42m");
+            System.out.print(AnsiKeys.COLOR_BACKGROUND_GREEN);
             System.out.print(" ");
             //printing first & second tower (if they exist)
             printTowerTableItems(clientPlayer.getSchoolBoard().getNumOfTowers(), clientPlayer.getSchoolBoard().getTowersColor(), 5);
@@ -352,17 +506,38 @@ public class Printer {
             System.out.print(" ");
             System.out.print(AnsiKeys.COLOR_RESET);
 
-            System.out.print("║");
+            System.out.print("║ ");
+
+            //printing played assistant if exists
+            if(clientPlayer.getPlayedAssistant()!=null) {
+                System.out.print("║  ║");
+            }
+            else {
+                System.out.print("    ");
+            }
+
+            printColored(" ║", frameColor);
 
             System.out.print("  ");
         }
         System.out.print("\n");
     }
 
-    private void printSchoolBoardLine5(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
+    private void printSchoolBoardLine7(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
+
+        String frameColor;
 
         for(ClientPlayer clientPlayer : clientPlayers){
 
+            //setting frame color for current player
+            if(clientPlayer.getName().equals(currentPlayerName)){
+                frameColor = AnsiKeys.CURRENTPLAYER_FRAME_COLOR;
+            }
+            else {
+                frameColor = AnsiKeys.COLOR_RESET;
+            }
+
+            printColored("║", frameColor);
             System.out.print("║ ");
             //printing first & second entrance item (if they exist)
             printEntranceStudents(clientPlayer.getSchoolBoard().getEntrance(), 7);
@@ -395,7 +570,7 @@ public class Printer {
             System.out.print(" ║");
 
             //adding background
-            System.out.print("\u001b[42m");
+            System.out.print(AnsiKeys.COLOR_BACKGROUND_GREEN);
             System.out.print(" ");
             //printing first & second tower (if they exist)
             printTowerTableItems(clientPlayer.getSchoolBoard().getNumOfTowers(), clientPlayer.getSchoolBoard().getTowersColor(), 7);
@@ -403,16 +578,39 @@ public class Printer {
             System.out.print(" ");
             System.out.print(AnsiKeys.COLOR_RESET);
 
-            System.out.print("║");
+            System.out.print("║ ");
 
+            if(clientPlayer.getPlayedAssistant()!=null) {
+                System.out.print("║");
+                System.out.print("»");
+                System.out.print(clientPlayer.getPlayedAssistant().getMovements());
+                System.out.print("║");
+            }
+            else {
+                System.out.print("    ");
+            }
+
+            printColored(" ║", frameColor);
             System.out.print("  ");
         }
         System.out.print("\n");
     }
 
-    private void printSchoolBoardLine6(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
+    private void printSchoolBoardLine8(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
+
+        String frameColor;
 
         for(ClientPlayer clientPlayer : clientPlayers){
+
+            //setting frame color for current player
+            if(clientPlayer.getName().equals(currentPlayerName)){
+                frameColor = AnsiKeys.CURRENTPLAYER_FRAME_COLOR;
+            }
+            else {
+                frameColor = AnsiKeys.COLOR_RESET;
+            }
+
+            printColored("║", frameColor);
 
             System.out.print("║ ");
             //printing first & second entrance item (if they exist)
@@ -446,7 +644,7 @@ public class Printer {
             System.out.print(" ║");
 
             //adding background
-            System.out.print("\u001b[42m");
+            System.out.print(AnsiKeys.COLOR_BACKGROUND_GREEN);
             System.out.print(" ");
             //printing first & second tower (if they exist)
             printTowerTableItems(clientPlayer.getSchoolBoard().getNumOfTowers(), clientPlayer.getSchoolBoard().getTowersColor(), 9);
@@ -454,21 +652,65 @@ public class Printer {
             System.out.print(" ");
             System.out.print(AnsiKeys.COLOR_RESET);
 
-            System.out.print("║");
+            System.out.print("║ ");
+
+            //printing played assistant if exists
+            if(clientPlayer.getPlayedAssistant()!=null) {
+                System.out.print("╚══╝");
+            }
+            else {
+                System.out.print("    ");
+            }
+
+            printColored(" ║", frameColor);
             System.out.print("  ");
         }
         System.out.print("\n");
     }
 
-    private void printSchoolBoardLine7(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
+    private void printSchoolBoardLine9(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
 
-        for(int i=0; i<clientPlayers.size();i++){
-            System.out.print("╚════╩════════════╩═══╩════╝");
+        String frameColor;
+
+        for(ClientPlayer clientPlayer : clientPlayers){
+
+            //setting frame color for current player
+            if(clientPlayer.getName().equals(currentPlayerName)){
+                frameColor = AnsiKeys.CURRENTPLAYER_FRAME_COLOR;
+            }
+            else {
+                frameColor = AnsiKeys.COLOR_RESET;
+            }
+
+            printColored("║", frameColor);
+            System.out.print("╚════╩════════════╩═══╩════╝      ");
+            printColored("║", frameColor);
             System.out.print("  ");
         }
         System.out.print("\n");
     }
 
+
+    private void printSchoolBoardLine10(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
+
+        String frameColor;
+
+        for(ClientPlayer clientPlayer : clientPlayers){
+
+            //setting frame color for current player
+            if(clientPlayer.getName().equals(currentPlayerName)){
+                frameColor = AnsiKeys.CURRENTPLAYER_FRAME_COLOR;
+            }
+            else {
+                frameColor = AnsiKeys.COLOR_RESET;
+            }
+
+            printColored("╚══════════════════════════════════╝", frameColor);
+            System.out.print("  ");
+        }
+        System.out.print("\n");
+
+    }
 
 
 
@@ -561,9 +803,10 @@ public class Printer {
         for(ClientCharacter clientCharacter : clientCharacters){
             System.out.print("║");
 
-            System.out.print("ID");
+            System.out.print("C");
+            System.out.printf("%-2s", clientCharacter.getId());
 
-            System.out.print("   ");
+            System.out.print("  ");
 
             System.out.print(Color.YELLOW.ansi);
             System.out.print(clientCharacter.getCost());

@@ -12,6 +12,7 @@ public class Character10 extends Character {
     private ArrayList<Color> students;
     protected Color selectedStudent;
     private int cost = 2;
+    protected int id = 10;
 
     @Override
     public void initialFill(Game game){
@@ -41,6 +42,16 @@ public class Character10 extends Character {
     public void buy() throws NoEnoughCoinsException {
         game.getGameBoard().removeCoins(game.getCurrentPlayer(), cost);
         cost = 3;
+    }
+
+    @Override
+    public int getCost() {
+        return cost;
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 
     /*TEST METHODS*/

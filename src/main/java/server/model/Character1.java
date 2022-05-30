@@ -9,8 +9,11 @@ import java.util.ArrayList;
 public class Character1 extends Character {
     private ArrayList<Color> students;
     protected Color selectedStudent;
+
     protected int selectedIslandNumber;
     private int cost = 1;
+
+    protected int id = 1;
 
     @Override
     public void initialFill(Game game){
@@ -55,6 +58,16 @@ public class Character1 extends Character {
         }
 
         return toReturnStudents;
+    }
+
+    @Override
+    public int getCost() {
+        return cost;
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 
     /*TEST METHODS*/

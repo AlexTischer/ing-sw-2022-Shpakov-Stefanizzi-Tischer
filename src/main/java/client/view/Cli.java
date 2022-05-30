@@ -100,7 +100,7 @@ public class Cli extends View {
             int input;
 
             while(true){
-                input = stdin.nextInt();
+                input = Integer.parseInt(stdin.nextLine());
                 if(input == 1){
                     return input;
                 }

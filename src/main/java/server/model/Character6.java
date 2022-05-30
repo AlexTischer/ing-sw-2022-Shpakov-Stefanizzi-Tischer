@@ -7,6 +7,7 @@ public class Character6 extends Character {
     /*In a Tie, currentPlayer wins*/
 
     private int cost = 2;
+    protected int id = 6;
 
     @Override
     public void initialFill(Game game){
@@ -42,4 +43,13 @@ public class Character6 extends Character {
         cost = 3;
     }
 
+    @Override
+    public int getCost() {
+        return cost;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
 }

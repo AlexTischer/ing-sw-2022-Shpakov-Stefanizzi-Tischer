@@ -8,6 +8,7 @@ public class Character3 extends Character {
     /*does not count towers in influence*/
 
     private int cost = 3;
+    protected int id = 3;
 
     @Override
     public void initialFill(Game game){
@@ -33,6 +34,16 @@ public class Character3 extends Character {
     public void buy() throws NoEnoughCoinsException {
         game.getGameBoard().removeCoins(game.getCurrentPlayer(), cost);
         cost = 4;
+    }
+
+    @Override
+    public int getCost() {
+        return cost;
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 
 }

@@ -10,6 +10,7 @@ public class Character7 extends Character {
     private List<Color> selectedStudents;
     private List<Color> toBeSwappedStudents;
     private int cost = 1;
+    protected int id = 7;
 
     public void setSelectedStudents(ArrayList<Color> selectedStudents){
         if(selectedStudents.size() > 2)
@@ -66,5 +67,14 @@ public class Character7 extends Character {
         cost = 2;
     }
 
+    @Override
+    public int getCost() {
+        return cost;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
 
 }

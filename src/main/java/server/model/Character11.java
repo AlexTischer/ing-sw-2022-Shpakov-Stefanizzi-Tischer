@@ -8,6 +8,7 @@ public class Character11 extends Character {
 
     private Color selectedStudent;
     private int cost = 3;
+    protected int id = 11;
 
     @Override
     public void initialFill(Game game){
@@ -33,5 +34,13 @@ public class Character11 extends Character {
         cost = 4;
     }
 
+    @Override
+    public int getCost() {
+        return cost;
+    }
 
+    @Override
+    public int getId() {
+        return id;
+    }
 }
