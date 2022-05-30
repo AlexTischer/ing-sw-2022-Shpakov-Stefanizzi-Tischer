@@ -9,7 +9,7 @@ public class ConnectionStatusChange extends ModelChange{
     private boolean status;
 
     @Override
-    public void execute(ClientGameBoard gameBoard) throws Exception {
+    public void execute(ClientGameBoard gameBoard){
         for (ClientPlayer p: gameBoard.getPlayers()){
             if (p.getName().equals(name)) {
                 p.setConnectionStatus(status);

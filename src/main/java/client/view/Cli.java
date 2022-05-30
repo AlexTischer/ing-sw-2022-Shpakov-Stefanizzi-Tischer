@@ -2,6 +2,13 @@ package client.view;
 
 import server.model.Color;
 
+import client.model.*;
+import client.view.utils.Printer;
+import server.model.Assistant;
+import server.model.Player;
+
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Scanner;
@@ -9,11 +16,12 @@ import java.util.Scanner;
 public class Cli extends View {
 
     private Scanner stdin = new Scanner(System.in);
+    private Printer printer = new Printer();
 
     @Override
     public int askNumOfPlayers() {
         int numOfPlayers = 0;
-        while (true) {
+        while(true){
             try {
                 System.out.println("Please insert number of players (2, 3, 4):\n");
                 numOfPlayers = Integer.parseInt(stdin.nextLine());
@@ -29,9 +37,9 @@ public class Cli extends View {
     @Override
     public String askAdvancedSettings() {
         String advancedSettings;
-        while (true) {
+        while(true) {
             System.out.println("Do you want to play with advanced settings? (y/n)");
-            advancedSettings = stdin.nextLine();
+            advancedSettings= stdin.nextLine();
             if (advancedSettings.toLowerCase(Locale.ROOT).equals("y")) {
                 advancedSettings = "true";
                 break;
@@ -45,12 +53,12 @@ public class Cli extends View {
     }
 
     @Override
-    public String askName() {
+    public String askName(){
         System.out.println("Please insert your name: ");
         return stdin.nextLine();
     }
 
-    public void printMessage(String message) {
+    public void printMessage(String message){
         System.out.println(message);
     }
 
@@ -59,7 +67,7 @@ public class Cli extends View {
         int input;
 
         while(true){
-            input = stdin.nextInt();
+            input = Integer.parseInt(stdin.nextLine());
             if(0<input && input<=10){
                 return input;
             }
@@ -77,7 +85,7 @@ public class Cli extends View {
             int input;
 
             while(true){
-                input = stdin.nextInt();
+                input = Integer.parseInt(stdin.nextLine());
                 if(input == 1 || input == 2){
                     return input;
                 }
@@ -134,7 +142,7 @@ public class Cli extends View {
 
         while(true){
 
-            input = stdin.nextInt();
+            input = Integer.parseInt(stdin.nextLine());
             if(0 <= input && input <= 12){
                 return input;
             }
@@ -142,6 +150,23 @@ public class Cli extends View {
                 System.out.println("Incorrect value, try again");
             }
         }
+    }
+
+
+
+    public void showModel(ClientGameBoard gameBoard){
+        try {
+            printer.clearConsole();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        printer.showModel(gameBoard);
+    }
+
+    public int chooseActionMotherNature(boolean characterActivated){
+        return 1;
     }
 
 

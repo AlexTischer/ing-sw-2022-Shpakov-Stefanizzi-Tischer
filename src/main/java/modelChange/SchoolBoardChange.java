@@ -33,8 +33,11 @@ public class SchoolBoardChange extends ModelChange{
         for(Color c : Color.values()){
             this.diningRoom.put(c,player.getNumOfStudentsInDining(c));
         }
-        for(Color c : player.getProfessorsColor()){
-            this.professors.put(c, 1);
+        for(Color c : Color.values()){
+            professors.put(c,0);
+        }
+        for(Color c : player.getSchoolBoard().getProfessorsColor()){
+            professors.put(c,1);
         }
     }
 }

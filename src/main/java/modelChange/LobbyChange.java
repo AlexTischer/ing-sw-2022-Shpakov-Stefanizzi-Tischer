@@ -11,7 +11,7 @@ public class LobbyChange extends ModelChange{
 
 
     @Override
-    public void execute(ClientGameBoard gameBoard) throws Exception {
+    public void execute(ClientGameBoard gameBoard){
         gameBoard.setUserNames(userNames);
     }
 

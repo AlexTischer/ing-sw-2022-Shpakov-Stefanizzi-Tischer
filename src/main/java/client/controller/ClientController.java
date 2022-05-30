@@ -19,11 +19,13 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ClientController implements GameForClient{
+public class ClientController {
     private View view;
     private ClientGameBoard gameBoard;
     private ClientConnection connection;
     private boolean connectionActive;
+    private boolean characterActivated = false;
+
     public void attachConnection(ClientConnection connection){
         this.connection = connection;
     }
@@ -36,29 +38,49 @@ public class ClientController implements GameForClient{
         this.view = view;
     }
 
-
-
     //gets executed when connection is lost
     public void detachConnection(){
         this.connection = null;
         connectionActive = false;
     }
 
-    //TODO fill methods with packet creation
-    public void moveStudentToIsland(Color studentColor, int islandNumber){
-
+        public void changeModel(ModelChange change){
+        change.execute(gameBoard);
     }
 
-    public void moveStudentToDining(Color studentColor){
-
+    public void setClientName(String clientName){
+        gameBoard.setClientName(clientName);
     }
 
-    public void useCloud(int cloudNumber){
+    public void startTurn(){
+        if(gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())){
+            //it is this client's turn
+            System.out.println("Client Controller says: this is my turn - " + connection.getName());
+            if(gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getPlayedAssistant()==null){
+                // if client's player does not have a played Assistant, it means it has to be set and we are in planning phase.
+                planningPhase();
+            }
+            else {
+                actionPhase();
+            }
+        }
+        else{
+            while(!gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())) {
+                try {
+                    connection.waitModelChange();
+                } catch (IOException e) {
+                    System.out.println("ClientController says: closing connection due to exception in receiving updates");
+                    connection.close();
+                } catch (EndOfChangesException e) {
+                    System.out.println("ClientController says: I have received and caught EndOfChangesException");
 
-    }
+                    //Once all the changes for a client move have been received, it's possible to show them on the View.
+                    gameBoard.showOnView();
 
-    public void moveMotherNature(int steps){
-
+                    continue;
+                }
+            }
+        }
     }
 
     private boolean checkAssistant(int assistantRank, ClientPlayer player){
@@ -78,7 +100,6 @@ public class ClientController implements GameForClient{
                     return false;
             }
         }
-
         return true;
     }
 
@@ -111,66 +132,8 @@ public class ClientController implements GameForClient{
         }
     }
 
-    public void buyCharacter(int characterNumber){
-
-    }
-
-    public void activateCharacter(int islandNumber){
-
-    }
-
-    public void activateCharacter(ArrayList<Color> toBeSwappedStudents, ArrayList<Color> selectedStudents){
-
-    }
-
-    public void activateCharacter(Color color, int islandNumber){
-
-    }
-
-    public void activateCharacter(Color color){
-
-    }
-
-    public void changeModel(ModelChange change){
-        try {
-            change.execute(gameBoard);
-        }
-        catch (Exception e){
-            //TODO implement handling of exception raised by server model
-            e.printStackTrace();
-        }
-    }
-
-    public void setClientName(String clientName){
-        gameBoard.setClientName(clientName);
-    }
-
-    public void startTurn(){
-        if(gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())){
-            //my turn
-            if(gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getPlayedAssistant()==null){
-                planningPhase();
-            }
-            else {
-                actionPhase();
-            }
-        }
-        else{
-            while(!gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())) {
-                try {
-                    connection.waitModelChange();
-                } catch (IOException e) {
-                    System.out.println("ClientController says: closing connection due to exception in receiving updates");
-                    connection.close();
-                } catch (EndOfChangesException e) {
-                    continue;
-                }
-            }
-        }
-    }
-
     public void planningPhase() {
-        System.out.println("ClientController says: Starting while(true) loop in planning phase to keep client alive");
+        System.out.println("ClientController says: planning phase");
         boolean correctAssistant = false;
         while(!correctAssistant) {
             try {
@@ -185,13 +148,13 @@ public class ClientController implements GameForClient{
         }
     }
 
-    private void moveStudents(boolean characterActivated){
+    private void moveStudents(){
         int studentMoves = 0;
         Color studentColor;
         boolean correctStudent;
         boolean correctDestination;
 
-        while (studentMoves<=3){
+        while (studentMoves < (gameBoard.getPlayers().size() == 3? 4: 3)){
             correctStudent = false;
             correctDestination = false;
 
@@ -252,17 +215,32 @@ public class ClientController implements GameForClient{
             //TODO ask for character activation
             //chooseActionStudent returned 2
             else{
-
+                buyAndActivateCharacter();
             }
-
         }
     }
 
+    private void buyAndActivateCharacter(){}
+
+    private void moveMotherNature() {
+        if (view.chooseActionMotherNature(characterActivated) == 1) {
+            boolean correctMotherNature = false;
+            while(!correctMotherNature){
+
+            }
+        }
+        //TODO ask for character activation
+        //chooseActionMotherNature returned 2
+        else {
+            buyAndActivateCharacter();
+        }
+    }
     public void actionPhase() {
-        System.out.println("ClientController says: Starting while(true) loop in action phase to keep client alive");
-        boolean characterActivated = false;
+        System.out.println("ClientController says: action phase");
+
         //TODO ask view to ask user to choose actions
-        moveStudents(characterActivated);
+        moveStudents();
+        moveMotherNature();
 
     }
 

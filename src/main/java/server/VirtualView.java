@@ -43,7 +43,7 @@ public class VirtualView implements Observer<ModelChange> {
                 //client cannot use this assistant
                 clientConnection.send(new ExceptionChange(e));
             }
-            catch (Exception e){
+            catch (RuntimeException e){
                 clientConnection.send(new ExceptionChange(e));
             }
         }

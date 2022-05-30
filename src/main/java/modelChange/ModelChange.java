@@ -6,5 +6,5 @@ import java.io.Serializable;
 
 public class ModelChange implements Serializable {
 
-    public void execute(ClientGameBoard gameBoard) throws Exception {}
+    public void execute(ClientGameBoard gameBoard){}
 }

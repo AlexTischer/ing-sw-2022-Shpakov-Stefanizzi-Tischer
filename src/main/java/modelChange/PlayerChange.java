@@ -45,6 +45,9 @@ public class PlayerChange extends ModelChange{
         clientSchoolBoard.setDiningRoom(diningRoom);
 
         Map<Color, Integer> professors = new HashMap<>();
+        for(Color c : Color.values()){
+            professors.put(c,0);
+        }
         for(Color c : player.getSchoolBoard().getProfessorsColor()){
             professors.put(c,1);
         }

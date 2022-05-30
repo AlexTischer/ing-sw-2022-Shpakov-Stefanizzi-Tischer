@@ -73,11 +73,6 @@ public class Printer {
         printAssistantLine5(assistants);
     }
 
-
-
-
-
-
     private void printIslandStudents(int numOfStudents, Color color){
         if(numOfStudents!=0) {
             printColored(String.format("%2s", numOfStudents), color.ansi);
@@ -117,9 +112,13 @@ public class Printer {
 
             System.out.print("║");
 
-            System.out.print(island.getNumOfTowers());
-
-            printColored("T", island.getTowersColor().ansi);
+            if(island.getNumOfTowers()>0) {
+                System.out.print(island.getNumOfTowers());
+                printColored("T", island.getTowersColor().ansi);
+            }
+            else{
+                System.out.print("  ");
+            }
 
             printIslandStudents(island.getStudents().get(Color.GREEN), Color.GREEN);
             printIslandStudents(island.getStudents().get(Color.RED), Color.RED);

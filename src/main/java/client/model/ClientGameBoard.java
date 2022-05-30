@@ -18,6 +18,12 @@ public class ClientGameBoard {
     private List<String> userNames;
     private String clientName = "b";
 
+    public void showOnView(){
+        if(islands!=null && clouds!=null && playedCharacters!=null && players!=null && userNames!=null){
+            view.showModel(this);
+        }
+    }
+
     /*Mike: inside each set method we need to update the view*/
     public List<ClientIsland> getIslands() {
         return islands;

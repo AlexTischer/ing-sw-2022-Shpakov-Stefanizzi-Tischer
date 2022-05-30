@@ -52,6 +52,9 @@ public class PlayersChange extends ModelChange{
 
             //professors
             Map<Color, Integer> professors = new HashMap<>();
+            for(Color c : Color.values()){
+                professors.put(c,0);
+            }
             for(Color c : p.getSchoolBoard().getProfessorsColor()){
                 professors.put(c,1);
             }
