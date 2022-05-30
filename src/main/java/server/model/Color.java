@@ -1,9 +1,6 @@
 package server.model;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public enum Color {
 
@@ -28,6 +25,12 @@ public enum Color {
         this.ansi = ansi;
         this.label = label;
 
+    }
+
+    public static Optional<Color> getColorByLabel(String value) {
+        return Arrays.stream(Color.values())
+                .filter(color -> color.label.equals(value))
+                .findFirst();
     }
 
     private static final List<Color> VALUES =

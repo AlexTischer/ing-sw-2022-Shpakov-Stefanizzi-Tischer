@@ -3,6 +3,7 @@ package client.view;
 import server.model.Color;
 
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Cli extends View {
@@ -116,7 +117,7 @@ public class Cli extends View {
             if (input.equals("red") || input.equals("green") ||
                     input.equals("yellow") || input.equals("pink") || input.equals("blue")) {
 
-                return Color.valueOf(input);
+                return Color.getColorByLabel(input).get();
             }
             else {
                 System.out.println("Incorrect value, try again");

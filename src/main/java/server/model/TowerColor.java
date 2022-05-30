@@ -1,9 +1,6 @@
 package server.model;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public enum TowerColor {
 
@@ -15,9 +12,15 @@ public enum TowerColor {
     public final String ansi;
     public final String label;
 
-    private TowerColor(String ansi, String label) {
+    TowerColor(String ansi, String label) {
         this.ansi = ansi;
         this.label = label;
+    }
+
+    public static Optional<Color> getTowerColorByLabel(String value) {
+        return Arrays.stream(Color.values())
+                .filter(towerColor -> towerColor.label.equals(value))
+                .findFirst();
     }
 
 }

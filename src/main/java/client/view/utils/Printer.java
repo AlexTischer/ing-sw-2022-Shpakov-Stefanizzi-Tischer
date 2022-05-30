@@ -26,6 +26,12 @@ public class Printer {
         }
     }
 
+    private void printColored(String str, String color){
+        System.out.print(color);
+        System.out.print(str);
+        System.out.print(AnsiKeys.COLOR_RESET);
+    }
+
     private void printIslands(List<ClientIsland> islands){
         printIslandLine1(islands);
         printIslandLine2(islands);
@@ -74,9 +80,7 @@ public class Printer {
 
     private void printIslandStudents(int numOfStudents, Color color){
         if(numOfStudents!=0) {
-            System.out.print(color.ansi);
-            System.out.printf("%2s", numOfStudents);
-            System.out.print(AnsiKeys.COLOR_RESET);
+            printColored(String.format("%2s", numOfStudents), color.ansi);
         }
         else {
             System.out.print("  ");
@@ -96,9 +100,7 @@ public class Printer {
             System.out.print("║ MN ");
 
             if(island.isNoEntry()){
-                System.out.print(AnsiKeys.COLOR_BRIGHT_RED);
-                System.out.print("X");
-                System.out.print(AnsiKeys.COLOR_RESET);
+                printColored("X", AnsiKeys.COLOR_BRIGHT_RED);
             }
             else {
                 System.out.print(" ");
@@ -117,9 +119,7 @@ public class Printer {
 
             System.out.print(island.getNumOfTowers());
 
-            System.out.print(island.getTowersColor().ansi);
-            System.out.print("T"); // "⛫"  "♜"
-            System.out.print(AnsiKeys.COLOR_RESET);
+            printColored("T", island.getTowersColor().ansi);
 
             printIslandStudents(island.getStudents().get(Color.GREEN), Color.GREEN);
             printIslandStudents(island.getStudents().get(Color.RED), Color.RED);
@@ -156,10 +156,7 @@ public class Printer {
 
     private void printEntranceStudents(List<Color> students, int position){
         if(students.size() >= position){
-            System.out.print(students.get(position-1).ansi);
-            //System.out.print("●");
-            System.out.print("o");
-            System.out.print(AnsiKeys.COLOR_RESET);
+            printColored("o", students.get(position-1).ansi);
         }
         else {
             System.out.print(" ");
@@ -179,23 +176,26 @@ public class Printer {
     }
 
 
-
-    /* SCHOOLBOARD LAYOUT
-
-    +-----------------------------------+
-|Name.............  Coins: xx       |
-|+----+------------+---+----+       |
-|| ii | pppppppppp | P | TT |  +--+ |
-|| ii | pppppppppp | P | TT |  |R | |
-|| ii | pppppppppp | P | TT |  |  | |
-|| ii | pppppppppp | P | TT |  |St| |
-|| ii | pppppppppp | P | TT |  +--+ |
-|+----+------------+---+----+       |
-+-----------------------------------+
+   /* SCHOOLBOARD LAYOUT
 
 
+    System.out.println("+-----------------------------------+\n" +
+            "|Name.............  Coins: xx       |\n" +
+            "|+----+------------+---+----+       |\n" +
+            "|| ii | pppppppppp | P | TT |  +--+ |\n" +
+            "|| ii | pppppppppp | P | TT |  |R | |\n" +
+            "|| ii | pppppppppp | P | TT |  |  | |\n" +
+            "|| ii | pppppppppp | P | TT |  |St| |\n" +
+            "|| ii | pppppppppp | P | TT |  +--+ |\n" +
+            "|+----+------------+---+----+       |\n" +
+            "+-----------------------------------+");
+}
 
-    * */
+
+    */
+
+
+
 
 
 
@@ -235,9 +235,7 @@ public class Printer {
 
             //printing GREEN professor (if exists)
             if(clientPlayer.getSchoolBoard().getProfessors().get(Color.GREEN) == 1){
-                System.out.print(Color.GREEN.ansi);
-                System.out.print("■");
-                System.out.print(AnsiKeys.COLOR_RESET);
+                printColored("■", Color.GREEN.ansi);
             }
             else{
                 System.out.print(" ");
@@ -288,9 +286,7 @@ public class Printer {
 
             //printing RED professor (if exists)
             if(clientPlayer.getSchoolBoard().getProfessors().get(Color.RED) == 1){
-                System.out.print(Color.RED.ansi);
-                System.out.print("■");
-                System.out.print(AnsiKeys.COLOR_RESET);
+                printColored("■", Color.RED.ansi);
             }
             else{
                 System.out.print(" ");
@@ -341,9 +337,7 @@ public class Printer {
 
             //printing GREEN professor (if exists)
             if(clientPlayer.getSchoolBoard().getProfessors().get(Color.YELLOW) == 1){
-                System.out.print(Color.YELLOW.ansi);
-                System.out.print("■");
-                System.out.print(AnsiKeys.COLOR_RESET);
+                printColored("■", Color.YELLOW.ansi);
             }
             else{
                 System.out.print(" ");
@@ -393,9 +387,7 @@ public class Printer {
 
             //printing GREEN professor (if exists)
             if(clientPlayer.getSchoolBoard().getProfessors().get(Color.PINK) == 1){
-                System.out.print(Color.PINK.ansi);
-                System.out.print("■");
-                System.out.print(AnsiKeys.COLOR_RESET);
+                printColored("■", Color.PINK.ansi);
             }
             else{
                 System.out.print(" ");
@@ -446,9 +438,7 @@ public class Printer {
 
             //printing GREEN professor (if exists)
             if(clientPlayer.getSchoolBoard().getProfessors().get(Color.BLUE) == 1){
-                System.out.print(Color.BLUE.ansi);
-                System.out.print("■");
-                System.out.print(AnsiKeys.COLOR_RESET);
+                printColored("■", Color.BLUE.ansi);
             }
             else{
                 System.out.print(" ");
@@ -485,10 +475,7 @@ public class Printer {
 
     private void printCloudStudents(ArrayList<Color> students, int position){
         if(students.size() >= position){
-            System.out.print(students.get(position-1).ansi);
-            //System.out.print("●");
-            System.out.print("o");
-            System.out.print(AnsiKeys.COLOR_RESET);
+            printColored("o", students.get(position-1).ansi );
         }
         else {
             System.out.print(" ");
@@ -553,10 +540,7 @@ public class Printer {
 
         if(students.length >= position) {
             if (students[position - 1] != null) {
-                System.out.print(students[position - 1].ansi);
-                //System.out.print("●");
-                System.out.print("o");
-                System.out.print(AnsiKeys.COLOR_RESET);
+                printColored("o", students[position - 1].ansi);
             } else {
                 System.out.print(" ");
             }
@@ -608,9 +592,7 @@ public class Printer {
             }
             else if(clientCharacter.getNoEntryTiles()!=-1){
                 for(int i=0; i<clientCharacter.getNoEntryTiles(); i++){
-                    System.out.print(AnsiKeys.COLOR_BRIGHT_RED);
-                    System.out.print("X");
-                    System.out.print(AnsiKeys.COLOR_RESET);
+                    printColored("X", AnsiKeys.COLOR_BRIGHT_RED);
                 }
                 for(int i=4; i>clientCharacter.getNoEntryTiles();i--){
                     System.out.print(" ");
