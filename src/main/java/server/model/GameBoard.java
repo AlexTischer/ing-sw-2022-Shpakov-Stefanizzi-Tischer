@@ -347,7 +347,11 @@ public class GameBoard extends Observable<ModelChange> {
     }
 
     public void addCoins(Player player, int coins){
-        player.addCoins(coins);
+        for (int i = 0; i < coins; i++) {
+            getCoin();
+            player.addCoins(1);
+        }
+
         CoinsOfPlayerChange coinsOfPlayerChange = new CoinsOfPlayerChange(player);
         notify(coinsOfPlayerChange);
         ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());

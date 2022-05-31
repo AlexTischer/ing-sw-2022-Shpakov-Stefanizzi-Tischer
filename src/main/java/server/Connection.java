@@ -33,19 +33,21 @@ public class Connection implements Runnable{
     public void close(){
         if (isActive) {
             /*first I deregister client from server and then close socket*/
-            System.out.println("Deregistering client with ip: " + clientSocket.getRemoteSocketAddress() + " and name: " + name);
+            System.out.println("Deregistering client with ip: " + clientSocket.getRemoteSocketAddress());
 
             isActive = false;
             //deregistering is different based on whether game is already started
             if (server.isGameReady()) {
                 server.changeConnectionStatus(new ConnectionStatusChange(name, false));
-            } else {
+            }
+            else {
                 server.removeFromLobby(this);
             }
 
             try {
                 clientSocket.close();
             } catch (IOException e) {
+                System.out.println("Oops. Socket closing of" + name + "went wrong!");
                 System.err.println(e.getMessage());
             }
 
@@ -99,8 +101,7 @@ public class Connection implements Runnable{
                     System.out.println("Server received from client: " + fromClient);
                     try {
                         name = (String)fromClient;
-                        server.addClient(this, (String) fromClient);
-                        System.out.println("Client " + fromClient + " added Client");
+                        server.addClient(this, name);
                         nameReady = true;
 
                         //wait until enough number of clients connect
@@ -146,14 +147,6 @@ public class Connection implements Runnable{
                                 socketOut.writeObject("pong");
                                 socketOut.flush();
                                 socketOut.reset();
-                            }
-                            if (fromClient.equals("close")){
-                                //TODO check for possible problems
-                                //client sent ping message, server responds with pong
-                                System.out.println(name + " wants to close a connection");
-                                setName(null);
-                                close();
-                                return;
                             }
                             else{
                                 throw new IllegalArgumentException("Anomalous object received from client "+name);

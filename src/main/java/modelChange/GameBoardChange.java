@@ -6,7 +6,6 @@ import server.model.Character;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class GameBoardChange extends ModelChange{
@@ -50,6 +49,8 @@ public class GameBoardChange extends ModelChange{
             gameBoard.setPlayers(clientPlayers);
         }
 
+        //tells that game is on
+        gameBoard.setGameOn(true);
         gameBoard.setCurrentPlayerName(currentPlayerName);
     }
 

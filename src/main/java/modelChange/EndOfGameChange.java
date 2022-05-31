@@ -12,7 +12,7 @@ public class EndOfGameChange extends ModelChange{
     public void execute(ClientGameBoard gameBoard){
         String message;
         if(winner == null){
-            message = "You can't play";
+            message = "You can't play. The game is already started. Try to reconnect later!";
         }
         else if (winner.equals(gameBoard.getClientName()))
             message = "You win!";
@@ -20,8 +20,12 @@ public class EndOfGameChange extends ModelChange{
             message = "Game Over! \n" +  winner + " wins!";
         }
 
+        //turn off the game
+        gameBoard.setGameOn(false);
+
         throw new EndOfGameException(message);
     }
+
     public EndOfGameChange(String winner){
         this.winner = winner;
     }

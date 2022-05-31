@@ -7,16 +7,12 @@ import client.model.ClientGameBoard;
 import exceptions.EndOfChangesException;
 import exceptions.EndOfGameException;
 import exceptions.RepeatedAssistantRankException;
-import exceptions.WrongActionException;
 import modelChange.ModelChange;
 import packets.*;
-import server.model.Assistant;
 import server.model.Color;
-import server.model.Player;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,7 +20,6 @@ public class ClientController {
     private View view;
     private ClientGameBoard gameBoard;
     private ClientConnection connection;
-    private boolean connectionActive;
     private boolean characterActivated = false;
 
     public void attachConnection(ClientConnection connection){
@@ -42,7 +37,6 @@ public class ClientController {
     //gets executed when connection is lost
     public void detachConnection(){
         this.connection = null;
-        connectionActive = false;
     }
 
     public void changeModel(ModelChange change){
@@ -51,46 +45,45 @@ public class ClientController {
         }
         catch (EndOfGameException e){
             view.printMessage(e.getMessage());
-
-            //TODO send close message to server
-            //TODO close all
             connection.close();
-            Thread.currentThread().interrupt();
         }
     }
 
     public void setClientName(String clientName){
+        gameBoard.setGameOn(true);
         gameBoard.setClientName(clientName);
     }
 
     public void startTurn(){
-        if(gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())){
+        //can start the turn only if game is on
+        if (isGameOn() && gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())) {
             //it is this client's turn
             System.out.println("Client Controller says: this is my turn - " + connection.getName());
-            if(gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getPlayedAssistant()==null){
+            if (gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getPlayedAssistant() == null) {
                 // if client's player does not have a played Assistant, it means it has to be set and we are in planning phase.
                 planningPhase();
-            }
-            else {
+            } else {
                 actionPhase();
             }
         }
-        else{
-            while(!gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())) {
-                try {
-                    connection.waitModelChange();
+        else {
+            //all clients start from here, if suddenly game is finished
+            //then all clients will exit from all recursion calls because isGameOn() condition doesn't get satisfied
+            //while (isGameOn()) {
+                while (isGameOn()&&!gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())) {
+                    //continue to process model changes until I receive one that executes setCurrentPlayerName on ClientGameBoard
+                    try {
+                        connection.waitModelChange();
+                    } catch (IOException e) {
+                        System.out.println("ClientController says: closing connection due IOException");
+                        connection.close();
+                    } catch (EndOfChangesException e) {
+                        System.out.println("ClientController says: I have received and caught EndOfChangesException");
+                        //Once all the changes for a client move have been received, it's possible to show them on the View.
+                        gameBoard.showOnView();
+                    }
                 }
-                catch (IOException e) {
-                    System.out.println("ClientController says: closing connection due IOException");
-                    connection.close();
-                }
-                catch (EndOfChangesException e) {
-                    System.out.println("ClientController says: I have received and caught EndOfChangesException");
-
-                    //Once all the changes for a client move have been received, it's possible to show them on the View.
-                    gameBoard.showOnView();
-                }
-            }
+            //}
         }
     }
 
@@ -203,7 +196,8 @@ public class ClientController {
                                         correctDestination = true;
                                         studentMoves++;
                                     } catch (IOException e) {
-                                        throw new RuntimeException(e);
+                                        System.out.println("Ooops. Something went wrong!");
+                                        e.printStackTrace();
                                     }
                                 }
 
@@ -279,6 +273,10 @@ public class ClientController {
 
     public void printMessage(String message){
         view.printMessage(message);
+    }
+
+    public boolean isGameOn(){
+        return gameBoard.isGameOn();
     }
 
 }

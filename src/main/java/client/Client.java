@@ -49,5 +49,7 @@ public class Client{
         controller.attachConnection(connection);
         connection.attachController(controller);
         connection.init();
+
+        System.out.println("Client finished execution");
     }
 }

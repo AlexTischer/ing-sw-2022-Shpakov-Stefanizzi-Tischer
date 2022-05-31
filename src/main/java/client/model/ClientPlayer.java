@@ -77,6 +77,7 @@ public class ClientPlayer implements Serializable {
     }
 
     public void setConnectionStatus(boolean connectionStatus) {
+        //TODO show somehow to model that this player is not active
         this.connectionStatus = connectionStatus;
     }
 

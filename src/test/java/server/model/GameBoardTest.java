@@ -422,6 +422,10 @@ public class GameBoardTest extends TestCase {
         characters[2] = character3;
         testGameBoard.setPlayedCharacters(characters);
 
+        //take 10 students from gameBoard to simulate paying to player
+        for (int i = 0; i < 10; i++)
+            testGameBoard.getCoin();
+
         testGameBoard.addCoins(gametest.getCurrentPlayer(), 10);
 
         testGameBoard.buyCharacter(0);

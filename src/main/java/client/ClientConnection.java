@@ -2,6 +2,8 @@ package client;
 
 import client.controller.ClientController;
 import exceptions.EndOfChangesException;
+import modelChange.EndOfGameChange;
+import modelChange.LobbyChange;
 import modelChange.ModelChange;
 import packets.Packet;
 
@@ -17,11 +19,11 @@ public class  ClientConnection {
     private Thread trackerThread;
     private boolean isActive;
 
+    private String name;
+
     public String getName() {
         return name;
     }
-
-    private String name;
 
     public ClientConnection(Socket socket) {
         this.socket = socket;
@@ -33,7 +35,9 @@ public class  ClientConnection {
 
     public void close(){
         //stop connection tracker
+        isActive = false;
         trackerThread.interrupt();
+
         /*first I deregister client from server, then I close socket*/
         System.out.println("Closing connection");
         clientController.detachConnection();
@@ -42,9 +46,6 @@ public class  ClientConnection {
         }catch (IOException e){
             System.err.println(e.getMessage());
         }
-
-
-        isActive = false;
 
         System.out.println("Done!");
     }
@@ -100,6 +101,7 @@ public class  ClientConnection {
     }
 
     public void init() throws IOException {
+        isActive = true;
         //client receives strings from server with readUTF() until it gets added to lobby
         //then it receives objects with readObject()
         socketOut = new ObjectOutputStream(socket.getOutputStream());
@@ -191,37 +193,46 @@ public class  ClientConnection {
                         socketOut.reset();
                     }
 
-                    //Server added me to addToLobby if my name is ok
-                    Object lobbyChange = new Object();
+                    //Server added me to Lobby  if my name is ok
+                    Object modelChange = new Object();
 
-                    boolean waitingLobbyChange = true;
-                    while (waitingLobbyChange) {
+                    boolean waitingModelChange = true;
+                    while (waitingModelChange) {
                         try {
-                            lobbyChange = socketIn.readObject();
-                            clientController.changeModel((ModelChange) lobbyChange);
+                            modelChange = socketIn.readObject();
+                            //can receive lobbychange, endofgamechange or ping or start or error
+                            clientController.changeModel((LobbyChange) modelChange);
                             inputCorrect = true;
                         }
                         catch (ClassCastException e) {
                             try {
-                                fromServer = (String) lobbyChange;
-                                if (fromServer.equals("pong")) {
-                                    System.out.println("ClientConnection says: server sent pong");
-                                    continue;
-                                }
-                                else if (fromServer.equals("start")){
-                                    waitingLobbyChange = false;
-                                }
+                                clientController.changeModel((EndOfGameChange) modelChange);
+                                inputCorrect = true;
+                                waitingModelChange = false;
 
-                                else{
-                                    clientController.printMessage("Error from server received: \n" + fromServer);
-                                    waitingLobbyChange = false;
+                                //set fromServer to stop current thread
+                                fromServer = "stop";
+                            }
+                            //TODO add management of GameBoardChange modelChange in case this is the client that tries to reconnect with the same name
+                            catch (ClassCastException e2){
+                                try {
+                                    fromServer = (String) modelChange;
+                                    if (fromServer.equals("pong")) {
+                                        System.out.println("ClientConnection says: server sent pong");
+                                        continue;
+                                    } else if (fromServer.equals("start")) {
+                                        waitingModelChange = false;
+                                    } else {
+                                        clientController.printMessage("Error from server received: \n" + fromServer);
+                                        waitingModelChange = false;
+                                    }
                                 }
-
-                            } catch (ClassCastException e2) {
-//                                System.out.println("ClientConnection says: error class cast ex");
+                                catch (ClassCastException e3) {
+                                    System.out.println("ClientConnection says: error class cast ex");
+                                }
                             }
                         }
-                        catch (ClassNotFoundException e){
+                        catch (ClassNotFoundException e) {
                             System.out.println("ClientConnection says: error class not found ex");
                         }
                     }
@@ -230,7 +241,12 @@ public class  ClientConnection {
             if (fromServer.equals("start")) {
                 System.out.println("ClientConnection says: start received");
                 clientController.setClientName(name);
+                //command that starts the game
                 clientController.startTurn();
+            }
+            else if (fromServer.equals("stop")){
+                fromServer = "start";
+                //set to start in order to exit from loop
             }
             else {
                 fromServer = socketIn.readUTF();

@@ -31,21 +31,29 @@ public class Server {
     }
 
 
-    public void addClient(Connection connection, String name) throws InterruptedException {
-        if(!gameReady){
+    //synchronized because no clients can be added simultaneously
+    public synchronized void addClient(Connection connection, String name) throws InterruptedException {
+        if(!gameReady) {
             addToLobby(connection, name);
+            System.out.println("Client " + name + " added ");
         }
-        else{
+        else {
             boolean found = false;
+            //find a virtual view corresponding to disconnected client
             for(VirtualView v : virtualViews){
                 if (v.getPlayer().getName().equals(name) && !v.isActive()){
                     found=true;
                     v.attachConnection(connection);
+                    //TODO add gameBoardChange sending if client with the same name tries to reconnect
+                    //TODO add appropriate instructions on client side
+                    System.out.println("Client " + name + " added ");
+                    break;
                 }
             }
             if(!found) {
-                //TODO socket gets closed before client reads modelchange
                 connection.send(new EndOfGameChange(null) );
+                connection.setName(null);
+                connection.close();
             }
         }
     }
@@ -153,7 +161,9 @@ public class Server {
     /*receives ConnectionStatusChange of that particular client that became inactive or active*/
     public void changeConnectionStatus(ModelChange playerConnectionStatus){
         for (VirtualView client: virtualViews){
-            client.update(playerConnectionStatus);
+            //need to notify only active virtualViews
+            if (client.isActive())
+                client.update(playerConnectionStatus);
         }
     }
 

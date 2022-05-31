@@ -20,7 +20,7 @@ public class ConnectionTracker implements Runnable{
     public void run() {
         //sends ping every 2 seconds
         try {
-            while (true) {
+            while (connection.isActive()) {
                 synchronized (connection) {
                     socketOut.writeObject("ping");
                     socketOut.flush();
@@ -30,7 +30,7 @@ public class ConnectionTracker implements Runnable{
             }
         }
         catch (IOException e) {
-            e.printStackTrace();
+            connection.close();
         }
         catch (InterruptedException e){
             //thread exception

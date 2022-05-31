@@ -123,6 +123,12 @@ public class Game implements GameForClient{
 
     public void addStudentToDining(Player player, Color studentColor){
         gameBoard.addStudentToDining(player, studentColor);
+
+        /*if this is advanced version of game, I pay 1 coin to player for each 3rd student*/
+        if ( advancedSettings && player.getNumOfStudentsInDining(studentColor) % 3==0 ){
+            gameBoard.addCoins(player, 1);
+        }
+        //check if professor gets reassigned
         reassignProfessor();
     }
 
@@ -320,6 +326,8 @@ public class Game implements GameForClient{
 
 
     private void newRound() throws InterruptedException {
+        //TODO control if the player is active each time before waiting for client action
+        //if player is not active then skip him
         gameBoard.refillClouds();
         gameBoard.setCurrentPlayer(players.get(0));
 

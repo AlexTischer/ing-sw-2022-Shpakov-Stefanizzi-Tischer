@@ -3,6 +3,8 @@ package client.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import client.view.View;
 public class ClientGameBoard {
     private View view;
@@ -16,6 +18,8 @@ public class ClientGameBoard {
     private ArrayList<ClientPlayer> players;
     private List<String> userNames;
     private String clientName = "b";
+
+    private AtomicBoolean isGameOn = new AtomicBoolean(false);
 
     public void showOnView(){
         if(islands!=null && clouds!=null && playedCharacters!=null && players!=null && userNames!=null){
@@ -133,7 +137,14 @@ public class ClientGameBoard {
 
     public void setClientName(String clientName) {
         this.clientName = clientName;
-
         System.out.println("setting client name");
+    }
+
+    public boolean isGameOn() {
+        return isGameOn.get();
+    }
+
+    public void setGameOn(boolean val){
+        isGameOn.set(val);
     }
 }
