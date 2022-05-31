@@ -55,12 +55,6 @@ public class GameBoard extends Observable<ModelChange> {
 
         numOfCoins = 20;
 
-        //initializing islands
-        for(int i=0; i<12; i++){
-            if(i!=positionOfMotherNature && i!=oppositeIsland(positionOfMotherNature)){
-                islands.get(i).addStudent(instanceOfBag.extractStudent());
-            }
-        }
 
     }
 

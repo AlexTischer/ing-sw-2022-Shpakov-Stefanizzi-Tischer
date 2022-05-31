@@ -7,13 +7,14 @@ import packets.Packet;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class  ClientConnection {
     private Socket socket;
     private ObjectInputStream socketIn;
     private ObjectOutputStream socketOut;
     private ClientController clientController;
+
+    private Thread trackerThread;
     private boolean isActive;
 
     public String getName() {
@@ -31,6 +32,8 @@ public class  ClientConnection {
     }
 
     public void close(){
+        //stop connection tracker
+        trackerThread.interrupt();
         /*first I deregister client from server, then I close socket*/
         System.out.println("Closing connection");
         clientController.detachConnection();
@@ -39,6 +42,8 @@ public class  ClientConnection {
         }catch (IOException e){
             System.err.println(e.getMessage());
         }
+
+
         isActive = false;
 
         System.out.println("Done!");
@@ -102,7 +107,8 @@ public class  ClientConnection {
 
         socketIn = new ObjectInputStream(socket.getInputStream());
 
-        new Thread(new ConnectionTracker(this, socketOut, socketIn)).start();
+        trackerThread = new Thread( new ConnectionTracker(this, socketOut, socketIn));
+        trackerThread.start();
 
         String fromServer = socketIn.readUTF();
         //new Thread(new ConnectionTracker(this, socketOut, socketIn)).start();
@@ -205,6 +211,7 @@ public class  ClientConnection {
                                 else if (fromServer.equals("start")){
                                     waitingLobbyChange = false;
                                 }
+
                                 else{
                                     clientController.printMessage("Error from server received: \n" + fromServer);
                                     waitingLobbyChange = false;

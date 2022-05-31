@@ -5,6 +5,7 @@ import client.model.ClientPlayer;
 import client.view.View;
 import client.model.ClientGameBoard;
 import exceptions.EndOfChangesException;
+import exceptions.EndOfGameException;
 import exceptions.RepeatedAssistantRankException;
 import exceptions.WrongActionException;
 import modelChange.ModelChange;
@@ -45,7 +46,17 @@ public class ClientController {
     }
 
     public void changeModel(ModelChange change){
-        change.execute(gameBoard);
+        try {
+            change.execute(gameBoard);
+        }
+        catch (EndOfGameException e){
+            view.printMessage(e.getMessage());
+
+            //TODO send close message to server
+            //TODO close all
+            connection.close();
+            Thread.currentThread().interrupt();
+        }
     }
 
     public void setClientName(String clientName){

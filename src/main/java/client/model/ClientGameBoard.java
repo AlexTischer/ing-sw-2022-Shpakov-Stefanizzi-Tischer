@@ -14,7 +14,6 @@ public class ClientGameBoard {
     private int numOfCoins;
     private String currentPlayerName = "a";
     private ArrayList<ClientPlayer> players;
-    private String message;
     private List<String> userNames;
     private String clientName = "b";
 
@@ -79,6 +78,9 @@ public class ClientGameBoard {
         System.out.println("setting position of MN");
     }
 
+    public void printMessage(String message){
+        view.printMessage(message);
+    }
     public int getNumOfCoins() {
         return numOfCoins;
     }
@@ -123,12 +125,6 @@ public class ClientGameBoard {
         System.out.println(userNames.toString());
 
         System.out.println("setting userNames");
-    }
-
-    public void setMessage(String message){
-        this.message = message;
-
-        System.out.println("setting message");
     }
 
     public void attachView(View view){

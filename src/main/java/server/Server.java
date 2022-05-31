@@ -1,5 +1,6 @@
 package server;
 
+import modelChange.EndOfGameChange;
 import modelChange.LobbyChange;
 import modelChange.ModelChange;
 import server.controller.CharacterDeck;
@@ -35,10 +36,16 @@ public class Server {
             addToLobby(connection, name);
         }
         else{
+            boolean found = false;
             for(VirtualView v : virtualViews){
                 if (v.getPlayer().getName().equals(name) && !v.isActive()){
+                    found=true;
                     v.attachConnection(connection);
                 }
+            }
+            if(!found) {
+                //TODO socket gets closed before client reads modelchange
+                connection.send(new EndOfGameChange(null) );
             }
         }
     }

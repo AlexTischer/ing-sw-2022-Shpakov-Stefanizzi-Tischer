@@ -31,25 +31,26 @@ public class Connection implements Runnable{
     }
 
     public void close(){
-        /*first I deregister client from server and then close socket*/
-        System.out.println("Deregistering client with ip: " + clientSocket.getRemoteSocketAddress() + " and name: " + name);
+        if (isActive) {
+            /*first I deregister client from server and then close socket*/
+            System.out.println("Deregistering client with ip: " + clientSocket.getRemoteSocketAddress() + " and name: " + name);
 
-        isActive = false;
-        //deregistering is different based on whether game is already started
-        if (server.isGameReady()) {
-            server.changeConnectionStatus(new ConnectionStatusChange(name, false));
-        }
-        else {
-            server.removeFromLobby(this);
-        }
+            isActive = false;
+            //deregistering is different based on whether game is already started
+            if (server.isGameReady()) {
+                server.changeConnectionStatus(new ConnectionStatusChange(name, false));
+            } else {
+                server.removeFromLobby(this);
+            }
 
-        try{
-            clientSocket.close();
-        }catch (IOException e){
-            System.err.println(e.getMessage());
-        }
+            try {
+                clientSocket.close();
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+            }
 
-        System.out.println("Done!");
+            System.out.println("Done!");
+        }
     }
 
     public void send(ModelChange modelChange) {
@@ -146,6 +147,14 @@ public class Connection implements Runnable{
                                 socketOut.flush();
                                 socketOut.reset();
                             }
+                            if (fromClient.equals("close")){
+                                //TODO check for possible problems
+                                //client sent ping message, server responds with pong
+                                System.out.println(name + " wants to close a connection");
+                                setName(null);
+                                close();
+                                return;
+                            }
                             else{
                                 throw new IllegalArgumentException("Anomalous object received from client "+name);
                             }
@@ -213,5 +222,9 @@ public class Connection implements Runnable{
 
     public String getClientName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
