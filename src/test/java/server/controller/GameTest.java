@@ -1,7 +1,9 @@
 package server.controller;
 
-import server.model.*;
-import exceptions.NoEntryException;
+import it.polimi.ingsw.server.controller.CharacterDeck;
+import it.polimi.ingsw.server.controller.Game;
+import it.polimi.ingsw.server.model.*;
+import it.polimi.ingsw.exceptions.NoEntryException;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

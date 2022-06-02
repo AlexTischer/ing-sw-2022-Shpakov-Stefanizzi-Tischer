@@ -1,7 +1,10 @@
 package server.model;
 
-import exceptions.NumOfStudentsExceeded;
-import exceptions.StudentNotFoundException;
+import it.polimi.ingsw.exceptions.NumOfStudentsExceeded;
+import it.polimi.ingsw.exceptions.StudentNotFoundException;
+import it.polimi.ingsw.server.model.Color;
+import it.polimi.ingsw.server.model.SchoolBoard;
+import it.polimi.ingsw.server.model.TowerColor;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 

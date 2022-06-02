@@ -1,16 +1,18 @@
 package server.model;
 
-import server.controller.CharacterDeck;
-import server.controller.Game;
-import exceptions.NoEnoughCoinsException;
-import exceptions.NoEnoughEntryTilesException;
-import exceptions.NoEntryException;
+import it.polimi.ingsw.server.model.*;
+import it.polimi.ingsw.server.controller.CharacterDeck;
+import it.polimi.ingsw.server.controller.Game;
+import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
+import it.polimi.ingsw.exceptions.NoEnoughEntryTilesException;
+import it.polimi.ingsw.exceptions.NoEntryException;
+import it.polimi.ingsw.server.model.Character;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-import static server.model.Color.*;
+import static it.polimi.ingsw.server.model.Color.*;
 
 public class CharactersTest extends TestCase {
     ArrayList<String> playerNames = new ArrayList<>();
@@ -30,7 +32,7 @@ public class CharactersTest extends TestCase {
         testGameBoard.refillAssistants(testPlayer);
         testPlayer.setPlayedAssistantRank(2);
 
-        server.model.Character characterTest = new Character();
+        it.polimi.ingsw.server.model.Character characterTest = new Character();
         characterTest.initialFill(gametest);
 
         testGameBoard.setCurrentCharacterToDefault(characterTest);

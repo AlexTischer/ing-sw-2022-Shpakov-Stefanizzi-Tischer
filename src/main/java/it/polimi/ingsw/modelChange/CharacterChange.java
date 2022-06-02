@@ -1,0 +1,38 @@
+package it.polimi.ingsw.modelChange;
+
+import it.polimi.ingsw.client.model.ClientGameBoard;
+import it.polimi.ingsw.server.model.Character;
+import it.polimi.ingsw.server.model.Color;
+
+public class CharacterChange extends ModelChange{
+
+    private int cost;
+    private int noEntryTiles;
+    private Color[] students;
+    private int characterIndex;
+
+    private int id;
+
+    @Override
+    public void execute(ClientGameBoard gameBoard){
+        gameBoard.setCurrentCharacter(characterIndex);
+
+        gameBoard.getCurrentCharacter().setCost(cost);
+        gameBoard.getCurrentCharacter().setId(id);
+
+        if(noEntryTiles!=-1)
+            gameBoard.getCurrentCharacter().setNoEntryTiles(noEntryTiles);
+        if(students!=null)
+            gameBoard.getCurrentCharacter().setStudents(students);
+
+    }
+
+    public CharacterChange(Character character, int index){ //index must be -1 for defaultCharacter
+        cost = character.getCost();
+        noEntryTiles = character.getNoEntryTiles();
+        students = character.getStudentsSlot();
+        id = character.getId();
+
+        characterIndex = index;
+    }
+}

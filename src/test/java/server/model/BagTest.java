@@ -1,6 +1,7 @@
 package server.model;
 
-import exceptions.NoEnoughStudentsException;
+import it.polimi.ingsw.exceptions.NoEnoughStudentsException;
+import it.polimi.ingsw.server.model.Bag;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 

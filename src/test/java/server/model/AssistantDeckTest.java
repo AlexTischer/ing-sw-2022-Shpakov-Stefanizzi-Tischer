@@ -1,10 +1,10 @@
 package server.model;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
-import server.model.Assistant;
-import server.model.AssistantDeck;
-import server.model.AssistantFactory;
-import server.model.AssistantType;
+import it.polimi.ingsw.server.model.Assistant;
+import it.polimi.ingsw.server.model.AssistantDeck;
+import it.polimi.ingsw.server.model.AssistantFactory;
+import it.polimi.ingsw.server.model.AssistantType;
 
 import java.util.List;
 

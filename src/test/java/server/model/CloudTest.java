@@ -1,6 +1,8 @@
 package server.model;
 
-import exceptions.NumOfStudentsExceeded;
+import it.polimi.ingsw.exceptions.NumOfStudentsExceeded;
+import it.polimi.ingsw.server.model.Cloud;
+import it.polimi.ingsw.server.model.Color;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 

@@ -1,5 +1,6 @@
 package server.controller;
 
+import it.polimi.ingsw.server.controller.CharacterDeck;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 

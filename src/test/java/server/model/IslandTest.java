@@ -1,6 +1,9 @@
 package server.model;
 
-import exceptions.NoEntryException;
+import it.polimi.ingsw.exceptions.NoEntryException;
+import it.polimi.ingsw.server.model.Color;
+import it.polimi.ingsw.server.model.Island;
+import it.polimi.ingsw.server.model.TowerColor;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 
