@@ -3,7 +3,9 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.client.controller.ClientController;
 import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.client.view.Cli;
+import it.polimi.ingsw.client.view.GUI;
 import it.polimi.ingsw.client.view.View;
+import javafx.application.Application;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -29,6 +31,13 @@ public class Client{
         Scanner stdin = new Scanner(System.in);
         if(stdin.nextLine().equals("CLI")){
             view = new Cli();
+        }
+        else{
+            view = new Cli(); //TODO: remove and adapt
+
+            new Thread(() -> {
+                Application.launch(GUI.class);
+            }).start();
         }
         controller = new ClientController();
         //model is`not initialized , but it will be enough before the start of the game

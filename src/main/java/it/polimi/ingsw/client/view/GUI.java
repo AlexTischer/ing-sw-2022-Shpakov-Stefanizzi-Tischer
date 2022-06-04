@@ -10,16 +10,11 @@ public class GUI extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("Scene.fxml"));
+        Parent root = FXMLLoader.load(GUI.class.getResource("/Scene.fxml"));
 
         Scene scene = new Scene(root);
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
-    }
-
-
-    public static void main(String[] args) {
-        launch();
     }
 }

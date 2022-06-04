@@ -176,8 +176,123 @@ public class Cli extends View {
     }
 
     public int chooseActionMotherNature(boolean characterActivated){
-        return 1;
+        if(characterActivated==false){
+            System.out.println("Choose an action:");
+            System.out.println("1. Move Mother Nature     2. Activate character");
+            int input;
+
+            while(true){
+                try {
+                    input = Integer.parseInt(stdin.nextLine());
+                    if (input == 1 || input == 2) {
+                        return input;
+                    }
+                    else {
+                        throw new NumberFormatException();
+                    }
+                }
+                catch (NumberFormatException e){
+                    System.out.println("Incorrect value, try again");
+                }
+            }
+        }
+        else {
+            System.out.println("Choose an action:");
+            System.out.println("1. Move Mother Nature");
+            int input;
+
+            while(true){
+                input = Integer.parseInt(stdin.nextLine());
+                if(input == 1){
+                    return input;
+                }
+                else {
+                    System.out.println("Incorrect value, try again");
+                }
+            }
+        }
     }
 
+    public int askCloudNumber() {
+        System.out.println("Insert the number of the cloud you want to use");
 
+        int input;
+
+        while(true){
+
+            try {
+                input = Integer.parseInt(stdin.nextLine());
+
+                if(0 <= input && input <= 3){
+                    return input;
+                }
+                else
+                    throw new NumberFormatException();
+            }
+            catch (NumberFormatException e){
+                System.out.println("Incorrect value, try again");
+            }
+
+        }
+    }
+
+    public int chooseActionClouds(boolean characterActivated) {
+        if(characterActivated==false){
+            System.out.println("Choose an action:");
+            System.out.println("1. Use Cloud to refill Entrance     2. Activate character");
+            int input;
+
+            while(true){
+                try {
+                    input = Integer.parseInt(stdin.nextLine());
+                    if (input == 1 || input == 2) {
+                        return input;
+                    }
+                    else {
+                        throw new NumberFormatException();
+                    }
+                }
+                catch (NumberFormatException e){
+                    System.out.println("Incorrect value, try again");
+                }
+            }
+        }
+        else {
+            System.out.println("Choose an action:");
+            System.out.println("1. Use Cloud to refill Entrance");
+            int input;
+
+            while(true){
+                input = Integer.parseInt(stdin.nextLine());
+                if(input == 1){
+                    return input;
+                }
+                else {
+                    System.out.println("Incorrect value, try again");
+                }
+            }
+        }
+    }
+
+    public int askMotherNatureSteps() {
+        System.out.println("Insert the number of steps you want Mother Nature to do");
+
+        int input;
+
+        while(true){
+
+            try {
+                input = Integer.parseInt(stdin.nextLine());
+                return input;
+            }
+            catch (NumberFormatException e){
+                System.out.println("Incorrect value, try again");
+            }
+
+        }
+    }
+
+    public int askCharacterNumber() {
+        return 0;
+    }
 }

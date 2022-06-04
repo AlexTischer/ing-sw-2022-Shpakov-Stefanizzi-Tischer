@@ -1,5 +1,7 @@
 package it.polimi.ingsw.server.model;
 
+import it.polimi.ingsw.client.model.ClientCharacter;
+import it.polimi.ingsw.client.model.ClientCharacter11;
 import it.polimi.ingsw.server.controller.Game;
 import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 
@@ -42,5 +44,15 @@ public class Character11 extends Character {
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public ClientCharacter createClientCharacter(){
+        ClientCharacter character = new ClientCharacter11();
+
+        character.setCost(cost);
+        character.setId(id);
+
+        return character;
     }
 }

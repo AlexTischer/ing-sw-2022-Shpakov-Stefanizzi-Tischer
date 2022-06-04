@@ -31,8 +31,6 @@ public class GameBoard extends Observable<ModelChange> {
     public void init(Game game, int numOfPlayers) {
         this.game = game;
 
-        playedCharacters = new Character[3];
-
         islands = new ArrayList<Island>(12);
         for (int i = 0; i < 12; i++) {
             islands.add(i, new Island());

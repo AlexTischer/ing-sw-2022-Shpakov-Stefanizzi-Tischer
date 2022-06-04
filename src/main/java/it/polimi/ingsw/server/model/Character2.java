@@ -49,4 +49,5 @@ public class Character2 extends Character {
         return id;
     }
 
+
 }

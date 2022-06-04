@@ -34,4 +34,12 @@ public abstract class View {
     public abstract void showModel(ClientGameBoard gameBoard);
 
     public abstract int chooseActionMotherNature(boolean characterActivated);
+
+    public abstract int askMotherNatureSteps();
+
+    public abstract int chooseActionClouds(boolean characterActivated);
+
+    public abstract int askCloudNumber();
+
+    public abstract int askCharacterNumber();
 }

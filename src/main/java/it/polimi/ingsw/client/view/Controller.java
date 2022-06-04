@@ -16,7 +16,7 @@ public class Controller implements Initializable {
     private Label myLabel;
     @FXML
     //devo inserire anche il tipo di dato (string)
-    private ChoiceBox<String> myChoiceBox;
+    private ChoiceBox<String> myChoiceBox = new ChoiceBox<>();
 
     //items to populate the choicebox
     private String[] food = {"pizza","sushi","ramen"};

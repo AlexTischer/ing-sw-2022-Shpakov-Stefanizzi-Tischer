@@ -7,11 +7,9 @@ import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.exceptions.EndOfChangesException;
 import it.polimi.ingsw.exceptions.EndOfGameException;
 import it.polimi.ingsw.exceptions.RepeatedAssistantRankException;
+import it.polimi.ingsw.exceptions.WrongActionException;
 import it.polimi.ingsw.modelChange.ModelChange;
-import it.polimi.ingsw.packets.MoveStudentToDiningPacket;
-import it.polimi.ingsw.packets.MoveStudentToIslandPacket;
-import it.polimi.ingsw.packets.Packet;
-import it.polimi.ingsw.packets.UseAssistantPacket;
+import it.polimi.ingsw.packets.*;
 import it.polimi.ingsw.server.model.Color;
 
 import java.io.IOException;
@@ -86,7 +84,6 @@ public class ClientController {
                         gameBoard.showOnView();
                     }
                 }
-            //}
         }
     }
 
@@ -143,8 +140,8 @@ public class ClientController {
         while(!correctAssistant) {
             try {
                 useAssistant();
-                correctAssistant = true;
-                System.out.println("Assistant selected correctly");
+                correctAssistant = true; //TODO this line is not reached.
+                printMessage("Assistant selected correctly");
             }
             catch (InvalidParameterException | RepeatedAssistantRankException e){
                 printMessage(e.getMessage());
@@ -206,53 +203,78 @@ public class ClientController {
 
                                 //if not, retry
                                 else{
-                                    System.out.println("This island does not exist, select another destination");
+                                    printMessage("This island does not exist, select another destination");
                                 }
                             }
                         }
                     } else {
-                        System.out.println("Student does not exist, try again");
+                        printMessage("Student does not exist, try again");
                     }
                 }
             }
-
-
-            //TODO ask for character activation
-            //chooseActionStudent returned 2
             else{
                 buyAndActivateCharacter();
             }
         }
     }
 
-    private void buyAndActivateCharacter(){}
+    private void buyAndActivateCharacter(){
+
+        int i = view.askCharacterNumber();
+
+        try{
+            Packet packet = gameBoard.getPlayedCharacters()[i].createPacket(view);
+            connection.send(packet);
+        } catch (UnsupportedOperationException e){
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private void moveMotherNature() {
         if (view.chooseActionMotherNature(characterActivated) == 1) {
-            boolean correctMotherNature = false;
-            while(!correctMotherNature){
-                System.out.println("Inside move mother nature while loop");
-                synchronized (this) {
-                    try {
-                        this.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+            int steps = view.askMotherNatureSteps();
+            try {
+                connection.send(new MoveMotherNaturePacket(steps));
+            } catch (IOException e) {
+                System.out.println("Ooops. Something went wrong!");
+                e.printStackTrace();
             }
         }
-        //TODO ask for character activation
-        //chooseActionMotherNature returned 2
         else {
             buyAndActivateCharacter();
         }
     }
+
+    private void useCloud(){
+        if (view.chooseActionClouds(characterActivated) == 1) {
+            boolean correctCloud=false;
+            while(!correctCloud){
+                int cloudNumber = view.askCloudNumber();
+                if(cloudNumber<=(gameBoard.getPlayers().size() == 3? 4: 3) && cloudNumber>0) {
+                    try {
+                        connection.send(new UseCloudPacket(cloudNumber));
+                        correctCloud=true;
+                    } catch (IOException e) {
+                        System.out.println("Ooops. Something went wrong!");
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        }
+        else {
+            buyAndActivateCharacter();
+        }
+    }
+
     public void actionPhase() {
         System.out.println("ClientController says: action phase");
 
-        //TODO ask view to ask user to choose actions
         moveStudents();
         moveMotherNature();
+        useCloud();
 
     }
 

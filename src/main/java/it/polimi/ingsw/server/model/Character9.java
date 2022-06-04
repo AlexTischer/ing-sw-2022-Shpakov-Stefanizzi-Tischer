@@ -1,5 +1,7 @@
 package it.polimi.ingsw.server.model;
 
+import it.polimi.ingsw.client.model.ClientCharacter;
+import it.polimi.ingsw.client.model.ClientCharacter9;
 import it.polimi.ingsw.server.controller.Game;
 import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 
@@ -13,15 +15,15 @@ public class Character9 extends Character {
     private Color[] students;
     private List<Color> selectedStudents;
     private List<Color> toBeSwappedStudents;
-    private int maxNumOfStudents = 6;
     private int cost = 1;
+
     protected int id = 9;
 
     public void initialFill(Game game){
         super.initialFill(game);
-        students = new Color[maxNumOfStudents];
+        students = new Color[6];
 
-        for (int i = 0; i < maxNumOfStudents; i++)
+        for (int i = 0; i < 6; i++)
             students[i] = game.getStudent();
 
     }
@@ -100,5 +102,17 @@ public class Character9 extends Character {
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public ClientCharacter createClientCharacter(){
+        ClientCharacter character = new ClientCharacter9();
+
+        character.setCost(cost);
+        character.setId(id);
+
+        character.setStudents(getStudentsSlot());
+
+        return character;
     }
 }

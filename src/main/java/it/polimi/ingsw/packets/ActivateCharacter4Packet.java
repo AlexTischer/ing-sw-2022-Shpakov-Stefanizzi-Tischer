@@ -5,7 +5,7 @@ import it.polimi.ingsw.server.model.Color;
 
 import java.util.ArrayList;
 
-public class ActivateCharacter4Packet extends Packet{
+public class ActivateCharacter4Packet extends ActivateCharacterPacket{
 
     @Override
     public void execute(GameForClient game) {

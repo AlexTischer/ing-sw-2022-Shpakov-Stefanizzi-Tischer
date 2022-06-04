@@ -1,5 +1,7 @@
 package it.polimi.ingsw.server.model;
 
+import it.polimi.ingsw.client.model.ClientCharacter;
+import it.polimi.ingsw.client.view.Cli;
 import it.polimi.ingsw.exceptions.EndOfChangesException;
 import it.polimi.ingsw.modelChange.ExceptionChange;
 import it.polimi.ingsw.server.controller.Game;
@@ -105,5 +107,12 @@ public class Character {
 
     public int getId() {
         return id;
+    }
+
+    public ClientCharacter createClientCharacter() {
+        ClientCharacter clientCharacter = new ClientCharacter();
+        clientCharacter.setCost(cost);
+        //TODO add description in subClasses and clientCharacter.setDescription(decription);
+        return clientCharacter;
     }
 }

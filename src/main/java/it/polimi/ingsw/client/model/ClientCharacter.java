@@ -1,5 +1,8 @@
 package it.polimi.ingsw.client.model;
 
+import it.polimi.ingsw.client.view.View;
+import it.polimi.ingsw.packets.ActivateCharacterPacket;
+import it.polimi.ingsw.packets.Packet;
 import it.polimi.ingsw.server.model.Color;
 
 import java.io.Serializable;
@@ -42,5 +45,10 @@ public class ClientCharacter implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public ActivateCharacterPacket createPacket(View view){
+        throw new UnsupportedOperationException();
+        //TODO implement in subClasses
     }
 }

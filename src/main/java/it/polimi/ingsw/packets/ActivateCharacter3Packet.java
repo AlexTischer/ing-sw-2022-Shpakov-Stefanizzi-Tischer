@@ -2,7 +2,7 @@ package it.polimi.ingsw.packets;
 
 import it.polimi.ingsw.server.controller.GameForClient;
 
-public class ActivateCharacter3Packet extends Packet{
+public class ActivateCharacter3Packet extends ActivateCharacterPacket{
 
     @Override
     public void execute(GameForClient game) {
