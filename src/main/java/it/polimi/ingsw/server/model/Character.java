@@ -1,5 +1,7 @@
 package it.polimi.ingsw.server.model;
 
+import it.polimi.ingsw.exceptions.EndOfChangesException;
+import it.polimi.ingsw.modelChange.ExceptionChange;
 import it.polimi.ingsw.server.controller.Game;
 import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 import it.polimi.ingsw.exceptions.NoEnoughStudentsException;
@@ -52,6 +54,10 @@ public class Character {
                 }
             }
         }
+
+        //tell client to move to the next step in action phase
+        ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
+        game.getGameBoard().notify(exceptionChange);
     }
 
     public boolean moveMotherNature(int steps){

@@ -87,7 +87,11 @@ public class GameBoardTest extends TestCase {
         testGameBoard.conquerIslandTEST(0, TowerColor.BLACK);
         testGameBoard.conquerIslandTEST(1, TowerColor.BLACK);
 
-        assertEquals(true, testGameBoard.mergeIslands());
+        int oldIslandsSize = testGameBoard.getNumOfIslands();
+        testGameBoard.mergeIslands();
+        int newIslandSize = testGameBoard.getNumOfIslands();
+        assertTrue(oldIslandsSize>=newIslandSize);
+
         assertEquals(11, testGameBoard.getNumOfIslands());
         assertEquals(0, testGameBoard.getPositionOfMotherNature());
 
@@ -124,7 +128,11 @@ public class GameBoardTest extends TestCase {
         /*test merging first and the last island*/
         testGameBoard.conquerIslandTEST(10, TowerColor.BLACK);
 
-        assertEquals(true, testGameBoard.mergeIslands());
+        oldIslandsSize = testGameBoard.getNumOfIslands();
+        testGameBoard.mergeIslands();
+        newIslandSize = testGameBoard.getNumOfIslands();
+        assertTrue(oldIslandsSize>=newIslandSize);
+
         assertEquals(10, testGameBoard.getNumOfIslands());
         assertEquals(9, testGameBoard.getPositionOfMotherNature());
 
@@ -160,7 +168,11 @@ public class GameBoardTest extends TestCase {
         /*test that non-consecutive islands are not merged*/
         testGameBoard.conquerIslandTEST(7, TowerColor.BLACK);
 
-        assertEquals(false, testGameBoard.mergeIslands());
+        oldIslandsSize = testGameBoard.getNumOfIslands();
+        testGameBoard.mergeIslands();
+        newIslandSize = testGameBoard.getNumOfIslands();
+        assertFalse(oldIslandsSize>newIslandSize);
+
         assertEquals(10, testGameBoard.getNumOfIslands());
         assertEquals(9, testGameBoard.getPositionOfMotherNature());
 
@@ -203,7 +215,11 @@ public class GameBoardTest extends TestCase {
         /*test merging first and the last island*/
         testGameBoard.conquerIslandTEST(8, TowerColor.BLACK);
 
-        assertEquals(true, testGameBoard.mergeIslands());
+        oldIslandsSize = testGameBoard.getNumOfIslands();
+        testGameBoard.mergeIslands();
+        newIslandSize = testGameBoard.getNumOfIslands();
+        assertTrue(oldIslandsSize>=newIslandSize);
+
         assertEquals(8, testGameBoard.getNumOfIslands());
         assertEquals(7, testGameBoard.getPositionOfMotherNature());
 

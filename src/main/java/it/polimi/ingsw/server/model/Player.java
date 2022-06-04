@@ -16,6 +16,7 @@ public class Player implements Comparable{
     private AssistantType assistantType;
     private Assistant playedAssistant;
     private Assistant[] assistants;
+    private boolean isActive;
 
 
     public Player(String name, TowerColor towerColor, AssistantType assistantType, int numOfTowers) {
@@ -25,6 +26,7 @@ public class Player implements Comparable{
         this.assistants = new Assistant[10];
         this.coins = 0;
         schoolBoard = new SchoolBoard(this.towerColor, numOfTowers);
+        this.isActive = true;
     }
 
     @Override
@@ -147,5 +149,9 @@ public class Player implements Comparable{
 
     public Assistant[] getAssistants() {
         return assistants;
+    }
+
+    public void changeStatus(boolean status){
+        this.isActive = status;
     }
 }

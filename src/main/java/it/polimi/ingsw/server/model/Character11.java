@@ -24,7 +24,7 @@ public class Character11 extends Character {
             int numOfStudentsInDining = player.getNumOfStudentsInDining(selectedStudent);
 
             for (int i = 0; i < (Math.min(3, numOfStudentsInDining)); i++)
-                game.getGameBoard().removeStudentFromDining(player, selectedStudent);
+                game.removeStudentFromDining(player, selectedStudent);
                 game.getGameBoard().addStudentToBag(selectedStudent);
         }
     }

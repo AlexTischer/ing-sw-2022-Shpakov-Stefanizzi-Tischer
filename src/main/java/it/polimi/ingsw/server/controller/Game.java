@@ -1,6 +1,8 @@
 package it.polimi.ingsw.server.controller;
 
+import it.polimi.ingsw.exceptions.EndOfChangesException;
 import it.polimi.ingsw.exceptions.WrongActionException;
+import it.polimi.ingsw.modelChange.ExceptionChange;
 import it.polimi.ingsw.server.model.*;
 import it.polimi.ingsw.packets.Packet;
 import it.polimi.ingsw.server.model.Character;
@@ -69,10 +71,12 @@ public class Game implements GameForClient{
         gameBoard.setCurrentCharacterToDefault(new Character());
         gameBoard.getCurrentCharacter().initialFill(this);
 
-        /*refill assistants of players*/
+        /*refill assistants of players and distribute 1 coin in case of adv settings*/
         for (Player p : players) {
             gameBoard.refillAssistants(p);
             gameBoard.refillEntrance(p);
+            if (advancedSettings)
+                p.addCoins(1);
         }
 
         Collections.shuffle(players);
@@ -190,7 +194,10 @@ public class Game implements GameForClient{
             if (!p.getTowerColor().equals(master.getTowerColor())){
                 influenceToCompare = calculateInfluence(islandNumber, p);
 
+                // Iterate through players that does not hold any towers
                 for (Player q : players.stream().filter((Player pl) -> pl.getNumOfTowers() == 0).toList()){
+                    //if players have the same tower color then they are from
+                    //the same team and thus their influence should be added
                     if (p.getTowerColor().equals(q.getTowerColor()))
                         influenceToCompare += calculateInfluence(islandNumber, q);
                 }
@@ -213,17 +220,18 @@ public class Game implements GameForClient{
                     loser = p;
             }
             /*to avoid useless model change, make a check*/
-            if (master != loser)
+            if (!master.equals(loser))
                 gameBoard.addTowersToPlayer(gameBoard.getNumOfTowersOnIsland(islandNumber), loser);
         }
 
         /*to avoid useless model change, make a check*/
-        if (master != loser) {
+        if (!master.equals(loser)) {
             gameBoard.addTowersToIsland(islandNumber, master);
             //suppose that the case with the master that has 0 towers is impossible
             //if a player has no enough towers then he puts all towers that he owns and as a result becomes a winner
             //otherwise he puts as many towers as islands inside the island that he wants to conquer
             gameBoard.removeTowersFromPlayer(Math.min(master.getNumOfTowers(), gameBoard.getNumOfMergedIslands(islandNumber)), master);
+            gameBoard.mergeIslands();
         }
     }
 
@@ -257,6 +265,11 @@ public class Game implements GameForClient{
         gameBoard.moveMotherNature(steps);
         //each time a client moves MN, I need to try to resolve an island because it might be conquered
         reassignIsland(gameBoard.getPositionOfMotherNature());
+
+        //let client know that he can move to the next step
+        ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
+        gameBoard.notify(exceptionChange);
+
         motherNatureMove = true;
         this.notify();
     }

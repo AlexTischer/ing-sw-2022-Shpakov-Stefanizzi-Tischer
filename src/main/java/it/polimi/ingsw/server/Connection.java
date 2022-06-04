@@ -39,6 +39,7 @@ public class Connection implements Runnable{
             //deregistering is different based on whether game is already started
             if (server.isGameReady()) {
                 server.changeConnectionStatus(new ConnectionStatusChange(name, false));
+                userVirtualView.changePlayerStatus(false);
             }
             else {
                 server.removeFromLobby(this);

@@ -4,6 +4,7 @@ import it.polimi.ingsw.server.controller.Game;
 import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 import it.polimi.ingsw.exceptions.NoEnoughEntryTilesException;
 
+/**sets noEntry tiles on islands*/
 public class Character5 extends Character {
     private int noEntryTiles;
     protected int selectedIslandNumber;

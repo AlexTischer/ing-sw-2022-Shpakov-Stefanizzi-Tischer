@@ -1,5 +1,7 @@
 package it.polimi.ingsw.server.model;
 
+import it.polimi.ingsw.exceptions.EndOfChangesException;
+import it.polimi.ingsw.modelChange.ExceptionChange;
 import it.polimi.ingsw.server.controller.Game;
 import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 
@@ -36,6 +38,10 @@ public class Character6 extends Character {
                         game.getGameBoard().removeProfessor(player,color);
             }
         }
+
+        //tell client to move to the next step in action phase
+        ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
+        game.getGameBoard().notify(exceptionChange);
     }
     @Override
     public void buy() throws NoEnoughCoinsException {

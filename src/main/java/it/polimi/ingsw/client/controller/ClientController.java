@@ -63,7 +63,7 @@ public class ClientController {
             //it is this client's turn
             System.out.println("Client Controller says: this is my turn - " + connection.getName());
             if (gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getPlayedAssistant() == null) {
-                // if client's player does not have a played Assistant, it means it has to be set and we are in planning phase.
+                // if client's player does not have a played Assistant, it means it has to be set, and we are in planning phase.
                 planningPhase();
             } else {
                 actionPhase();
