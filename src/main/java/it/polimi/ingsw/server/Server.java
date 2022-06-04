@@ -41,9 +41,10 @@ public class Server {
             boolean found = false;
             //find a virtual view corresponding to disconnected client
             for(VirtualView v : virtualViews){
-                if (v.getPlayer().getName().equals(name) && !v.isActive()){
+                if (v.getPlayer().getName().equals(name) && !v.isConnectionActive()){
                     found=true;
                     v.attachConnection(connection);
+                    v.changePlayerStatus(true);
                     //TODO add gameBoardChange sending if client with the same name tries to reconnect
                     //TODO add appropriate instructions on client side
                     System.out.println("Client " + name + " added ");
@@ -162,7 +163,7 @@ public class Server {
     public void changeConnectionStatus(ModelChange playerConnectionStatus){
         for (VirtualView client: virtualViews){
             //need to notify only active virtualViews
-            if (client.isActive())
+            if (client.isConnectionActive())
                 client.update(playerConnectionStatus);
         }
     }
