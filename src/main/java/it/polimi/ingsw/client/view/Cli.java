@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.view;
 
+import it.polimi.ingsw.client.controller.ClientController;
 import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.server.model.Color;
 
@@ -138,6 +139,29 @@ public class Cli extends View {
         }
     }
 
+    public int askIslandNumber(){
+
+        System.out.println("Insert the number of the island you want to move the student to");
+
+        int input;
+
+        while(true){
+
+            try {
+                input = Integer.parseInt(stdin.nextLine());
+                if(0 <= input && input <= 12){
+                    return input;
+                }
+                else
+                    throw new NumberFormatException();
+            }
+            catch (NumberFormatException e){
+                System.out.println("Incorrect value, try again");
+            }
+
+        }
+    }
+
     public int askStudentDestination(){
 
         System.out.println("Insert the number of the island you want to move your student or " +
@@ -223,7 +247,7 @@ public class Cli extends View {
             try {
                 input = Integer.parseInt(stdin.nextLine());
 
-                if(0 <= input && input <= 3){
+                if(0 <= input && input <= 4){
                     return input;
                 }
                 else
@@ -293,6 +317,26 @@ public class Cli extends View {
     }
 
     public int askCharacterNumber() {
-        return 0;
+
+        System.out.println("Insert the number of the character (1/2/3) you want to buy or -1 to cancel");
+
+        int input;
+
+        while(true){
+
+            try {
+                input = Integer.parseInt(stdin.nextLine());
+
+                if(0 < input && input <= 3 || input==-1){
+                    return input;
+                }
+                else
+                    throw new NumberFormatException();
+            }
+            catch (NumberFormatException e){
+                System.out.println("Incorrect value, try again");
+            }
+        }
     }
+
 }

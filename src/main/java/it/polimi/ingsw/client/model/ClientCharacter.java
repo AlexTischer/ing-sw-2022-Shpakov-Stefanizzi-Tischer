@@ -13,7 +13,7 @@ public class ClientCharacter implements Serializable {
     private int noEntryTiles;
     private Color[] students;
 
-    private int id;
+    private String description;
 
     public int getCost() {
         return cost;
@@ -39,16 +39,16 @@ public class ClientCharacter implements Serializable {
         this.students = students;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public ActivateCharacterPacket createPacket(View view){
         throw new UnsupportedOperationException();
         //TODO implement in subClasses
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

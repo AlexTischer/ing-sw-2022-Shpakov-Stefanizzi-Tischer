@@ -14,7 +14,7 @@ public class Character10 extends Character {
     private ArrayList<Color> students;
     protected Color selectedStudent;
     private int cost = 2;
-    protected int id = 10;
+    private String description = "C10";
 
     @Override
     public void initialFill(Game game){
@@ -46,22 +46,13 @@ public class Character10 extends Character {
         cost = 3;
     }
 
-    @Override
-    public int getCost() {
-        return cost;
-    }
-
-    @Override
-    public int getId() {
-        return id;
-    }
 
     @Override
     public ClientCharacter createClientCharacter(){
         ClientCharacter character = new ClientCharacter10();
 
         character.setCost(cost);
-        character.setId(id);
+        character.setDescription(description);
 
         character.setStudents(getStudentsSlot());
 

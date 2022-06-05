@@ -2,18 +2,18 @@ package it.polimi.ingsw.packets;
 
 import it.polimi.ingsw.server.controller.GameForClient;
 
+
 public class ActivateCharacter3Packet extends ActivateCharacterPacket{
+
+
+    private int islandNumber;
+
+    public ActivateCharacter3Packet(int islandNumber){
+        this.islandNumber=islandNumber;
+    }
 
     @Override
     public void execute(GameForClient game) {
-        int islandNumber;
-
-        try{
-            islandNumber = (int)getParameters().get(0);
-        }
-        catch (ClassCastException e){
-            throw new ClassCastException("Invalid arguments");
-        }
 
         game.activateCharacter(islandNumber);
     }

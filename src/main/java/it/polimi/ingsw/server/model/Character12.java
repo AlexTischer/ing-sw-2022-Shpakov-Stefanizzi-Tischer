@@ -9,7 +9,7 @@ import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 public class Character12 extends Character {
     protected int selectedIslandNumber;
     private int cost = 3;
-    protected int id = 12;
+    private String description = "C12";
 
     @Override
     public void initialFill(Game game){
@@ -33,21 +33,11 @@ public class Character12 extends Character {
     }
 
     @Override
-    public int getCost() {
-        return cost;
-    }
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
     public ClientCharacter createClientCharacter(){
         ClientCharacter character = new ClientCharacter12();
 
         character.setCost(cost);
-        character.setId(id);
+        character.setDescription(description);
 
         return character;
     }

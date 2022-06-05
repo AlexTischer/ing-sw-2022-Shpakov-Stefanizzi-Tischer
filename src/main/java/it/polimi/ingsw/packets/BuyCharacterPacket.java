@@ -1,19 +1,19 @@
 package it.polimi.ingsw.packets;
 
 import it.polimi.ingsw.server.controller.GameForClient;
+import it.polimi.ingsw.server.model.Color;
 
 public class BuyCharacterPacket extends Packet{
 
+    private int characterNumber;
+
+
+    public BuyCharacterPacket(int characterNumber){
+        this.characterNumber=characterNumber;
+    }
+
     @Override
     public void execute(GameForClient game) {
-        int characterNumber;
-
-        try{
-            characterNumber = (int)getParameters().get(0);
-        }
-        catch (ClassCastException e){
-            throw new ClassCastException("Invalid arguments");
-        }
 
         game.buyCharacter(characterNumber);
     }

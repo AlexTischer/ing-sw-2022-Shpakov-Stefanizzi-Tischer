@@ -22,8 +22,10 @@ public class Printer {
         System.out.print("\nClouds:\n");
         printClouds(gameBoard.getClouds());
 
-        System.out.print("\nCharacters:\n");
-        printCharacters(gameBoard.getPlayedCharacters());
+        if(gameBoard.getPlayedCharacters()[0]!=null) {
+            System.out.print("\nCharacters:\n");
+            printCharacters(gameBoard.getPlayedCharacters());
+        }
 
         System.out.print("\nAssistants:\n");
         printAssistants(gameBoard.getPlayer(gameBoard.getClientName()).getAssistants());
@@ -804,7 +806,7 @@ public class Printer {
             System.out.print("║");
 
             System.out.print("C");
-            System.out.printf("%-2s", clientCharacter.getId());
+            System.out.printf("%-2s", clientCharacter.getDescription()); //TODO: changed id to Description. Change this.
 
             System.out.print("  ");
 

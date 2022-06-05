@@ -11,14 +11,11 @@ public class CharacterChange extends ModelChange{
     private Color[] students;
     private int characterIndex;
 
-    private int id;
-
     @Override
     public void execute(ClientGameBoard gameBoard){
         gameBoard.setCurrentCharacter(characterIndex);
 
         gameBoard.getCurrentCharacter().setCost(cost);
-        gameBoard.getCurrentCharacter().setId(id);
 
         if(noEntryTiles!=-1)
             gameBoard.getCurrentCharacter().setNoEntryTiles(noEntryTiles);
@@ -31,7 +28,6 @@ public class CharacterChange extends ModelChange{
         cost = character.getCost();
         noEntryTiles = character.getNoEntryTiles();
         students = character.getStudentsSlot();
-        id = character.getId();
 
         characterIndex = index;
     }

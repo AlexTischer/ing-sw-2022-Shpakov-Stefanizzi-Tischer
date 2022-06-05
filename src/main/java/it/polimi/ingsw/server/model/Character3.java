@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.model;
 
+import it.polimi.ingsw.client.model.ClientCharacter;
 import it.polimi.ingsw.server.controller.Game;
 import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 import it.polimi.ingsw.exceptions.NoEntryException;
@@ -8,7 +9,7 @@ public class Character3 extends Character {
     /*does not count towers in influence*/
 
     private int cost = 3;
-    protected int id = 3;
+    private String description = "C3";
 
     @Override
     public void initialFill(Game game){
@@ -37,13 +38,10 @@ public class Character3 extends Character {
     }
 
     @Override
-    public int getCost() {
-        return cost;
+    public ClientCharacter createClientCharacter() {
+        ClientCharacter clientCharacter = new ClientCharacter();
+        clientCharacter.setCost(cost);
+        clientCharacter.setDescription(description);
+        return clientCharacter;
     }
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
 }

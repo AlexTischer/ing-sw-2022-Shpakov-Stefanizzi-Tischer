@@ -11,8 +11,7 @@ public class Character5 extends Character {
     private int noEntryTiles;
     protected int selectedIslandNumber;
     private int cost = 2;
-    protected int id = 5;
-
+    private String description  = "C5";
     @Override
     public void initialFill(Game game){
         super.initialFill(game);
@@ -50,22 +49,13 @@ public class Character5 extends Character {
         cost = 3;
     }
 
-    @Override
-    public int getCost() {
-        return cost;
-    }
-
-    @Override
-    public int getId() {
-        return id;
-    }
 
     @Override
     public ClientCharacter createClientCharacter(){
         ClientCharacter character = new ClientCharacter5();
 
         character.setCost(cost);
-        character.setId(id);
+        character.setDescription(description);
 
         character.setNoEntryTiles(noEntryTiles);;
 

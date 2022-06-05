@@ -5,16 +5,14 @@ import it.polimi.ingsw.server.model.Color;
 
 public class ActivateCharacter1Packet extends ActivateCharacterPacket{
 
+    private Color color;
+
+    public ActivateCharacter1Packet(Color color){
+        this.color=color;
+    }
+
     @Override
     public void execute(GameForClient game) {
-        Color color;
-
-        try{
-            color = (Color)getParameters().get(0);
-        }
-        catch (ClassCastException e){
-            throw new ClassCastException("Invalid arguments");
-        }
 
         game.activateCharacter(color);
     }

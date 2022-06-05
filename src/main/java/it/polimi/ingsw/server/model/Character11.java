@@ -10,7 +10,7 @@ public class Character11 extends Character {
 
     private Color selectedStudent;
     private int cost = 3;
-    protected int id = 11;
+    private String description = "C11";
 
     @Override
     public void initialFill(Game game){
@@ -36,22 +36,13 @@ public class Character11 extends Character {
         cost = 4;
     }
 
-    @Override
-    public int getCost() {
-        return cost;
-    }
-
-    @Override
-    public int getId() {
-        return id;
-    }
 
     @Override
     public ClientCharacter createClientCharacter(){
         ClientCharacter character = new ClientCharacter11();
 
         character.setCost(cost);
-        character.setId(id);
+        character.setDescription(description);
 
         return character;
     }

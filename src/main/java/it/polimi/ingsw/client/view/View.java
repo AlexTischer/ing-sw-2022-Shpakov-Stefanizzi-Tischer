@@ -42,4 +42,10 @@ public abstract class View {
     public abstract int askCloudNumber();
 
     public abstract int askCharacterNumber();
+
+    public abstract int askIslandNumber();
+
+    public ClientController getController(){
+        return controller;
+    }
 }

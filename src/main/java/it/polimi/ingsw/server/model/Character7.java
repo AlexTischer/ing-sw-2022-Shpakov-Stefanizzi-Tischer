@@ -12,8 +12,7 @@ public class Character7 extends Character {
     private List<Color> selectedStudents;
     private List<Color> toBeSwappedStudents;
     private int cost = 1;
-    protected int id = 7;
-
+    private String description = "C7";
     public void setSelectedStudents(ArrayList<Color> selectedStudents){
         if(selectedStudents.size() > 2)
             throw new IllegalArgumentException("You can select at most 2 students");
@@ -70,22 +69,12 @@ public class Character7 extends Character {
     }
 
     @Override
-    public int getCost() {
-        return cost;
-    }
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
     public ClientCharacter createClientCharacter(){
 
         ClientCharacter character = new ClientCharacter7();
 
         character.setCost(cost);
-        character.setId(id);
+        character.setDescription(description);
 
         return character;
     }

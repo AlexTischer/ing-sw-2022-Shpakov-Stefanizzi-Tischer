@@ -11,11 +11,9 @@ import java.util.ArrayList;
 public class Character1 extends Character {
     private ArrayList<Color> students;
     protected Color selectedStudent;
-
     protected int selectedIslandNumber;
     private int cost = 1;
-
-    protected int id = 1;
+    private String description = "C1";
 
     @Override
     public void initialFill(Game game){
@@ -63,22 +61,11 @@ public class Character1 extends Character {
     }
 
     @Override
-    public int getCost() {
-        return cost;
-    }
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
-
-    @Override
     public ClientCharacter createClientCharacter(){
         ClientCharacter character = new ClientCharacter1();
 
         character.setCost(cost);
-        character.setId(id);
+        character.setDescription(description);
 
         character.setStudents(getStudentsSlot());
 

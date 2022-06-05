@@ -9,8 +9,7 @@ public class Character4 extends Character {
 
     private Color selectedStudent;
     private int cost = 3;
-    protected int id = 4;
-
+    private String description = "C4";
 
 
     public void setSelectedStudent(Color selectedStudent){
@@ -45,22 +44,12 @@ public class Character4 extends Character {
     }
 
     @Override
-    public int getCost() {
-        return cost;
-    }
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
     public ClientCharacter createClientCharacter(){
 
         ClientCharacter character = new ClientCharacter4();
 
         character.setCost(cost);
-        character.setId(id);
+        character.setDescription(description);
 
 
         return character;

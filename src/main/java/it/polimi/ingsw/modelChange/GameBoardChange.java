@@ -94,7 +94,6 @@ public class GameBoardChange extends ModelChange{
             for (int i = 0; i < 3; i++) {
 
                 ClientCharacter character = serverCharacters[i].createClientCharacter();
-
                 playedCharacters[i] = character;
             }
         }

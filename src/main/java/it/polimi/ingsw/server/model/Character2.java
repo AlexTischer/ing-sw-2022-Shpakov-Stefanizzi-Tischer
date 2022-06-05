@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.model;
 
+import it.polimi.ingsw.client.model.ClientCharacter;
 import it.polimi.ingsw.exceptions.NoEntryException;
 import it.polimi.ingsw.server.controller.Game;
 import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
@@ -8,7 +9,8 @@ import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 public class Character2 extends Character {
 
     private int cost = 2;
-    protected int id = 2;
+    private String description = "C2";
+
     @Override
     public void initialFill(Game game){
         super.initialFill(game);
@@ -34,20 +36,17 @@ public class Character2 extends Character {
     }
 
     @Override
+    public ClientCharacter createClientCharacter() {
+        ClientCharacter clientCharacter = new ClientCharacter();
+        clientCharacter.setCost(cost);
+        clientCharacter.setDescription(description);
+        return clientCharacter;
+    }
+
+    @Override
     public void buy() throws NoEnoughCoinsException {
         game.getGameBoard().removeCoins(game.getCurrentPlayer(), cost);
         cost = 3;
     }
-
-    @Override
-    public int getCost() {
-        return cost;
-    }
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
 
 }

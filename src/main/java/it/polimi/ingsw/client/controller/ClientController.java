@@ -48,6 +48,11 @@ public class ClientController {
             view.printMessage(e.getMessage());
             connection.close();
         }
+        catch (EndOfChangesException e){
+            //Once all the changes for a client move have been received, it's possible to show them on the View.
+            gameBoard.showOnView();
+            throw new EndOfChangesException();
+        }
     }
 
     public void setClientName(String clientName){
@@ -56,6 +61,15 @@ public class ClientController {
     }
 
     public void startTurn(){
+
+        //setting CharacterActivated=true here means it won't ever be used. This is in order to use not advanced settings correctly.
+        if(gameBoard.getPlayedCharacters()==null) {
+            characterActivated=true;
+        }
+        else{
+            characterActivated=false;
+        }
+
         //can start the turn only if game is on
         if (isGameOn() && gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())) {
             //it is this client's turn
@@ -80,8 +94,6 @@ public class ClientController {
                         connection.close();
                     } catch (EndOfChangesException e) {
                         System.out.println("ClientController says: I have received and caught EndOfChangesException");
-                        //Once all the changes for a client move have been received, it's possible to show them on the View.
-                        gameBoard.showOnView();
                     }
                 }
         }
@@ -220,52 +232,84 @@ public class ClientController {
 
     private void buyAndActivateCharacter(){
 
-        int i = view.askCharacterNumber();
+        boolean correctCharacter = false;
+        int i=0;
 
-        try{
-            Packet packet = gameBoard.getPlayedCharacters()[i].createPacket(view);
-            connection.send(packet);
-        } catch (UnsupportedOperationException e){
+        while(!correctCharacter) {
+            i = view.askCharacterNumber();
+            if(i==-1){
+                break;
+            }
+            else if(gameBoard.getPlayer(gameBoard.getClientName()).getCoins()>=gameBoard.getPlayedCharacters()[i-1].getCost()){
+                correctCharacter=true;
+            }
+            else{
+                printMessage("You don't have enough coins to buy this character, buy another one or cancel");
+            }
+        }
+        if(correctCharacter){
+            try {
+                connection.send(new BuyCharacterPacket(i-1));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if(correctCharacter){
+            try {
+                Packet packet = gameBoard.getPlayedCharacters()[i-1].createPacket(view);
+                connection.send(packet);
+            } catch (UnsupportedOperationException e) {
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else{
+            //TODO control on client side failed
         }
     }
 
     private void moveMotherNature() {
-        if (view.chooseActionMotherNature(characterActivated) == 1) {
-            int steps = view.askMotherNatureSteps();
-            try {
-                connection.send(new MoveMotherNaturePacket(steps));
-            } catch (IOException e) {
-                System.out.println("Ooops. Something went wrong!");
-                e.printStackTrace();
+        boolean movedMN = false;
+        while(!movedMN) {
+            if (view.chooseActionMotherNature(characterActivated) == 1) {
+                int steps = view.askMotherNatureSteps();
+                try {
+                    connection.send(new MoveMotherNaturePacket(steps));
+                    movedMN = true;
+                } catch (IOException e) {
+                    System.out.println("Ooops. Something went wrong!");
+                    e.printStackTrace();
+                }
+            } else {
+                buyAndActivateCharacter();
             }
-        }
-        else {
-            buyAndActivateCharacter();
         }
     }
 
     private void useCloud(){
-        if (view.chooseActionClouds(characterActivated) == 1) {
-            boolean correctCloud=false;
-            while(!correctCloud){
-                int cloudNumber = view.askCloudNumber();
-                if(cloudNumber<=(gameBoard.getPlayers().size() == 3? 4: 3) && cloudNumber>0) {
-                    try {
-                        connection.send(new UseCloudPacket(cloudNumber));
-                        correctCloud=true;
-                    } catch (IOException e) {
-                        System.out.println("Ooops. Something went wrong!");
-                        e.printStackTrace();
+        boolean usedCloud = false;
+        while(!usedCloud) {
+            if (view.chooseActionClouds(characterActivated) == 1) {
+                boolean correctCloud = false;
+                while (!correctCloud) {
+                    int cloudNumber = view.askCloudNumber();
+                    if (cloudNumber <= gameBoard.getPlayers().size() && cloudNumber > 0) {
+                        try {
+                            connection.send(new UseCloudPacket(cloudNumber-1));
+                            correctCloud = true;
+                            usedCloud = true;
+                        } catch (IOException e) {
+                            System.out.println("Ooops. Something went wrong!");
+                            e.printStackTrace();
+                        }
                     }
-                }
 
+                }
             }
-        }
-        else {
-            buyAndActivateCharacter();
+            else {
+                buyAndActivateCharacter();
+            }
         }
     }
 
@@ -302,6 +346,10 @@ public class ClientController {
 
     public boolean isGameOn(){
         return gameBoard.isGameOn();
+    }
+
+    public ClientGameBoard getGameBoard(){
+        return gameBoard;
     }
 
 }

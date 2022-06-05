@@ -16,7 +16,7 @@ import static java.lang.Math.abs;
 public class Character {
     protected Game game;
     protected int cost;
-    protected int id;
+    protected String description = "ERROR";
 
 
     public int calculateInfluence(Island island, int islandNumber, Player player) throws NoEntryException {
@@ -105,14 +105,7 @@ public class Character {
         return null;
     }
 
-    public int getId() {
-        return id;
-    }
-
     public ClientCharacter createClientCharacter() {
-        ClientCharacter clientCharacter = new ClientCharacter();
-        clientCharacter.setCost(cost);
-        //TODO add description in subClasses and clientCharacter.setDescription(decription);
-        return clientCharacter;
+        throw new UnsupportedOperationException();
     }
 }

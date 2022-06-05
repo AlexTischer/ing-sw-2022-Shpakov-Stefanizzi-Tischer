@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.model;
 
+import it.polimi.ingsw.client.model.ClientCharacter;
 import it.polimi.ingsw.exceptions.EndOfChangesException;
 import it.polimi.ingsw.modelChange.ExceptionChange;
 import it.polimi.ingsw.server.controller.Game;
@@ -9,8 +10,7 @@ public class Character6 extends Character {
     /*In a Tie, currentPlayer wins*/
 
     private int cost = 2;
-    protected int id = 6;
-
+    private String description  = "C6";
     @Override
     public void initialFill(Game game){
         super.initialFill(game);
@@ -50,12 +50,11 @@ public class Character6 extends Character {
     }
 
     @Override
-    public int getCost() {
-        return cost;
+    public ClientCharacter createClientCharacter() {
+        ClientCharacter clientCharacter = new ClientCharacter();
+        clientCharacter.setCost(cost);
+        clientCharacter.setDescription(description);
+        return clientCharacter;
     }
 
-    @Override
-    public int getId() {
-        return id;
-    }
 }
