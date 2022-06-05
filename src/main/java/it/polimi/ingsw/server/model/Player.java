@@ -2,6 +2,7 @@ package it.polimi.ingsw.server.model;
 
 import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 import it.polimi.ingsw.exceptions.NumOfStudentsExceeded;
+import it.polimi.ingsw.server.controller.Game;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -32,8 +33,17 @@ public class Player implements Comparable{
     @Override
     public int compareTo(Object comparePlayer) {
         if (comparePlayer instanceof Player) {
-            int compareRank = ((Player) comparePlayer).playedAssistant.getRank();
             /* For ascending order*/
+            //if this player is not active then he moves to the end of players array
+            if (!isActive)
+                return 1;
+
+            //if player to compare is not active then he moves to the end of players array
+            if (((Player) comparePlayer).playedAssistant == null)
+                return -1;
+
+            int compareRank = ((Player) comparePlayer).playedAssistant.getRank();
+
             return this.playedAssistant.getRank() - compareRank;
         }
         else throw new IllegalArgumentException();
@@ -115,6 +125,18 @@ public class Player implements Comparable{
         return schoolBoard.checkEmptyTowers();
     }
 
+    public void changeStatus(boolean status){
+        this.isActive = status;
+
+        //take away assistant from not active player hand
+        if (!isActive)
+            playedAssistant = null;
+    }
+
+    public boolean isActive(){
+        return isActive;
+    }
+
     /*TEST METHODS*/
     public int getNumOfStudentsInEntrance(){
         return schoolBoard.getNumOfStudentsInEntrance();
@@ -151,7 +173,4 @@ public class Player implements Comparable{
         return assistants;
     }
 
-    public void changeStatus(boolean status){
-        this.isActive = status;
-    }
 }

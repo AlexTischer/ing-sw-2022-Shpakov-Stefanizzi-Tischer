@@ -6,6 +6,9 @@ import it.polimi.ingsw.exceptions.EndOfGameException;
 public class EndOfGameChange extends ModelChange{
     private String winner;
 
+    //TODO manage end of game in case there are 4 players
+    //hint: client can do it locally, analyzing num of players and tower color
+    // the victory of one team member implicates the victory of entire team
     public void execute(ClientGameBoard gameBoard){
         String message;
         if(winner == null){

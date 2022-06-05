@@ -1,8 +1,6 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.modelChange.EndOfGameChange;
-import it.polimi.ingsw.modelChange.LobbyChange;
-import it.polimi.ingsw.modelChange.ModelChange;
+import it.polimi.ingsw.modelChange.*;
 import it.polimi.ingsw.server.controller.CharacterDeck;
 import it.polimi.ingsw.server.controller.Game;
 import it.polimi.ingsw.server.model.Player;
@@ -20,6 +18,7 @@ public class Server {
     private ServerSocket serverSocket;
     private Map<String, Connection> waitingConnection = new HashMap<>();
     private List<VirtualView> virtualViews = new ArrayList<VirtualView>();
+    private Game game;
     private int numOfPlayers = 0;
     private boolean advancedSettings;
     private int numOfConnections = 0;
@@ -43,16 +42,27 @@ public class Server {
             for(VirtualView v : virtualViews){
                 if (v.getPlayer().getName().equals(name) && !v.isConnectionActive()){
                     found=true;
+
                     v.attachConnection(connection);
                     v.changePlayerStatus(true);
-                    //TODO add gameBoardChange sending if client with the same name tries to reconnect
-                    //TODO add appropriate instructions on client side
-                    System.out.println("Client " + name + " added ");
+
+                    //send GameBoardChange to the reconnected client
+                    v.update(new GameBoardChange(game.getGameBoard(), game.getPlayers()));
+
+                    //notify other clients that this player has been reconnected
+                    // p.s. there is no problem if the same client receives connectionStatusChange containing it himself
+                    changeConnectionStatus(new ConnectionStatusChange(v.getClientName(), true));
+
+                    System.out.println("Client " + name + " has been reconnected!");
                     break;
                 }
             }
+            //the game is already started and this player isn't the one that has been disconnected
+            //decline him
             if(!found) {
                 connection.send(new EndOfGameChange(null) );
+                //set name to null in order to not send connectionStatusChange
+                //neither removeFromLobby client that wans't connected before
                 connection.setName(null);
                 connection.close();
             }
@@ -83,7 +93,7 @@ public class Server {
     }
 
     private void createGame() throws InterruptedException{
-        Game game = Game.getInstanceOfGame();
+        game = Game.getInstanceOfGame();
 
         virtualViews = new ArrayList<VirtualView>(waitingConnection.keySet().size());
 
@@ -183,7 +193,7 @@ public class Server {
                 ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
 
                 //if server doesn't receive any message from client in 10 sec, then socket gets closed
-                //socket.setSoTimeout(10*1000);
+                socket.setSoTimeout(10*1000);
 
                 System.out.println("Connection number: " + (numOfConnections +1));
 

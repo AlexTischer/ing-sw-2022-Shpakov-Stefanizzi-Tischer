@@ -78,14 +78,15 @@ public class GameBoard extends Observable<ModelChange> {
     }
 
     public void refillClouds() {
-        for (Cloud cloud : clouds) {
+        //refill only those clouds that have no more students
+        for ( Cloud cloud : clouds.stream().filter( c->c.getStudentsColors().size()==0 ).toList() ){
             for (int i = 0; i < cloud.getMaxNumOfStudents(); i++)
                 cloud.addStudent(instanceOfBag.extractStudent());
         }
         CloudsChange cloudsChange = new CloudsChange(clouds);
         notify(cloudsChange);
-        ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        notify(exceptionChange);
+        //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
+        //notify(exceptionChange);
     }
 
     /*fill each island with 1 student except the island with MN and opposite to it*/
@@ -157,6 +158,9 @@ public class GameBoard extends Observable<ModelChange> {
     }
 
     public void useCloud(int cloudNumber) {
+        if (cloudNumber < 0 || cloudNumber >= clouds.size())
+            throw new IllegalArgumentException("Error: invalid island number");
+
         for (Color color : clouds.get(cloudNumber).getStudentsColors()) {
             currentPlayer.addStudentToEntrance(color);
         }
@@ -327,7 +331,9 @@ public class GameBoard extends Observable<ModelChange> {
     }
 
     public void buyCharacter(int characterNumber) {
-        //no need to catch exception because it will be propagated to client by virtual view
+        if (characterNumber < 0 || characterNumber > 3)
+            throw new IllegalArgumentException("Error: invalid island number");
+
         playedCharacters[characterNumber].buy();
         for (int i = 0; i < playedCharacters[characterNumber].getCost(); i++)
             addCoin();

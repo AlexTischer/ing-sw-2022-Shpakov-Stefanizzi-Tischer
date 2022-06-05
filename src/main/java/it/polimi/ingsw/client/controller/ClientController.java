@@ -76,6 +76,10 @@ public class ClientController {
             System.out.println("Client Controller says: this is my turn - " + connection.getName());
             if (gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getPlayedAssistant() == null) {
                 // if client's player does not have a played Assistant, it means it has to be set, and we are in planning phase.
+                //TODO check for possible conflicts when this client
+                // makes an action and there is another client that has been reconnected to the server
+                //TODO ideally client must process any modelChange before endOfChanges arrives
+                // client will see updated picture only after having completed an action when it receives endOfChanges or setCurrentPlayerName
                 planningPhase();
             } else {
                 actionPhase();

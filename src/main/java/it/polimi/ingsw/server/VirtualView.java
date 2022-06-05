@@ -71,6 +71,13 @@ public class VirtualView implements Observer<ModelChange> {
     }
 
     public void changePlayerStatus(boolean status) {
-        this.player.changeStatus(status);
+        //player will become active only after the lock on game is released
+        //which means that game waits for some player's action
+        //commutation between player active and not active happens in pauses between player's actions
+        synchronized (game) {
+            this.player.changeStatus(status);
+            //notify eventual thread that is waiting for client's action meanwhile he was disconnected
+            game.notifyAll();
+        }
     }
 }

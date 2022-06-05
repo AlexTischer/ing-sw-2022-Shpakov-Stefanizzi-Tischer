@@ -36,22 +36,25 @@ public class Connection implements Runnable{
             System.out.println("Deregistering client with ip: " + clientSocket.getRemoteSocketAddress());
 
             isActive = false;
-            //deregistering is different based on whether game is already started
-            if (server.isGameReady()) {
-                server.changeConnectionStatus(new ConnectionStatusChange(name, false));
-                userVirtualView.changePlayerStatus(false);
-            }
-            else {
-                server.removeFromLobby(this);
-            }
 
-            try {
-                clientSocket.close();
-            } catch (IOException e) {
-                System.out.println("Oops. Socket closing of" + name + "went wrong!");
-                System.err.println(e.getMessage());
-            }
+            //if name is equal to null that means that client wasn't
+            //added to lobby neither virtual view was created for him
+            if (name != null) {
+                //deregistering is different based on whether game is already started
+                if (server.isGameReady()) {
+                    server.changeConnectionStatus(new ConnectionStatusChange(name, false));
+                    userVirtualView.changePlayerStatus(false);
+                } else {
+                    server.removeFromLobby(this);
+                }
 
+                try {
+                    clientSocket.close();
+                } catch (IOException e) {
+                    System.out.println("Oops. Socket closing of" + name + "went wrong!");
+                    System.err.println(e.getMessage());
+                }
+            }
             System.out.println("Done!");
         }
     }
@@ -108,7 +111,7 @@ public class Connection implements Runnable{
                         //wait until enough number of clients connect
                         while (!server.isGameReady()) {
                             fromClient = socketIn.readObject();
-                            //if client sent ping message, then i need to respond and wait for the next input
+                            //if client sent ping message, then I need to respond and wait for the next input
                             if (fromClient.equals("ping")){
                                 System.out.println(name + " sent ping");
                                 socketOut.writeObject("pong");

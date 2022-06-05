@@ -3,6 +3,7 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.client.controller.ClientController;
 import it.polimi.ingsw.exceptions.EndOfChangesException;
 import it.polimi.ingsw.modelChange.EndOfGameChange;
+import it.polimi.ingsw.modelChange.GameBoardChange;
 import it.polimi.ingsw.modelChange.LobbyChange;
 import it.polimi.ingsw.modelChange.ModelChange;
 import it.polimi.ingsw.packets.Packet;
@@ -113,7 +114,6 @@ public class  ClientConnection {
         trackerThread.start();
 
         String fromServer = socketIn.readUTF();
-        //new Thread(new ConnectionTracker(this, socketOut, socketIn)).start();
 
         while (!fromServer.equals("start")) {
             //if the pong message from server was received , client should wait for the next different message
@@ -200,7 +200,7 @@ public class  ClientConnection {
                     while (waitingModelChange) {
                         try {
                             modelChange = socketIn.readObject();
-                            //can receive lobbychange, endofgamechange or ping or start or error
+                            //can receive lobbychange, endofgamechange or GameBoardChange ( reconnection ) or ping or start or error
                             clientController.changeModel((LobbyChange) modelChange);
                             inputCorrect = true;
                         }
@@ -213,22 +213,33 @@ public class  ClientConnection {
                                 //set fromServer to stop current thread
                                 fromServer = "stop";
                             }
-                            //TODO add management of GameBoardChange modelChange in case this is the client that tries to reconnect with the same name
                             catch (ClassCastException e2){
-                                try {
-                                    fromServer = (String) modelChange;
-                                    if (fromServer.equals("pong")) {
-                                        System.out.println("ClientConnection says: server sent pong");
-                                        continue;
-                                    } else if (fromServer.equals("start")) {
-                                        waitingModelChange = false;
-                                    } else {
-                                        clientController.printMessage("Error from server received: \n" + fromServer);
-                                        waitingModelChange = false;
-                                    }
+                                try{
+                                    //client receives it if he wants to reconnect with the previous name
+                                    clientController.changeModel((GameBoardChange) modelChange);
+                                    waitingModelChange = false;
+                                    inputCorrect = true;
+                                    fromServer = "stop";
                                 }
-                                catch (ClassCastException e3) {
-                                    System.out.println("ClientConnection says: error class cast ex");
+                                catch(ClassCastException e3){
+                                    try {
+                                        fromServer = (String) modelChange;
+                                        if (fromServer.equals("pong")) {
+                                            System.out.println("ClientConnection says: server sent pong");
+                                            continue;
+                                        } else if (fromServer.equals("start")) {
+                                            waitingModelChange = false;
+                                        } else {
+                                            clientController.printMessage("Error from server received: \n" + fromServer);
+                                            waitingModelChange = false;
+                                        }
+                                    } catch (ClassCastException e4) {
+                                        System.out.println("ClientConnection says: error class cast ex");
+                                        waitingModelChange = false;
+                                        inputCorrect = true;
+                                        fromServer = "stop";
+                                        close();
+                                    }
                                 }
                             }
                         }
