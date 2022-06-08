@@ -11,7 +11,7 @@ public class Character5 extends Character {
     private int noEntryTiles;
     protected int selectedIslandNumber;
     private int cost = 2;
-    private String description  = "C5";
+    private String description  = "Place a No Entry tile on an island of your choice. The first time Mother Nature ends her movement there, influence will not be calculated.";
     @Override
     public void initialFill(Game game){
         super.initialFill(game);

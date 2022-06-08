@@ -9,7 +9,7 @@ public class Character3 extends Character {
     /*does not count towers in influence*/
 
     private int cost = 3;
-    private String description = "C3";
+    private String description = "When calculating influence, Towers won't count";
 
     @Override
     public void initialFill(Game game){

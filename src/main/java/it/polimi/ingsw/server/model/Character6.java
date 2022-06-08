@@ -10,7 +10,7 @@ public class Character6 extends Character {
     /*In a Tie, currentPlayer wins*/
 
     private int cost = 2;
-    private String description  = "C6";
+    private String description  = "You can get the professor even if you have the same number of students as the player who currently controls that professor";
     @Override
     public void initialFill(Game game){
         super.initialFill(game);

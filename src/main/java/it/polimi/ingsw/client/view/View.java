@@ -4,6 +4,8 @@ import it.polimi.ingsw.client.controller.ClientController;
 import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.server.model.Color;
 
+import java.util.List;
+
 public abstract class View {
     private ClientController controller;
 
@@ -48,4 +50,6 @@ public abstract class View {
     public ClientController getController(){
         return controller;
     }
+
+    public abstract void showLobby(List<String> userNames);
 }

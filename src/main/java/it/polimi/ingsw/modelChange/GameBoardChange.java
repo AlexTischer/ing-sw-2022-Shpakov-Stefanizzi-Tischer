@@ -157,8 +157,8 @@ public class GameBoardChange extends ModelChange{
             clientPlayer.setCoins(p.getCoins());
             clientPlayer.setTowerColor(p.getTowerColor());
             clientPlayer.setAssistantType(p.getAssistantType());
-            clientPlayer.setPlayedAssistant(p.getPlayedAssistant());
             clientPlayer.setAssistants(p.getAssistants());
+            clientPlayer.setPlayedAssistant(p.getPlayedAssistant());
             clientPlayer.setSchoolBoard(clientSchoolBoard);
 
             clientPlayers.add(clientPlayer);

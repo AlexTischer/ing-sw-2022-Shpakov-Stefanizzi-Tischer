@@ -13,7 +13,7 @@ public class Character1 extends Character {
     protected Color selectedStudent;
     protected int selectedIslandNumber;
     private int cost = 1;
-    private String description = "C1";
+    private String description = "Take 1 Student from this card and place it on an Island of your choice";
 
     @Override
     public void initialFill(Game game){

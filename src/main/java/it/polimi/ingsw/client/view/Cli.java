@@ -7,6 +7,7 @@ import it.polimi.ingsw.server.model.Color;
 import it.polimi.ingsw.client.view.utils.Printer;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -14,6 +15,19 @@ public class Cli extends View {
 
     private Scanner stdin = new Scanner(System.in);
     private Printer printer = new Printer();
+
+
+    @Override
+    public void showLobby(List<String> userNames) {
+        try {
+            printer.clearConsole();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        printer.showLobby(userNames);
+    }
 
     @Override
     public int askNumOfPlayers() {

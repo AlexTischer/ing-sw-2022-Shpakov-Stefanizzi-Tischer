@@ -17,7 +17,7 @@ public class Character9 extends Character {
     private List<Color> toBeSwappedStudents;
     private int cost = 1;
 
-    private String description = "C9";
+    private String description = "Take up to 3 students from this card and replace them with the same number of students from your entrance";
 
     public void initialFill(Game game){
         super.initialFill(game);

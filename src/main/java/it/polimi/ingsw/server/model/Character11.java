@@ -10,7 +10,7 @@ public class Character11 extends Character {
 
     private Color selectedStudent;
     private int cost = 3;
-    private String description = "C11";
+    private String description = "Every player (including yourself) must return 3 students of a color of your choice from their dining room to the bag";
 
     @Override
     public void initialFill(Game game){

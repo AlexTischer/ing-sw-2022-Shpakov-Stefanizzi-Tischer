@@ -127,7 +127,8 @@ public class ClientGameBoard {
 
     public void setUserNames(List<String> userNames) {
         this.userNames = userNames;
-        System.out.println(userNames.toString());
+
+        view.showLobby(userNames);
 
         System.out.println("setting userNames");
     }

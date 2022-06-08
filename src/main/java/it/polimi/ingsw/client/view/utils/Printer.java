@@ -11,6 +11,19 @@ import java.util.List;
 import java.util.Locale;
 
 public class Printer {
+    public void clearConsole() throws IOException, InterruptedException {
+        if(System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")){
+            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+        }
+    }
+
+
+    public void showLobby(List<String> userNames) {
+        System.out.print("Lobby:\n");
+        printLobbyLine1(userNames);
+        printLobbyLine2(userNames);
+        printLobbyLine3(userNames);
+    }
 
     public void showModel(ClientGameBoard gameBoard){
         System.out.print("Islands:\n");
@@ -29,12 +42,6 @@ public class Printer {
 
         System.out.print("\nAssistants:\n");
         printAssistants(gameBoard.getPlayer(gameBoard.getClientName()).getAssistants());
-    }
-
-    public void clearConsole() throws IOException, InterruptedException {
-        if(System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")){
-            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-        }
     }
 
     private void printColored(String str, String color){
@@ -86,6 +93,68 @@ public class Printer {
         printAssistantLine4(assistants);
         printAssistantLine5(assistants);
     }
+
+
+
+
+
+    private void printLobbyLine1(List<String> userNames){
+
+        for(String name : userNames){
+
+            System.out.print("╔══════════╗");
+
+            System.out.print(" ");
+        }
+        System.out.print("\n");
+
+    }
+
+    private void printLobbyLine2(List<String> userNames){
+
+        for(String name : userNames){
+
+            if(name.length()<=10){
+                String spaces="";
+                for(int i=0; i<((10-name.length())/2); i++) {
+                    spaces=spaces.concat(" ");
+                }
+                System.out.print("║");
+                System.out.print(spaces);
+                System.out.printf(name);
+                System.out.print(spaces);
+                if((10-name.length())%2==1){
+                    System.out.print(" ");
+                }
+                System.out.print("║");
+            }
+            else{
+                System.out.print("║");
+                System.out.print(name.substring(0,7));
+                System.out.print("...");
+                System.out.print("║");
+            }
+            System.out.print(" ");
+        }
+        System.out.print("\n");
+
+
+    }
+
+    private void printLobbyLine3(List<String> userNames){
+
+        for(String name : userNames){
+
+            System.out.print("╚══════════╝");
+
+            System.out.print(" ");
+        }
+        System.out.print("\n");
+
+    }
+
+
+
 
     private void printIslandStudents(int numOfStudents, Color color){
         if(numOfStudents!=0) {
@@ -270,7 +339,7 @@ public class Printer {
             }
             else{
                 System.out.print(clientPlayer.getName().substring(0,9));
-                System.out.print("... ");
+                System.out.print("...  ");
             }
 
             System.out.print("Coins: ");
@@ -692,7 +761,6 @@ public class Printer {
         System.out.print("\n");
     }
 
-
     private void printSchoolBoardLine10(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
 
         String frameColor;
@@ -976,5 +1044,4 @@ public class Printer {
         System.out.print("\n");
 
     }
-
 }
