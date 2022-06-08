@@ -247,7 +247,7 @@ public class Cli extends View {
             try {
                 input = Integer.parseInt(stdin.nextLine());
 
-                if(0 <= input && input <= 4){
+                if(0 < input && input <= 4){
                     return input;
                 }
                 else

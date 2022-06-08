@@ -161,6 +161,9 @@ public class GameBoard extends Observable<ModelChange> {
         if (cloudNumber < 0 || cloudNumber >= clouds.size())
             throw new IllegalArgumentException("Error: invalid island number");
 
+        if(clouds.get(cloudNumber).getStudentsColors().isEmpty())
+            throw new StudentNotFoundException();
+
         for (Color color : clouds.get(cloudNumber).getStudentsColors()) {
             currentPlayer.addStudentToEntrance(color);
         }
@@ -201,7 +204,10 @@ public class GameBoard extends Observable<ModelChange> {
 
                         if (positionOfMotherNature < 0)
                             positionOfMotherNature = islands.size()-2;
+                        MotherNatureChange motherNatureChange = new MotherNatureChange(positionOfMotherNature);
+                        notify(motherNatureChange);
                     }
+
 
 
                     /*remove empty island*/
@@ -267,6 +273,8 @@ public class GameBoard extends Observable<ModelChange> {
         catch (UnsupportedOperationException e){
             /*there were no towers on island*/
             islands.get(islandNumber).addTower(player.getTowerColor());
+            IslandChange islandChange = new IslandChange(islands.get(islandNumber), islandNumber);
+            notify(islandChange);
         }
     }
 
@@ -555,21 +563,15 @@ public class GameBoard extends Observable<ModelChange> {
         for (int i = 0; i < numOfTowers; i++) {
             player.addTower();
         }
+        SchoolBoardChange schoolBoardChange = new SchoolBoardChange(player);
+        notify(schoolBoardChange);
     }
 
     public void removeTowersFromPlayer(int numOfIslands, Player player) {
         for (int i = 0; i < numOfIslands; i++) {
             player.removeTower();
         }
-    }
-
-    private int oppositeIsland(int n){
-        n = n-6;
-        if(n<0){
-            return n+12;
-        }
-        else{
-            return n;
-        }
+        SchoolBoardChange schoolBoardChange = new SchoolBoardChange(player);
+        notify(schoolBoardChange);
     }
 }

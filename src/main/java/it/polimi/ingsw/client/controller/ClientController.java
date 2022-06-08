@@ -127,7 +127,7 @@ public class ClientController {
         int assistantRank = view.askAssistant();
 
         //checking if assistant rank is available
-        if(gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getAssistants()[assistantRank]!=null){
+        if(gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getAssistants()[assistantRank-1]!=null){
 
             //checking if another player has already played the same rank
             boolean alreadyPlayed = checkAssistant(assistantRank,gameBoard.getPlayer(gameBoard.getCurrentPlayerName()));
@@ -275,20 +275,22 @@ public class ClientController {
 
     private void moveMotherNature() {
         boolean movedMN = false;
-        while(!movedMN) {
             if (view.chooseActionMotherNature(characterActivated) == 1) {
-                int steps = view.askMotherNatureSteps();
-                try {
-                    connection.send(new MoveMotherNaturePacket(steps));
-                    movedMN = true;
-                } catch (IOException e) {
-                    System.out.println("Ooops. Something went wrong!");
-                    e.printStackTrace();
+                while (!movedMN) {
+                    int steps = view.askMotherNatureSteps();
+                    try {
+                        connection.send(new MoveMotherNaturePacket(steps));
+                        movedMN = true;
+                    } catch (IOException e) {
+                        System.out.println("Ooops. Something went wrong!");
+                        e.printStackTrace();
+                    } catch (IllegalArgumentException ex) {
+                        printMessage(ex.getMessage());
+                    }
                 }
             } else {
                 buyAndActivateCharacter();
             }
-        }
     }
 
     private void useCloud(){
@@ -298,7 +300,7 @@ public class ClientController {
                 boolean correctCloud = false;
                 while (!correctCloud) {
                     int cloudNumber = view.askCloudNumber();
-                    if (cloudNumber <= gameBoard.getPlayers().size() && cloudNumber > 0) {
+                    if (cloudNumber <= gameBoard.getPlayers().size() && cloudNumber > 0 && !(gameBoard.getCloud(cloudNumber-1).getStudents().isEmpty())) {
                         try {
                             connection.send(new UseCloudPacket(cloudNumber-1));
                             correctCloud = true;
@@ -307,6 +309,9 @@ public class ClientController {
                             System.out.println("Ooops. Something went wrong!");
                             e.printStackTrace();
                         }
+                    }
+                    else{
+                        printMessage("the cloud is empty, select another cloud");
                     }
 
                 }

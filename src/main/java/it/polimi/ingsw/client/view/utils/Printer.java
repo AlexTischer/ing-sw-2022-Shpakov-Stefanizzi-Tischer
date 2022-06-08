@@ -440,8 +440,8 @@ public class Printer {
             //printing played assistant if exists
             if(clientPlayer.getPlayedAssistant()!=null) {
                 System.out.print("║");
-                System.out.print(clientPlayer.getPlayedAssistant().getRank());
-                System.out.print(" ║");
+                System.out.printf("%2s", clientPlayer.getPlayedAssistant().getRank());
+                System.out.print("║");
             }
             else {
                 System.out.print("    ");
@@ -798,17 +798,21 @@ public class Printer {
             System.out.print("╔══════╗");
             System.out.print("  ");
         }
+        System.out.print("   1: ");
+        System.out.print(clientCharacters[0].getDescription());
         System.out.print("\n");
     }
 
     private void printCharacterLine2(ClientCharacter[] clientCharacters){
+        int index=1;
         for(ClientCharacter clientCharacter : clientCharacters){
             System.out.print("║");
 
             System.out.print("C");
-            System.out.printf("%-2s", clientCharacter.getDescription()); //TODO: changed id to Description. Change this.
+            System.out.print(index);
+            index++;
 
-            System.out.print("  ");
+            System.out.print("   ");
 
             System.out.print(Color.YELLOW.ansi);
             System.out.print(clientCharacter.getCost());
@@ -851,6 +855,8 @@ public class Printer {
             System.out.print("  ");
 
         }
+        System.out.print("   2: ");
+        System.out.print(clientCharacters[1].getDescription());
         System.out.print("\n");
     }
 
@@ -884,6 +890,8 @@ public class Printer {
             System.out.print("╚══════╝");
             System.out.print("  ");
         }
+        System.out.print("   3: ");
+        System.out.print(clientCharacters[2].getDescription());
         System.out.print("\n");
     }
 

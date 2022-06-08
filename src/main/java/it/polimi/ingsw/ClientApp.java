@@ -12,7 +12,7 @@ public class ClientApp {
 
         //Application.launch(GUI.class);
 
-        Client client = new Client("192.168.1.23", 46582);
+        Client client = new Client("127.0.0.1", 46582);
 
         try {
             client.run();
