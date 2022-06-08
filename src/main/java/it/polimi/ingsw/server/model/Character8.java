@@ -10,7 +10,7 @@ import static java.lang.Math.abs;
 public class Character8 extends Character {
 
     private int cost = 1;
-    private String description = "C8";
+    private String description = "You can move Mother Nature up to 2 steps more than what's indicated by the Assistant card you played";
     @Override
     public void initialFill(Game game){
         super.initialFill(game);

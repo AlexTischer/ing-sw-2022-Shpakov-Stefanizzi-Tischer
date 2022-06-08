@@ -9,7 +9,7 @@ import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 public class Character2 extends Character {
 
     private int cost = 2;
-    private String description = "C2";
+    private String description = "You get 2 more influence points";
 
     @Override
     public void initialFill(Game game){

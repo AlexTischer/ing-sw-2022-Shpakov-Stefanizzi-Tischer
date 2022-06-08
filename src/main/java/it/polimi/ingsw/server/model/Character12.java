@@ -9,7 +9,7 @@ import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 public class Character12 extends Character {
     protected int selectedIslandNumber;
     private int cost = 3;
-    private String description = "C12";
+    private String description = "Choose an Island and resolve it as if Mother Nature had ended her movement there";
 
     @Override
     public void initialFill(Game game){

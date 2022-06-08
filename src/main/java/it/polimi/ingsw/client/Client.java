@@ -3,7 +3,7 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.client.controller.ClientController;
 import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.client.view.Cli;
-import it.polimi.ingsw.client.view.GUI;
+import it.polimi.ingsw.client.view.GuiApp;
 import it.polimi.ingsw.client.view.View;
 import javafx.application.Application;
 
@@ -36,7 +36,7 @@ public class Client{
             view = new Cli(); //TODO: remove and adapt
 
             new Thread(() -> {
-                Application.launch(GUI.class);
+                Application.launch(GuiApp.class);
             }).start();
         }
         controller = new ClientController();

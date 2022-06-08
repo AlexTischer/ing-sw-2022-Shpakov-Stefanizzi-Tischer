@@ -260,7 +260,7 @@ public class ClientController {
         }
         if(correctCharacter){
             try {
-                Packet packet = gameBoard.getPlayedCharacters()[i-1].createPacket(view);
+                ActivateCharacterPacket packet = gameBoard.getPlayedCharacters()[i-1].createPacket(view);
                 connection.send(packet);
             } catch (UnsupportedOperationException e) {
 

@@ -12,7 +12,7 @@ public class Character7 extends Character {
     private List<Color> selectedStudents;
     private List<Color> toBeSwappedStudents;
     private int cost = 1;
-    private String description = "C7";
+    private String description = "You can swap up to 2 students between your entrance and your dining room";
     public void setSelectedStudents(ArrayList<Color> selectedStudents){
         if(selectedStudents.size() > 2)
             throw new IllegalArgumentException("You can select at most 2 students");

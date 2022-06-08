@@ -9,7 +9,7 @@ public class Character4 extends Character {
 
     private Color selectedStudent;
     private int cost = 3;
-    private String description = "C4";
+    private String description = "When calculating influence, student's color of your choice won't count";
 
 
     public void setSelectedStudent(Color selectedStudent){

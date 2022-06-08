@@ -14,7 +14,7 @@ public class Character10 extends Character {
     private ArrayList<Color> students;
     protected Color selectedStudent;
     private int cost = 2;
-    private String description = "C10";
+    private String description = "Take 1 student from this card and place it in your dining room";
 
     @Override
     public void initialFill(Game game){
