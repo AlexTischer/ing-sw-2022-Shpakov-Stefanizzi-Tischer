@@ -158,7 +158,7 @@ public class Game implements GameForClient{
     public void reassignIsland(int islandNumber){
         /*no players with 0 towers allowed except in case of 4 player game*/
         Player master = players.get(0);
-        Player loser = players.get(1);
+        Player loser = players.get(0);
 
         int masterInfluence = 0;
         int influenceToCompare;
@@ -223,6 +223,9 @@ public class Game implements GameForClient{
             /*to avoid useless model change, make a check*/
             if (!master.equals(loser))
                 gameBoard.addTowersToPlayer(gameBoard.getNumOfTowersOnIsland(islandNumber), loser);
+        }
+        else{
+            loser = null;
         }
 
         /*to avoid useless model change, make a check*/

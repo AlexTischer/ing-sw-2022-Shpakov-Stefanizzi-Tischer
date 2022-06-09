@@ -39,6 +39,7 @@ public class Character {
 
     public void reassignProfessor() {
         Player leader = game.getPlayers().get(0);
+        boolean notRealLeader = false;
 
         for (Color color: Color.values()) {
             //try to find a leader for each color
@@ -46,9 +47,14 @@ public class Character {
                 if (player.getNumOfStudentsInDining(color) > leader.getNumOfStudentsInDining(color))
                     leader = player;
             }
+            for(Player player : game.getPlayers()){
+                if(player.getNumOfStudentsInDining(color)==leader.getNumOfStudentsInDining(color) && !player.equals(leader)){
+                    notRealLeader = true;
+                }
+            }
             //add a professor only if player has at least one student of that color in dining room
             //and only if it is the current player
-            if (game.getCurrentPlayer().equals(leader) && leader.getNumOfStudentsInDining(color) > 0) {
+            if (game.getCurrentPlayer().equals(leader) && leader.getNumOfStudentsInDining(color) > 0 && !notRealLeader) {
                 game.getGameBoard().addProfessor(leader, color);
                 for (Player player: game.getPlayers()) {
                     if (!player.equals(leader))
