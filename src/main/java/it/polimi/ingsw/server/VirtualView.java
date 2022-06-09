@@ -22,7 +22,7 @@ public class VirtualView implements Observer<ModelChange> {
     public void sendPacket(Packet packet) {
         /*send message to client*/
         System.out.println("Virtual View says: I am in sendPacket(). I have received " + packet.getClass());
-        System.out.println("My player is " + player.getName() + "\nCurrent player is " + game.getCurrentPlayer().getName());
+        System.out.println("My player is " + player.getName() + "Current player is " + game.getCurrentPlayer().getName());
 
         //sends exception back to the client in case of error
         if (!player.getName().equals(game.getCurrentPlayer().getName())) {
@@ -76,6 +76,7 @@ public class VirtualView implements Observer<ModelChange> {
         //commutation between player active and not active happens in pauses between player's actions
         synchronized (game) {
             this.player.changeStatus(status);
+
             //notify eventual thread that is waiting for client's action meanwhile he was disconnected
             game.notifyAll();
         }

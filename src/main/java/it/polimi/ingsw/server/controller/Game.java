@@ -11,10 +11,7 @@ import it.polimi.ingsw.exceptions.NoEntryException;
 import it.polimi.ingsw.exceptions.RepeatedAssistantRankException;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Game implements GameForClient{
@@ -270,10 +267,14 @@ public class Game implements GameForClient{
         //each time a client moves MN, I need to try to resolve an island because it might be conquered
         reassignIsland(gameBoard.getPositionOfMotherNature());
 
-        //let client know that he can move to the next step
-        ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        gameBoard.notify(exceptionChange);
-
+        //make a control because MN move might have finished the game
+        gameBoard.setGameOn(!checkEndGame());
+        if(gameBoard.isGameOn()) {
+            //let client know that he can move to the next step
+            //send endOfChanges only if game was not finished
+            ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
+            gameBoard.notify(exceptionChange);
+        }
         motherNatureMove = true;
         this.notifyAll();
     }
@@ -320,21 +321,20 @@ public class Game implements GameForClient{
         else
             throw new RepeatedAssistantRankException();
 
-        if (players.indexOf(gameBoard.getCurrentPlayer()) + 1 < players.size()) {
-            //set the next player to chose assistant card
-            //do this operation for all player except the last one,
-            //because the next current player must be defined based on assistants ranks played
-
-            //sends model change that executes newTurn on a client side
-            //gameBoard.setCurrentPlayer(players.get((players.indexOf(gameBoard.getCurrentPlayer()) + 1) % players.size()));
-        }
-
         //notifies a waiting thread in newRound
         this.notifyAll();
     }
 
     private synchronized void playGame() throws InterruptedException {
-        while(!checkEndGame()){
+        //let the game start
+        gameBoard.setGameOn(true);
+
+        //wake up server thread that waits for refill clouds and set currentPlayer to happen
+        //only after that server thread will attach virtual views to gameBoard and send gameBoard change
+        //this will happen after current thread enters in wait
+        this.notifyAll();
+
+        while(gameBoard.isGameOn()){
             newRound();
         }
 
@@ -345,24 +345,30 @@ public class Game implements GameForClient{
 
 
     private void newRound() throws InterruptedException {
-        //if player is not active then skip him
-        gameBoard.refillClouds();
+        //if player is not active then skip him until next planning phase
+        //in planning phase check isActive variable , in action phase it is enough to check playedAssistant variable
 
-        //wake up server thread that waits for refill clouds and set currentPlayer to happen
-        //only after that server thread will attach virtual views to gameBoard
-        this.notifyAll();
+
+        //checkEndGame() is called inside refillClouds() since this is the action that might finish the game
+        gameBoard.refillClouds();
 
         /*planning phase*/
         //players are sorted in order in which they should play assistant card
-        for (Player p : players) {
-            //set the next player to chose assistant card
-            //do this operation for all player except the last one,
-            //because the next current player must be defined based on assistants ranks played
-            //sends model change that executes newTurn on a client side
-            gameBoard.setCurrentPlayer(p);
-            while (!checkEndGame() && p.getPlayedAssistant() == null && p.isActive()) {
-                //waits until client doesn't insert assistant card only if it is active client
-                this.wait();
+        if (gameBoard.isGameOn()) {
+            for (Player p : players) {
+                //set the next player to chose assistant card
+                //do this operation for all players except the last one,
+                //because the next current player must be defined based on assistants ranks played
+                //sends model change that executes newTurn on a client side
+                if(p.isActive())
+                    gameBoard.setCurrentPlayer(p);
+
+                while (gameBoard.isGameOn() && p.getPlayedAssistant() == null && p.isActive()) {
+                    //waits until client doesn't insert assistant card only if it is active client
+                    this.wait();
+                    //check if game was ended
+                    gameBoard.setGameOn(!checkEndGame());
+                }
             }
         }
 
@@ -373,15 +379,27 @@ public class Game implements GameForClient{
 
         /*action phase*/
         for (Player p : players) {
-            //give the turn only if this is not the end of the Game and only to the active player
-            if (!checkEndGame() && p.isActive()) {
+            //give the turn only if this is not the end of the Game and only
+            //the player has playedAssistant which implies that it is active
+            if (gameBoard.isGameOn() && p.getPlayedAssistant()!=null) {
                 newTurn(p);
             }
         }
 
+        //control if there are not-active players that still need to be assigned a cloud randomly
+        List<Cloud> unusedClouds;
+        for (Player p: players){
+            if ( p.getPlayedAssistant()==null ){
+                unusedClouds = gameBoard.getClouds().stream().filter(cloud -> cloud.getStudentsColors().size() > 0).collect(Collectors.toList());
+                //chose random cloud from those unused
+                int cloudNumber = new Random().nextInt(unusedClouds.size());
+                //use the cloud that server chosen for inactive player
+                gameBoard.useCloud(gameBoard.getClouds().indexOf(unusedClouds.get(cloudNumber)));
+            }
+        }
+
         for (Player p : players) {
-            if (p.isActive())
-                gameBoard.setPlayedAssistantRank(0, p);
+            gameBoard.setPlayedAssistantRank(0, p);
         }
     }
 
@@ -389,11 +407,13 @@ public class Game implements GameForClient{
         /*virtual view controls current player before forwarding any method to controller*/
         gameBoard.setCurrentPlayer(p);
 
-        while ( !checkEndGame() && (studentMove != (players.size() == 3? 4: 3) || !motherNatureMove || !useCloudMove) && p.isActive() ) {
+        while ( gameBoard.isGameOn() && (studentMove != (players.size() == 3? 4: 3) || !motherNatureMove || !useCloudMove) && p.getPlayedAssistant()!=null ) {
             //need to wait until all 3 conditions are satisfied unless player gets deactivated and unless game is finished
             //thread gets waked up by other threads that invoke moveStudent(), moveMN() and useCloud()
             //or if player gets disconnected inside changePlayerStatus() of VirtualView
             this.wait();
+            //endOfGame is sent inside checkEndGame only if game was active previously
+            gameBoard.setGameOn(!checkEndGame());
         }
 
         studentMove = 0;
@@ -428,21 +448,26 @@ public class Game implements GameForClient{
     the bag is empty or the number of islands is less than 3*/
     /**checks whether the game is finished and in affermative case sends EndOfGameChange to all active clients
      * and returns true, otherwise just returns false*/
-    private boolean checkEndGame(){
+    public boolean checkEndGame(){
+
         //the game finishes immediately when a player puts his last tower on an island
         for (Player p : players){
             if(p.checkEmptyTowers()){
                 if(players.size()>3){
                     for (Player q : players){
                         if (!p.equals(q) && p.getTowerColor().equals(q.getTowerColor()) && q.checkEmptyTowers()) {
-                            gameBoard.notify(new EndOfGameChange(p.getName()));
+                            if (gameBoard.isGameOn())
+                                gameBoard.notify(new EndOfGameChange(p.getName()));
+
                             return true;
                         }
                     }
                 }
                 else {
                     //the first player that has emptied his towers is a winner
-                    gameBoard.notify(new EndOfGameChange(p.getName()));
+                    if(gameBoard.isGameOn())
+                        gameBoard.notify(new EndOfGameChange(p.getName()));
+
                     return true;
                 }
             }
@@ -457,7 +482,7 @@ public class Game implements GameForClient{
                 leader = p;
             } else if (!p.equals(leader) && p.getNumOfTowers() < leader.getNumOfTowers()) {
                 leader = p;
-            } else if (!p.equals(leader) && p.getNumOfTowers() == leader.getNumOfTowers()) {
+            } else if (!p.equals(leader) && p.getNumOfTowers() == leader.getNumOfTowers() && p.getNumOfTowers() > 0) {
                 //in case of draw compare number of professors
                 if (p.getProfessorsColor().size() > leader.getProfessorsColor().size()) {
                     leader = p;
@@ -475,7 +500,17 @@ public class Game implements GameForClient{
         }
 
         if (foundPlayerNoAssistants || gameBoard.checkBagEmpty() || gameBoard.getNumOfIslands()<=3) {
-            gameBoard.notify(new EndOfGameChange(leader.getName()));
+            if(gameBoard.isGameOn())
+                gameBoard.notify(new EndOfGameChange(leader.getName()));
+
+            return true;
+        }
+
+        //if there is only 1 active player then the game is finished and the remained player is the winner
+        if (players.stream().filter(p -> p.isActive()).collect(Collectors.toList()).size() == 1) {
+            if (gameBoard.isGameOn()) {
+                gameBoard.notify(new EndOfGameChange(players.stream().filter(p -> p.isActive()).collect(Collectors.toList()).get(0).getName()));
+            }
             return true;
         }
 

@@ -31,4 +31,8 @@ public class Cloud {
     public void removeStudents(){
         students.clear();
     }
+
+    public void removeStudent(Color studentColor){
+        students.remove(studentColor);
+    }
 }

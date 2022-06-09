@@ -44,6 +44,7 @@ public class Server {
                     found=true;
 
                     v.attachConnection(connection);
+                    connection.attachView(v);
                     v.changePlayerStatus(true);
 
                     //send GameBoardChange to the reconnected client
@@ -62,7 +63,7 @@ public class Server {
             if(!found) {
                 connection.send(new EndOfGameChange(null) );
                 //set name to null in order to not send connectionStatusChange
-                //neither removeFromLobby client that wans't connected before
+                //neither removeFromLobby client that wasn't connected before
                 connection.setName(null);
                 connection.close();
             }
@@ -71,7 +72,7 @@ public class Server {
 
     private void addToLobby(Connection connection, String name) throws InterruptedException{
 
-        if (waitingConnection.keySet().stream().map(s -> s.toLowerCase(Locale.ROOT)).collect(Collectors.toList()).contains(name.toLowerCase(Locale.ROOT))) {
+        if (waitingConnection.keySet().contains(name)) {
             System.out.println("Server says: name already used");
             throw new IllegalArgumentException();
         }
@@ -193,7 +194,7 @@ public class Server {
                 ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
 
                 //if server doesn't receive any message from client in 10 sec, then socket gets closed
-                socket.setSoTimeout(10*1000);
+                //socket.setSoTimeout(10*1000);
 
                 System.out.println("Connection number: " + (numOfConnections +1));
 

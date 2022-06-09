@@ -7,6 +7,7 @@ import it.polimi.ingsw.modelChange.GameBoardChange;
 import it.polimi.ingsw.modelChange.LobbyChange;
 import it.polimi.ingsw.modelChange.ModelChange;
 import it.polimi.ingsw.packets.Packet;
+import it.polimi.ingsw.server.controller.Game;
 
 import java.io.*;
 import java.net.Socket;
@@ -39,7 +40,6 @@ public class  ClientConnection {
         isActive = false;
         trackerThread.interrupt();
 
-        /*first I deregister client from server, then I close socket*/
         System.out.println("Closing connection");
         clientController.detachConnection();
         try{
@@ -193,6 +193,9 @@ public class  ClientConnection {
                         socketOut.reset();
                     }
 
+                    //set socket timeout only after sending the name
+                    //socket.setSoTimeout(10*1000);
+
                     //Server added me to Lobby  if my name is ok
                     Object modelChange = new Object();
 
@@ -216,7 +219,9 @@ public class  ClientConnection {
                             catch (ClassCastException e2){
                                 try{
                                     //client receives it if he wants to reconnect with the previous name
-                                    clientController.changeModel((GameBoardChange) modelChange);
+                                    GameBoardChange gameBoardChange = (GameBoardChange) modelChange;
+                                    clientController.setClientName(name);
+                                    clientController.changeModel(gameBoardChange);
                                     waitingModelChange = false;
                                     inputCorrect = true;
                                     fromServer = "stop";
@@ -258,6 +263,8 @@ public class  ClientConnection {
             else if (fromServer.equals("stop")){
                 fromServer = "start";
                 //set to start in order to exit from loop
+                //close the connection
+                close();
             }
             else {
                 fromServer = socketIn.readUTF();

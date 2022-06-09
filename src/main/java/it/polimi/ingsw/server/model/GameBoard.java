@@ -7,6 +7,7 @@ import it.polimi.ingsw.utils.Observable;
 
 import java.util.*;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GameBoard extends Observable<ModelChange> {
 
@@ -22,6 +23,7 @@ public class GameBoard extends Observable<ModelChange> {
     private int numOfCoins;
     private int maxNumOfStudentsInEntrance;
     private Player currentPlayer;
+    private AtomicBoolean isGameOn = new AtomicBoolean(false);
 
     /*creates 12 islands and puts MotherNature on a random island*/
     private GameBoard(){}
@@ -64,6 +66,14 @@ public class GameBoard extends Observable<ModelChange> {
         return instanceOfGameBoard;
     }
 
+    public boolean isGameOn() {
+        return isGameOn.get();
+    }
+
+    public void setGameOn(boolean val){
+        isGameOn.set(val);
+    }
+
     /*method that will be invoked at the start to refill entrance
     of each player`s SchoolBoard*/
     public void refillEntrance(Player player) throws NumOfStudentsExceeded {
@@ -79,15 +89,22 @@ public class GameBoard extends Observable<ModelChange> {
     }
 
     public void refillClouds() {
-        //refill only those clouds that have no more students
-        for ( Cloud cloud : clouds.stream().filter( c->c.getStudentsColors().size()==0 ).toList() ){
-            for (int i = 0; i < cloud.getMaxNumOfStudents(); i++)
-                cloud.addStudent(instanceOfBag.extractStudent());
+        //refill each cloud as much as needed
+        try {
+            for (Cloud cloud : clouds) {
+                for (int i = cloud.getStudentsColors().size(); i < cloud.getMaxNumOfStudents(); i++)
+                    cloud.addStudent(instanceOfBag.extractStudent());
+            }
+            CloudsChange cloudsChange = new CloudsChange(clouds);
+            notify(cloudsChange);
+            //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
+            //notify(exceptionChange);
         }
-        CloudsChange cloudsChange = new CloudsChange(clouds);
-        notify(cloudsChange);
-        //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        //notify(exceptionChange);
+        catch (NoEnoughStudentsException e) {
+            //all students were exhausted, game is finished
+            //checkEndGame will send endOfGameChange for clients that wait
+            setGameOn(!game.checkEndGame());
+        }
     }
 
     /*fill each island with 1 student except the island with MN and opposite to it*/
@@ -110,9 +127,7 @@ public class GameBoard extends Observable<ModelChange> {
             throw new IllegalArgumentException("This number of steps is not allowed");
 
         positionOfMotherNature = (positionOfMotherNature + steps) % islands.size();
-        if(positionOfMotherNature<0){
-            positionOfMotherNature += islands.size();
-        }
+
         MotherNatureChange motherNatureChange = new MotherNatureChange(positionOfMotherNature);
         notify(motherNatureChange);
         //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
@@ -166,9 +181,13 @@ public class GameBoard extends Observable<ModelChange> {
             throw new StudentNotFoundException();
 
         for (Color color : clouds.get(cloudNumber).getStudentsColors()) {
-            currentPlayer.addStudentToEntrance(color);
+            //add only as many students as needed
+            if (currentPlayer.getNumOfStudentsInEntrance() < this.maxNumOfStudentsInEntrance) {
+                currentPlayer.addStudentToEntrance(color);
+                clouds.get(cloudNumber).removeStudent(color);
+            }
         }
-        clouds.get(cloudNumber).removeStudents();
+
         CloudChange cloudChange = new CloudChange(clouds.get(cloudNumber), cloudNumber);
         notify(cloudChange);
         SchoolBoardChange schoolBoardChange = new SchoolBoardChange(currentPlayer);
@@ -178,13 +197,14 @@ public class GameBoard extends Observable<ModelChange> {
         //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
         //notify(exceptionChange);
     }
+
     public int getNumOfIslands() {
         return islands.size();
     }
 
     /* Merge islands with same towerColor and returns boolean
     True if at least 2 islands have been merged, False otherwise
-    Executed each time any island getss conquered*/
+    Executed each time any island gets conquered*/
 
     public void mergeIslands() {
 

@@ -3,6 +3,8 @@ package it.polimi.ingsw.modelChange;
 import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.client.model.ClientPlayer;
 
+import java.util.Locale;
+
 //sent to all clients when connection discovers that client is inactive
 public class ConnectionStatusChange extends ModelChange{
     private String name;

@@ -45,6 +45,8 @@ public class ClientController {
             change.execute(gameBoard);
         }
         catch (EndOfGameException e){
+            //stamp gameBoard because endOfGameException may arrive instead of endOfChangesException
+            gameBoard.showOnView();
             view.printMessage(e.getMessage());
             connection.close();
         }
@@ -127,7 +129,7 @@ public class ClientController {
         int assistantRank = view.askAssistant();
 
         //checking if assistant rank is available
-        if(gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getAssistants()[assistantRank-1]!=null){
+        if(isGameOn() && gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getAssistants()[assistantRank-1]!=null){
 
             //checking if another player has already played the same rank
             boolean alreadyPlayed = checkAssistant(assistantRank,gameBoard.getPlayer(gameBoard.getCurrentPlayerName()));
@@ -155,6 +157,7 @@ public class ClientController {
         boolean correctAssistant = false;
         while(!correctAssistant) {
             try {
+                //client can make any move only if game is on
                 useAssistant();
                 correctAssistant = true; //TODO this line is not reached.
                 printMessage("Assistant selected correctly");
@@ -171,7 +174,7 @@ public class ClientController {
         boolean correctStudent;
         boolean correctDestination;
 
-        while (studentMoves < (gameBoard.getPlayers().size() == 3? 4: 3)){
+        while (studentMoves < (gameBoard.getPlayers().size() == 3? 4: 3) && isGameOn()){
             correctStudent = false;
             correctDestination = false;
 
@@ -239,7 +242,7 @@ public class ClientController {
         boolean correctCharacter = false;
         int i=0;
 
-        while(!correctCharacter) {
+        while(!correctCharacter && isGameOn()) {
             i = view.askCharacterNumber();
             if(i==-1){
                 break;
@@ -251,14 +254,14 @@ public class ClientController {
                 printMessage("You don't have enough coins to buy this character, buy another one or cancel");
             }
         }
-        if(correctCharacter){
+        if(correctCharacter && isGameOn()){
             try {
                 connection.send(new BuyCharacterPacket(i-1));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-        if(correctCharacter){
+        if(correctCharacter && isGameOn()){
             try {
                 ActivateCharacterPacket packet = gameBoard.getPlayedCharacters()[i-1].createPacket(view);
                 connection.send(packet);
@@ -275,27 +278,27 @@ public class ClientController {
 
     private void moveMotherNature() {
         boolean movedMN = false;
-            if (view.chooseActionMotherNature(characterActivated) == 1) {
-                while (!movedMN) {
-                    int steps = view.askMotherNatureSteps();
-                    try {
-                        connection.send(new MoveMotherNaturePacket(steps));
-                        movedMN = true;
-                    } catch (IOException e) {
-                        System.out.println("Ooops. Something went wrong!");
-                        e.printStackTrace();
-                    } catch (IllegalArgumentException ex) {
-                        printMessage(ex.getMessage());
-                    }
+        if (view.chooseActionMotherNature(characterActivated) == 1 && isGameOn()) {
+            while (!movedMN && isGameOn()) {
+                int steps = view.askMotherNatureSteps();
+                try {
+                    connection.send(new MoveMotherNaturePacket(steps));
+                    movedMN = true;
+                } catch (IOException e) {
+                    System.out.println("Ooops. Something went wrong!");
+                    e.printStackTrace();
+                } catch (IllegalArgumentException ex) {
+                    printMessage(ex.getMessage());
                 }
-            } else {
-                buyAndActivateCharacter();
             }
+        } else {
+            buyAndActivateCharacter();
+        }
     }
 
     private void useCloud(){
         boolean usedCloud = false;
-        while(!usedCloud) {
+        while(!usedCloud && isGameOn()) {
             if (view.chooseActionClouds(characterActivated) == 1) {
                 boolean correctCloud = false;
                 while (!correctCloud) {

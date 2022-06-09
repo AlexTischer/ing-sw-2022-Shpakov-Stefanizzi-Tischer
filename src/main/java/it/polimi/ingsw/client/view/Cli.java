@@ -66,7 +66,7 @@ public class Cli extends View {
     @Override
     public String askName(){
         System.out.println("Please insert your name: ");
-        return stdin.nextLine();
+        return stdin.nextLine().toUpperCase(Locale.ROOT);
     }
 
     public void printMessage(String message){

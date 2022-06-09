@@ -7,6 +7,7 @@ import it.polimi.ingsw.packets.Packet;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Locale;
 
 //This class is clientHandler that manages client on a separate thread
 public class Connection implements Runnable{
@@ -105,7 +106,7 @@ public class Connection implements Runnable{
                     System.out.println("Server received from client: " + fromClient);
                     try {
                         name = (String)fromClient;
-                        server.addClient(this, name);
+                        server.addClient(this, name.toUpperCase(Locale.ROOT));
                         nameReady = true;
 
                         //wait until enough number of clients connect

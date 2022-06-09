@@ -12,7 +12,7 @@ public class EndOfGameChange extends ModelChange{
     public void execute(ClientGameBoard gameBoard){
         String message;
         if(winner == null){
-            message = "You can't play. The game is already started. Try to reconnect later!";
+            message = "You can't play. There is no free space. Try to reconnect later!";
         }
         else if (winner.equals(gameBoard.getClientName()))
             message = "You win!";

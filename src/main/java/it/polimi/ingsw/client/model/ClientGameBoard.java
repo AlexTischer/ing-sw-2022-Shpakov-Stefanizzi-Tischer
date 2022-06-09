@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import it.polimi.ingsw.client.view.View;
@@ -22,7 +23,7 @@ public class ClientGameBoard {
     private AtomicBoolean isGameOn = new AtomicBoolean(false);
 
     public void showOnView(){
-        if(islands!=null && clouds!=null && playedCharacters!=null && players!=null && userNames!=null){
+        if(islands!=null && clouds!=null && playedCharacters!=null && players!=null ){
             view.showModel(this);
         }
     }
@@ -101,7 +102,7 @@ public class ClientGameBoard {
 
     public void setCurrentPlayerName(String currentPlayerName) {
         this.currentPlayerName = currentPlayerName;
-        System.out.println("setting current player name");
+        System.out.println("current player name was set to " + currentPlayerName);
         showOnView();
         view.startTurn();
     }

@@ -48,7 +48,7 @@ public class Character {
                     leader = player;
             }
             for(Player player : game.getPlayers()){
-                if(player.getNumOfStudentsInDining(color)==leader.getNumOfStudentsInDining(color) && !player.equals(leader)){
+                if(player.getNumOfStudentsInDining(color)==leader.getNumOfStudentsInDining(color) && player.getNumOfStudentsInDining(color) > 0 && !player.equals(leader)){
                     notRealLeader = true;
                 }
             }
@@ -69,7 +69,7 @@ public class Character {
     }
 
     public boolean moveMotherNature(int steps){
-        return (game.getCurrentPlayer().getPlayedAssistant().getMovements()>=abs(steps));
+        return (game.getCurrentPlayer().getPlayedAssistant().getMovements()>=abs(steps) && steps>=0);
     }
 
     public void initialFill(Game game){
