@@ -66,7 +66,7 @@ public class ClientPlayer implements Serializable {
     public void setPlayedAssistant(Assistant playedAssistant) {
         this.playedAssistant = playedAssistant;
         if(playedAssistant!=null) {
-            for (int i = 0; i < 9; i++) {
+            for (int i = 0; i < 10; i++) {
                 if(assistants[i]!=null) {
                     if (assistants[i].getRank() == (playedAssistant).getRank()) {
                         assistants[i] = null;

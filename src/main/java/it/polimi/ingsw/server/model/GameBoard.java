@@ -49,9 +49,10 @@ public class GameBoard extends Observable<ModelChange> {
 
         maxNumOfStudentsInEntrance = numOfPlayers == 3 ? 9 : 7;
 
-        assistantDeck = new AssistantFactory().getAssistantDeck();
+        //assistantDeck = new AssistantFactory().getAssistantDeck();
+        assistantDeck = new AssistantDeck();
 
-        numOfCoins = 20;
+        numOfCoins = 20-numOfPlayers;
 
 
     }
@@ -308,8 +309,8 @@ public class GameBoard extends Observable<ModelChange> {
         numOfCoins--;
         CoinsOfGameBoardChange coinsOfGameBoardChange = new CoinsOfGameBoardChange(numOfCoins);
         notify(coinsOfGameBoardChange);
-        ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        notify(exceptionChange);
+        //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
+        //notify(exceptionChange);
     }
 
     public void addCoin() throws NumOfCoinsExceeded {
@@ -319,8 +320,8 @@ public class GameBoard extends Observable<ModelChange> {
         numOfCoins++;
         CoinsOfGameBoardChange coinsOfGameBoardChange = new CoinsOfGameBoardChange(numOfCoins);
         notify(coinsOfGameBoardChange);
-        ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        notify(exceptionChange);
+        //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
+        //notify(exceptionChange);
     }
 
     public void setNoEntry(int islandNumber, boolean noEntry) throws NoEntryException, NoEnoughEntryTilesException {

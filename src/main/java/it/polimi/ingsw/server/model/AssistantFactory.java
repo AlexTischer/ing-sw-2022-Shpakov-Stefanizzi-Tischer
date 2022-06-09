@@ -14,7 +14,7 @@ public class AssistantFactory {
 
         try {
             Gson gson = new Gson();
-            Reader reader = Files.newBufferedReader(Paths.get("src/main/java/it/polimi/ingsw/Assistants.json"));
+            Reader reader = Files.newBufferedReader(Paths.get("src/main/resources/Assistants.json"));
             deck = gson.fromJson(reader, AssistantDeck.class);
 
         } catch (Exception ex) {
