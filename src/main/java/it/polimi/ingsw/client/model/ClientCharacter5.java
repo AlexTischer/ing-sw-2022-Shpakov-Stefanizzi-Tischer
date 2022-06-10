@@ -13,7 +13,7 @@ public class ClientCharacter5 extends ClientCharacter {
     public ActivateCharacterPacket createPacket(View view){
 
         view.printMessage(description);
-        view.printMessage("");//TODO add request
+        view.printMessage("Insert island number you want to move the noEntry Tile to");
         int islandNumber = view.askIslandNumber();
 
         ActivateCharacter3Packet packet = new ActivateCharacter3Packet(islandNumber);

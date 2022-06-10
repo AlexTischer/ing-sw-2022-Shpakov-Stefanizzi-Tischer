@@ -155,8 +155,6 @@ public class Cli extends View {
 
     public int askIslandNumber(){
 
-        System.out.println("Insert the number of the island you want to move the student to");
-
         int input;
 
         while(true){

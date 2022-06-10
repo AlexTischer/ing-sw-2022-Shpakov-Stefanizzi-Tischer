@@ -8,7 +8,7 @@ public class ClientApp {
     public static void main(String[] args) {
 
 
-        Client client = new Client("127.0.0.1", 46582);
+        Client client = new Client("192.168.188.73", 46582);
 
         try {
             client.run();

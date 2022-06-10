@@ -28,7 +28,6 @@ public class CharacterChange extends ModelChange{
         cost = character.getCost();
         noEntryTiles = character.getNoEntryTiles();
         students = character.getStudentsSlot();
-
         characterIndex = index;
     }
 }

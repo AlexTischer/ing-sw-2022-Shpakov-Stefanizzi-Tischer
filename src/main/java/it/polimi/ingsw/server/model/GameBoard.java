@@ -369,8 +369,12 @@ public class GameBoard extends Observable<ModelChange> {
 
         currentCharacter=playedCharacters[characterNumber];
 
-        CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
-        notify(characterChange);
+        /*CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
+        notify(characterChange);*/
+
+        CharactersChange charactersChange = new CharactersChange(playedCharacters);
+        notify(charactersChange);
+
         //buy character must send endOfChange because BuyCharacterPacket
         //and ActivateCharacterPacket are sent separately from client
         ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
@@ -382,8 +386,6 @@ public class GameBoard extends Observable<ModelChange> {
         player.removeCoins(cost);
         CoinsOfPlayerChange coinsOfPlayerChange = new CoinsOfPlayerChange(player);
         notify(coinsOfPlayerChange);
-        ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        notify(exceptionChange);
     }
 
     public void addCoins(Player player, int coins){
@@ -406,8 +408,11 @@ public class GameBoard extends Observable<ModelChange> {
         currentCharacter.execute();
         //execute generates necessary modelChanges
 
-        CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
-        notify(characterChange);
+        /*CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
+        notify(characterChange);*/
+
+        CharactersChange charactersChange = new CharactersChange(playedCharacters);
+        notify(charactersChange);
 
         //every character activation is accompanied by execute which may change GameBoard state,
         //after execute we need to send endOfChanges so that client can go on
@@ -420,8 +425,12 @@ public class GameBoard extends Observable<ModelChange> {
         currentCharacter.setSelectedStudents(selectedStudents);
         currentCharacter.setToBeSwappedStudents(toBeSwappedStudents);
         currentCharacter.execute();
-        CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
-        notify(characterChange);
+
+        /*CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
+        notify(characterChange);*/
+
+        CharactersChange charactersChange = new CharactersChange(playedCharacters);
+        notify(charactersChange);
 
         //every character activation is accompanied by execute which may change GameBoard state
         //after execute we need to send endOfChanges so that client can go on
@@ -436,8 +445,12 @@ public class GameBoard extends Observable<ModelChange> {
         currentCharacter.setSelectedStudent(color);
         currentCharacter.setSelectedIslandNumber(islandNumber);
         currentCharacter.execute();
-        CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
-        notify(characterChange);
+
+        /*CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
+        notify(characterChange);*/
+
+        CharactersChange charactersChange = new CharactersChange(playedCharacters);
+        notify(charactersChange);
 
         //every character activation is accompanied by execute which may change GameBoard state,
         //after execute we need to send endOfChanges so that client can go on
@@ -448,8 +461,12 @@ public class GameBoard extends Observable<ModelChange> {
     public void activateCharacter(Color color) {
         currentCharacter.setSelectedStudent(color);
         currentCharacter.execute();
-        CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
-        notify(characterChange);
+
+        /*CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
+        notify(characterChange);*/
+
+        CharactersChange charactersChange = new CharactersChange(playedCharacters);
+        notify(charactersChange);
 
         //every character activation is accompanied by execute which may change GameBoard state,
         //after execute we need to send endOfChanges so that client can go on

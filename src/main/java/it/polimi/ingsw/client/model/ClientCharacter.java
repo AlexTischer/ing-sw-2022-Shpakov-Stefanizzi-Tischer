@@ -12,7 +12,6 @@ public class ClientCharacter implements Serializable {
     private int cost;
     private int noEntryTiles;
     private Color[] students;
-
     private String description;
 
     public int getCost() {

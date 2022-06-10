@@ -27,7 +27,7 @@ public class ClientCharacter1 extends ClientCharacter{
                 view.printMessage("No such student on this card. Try again");
             }
         }
-        view.printMessage("");//TODO add request
+        view.printMessage("Insert island number you want to move the student to");
         int islandNumber = view.askIslandNumber();
 
         ActivateCharacter2Packet packet = new ActivateCharacter2Packet(student, islandNumber);
