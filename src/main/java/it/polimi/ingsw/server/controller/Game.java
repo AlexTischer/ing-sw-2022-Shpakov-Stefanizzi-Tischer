@@ -340,7 +340,7 @@ public class Game implements GameForClient{
 
         //TODO manage end of game
         //GameBoard might send endOfGameChange
-        System.out.println("The game was finished !");
+        System.out.println("Game says: The game was finished !");
     }
 
 

@@ -19,21 +19,19 @@ public class ConnectionTracker implements Runnable{
     @Override
     public void run() {
         //sends ping every 2 seconds
-        try {
-            while (connection.isActive()) {
+        while (connection.isActive()) {
+            try {
                 synchronized (connection) {
                     socketOut.writeObject("ping");
                     socketOut.flush();
                     socketOut.reset();
                 }
-                Thread.sleep(5*1000);
+                Thread.sleep(5 * 1000);
+            } catch (IOException e) {
+                connection.close();
+            } catch (InterruptedException e) {
+                //thread exception
             }
-        }
-        catch (IOException e) {
-            connection.close();
-        }
-        catch (InterruptedException e){
-            //thread exception
         }
     }
 }

@@ -18,9 +18,9 @@ public class Character6 extends Character {
 
     @Override
     public void reassignProfessor() {
-        Player leader = game.getPlayers().get(0);
 
         for (Color color: Color.values()){
+            Player leader = game.getPlayers().get(0);
 
             for (Player player: game.getPlayers()){
                 if(player.getNumOfStudentsInDining(color) == leader.getNumOfStudentsInDining(color) && player.equals(game.getCurrentPlayer()))

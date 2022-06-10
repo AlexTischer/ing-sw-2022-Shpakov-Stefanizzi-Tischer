@@ -36,7 +36,7 @@ public class Server {
             addToLobby(connection, name);
             System.out.println("Client " + name + " added ");
         }
-        else {
+        else if(game.getGameBoard().isGameOn()){
             boolean found = false;
             //find a virtual view corresponding to disconnected client
             for(VirtualView v : virtualViews){

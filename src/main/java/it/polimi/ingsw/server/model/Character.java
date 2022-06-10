@@ -38,10 +38,10 @@ public class Character {
     }
 
     public void reassignProfessor() {
-        Player leader = game.getPlayers().get(0);
-        boolean notRealLeader = false;
 
         for (Color color: Color.values()) {
+            Player leader = game.getPlayers().get(0);
+            boolean notRealLeader = false;
             //try to find a leader for each color
             for (Player player: game.getPlayers()) {
                 if (player.getNumOfStudentsInDining(color) > leader.getNumOfStudentsInDining(color))

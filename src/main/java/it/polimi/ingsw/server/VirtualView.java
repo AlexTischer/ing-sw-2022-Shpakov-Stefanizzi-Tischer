@@ -16,13 +16,14 @@ public class VirtualView implements Observer<ModelChange> {
 
     @Override
     public void update(ModelChange modelChange) {
-        clientConnection.send(modelChange);
+        if(player.isActive()){
+            clientConnection.send(modelChange);}
     }
 
     public void sendPacket(Packet packet) {
         /*send message to client*/
         System.out.println("Virtual View says: I am in sendPacket(). I have received " + packet.getClass());
-        System.out.println("My player is " + player.getName() + "Current player is " + game.getCurrentPlayer().getName());
+        System.out.println("My player is " + player.getName() + " Current player is " + game.getCurrentPlayer().getName());
 
         //sends exception back to the client in case of error
         if (!player.getName().equals(game.getCurrentPlayer().getName())) {
@@ -30,7 +31,7 @@ public class VirtualView implements Observer<ModelChange> {
             //if client tries to act while it's not his turn, then it is the wrong action
             clientConnection.send(new ExceptionChange(new WrongActionException()));
         }
-        else {
+        else if(game.getGameBoard().isGameOn()){
             try{
                 game.usePacket(packet);
             }

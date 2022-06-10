@@ -2,6 +2,7 @@ package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.client.controller.ClientController;
 import it.polimi.ingsw.exceptions.EndOfChangesException;
+import it.polimi.ingsw.exceptions.EndOfGameException;
 import it.polimi.ingsw.modelChange.EndOfGameChange;
 import it.polimi.ingsw.modelChange.GameBoardChange;
 import it.polimi.ingsw.modelChange.LobbyChange;
@@ -70,6 +71,9 @@ public class  ClientConnection {
             }
             catch (EndOfChangesException e){
                 waitEndOfChanges = false;
+            }
+            catch (EndOfGameException e){
+                waitEndOfChanges=false;
             }
         }
     }

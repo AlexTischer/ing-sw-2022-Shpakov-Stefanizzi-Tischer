@@ -49,6 +49,7 @@ public class ClientController {
             gameBoard.showOnView();
             view.printMessage(e.getMessage());
             connection.close();
+            throw new EndOfGameException(null);
         }
         catch (EndOfChangesException e){
             //Once all the changes for a client move have been received, it's possible to show them on the View.
@@ -159,8 +160,7 @@ public class ClientController {
             try {
                 //client can make any move only if game is on
                 useAssistant();
-                correctAssistant = true; //TODO this line is not reached.
-                printMessage("Assistant selected correctly");
+                correctAssistant = true;
             }
             catch (InvalidParameterException | RepeatedAssistantRankException e){
                 printMessage(e.getMessage());
