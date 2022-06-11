@@ -380,16 +380,21 @@ public class GameBoardTest extends TestCase {
 
     @Test
     void addAndGetCoinTest(){
-        GameBoard testGameBoard = GameBoard.getInstanceOfGameBoard();
-        testGameBoard.init(null,2);
-        assertEquals(20, testGameBoard.getNumOfCoins());
+        Game game = Game.getInstanceOfGame();
+        ArrayList<String> players = new ArrayList<>();
+        players.add("a");
+        players.add("b");
+        game.init(players,true,new CharacterDeck());
+        GameBoard testGameBoard = game.getGameBoard();
+
+        assertEquals(18, testGameBoard.getNumOfCoins());
 
         assertThrows(NumOfCoinsExceeded.class, () ->{testGameBoard.addCoin();});
 
         testGameBoard.getCoin();
-        assertEquals(19, testGameBoard.getNumOfCoins());
+        assertEquals(17, testGameBoard.getNumOfCoins());
 
-        for (int i = 0; i < 19; i++)
+        for (int i = 0; i < 17; i++)
             testGameBoard.getCoin();
 
         assertThrows(NoEnoughCoinsException.class, ()->{testGameBoard.getCoin();});
@@ -444,7 +449,7 @@ public class GameBoardTest extends TestCase {
         for (int i = 0; i < 10; i++)
             testGameBoard.getCoin();
 
-        testGameBoard.addCoins(gametest.getCurrentPlayer(), 10);
+        testGameBoard.addCoins(gametest.getCurrentPlayer(), 5);
 
         testGameBoard.buyCharacter(0);
 

@@ -69,7 +69,7 @@ public class Character {
     }
 
     public boolean moveMotherNature(int steps){
-        return (game.getCurrentPlayer().getPlayedAssistant().getMovements()>=abs(steps) && steps>=0);
+        return (game.getCurrentPlayer().getPlayedAssistant().getMovements()>=steps && steps>0);
     }
 
     public void initialFill(Game game){

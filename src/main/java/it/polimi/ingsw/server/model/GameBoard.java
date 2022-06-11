@@ -334,7 +334,7 @@ public class GameBoard extends Observable<ModelChange> {
     }
 
     public void addCoin() throws NumOfCoinsExceeded {
-        if (numOfCoins >= 20)
+        if (numOfCoins >= 20 - game.getPlayers().size())
             throw new NumOfCoinsExceeded();
 
         numOfCoins++;

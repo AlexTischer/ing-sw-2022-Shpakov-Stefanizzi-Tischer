@@ -11,8 +11,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AssistantDeckTest extends TestCase {
-    AssistantFactory assistantFactory = new AssistantFactory();
-    AssistantDeck assistantDeck = assistantFactory.getAssistantDeck();
+    //AssistantFactory assistantFactory = new AssistantFactory();
+    //AssistantDeck assistantDeck = assistantFactory.getAssistantDeck();
+
+    AssistantDeck assistantDeck = new AssistantDeck();
 
     @Test
     void popAssistantsTest(){
@@ -26,7 +28,8 @@ class AssistantDeckTest extends TestCase {
             }
         }
 
-        AssistantDeck assistantDeck = assistantFactory.getAssistantDeck();
+        //AssistantDeck assistantDeck = assistantFactory.getAssistantDeck();
+
         for(AssistantType assistantType: AssistantType.values()){
             List<Assistant> subDeck = assistantDeck.popAssistants(assistantType);
             assertThrows(IndexOutOfBoundsException.class, () -> subDeck.get(-1));

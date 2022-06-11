@@ -18,7 +18,7 @@ public class Character8 extends Character {
 
     @Override
     public boolean moveMotherNature(int steps){
-        return (game.getCurrentPlayer().getPlayedAssistant().getMovements()+2>=abs(steps) && steps>=0);
+        return (game.getCurrentPlayer().getPlayedAssistant().getMovements()+2>=steps && steps>0);
     }
 
     @Override

@@ -30,7 +30,7 @@ public class Printer {
         printIslands(gameBoard.getIslands(), gameBoard.getPositionOfMotherNature());
 
         System.out.print("\nSchoolboards:\n");
-        printSchoolBoards(gameBoard.getPlayers(), gameBoard.getCurrentPlayerName());
+        printSchoolBoards(gameBoard.getPlayers(), gameBoard.getCurrentPlayerName(), gameBoard.getPlayedCharacters()[0]);
 
         System.out.print("\nClouds:\n");
         printClouds(gameBoard.getClouds());
@@ -58,9 +58,9 @@ public class Printer {
         printIslandLine5(islands);
     }
 
-    private void printSchoolBoards(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
+    private void printSchoolBoards(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName, ClientCharacter character){
         printSchoolBoardLine1(clientPlayers, currentPlayerName);
-        printSchoolBoardLine2(clientPlayers, currentPlayerName);
+        printSchoolBoardLine2(clientPlayers, currentPlayerName, character);
         printSchoolBoardLine3(clientPlayers, currentPlayerName);
         printSchoolBoardLine4(clientPlayers, currentPlayerName);
         printSchoolBoardLine5(clientPlayers, currentPlayerName);
@@ -167,7 +167,9 @@ public class Printer {
 
     private void printIslandLine1(List<ClientIsland> islands) {
         for (int i=0; i<islands.size(); i++) {
-            System.out.print("╔══════╗");
+            System.out.print("╔══");
+            System.out.print(String.format("%2s", i+1).replace(" ", "═"));
+            System.out.print("══╗");
             System.out.print(" ");
         }
         System.out.print("\n");
@@ -210,9 +212,9 @@ public class Printer {
             System.out.print("║");
 
             if(island.getNumOfTowers()>0) {
-                System.out.print(island.getNumOfTowers());
+
                 System.out.print(AnsiKeys.COLOR_BACKGROUND_GREEN);
-                printColored("T", island.getTowersColor().ansi);
+                printColored(island.getNumOfTowers()+"T", island.getTowersColor().ansi);
             }
             else{
                 System.out.print("  ");
@@ -317,7 +319,7 @@ public class Printer {
 
     }
 
-    private void printSchoolBoardLine2(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
+    private void printSchoolBoardLine2(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName, ClientCharacter character){
 
         String frameColor;
 
@@ -342,8 +344,13 @@ public class Printer {
                 System.out.print("...  ");
             }
 
-            System.out.print("Coins: ");
-            System.out.printf("%2s", clientPlayer.getCoins());
+            if(character!=null) {
+                System.out.print("Coins: ");
+                System.out.printf("%2s", clientPlayer.getCoins());
+            }
+            else{
+                System.out.print("         ");
+            }
 
             printColored("     ║", frameColor);
 
@@ -863,10 +870,12 @@ public class Printer {
 
     private void printCharacterLine1(ClientCharacter[] clientCharacters){
         for(int i=0; i<clientCharacters.length; i++){
-            System.out.print("╔══════╗");
+            System.out.print("╔══C");
+            System.out.print(i+1);
+            System.out.print("══╗");
             System.out.print("  ");
         }
-        System.out.print("   1: ");
+        System.out.print("  C1: ");
         System.out.print(clientCharacters[0].getDescription());
         System.out.print("\n");
     }
@@ -876,11 +885,7 @@ public class Printer {
         for(ClientCharacter clientCharacter : clientCharacters){
             System.out.print("║");
 
-            System.out.print("C");
-            System.out.print(index);
-            index++;
-
-            System.out.print("   ");
+            System.out.print("Cost ");
 
             System.out.print(Color.YELLOW.ansi);
             System.out.print(clientCharacter.getCost());
@@ -923,7 +928,7 @@ public class Printer {
             System.out.print("  ");
 
         }
-        System.out.print("   2: ");
+        System.out.print("  C2: ");
         System.out.print(clientCharacters[1].getDescription());
         System.out.print("\n");
     }
@@ -958,7 +963,7 @@ public class Printer {
             System.out.print("╚══════╝");
             System.out.print("  ");
         }
-        System.out.print("   3: ");
+        System.out.print("  C3: ");
         System.out.print(clientCharacters[2].getDescription());
         System.out.print("\n");
     }

@@ -395,46 +395,12 @@ public class CharactersTest extends TestCase {
         gametest.moveStudentToDining(Color.GREEN);
         gametest.moveStudentToDining(Color.GREEN);
 
+        gametest.setStudentMove(3);
+        gametest.setMotherNatureMove(false);
         testGameBoard.placeMotherNatureTEST(3);
         gametest.moveMotherNature(3);
 
         assertEquals(testGameBoard.getPositionOfMotherNature(), 6);
-
-    }
-
-    @Test
-    void Character8TestNegative(){
-        playerNames.add("a");
-        playerNames.add("b");
-        Game gametest = Game.getInstanceOfGame();
-        gametest.init(playerNames,true, characterDeck);
-        GameBoard testGameBoard = gametest.getGameBoard();
-        testGameBoard.setCurrentPlayer(testPlayer);
-        testPlayer.addCoins(5);
-        testGameBoard.refillAssistants(testPlayer);
-        testPlayer.setPlayedAssistantRank(2);
-
-        Character8 character8test = new Character8();
-        character8test.initialFill(gametest);
-        testGameBoard.setCurrentCharacterToDefault(character8test);
-
-        character8test.buy();
-
-        testGameBoard.addStudentToEntrance(testPlayer, Color.GREEN);
-        testGameBoard.addStudentToEntrance(testPlayer, Color.GREEN);
-        testGameBoard.addStudentToEntrance(testPlayer, Color.GREEN);
-
-        gametest.setStudentMove(0);
-        gametest.moveStudentToDining(Color.GREEN);
-        gametest.moveStudentToDining(Color.GREEN);
-        gametest.moveStudentToDining(Color.GREEN);
-
-        testGameBoard.placeMotherNatureTEST(3);
-
-
-        gametest.setMotherNatureMove(false);
-        gametest.moveMotherNature(-1);
-        assertEquals(testGameBoard.getPositionOfMotherNature(), 2);
 
     }
 

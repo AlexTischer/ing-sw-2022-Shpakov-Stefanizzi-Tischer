@@ -241,39 +241,4 @@ public class GameTest extends TestCase {
         assertEquals(testGameBoard.getPositionOfMotherNature(),5);
 
     }
-
-    @Test
-    void moveMotherNatureTestNegative(){
-        playersNames.add("a");
-        playersNames.add("b");
-        game.init(playersNames,true, characterDeck);
-        Player testplayer = new Player("Test", TowerColor.BLACK, AssistantType.ONE,8);
-        GameBoard testGameBoard = game.getGameBoard();
-
-        testGameBoard.setCurrentPlayer(testplayer);
-
-        testGameBoard.refillAssistants(testplayer);
-        //character with rank 8 has 4 steps
-        testplayer.setPlayedAssistantRank(8);
-        testGameBoard.placeMotherNatureTEST(2);
-
-        testGameBoard.addStudentToEntrance(testplayer, Color.GREEN);
-        testGameBoard.addStudentToEntrance(testplayer, Color.GREEN);
-        testGameBoard.addStudentToEntrance(testplayer, Color.GREEN);
-
-        game.setStudentMove(0);
-
-        game.moveStudentToDining(Color.GREEN);
-        game.moveStudentToDining(Color.GREEN);
-        game.moveStudentToDining(Color.GREEN);
-
-        testplayer.setPlayedAssistantRank(6);
-        testGameBoard.placeMotherNatureTEST(1);
-
-        game.setMotherNatureMove(false);
-        game.moveMotherNature(-2);
-        assertEquals(testGameBoard.getPositionOfMotherNature(),11);
-
-
-    }
 }
