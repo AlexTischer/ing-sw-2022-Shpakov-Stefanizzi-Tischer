@@ -1,7 +1,6 @@
 package it.polimi.ingsw.server.model;
 
 import it.polimi.ingsw.client.model.ClientCharacter;
-import it.polimi.ingsw.client.view.Cli;
 import it.polimi.ingsw.exceptions.EndOfChangesException;
 import it.polimi.ingsw.modelChange.ExceptionChange;
 import it.polimi.ingsw.server.controller.Game;

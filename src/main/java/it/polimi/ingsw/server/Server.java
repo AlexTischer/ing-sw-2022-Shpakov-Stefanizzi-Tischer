@@ -70,6 +70,10 @@ public class Server {
         }
     }
 
+    public LobbyChange createLobbyChange(){
+        return new LobbyChange(waitingConnection.keySet().stream().toList());
+    }
+
     private void addToLobby(Connection connection, String name) throws InterruptedException{
 
         if (waitingConnection.keySet().contains(name)) {

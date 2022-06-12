@@ -1,4 +1,4 @@
-package it.polimi.ingsw.client.view.utils;
+package it.polimi.ingsw.client.view.CLI.utils;
 
 public class AnsiKeys {
     public static String COLOR_RESET = "\u001b[0m";

@@ -1,17 +1,24 @@
-package it.polimi.ingsw.client.view;
+package it.polimi.ingsw.client.view.GUI;
 
 import it.polimi.ingsw.client.model.ClientGameBoard;
+import it.polimi.ingsw.client.view.GUI.SceneControllers.ConfigurationController;
+import it.polimi.ingsw.client.view.GUI.SceneControllers.LoginController;
+import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.server.model.Color;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-public class Gui extends View{
+public class Gui extends View {
 
     private String string = null;
     private int chosenAction;
     private int num;
     private Color studentColor = null;
     private boolean done;
+
+    ConfigurationController configurationController = new ConfigurationController();
+
+    LoginController loginController = new LoginController();
 
     //TODO: In each method, check if destination is compatible with moved element
 
@@ -23,42 +30,35 @@ public class Gui extends View{
     public synchronized void studentSelected(ActionEvent ae){ //called by student selection via mouse click
         chosenAction = 1;
         done=true;
-        //studentColor=GUI.selectedColor
+        //TODO studentColor=GUI.selectedColor
         notifyAll();
     }
 
     public synchronized void characterSelected(ActionEvent ae){ //called by character selection via mouse click
         chosenAction = 2;
         done=true;
-        //character=GUI.selectedChar
-        notifyAll();
-    }
-
-    public synchronized void numOfPlayerSelected(ActionEvent ae){
-        num = ae.getID();
-        done =true;
+        //TODO character=GUI.selectedChar
         notifyAll();
     }
 
     @Override
     public synchronized int askNumOfPlayers() {
 
-        while(!done){
+        //TODO activate Configuration scene
+
+        while(!configurationController.isConfigurationDone()){
             try {
-                wait();
+                configurationController.wait();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
-
-        done=false;
-
-        return num;
+        return configurationController.getNumOfPlayers();
     }
 
     @Override
     public String askAdvancedSettings() {
-        return null;
+        return configurationController.getAdvancedSettings();
     }
 
     @Override
@@ -69,19 +69,17 @@ public class Gui extends View{
     @Override
     public synchronized String askName() {
 
-        while(!done){
+        //TODO activate Login scene
+
+        while(loginController.getName().equals("")){
             try {
-                wait();
+                loginController.wait();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        done=false;
-
-        String name = ""; //TextField.getText()
-
-        return name;
+        return loginController.getName();
     }
 
     @Override
@@ -163,6 +161,10 @@ public class Gui extends View{
 
     @Override
     public void showLobby(List<String> userNames) {
-
+        loginController.update(userNames);
+    }
+    @Override
+    public boolean askBoolean(String message) {
+        return false;
     }
 }

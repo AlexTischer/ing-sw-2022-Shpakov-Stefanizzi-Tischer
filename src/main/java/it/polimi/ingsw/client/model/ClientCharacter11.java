@@ -10,7 +10,7 @@ public class ClientCharacter11 extends ClientCharacter{
     public ActivateCharacterPacket createPacket(View view){
 
         view.printMessage(getDescription());
-        view.printMessage("");//TODO add request
+        view.printMessage("Choose the color of the students you want to be returned to the bag");
         Color color = view.askStudentColor();
 
         ActivateCharacter1Packet packet = new ActivateCharacter1Packet(color);

@@ -83,10 +83,14 @@ public class Connection implements Runnable{
 
             boolean nameReady = false;
 
+
             //waits till client insert correct name
             socketOut.writeUTF("name");
             socketOut.flush();
             socketOut.reset();
+
+            send(server.createLobbyChange());
+
             Object fromClient = new Object();
 
             //receives object from client with readObject() and sends object to client with writeObject()

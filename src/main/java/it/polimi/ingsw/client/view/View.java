@@ -52,4 +52,6 @@ public abstract class View {
     }
 
     public abstract void showLobby(List<String> userNames);
+
+    public abstract boolean askBoolean(String message);
 }

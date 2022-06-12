@@ -187,6 +187,30 @@ public class  ClientConnection {
             if (fromServer.equals("name")) {
                 boolean inputCorrect = false;
 
+                Object modelChange = new Object();
+
+                try {
+                    modelChange = socketIn.readObject();
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                //can receive lobbychange, endofgamechange or GameBoardChange ( reconnection ) or ping or start or error
+                try{
+                    clientController.changeModel((LobbyChange) modelChange);
+                }
+                catch (ClassCastException e){
+                    try {
+                        fromServer = (String) modelChange;
+                        if (fromServer.equals("pong")) {
+                            System.out.println("ClientConnection says: server sent pong");
+                        }
+                    } catch (ClassCastException e2) {
+                        System.out.println("ClientConnection says: error class cast ex");
+                        inputCorrect = true;
+                        fromServer = "stop";
+                    }
+                }
+
                 while (!inputCorrect) {
                     name = clientController.askName();
 
@@ -201,7 +225,6 @@ public class  ClientConnection {
                     //socket.setSoTimeout(10*1000);
 
                     //Server added me to Lobby  if my name is ok
-                    Object modelChange = new Object();
 
                     boolean waitingModelChange = true;
                     while (waitingModelChange) {
@@ -247,7 +270,6 @@ public class  ClientConnection {
                                         waitingModelChange = false;
                                         inputCorrect = true;
                                         fromServer = "stop";
-                                        close();
                                     }
                                 }
                             }

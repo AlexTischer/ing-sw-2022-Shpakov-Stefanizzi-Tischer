@@ -1,10 +1,10 @@
-package it.polimi.ingsw.client.view;
+package it.polimi.ingsw.client.view.CLI;
 
-import it.polimi.ingsw.client.controller.ClientController;
 import it.polimi.ingsw.client.model.ClientGameBoard;
+import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.server.model.Color;
 
-import it.polimi.ingsw.client.view.utils.Printer;
+import it.polimi.ingsw.client.view.CLI.utils.Printer;
 
 import java.io.IOException;
 import java.util.List;
@@ -355,4 +355,22 @@ public class Cli extends View {
         }
     }
 
+    @Override
+    public boolean askBoolean(String message) {
+        String answer;
+        boolean booleanAnswer;
+        while(true) {
+            System.out.println(message + " (y/n)");
+            answer = stdin.nextLine();
+            if (answer.toLowerCase(Locale.ROOT).equals("y")) {
+                booleanAnswer = true;
+                break;
+            } else if (answer.toLowerCase(Locale.ROOT).equals("n")) {
+                booleanAnswer = false;
+                break;
+            } else
+                System.out.println("Incorrect response. Please try again");
+        }
+        return booleanAnswer;
+    }
 }

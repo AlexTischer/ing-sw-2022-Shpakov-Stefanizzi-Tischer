@@ -40,7 +40,6 @@ public class ClientCharacter implements Serializable {
 
     public ActivateCharacterPacket createPacket(View view){
         throw new UnsupportedOperationException();
-        //TODO implement in subClasses
     }
 
     public void setDescription(String description) {

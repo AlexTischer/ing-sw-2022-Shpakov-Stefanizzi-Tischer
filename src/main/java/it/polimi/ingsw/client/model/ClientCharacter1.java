@@ -16,7 +16,7 @@ public class ClientCharacter1 extends ClientCharacter{
         Color student = null;
         boolean correctStudent = false;
         while(!correctStudent) {
-            view.printMessage("");//TODO add request
+            view.printMessage("From this card, select the student you want to move");
             student = view.askStudentColor();
             if(Arrays.stream(getStudents()).toList().contains(student))
             {correctStudent=true;}
@@ -24,7 +24,7 @@ public class ClientCharacter1 extends ClientCharacter{
                 view.printMessage("No such student on this card. Try again");
             }
         }
-        view.printMessage("Insert island number you want to move the student to");
+        view.printMessage("Choose the island you want to move the student to");
         int islandNumber = view.askIslandNumber();
 
         ActivateCharacter2Packet packet = new ActivateCharacter2Packet(student, islandNumber--);

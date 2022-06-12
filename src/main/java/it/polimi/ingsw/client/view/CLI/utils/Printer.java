@@ -1,4 +1,4 @@
-package it.polimi.ingsw.client.view.utils;
+package it.polimi.ingsw.client.view.CLI.utils;
 
 import it.polimi.ingsw.client.model.*;
 import it.polimi.ingsw.server.model.Assistant;
@@ -17,12 +17,13 @@ public class Printer {
         }
     }
 
-
     public void showLobby(List<String> userNames) {
-        System.out.print("Lobby:\n");
-        printLobbyLine1(userNames);
-        printLobbyLine2(userNames);
-        printLobbyLine3(userNames);
+        if(!userNames.isEmpty()) {
+            System.out.print("Lobby:\n");
+            printLobbyLine1(userNames);
+            printLobbyLine2(userNames);
+            printLobbyLine3(userNames);
+        }
     }
 
     public void showModel(ClientGameBoard gameBoard){
@@ -297,6 +298,8 @@ public class Printer {
 
 
 
+
+    //TODO somehow show if a player is not active
 
     private void printSchoolBoardLine1(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
 

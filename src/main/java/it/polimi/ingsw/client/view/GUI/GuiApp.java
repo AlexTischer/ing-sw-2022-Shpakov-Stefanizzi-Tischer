@@ -1,4 +1,4 @@
-package it.polimi.ingsw.client.view;
+package it.polimi.ingsw.client.view.GUI;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +10,7 @@ public class GuiApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(GuiApp.class.getResource("/Scene.fxml"));
+        Parent root = FXMLLoader.load(GuiApp.class.getResource("/SplashScreen.fxml"));
 
         Scene scene = new Scene(root);
         stage.setTitle("Hello!");

@@ -2,8 +2,8 @@ package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.client.controller.ClientController;
 import it.polimi.ingsw.client.model.ClientGameBoard;
-import it.polimi.ingsw.client.view.Cli;
-import it.polimi.ingsw.client.view.GuiApp;
+import it.polimi.ingsw.client.view.CLI.Cli;
+import it.polimi.ingsw.client.view.GUI.GuiApp;
 import it.polimi.ingsw.client.view.View;
 import javafx.application.Application;
 
@@ -26,7 +26,7 @@ public class Client{
 
         //create view, model, controller since when client receives "config"
         //it already needs to use those components to show strings to the view
-        //TODO
+        //TODO: CLI - GUI selector
         System.out.println("Do you want to use CLI or GUI?");
         Scanner stdin = new Scanner(System.in);
         if(stdin.nextLine().equals("CLI")){

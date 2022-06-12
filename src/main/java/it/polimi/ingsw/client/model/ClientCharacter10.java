@@ -16,7 +16,7 @@ public class ClientCharacter10 extends ClientCharacter{
         Color student = null;
         boolean correctStudent = false;
         while(!correctStudent) {
-            view.printMessage("");//TODO add request
+            view.printMessage("From this card, choose the student you want to move to your dining room");
             student = view.askStudentColor();
             if(Arrays.stream(getStudents()).toList().contains(student))
             {correctStudent=true;}

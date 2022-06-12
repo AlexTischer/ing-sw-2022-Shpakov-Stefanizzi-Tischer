@@ -16,11 +16,11 @@ public class ClientCharacter7 extends ClientCharacter{
 
         view.printMessage(getDescription());
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             Color student = null;
             boolean correctStudent = false;
             while (!correctStudent) {
-                view.printMessage("");//TODO add request
+                view.printMessage("Select the student from your dining room you want to swap");
                 student = view.askStudentColor();
                 if (view.getController().getGameBoard().getPlayer(view.getController().getGameBoard().getClientName()).getSchoolBoard().getDiningRoom().get(student)>0) {
                     correctStudent = true;
@@ -32,7 +32,7 @@ public class ClientCharacter7 extends ClientCharacter{
 
             correctStudent = false;
             while (!correctStudent) {
-                view.printMessage("");//TODO add request
+                view.printMessage("Select the student from your entrance you want to swap");
                 student = view.askStudentColor();
                 if (view.getController().getGameBoard().getPlayer(view.getController().getGameBoard().getClientName()).getSchoolBoard().getEntrance().contains(student)) {
                     correctStudent = true;
@@ -41,6 +41,12 @@ public class ClientCharacter7 extends ClientCharacter{
                 }
             }
             toBeSwappedStudents.add(student);
+
+            if(i<1){
+                if(!view.askBoolean("Do you want to swap another student?")){
+                    i=2;
+                }
+            }
         }
 
         ActivateCharacter4Packet packet = new ActivateCharacter4Packet(selectedStudents, toBeSwappedStudents);
