@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ClientCharacter9 extends ClientCharacter{
-    private String description;
-    private Color[] students;
 
     @Override
     public ActivateCharacterPacket createPacket(View view){
@@ -19,7 +17,7 @@ public class ClientCharacter9 extends ClientCharacter{
         ArrayList<Color> selectedStudents = new ArrayList<Color>();
         ArrayList<Color> toBeSwappedStudents = new ArrayList<Color>();
 
-        view.printMessage(description);
+        view.printMessage(getDescription());
 
         //TODO allow selecting less than 3 students
 
@@ -29,7 +27,7 @@ public class ClientCharacter9 extends ClientCharacter{
             while (!correctStudent) {
                 view.printMessage("");//TODO add request
                 student = view.askStudentColor();
-                if (Arrays.stream(students).toList().contains(student)) {
+                if (Arrays.stream(getStudents()).toList().contains(student)) {
                     correctStudent = true;
                 } else {
                     view.printMessage("No such student on this card. Try again");

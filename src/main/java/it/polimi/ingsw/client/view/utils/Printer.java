@@ -35,7 +35,7 @@ public class Printer {
         System.out.print("\nClouds:\n");
         printClouds(gameBoard.getClouds());
 
-        if(gameBoard.getPlayedCharacters()[0]!=null) {
+        if(gameBoard.getPlayedCharacters()!=null) {
             System.out.print("\nCharacters:\n");
             printCharacters(gameBoard.getPlayedCharacters());
         }

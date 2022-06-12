@@ -4,10 +4,7 @@ import it.polimi.ingsw.client.ClientConnection;
 import it.polimi.ingsw.client.model.ClientPlayer;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.client.model.ClientGameBoard;
-import it.polimi.ingsw.exceptions.EndOfChangesException;
-import it.polimi.ingsw.exceptions.EndOfGameException;
-import it.polimi.ingsw.exceptions.RepeatedAssistantRankException;
-import it.polimi.ingsw.exceptions.WrongActionException;
+import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.modelChange.ModelChange;
 import it.polimi.ingsw.packets.*;
 import it.polimi.ingsw.server.model.Color;
@@ -140,7 +137,8 @@ public class ClientController {
                 Packet packet = new UseAssistantPacket(assistantRank);
                 try {
                     this.connection.send(packet);
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -154,7 +152,7 @@ public class ClientController {
     }
 
     public void planningPhase() {
-        System.out.println("ClientController says: " +gameBoard.getClientName() + " is in planning phase");
+        System.out.println("ClientController says: " + gameBoard.getClientName() + " is in planning phase");
         boolean correctAssistant = false;
         while(!correctAssistant) {
             try {
@@ -201,7 +199,11 @@ public class ClientController {
                                     connection.send(new MoveStudentToDiningPacket(studentColor));
                                     correctDestination = true;
                                     studentMoves++;
-                                } catch (IOException e) {
+                                }
+                                catch (NumOfStudentsExceeded e){
+                                    printMessage("The dining room is full for this student. Insert an island number!");
+                                }
+                                catch (IOException e) {
                                     throw new RuntimeException(e);
                                 }
 
@@ -277,6 +279,7 @@ public class ClientController {
     }
 
     private void moveMotherNature() {
+        //the control is done on server
         boolean movedMN = false;
         if (view.chooseActionMotherNature(characterActivated) == 1 && isGameOn()) {
             while (!movedMN && isGameOn()) {

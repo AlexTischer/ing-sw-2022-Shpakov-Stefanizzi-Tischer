@@ -9,19 +9,16 @@ import java.util.Arrays;
 
 public class ClientCharacter1 extends ClientCharacter{
 
-    private String description;
-    private Color[] students;
-
     @Override
     public ActivateCharacterPacket createPacket(View view){
 
-        view.printMessage(description);
+        view.printMessage(getDescription());
         Color student = null;
         boolean correctStudent = false;
         while(!correctStudent) {
             view.printMessage("");//TODO add request
             student = view.askStudentColor();
-            if(Arrays.stream(students).toList().contains(student))
+            if(Arrays.stream(getStudents()).toList().contains(student))
             {correctStudent=true;}
             else{
                 view.printMessage("No such student on this card. Try again");
@@ -30,7 +27,7 @@ public class ClientCharacter1 extends ClientCharacter{
         view.printMessage("Insert island number you want to move the student to");
         int islandNumber = view.askIslandNumber();
 
-        ActivateCharacter2Packet packet = new ActivateCharacter2Packet(student, islandNumber);
+        ActivateCharacter2Packet packet = new ActivateCharacter2Packet(student, islandNumber--);
 
         return packet;
     }

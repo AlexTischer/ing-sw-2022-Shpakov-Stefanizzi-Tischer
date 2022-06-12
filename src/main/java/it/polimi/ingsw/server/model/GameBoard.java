@@ -548,6 +548,10 @@ public class GameBoard extends Observable<ModelChange> {
         return playedCharacters;
     }
 
+    public boolean getAdvancedSettings(){
+        return game.getAdvancedSettings();
+    }
+
     /*TEST METHODS*/
     public int getNumOfClouds() { return clouds.size(); }
 

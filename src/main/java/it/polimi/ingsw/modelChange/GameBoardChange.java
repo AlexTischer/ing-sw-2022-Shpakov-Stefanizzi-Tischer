@@ -19,13 +19,17 @@ public class GameBoardChange extends ModelChange{
     private String currentPlayerName;
     private ArrayList<ClientPlayer> clientPlayers = new ArrayList<ClientPlayer>();
 
+    private boolean advancedSettings;
+
     @Override
     public void execute(ClientGameBoard gameBoard){
         gameBoard.setIslands(islands);
         gameBoard.setClouds(clouds);
 
         gameBoard.setCurrentCharacter(currentCharacter);
-        gameBoard.setPlayedCharacters(playedCharacters);
+
+        if (advancedSettings)
+            gameBoard.setPlayedCharacters(playedCharacters);
 
         gameBoard.setPositionOfMotherNature(positionOfMotherNature);
         gameBoard.setNumOfCoins(numOfCoins);
@@ -48,6 +52,7 @@ public class GameBoardChange extends ModelChange{
         else {
             gameBoard.setPlayers(clientPlayers);
         }
+        gameBoard.setAdvancedSettings(advancedSettings);
 
         //tells that game is on
         gameBoard.setGameOn(true);
@@ -112,7 +117,7 @@ public class GameBoardChange extends ModelChange{
         if(cnt == 0)
             this.currentCharacter = -1; //-1 is the index of DefaultCharacter
 
-        //setting others attributes
+        //setting other attributes
         this.positionOfMotherNature = gameBoard.getPositionOfMotherNature();
         this.numOfCoins = gameBoard.getNumOfCoins();
         this.currentPlayerName = gameBoard.getCurrentPlayer().getName();
@@ -163,5 +168,7 @@ public class GameBoardChange extends ModelChange{
 
             clientPlayers.add(clientPlayer);
         }
+
+        this.advancedSettings = gameBoard.getAdvancedSettings();
     }
 }

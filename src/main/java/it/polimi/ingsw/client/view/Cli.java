@@ -29,6 +29,7 @@ public class Cli extends View {
         printer.showLobby(userNames);
     }
 
+    //all ask methods return index starting from 1 upto number of certain objects
     @Override
     public int askNumOfPlayers() {
         int numOfPlayers = 0;
@@ -161,7 +162,7 @@ public class Cli extends View {
 
             try {
                 input = Integer.parseInt(stdin.nextLine());
-                if(0 <= input && input <= 12){
+                if(0 < input && input <= getController().getGameBoard().getIslands().size()){
                     return input;
                 }
                 else
@@ -185,7 +186,7 @@ public class Cli extends View {
 
             try {
                 input = Integer.parseInt(stdin.nextLine());
-                if(0 <= input && input <= 12){
+                if(0 <= input && input <= getController().getGameBoard().getIslands().size()){
                     return input;
                 }
                 else
@@ -212,7 +213,7 @@ public class Cli extends View {
     }
 
     public int chooseActionMotherNature(boolean characterActivated){
-        if(characterActivated==false){
+        if(!characterActivated){
             System.out.println("Choose an action:");
             System.out.println("1. Move Mother Nature     2. Activate character");
             int input;
@@ -259,7 +260,7 @@ public class Cli extends View {
             try {
                 input = Integer.parseInt(stdin.nextLine());
 
-                if(0 < input && input <= 4){
+                if(0 < input && input <= getController().getGameBoard().getClouds().size()){
                     return input;
                 }
                 else
@@ -319,6 +320,9 @@ public class Cli extends View {
 
             try {
                 input = Integer.parseInt(stdin.nextLine());
+                if (input <= 0)
+                    throw new NumberFormatException();
+
                 return input;
             }
             catch (NumberFormatException e){

@@ -10,7 +10,8 @@ public class CharactersChange extends ModelChange{
 
     @Override
     public void execute(ClientGameBoard gameBoard){
-        gameBoard.setPlayedCharacters(clientCharacters);
+        if (gameBoard.getAdvancedSettings())
+            gameBoard.setPlayedCharacters(clientCharacters);
     }
 
     public CharactersChange(Character[] playedCharacters){

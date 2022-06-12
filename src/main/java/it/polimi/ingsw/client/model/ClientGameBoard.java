@@ -20,10 +20,11 @@ public class ClientGameBoard {
     private List<String> userNames;
     private String clientName = "b";
 
+    private boolean advancedSettings;
     private AtomicBoolean isGameOn = new AtomicBoolean(false);
 
     public void showOnView(){
-        if(islands!=null && clouds!=null && playedCharacters!=null && players!=null ){
+        if(islands!=null && clouds!=null && (!advancedSettings || playedCharacters!=null) && players!=null ){
             view.showModel(this);
         }
     }
@@ -149,5 +150,13 @@ public class ClientGameBoard {
 
     public void setGameOn(boolean val){
         isGameOn.set(val);
+    }
+
+    public void setAdvancedSettings(boolean advancedSettings) {
+        this.advancedSettings = advancedSettings;
+    }
+
+    public boolean getAdvancedSettings() {
+        return advancedSettings;
     }
 }

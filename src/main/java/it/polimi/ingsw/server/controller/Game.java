@@ -18,6 +18,7 @@ public class Game implements GameForClient{
     private static Game instanceOfGame;
     private GameBoard gameBoard;
     private ArrayList<Player> players;
+
     private boolean advancedSettings;
     private Game(){}
     private int studentMove;
@@ -280,22 +281,37 @@ public class Game implements GameForClient{
     }
 
     public void buyCharacter(int characterNumber){
-            gameBoard.buyCharacter(characterNumber);
+        if (!advancedSettings)
+            throw new UnsupportedOperationException("You can't use characters. Advanced settings were set to false");
+
+        gameBoard.buyCharacter(characterNumber);
     }
 
     public void activateCharacter(int islandNumber){
+        if (!advancedSettings)
+            throw new UnsupportedOperationException("You can't use characters. Advanced settings were set to false");
+
         gameBoard.activateCharacter(islandNumber);
     }
 
     public void activateCharacter(ArrayList<Color> toBeSwappedStudents, ArrayList<Color> selectedStudents){
+        if (!advancedSettings)
+            throw new UnsupportedOperationException("You can't use characters. Advanced settings were set to false");
+
         gameBoard.activateCharacter(toBeSwappedStudents, selectedStudents);
     }
 
     public void activateCharacter(Color color, int islandNumber){
+        if (!advancedSettings)
+            throw new UnsupportedOperationException("You can't use characters. Advanced settings were set to false");
+
         gameBoard.activateCharacter(color, islandNumber);
     }
 
     public void activateCharacter(Color color){
+        if (!advancedSettings)
+            throw new UnsupportedOperationException("You can't use characters. Advanced settings were set to false");
+
         gameBoard.activateCharacter(color);
     }
 
@@ -521,6 +537,10 @@ public class Game implements GameForClient{
     /*the packet received executes certain methods on Game*/
     public void usePacket(Packet packet){
         packet.execute(this);
+    }
+
+    public boolean getAdvancedSettings() {
+        return advancedSettings;
     }
 
     /*TEST METHODS*/

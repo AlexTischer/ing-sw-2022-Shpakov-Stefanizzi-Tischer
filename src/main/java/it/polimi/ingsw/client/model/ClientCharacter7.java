@@ -8,15 +8,13 @@ import it.polimi.ingsw.server.model.Color;
 import java.util.ArrayList;
 
 public class ClientCharacter7 extends ClientCharacter{
-    private String description;
-
     @Override
     public ActivateCharacterPacket createPacket(View view){
 
         ArrayList<Color> selectedStudents = new ArrayList<Color>();
         ArrayList<Color> toBeSwappedStudents = new ArrayList<Color>();
 
-        view.printMessage(description);
+        view.printMessage(getDescription());
 
         for (int i = 0; i < 3; i++) {
             Color student = null;
