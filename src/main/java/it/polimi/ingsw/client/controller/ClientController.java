@@ -46,7 +46,7 @@ public class ClientController {
             gameBoard.showOnView();
             view.printMessage(e.getMessage());
             connection.close();
-            throw new EndOfGameException(null);
+            throw new EndOfChangesException();
         }
         catch (EndOfChangesException e){
             //Once all the changes for a client move have been received, it's possible to show them on the View.

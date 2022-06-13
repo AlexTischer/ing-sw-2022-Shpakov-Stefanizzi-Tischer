@@ -25,7 +25,7 @@ public class Character7 extends Character {
             if (testStudents.get(studentColor) > 0)
                 testStudents.put(studentColor, testStudents.get(studentColor)-1);
             else
-                throw new IllegalArgumentException("No such students on the card");
+                throw new IllegalArgumentException("No such students in your dining room");
         }
 
         this.selectedStudents = selectedStudents;
@@ -60,6 +60,8 @@ public class Character7 extends Character {
             game.getGameBoard().addStudentToEntrance(game.getCurrentPlayer(), studentToEntrance);
             game.getGameBoard().addStudentToDining(game.getCurrentPlayer(), studentToDining);
         }
+
+        game.reassignProfessor();
 
     }
     @Override

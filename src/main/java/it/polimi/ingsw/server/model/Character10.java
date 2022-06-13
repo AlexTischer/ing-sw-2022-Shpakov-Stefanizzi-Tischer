@@ -38,6 +38,7 @@ public class Character10 extends Character {
         game.getGameBoard().addStudentToDining(game.getCurrentPlayer(), selectedStudent);
         students.remove(selectedStudent);
         students.add(game.getStudent());
+        game.reassignProfessor();
     }
 
     @Override

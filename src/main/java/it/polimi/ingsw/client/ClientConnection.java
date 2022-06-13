@@ -72,9 +72,6 @@ public class  ClientConnection {
             catch (EndOfChangesException e){
                 waitEndOfChanges = false;
             }
-            catch (EndOfGameException e){
-                waitEndOfChanges=false;
-            }
         }
     }
 

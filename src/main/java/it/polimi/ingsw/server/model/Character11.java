@@ -29,6 +29,7 @@ public class Character11 extends Character {
                 game.removeStudentFromDining(player, selectedStudent);
                 game.getGameBoard().addStudentToBag(selectedStudent);
         }
+        game.reassignProfessor();
     }
     @Override
     public void buy() throws NoEnoughCoinsException {
