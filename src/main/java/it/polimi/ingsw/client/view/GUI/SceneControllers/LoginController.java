@@ -2,7 +2,7 @@ package it.polimi.ingsw.client.view.GUI.SceneControllers;
 
 import java.util.List;
 
-public class LoginController {
+public class LoginController extends SceneController {
 
     private boolean loginDone;
     private String name = "";

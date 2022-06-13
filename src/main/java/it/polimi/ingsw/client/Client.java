@@ -3,6 +3,7 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.client.controller.ClientController;
 import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.client.view.CLI.Cli;
+import it.polimi.ingsw.client.view.GUI.Gui;
 import it.polimi.ingsw.client.view.GUI.GuiApp;
 import it.polimi.ingsw.client.view.View;
 import javafx.application.Application;
@@ -26,18 +27,22 @@ public class Client{
 
         //create view, model, controller since when client receives "config"
         //it already needs to use those components to show strings to the view
-        //TODO: CLI - GUI selector
         System.out.println("Do you want to use CLI or GUI?");
         Scanner stdin = new Scanner(System.in);
-        if(stdin.nextLine().equals("CLI")){
-            view = new Cli();
-        }
-        else{
-            view = new Cli(); //TODO: remove and adapt
-
-            new Thread(() -> {
-                Application.launch(GuiApp.class);
-            }).start();
+        boolean inputCorrect = false;
+        String input;
+        while(!inputCorrect) {
+            input = stdin.nextLine();
+            if (input.equalsIgnoreCase("cli")) {
+                view = new Cli();
+                inputCorrect = true;
+            } else if (input.equalsIgnoreCase("gui")) {
+                view = new Gui();
+                inputCorrect = true;
+            }
+            else{
+                System.out.println("please enter a valid argument");
+            }
         }
         controller = new ClientController();
         //model is`not initialized , but it will be enough before the start of the game

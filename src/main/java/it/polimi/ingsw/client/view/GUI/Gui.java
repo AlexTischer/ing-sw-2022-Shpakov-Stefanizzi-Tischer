@@ -3,9 +3,13 @@ package it.polimi.ingsw.client.view.GUI;
 import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.client.view.GUI.SceneControllers.ConfigurationController;
 import it.polimi.ingsw.client.view.GUI.SceneControllers.LoginController;
+import it.polimi.ingsw.client.view.GUI.SceneControllers.SceneController;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.server.model.Color;
+import javafx.application.Platform;
+
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.util.List;
 
 public class Gui extends View {
@@ -16,7 +20,19 @@ public class Gui extends View {
     private Color studentColor = null;
     private boolean done;
 
-    ConfigurationController configurationController = new ConfigurationController();
+    public Gui(){
+        new Thread(()-> {
+            GuiApp.main();
+        }).start();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    ConfigurationController configurationController;
 
     LoginController loginController = new LoginController();
 
@@ -46,6 +62,36 @@ public class Gui extends View {
 
         //TODO activate Configuration scene
 
+        Platform.runLater(()->{
+            try {
+                System.out.println("ciao");
+                GuiApp.setRoot("/Configuration.fxml");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+
+
+        Platform.runLater(()-> {
+        configurationController = (ConfigurationController) GuiApp.getCurrentController();
+        System.out.println("ciao2");
+        });
+
+
+        //così funziona ma dà problemi dopo
+        /*
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        configurationController = (ConfigurationController) GuiApp.getCurrentController();
+        System.out.println("ciao2");
+         */
+
+
+
         while(!configurationController.isConfigurationDone()){
             try {
                 configurationController.wait();
@@ -54,6 +100,7 @@ public class Gui extends View {
             }
         }
         return configurationController.getNumOfPlayers();
+
     }
 
     @Override

@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ConfigurationController {
+public class ConfigurationController extends SceneController{
 
     private boolean configurationDone;
     private String advancedSettings;
