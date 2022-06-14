@@ -28,6 +28,10 @@ public class Character6 extends Character {
 
                 if(player.getNumOfStudentsInDining(color) > leader.getNumOfStudentsInDining(color))
                     leader = player;
+
+                if(player.getNumOfStudentsInDining(color) == 0){
+                    game.getGameBoard().removeProfessor(player, color);
+                }
             }
 
             if (game.getCurrentPlayer().equals(leader) && leader.getNumOfStudentsInDining(color) > 0){
@@ -38,10 +42,6 @@ public class Character6 extends Character {
                         game.getGameBoard().removeProfessor(player,color);
             }
         }
-
-        //tell client to move to the next step in action phase
-        ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        game.getGameBoard().notify(exceptionChange);
     }
     @Override
     public void buy() throws NoEnoughCoinsException {

@@ -134,6 +134,7 @@ public class Game implements GameForClient{
         }
         //check if professor gets reassigned
         reassignProfessor();
+        gameBoard.notify(new ExceptionChange(new EndOfChangesException()));
     }
 
     public void addStudentToIsland(Color studentColor, int islandNumber){

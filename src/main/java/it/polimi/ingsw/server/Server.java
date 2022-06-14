@@ -87,6 +87,7 @@ public class Server {
             ModelChange lobbyChange = new LobbyChange(waitingConnection.keySet().stream().toList());
             for (String n : waitingConnection.keySet()) {
                 waitingConnection.get(n).send(lobbyChange);
+                System.out.println("Server says: Sending lobby change to " + n);
             }
 
             if (waitingConnection.size() == numOfPlayers) {
@@ -324,4 +325,5 @@ public class Server {
     public boolean isGameReady(){
         return gameReady;
     }
+
 }

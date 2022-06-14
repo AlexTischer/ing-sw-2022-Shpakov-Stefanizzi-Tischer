@@ -17,7 +17,8 @@ public class VirtualView implements Observer<ModelChange> {
     @Override
     public void update(ModelChange modelChange) {
         if(player.isActive()){
-            clientConnection.send(modelChange);}
+            clientConnection.send(modelChange);
+        }
     }
 
     public void sendPacket(Packet packet) {
@@ -57,6 +58,7 @@ public class VirtualView implements Observer<ModelChange> {
 
     public void attachPlayer(Player player){
         this.player=player;
+        System.out.println("VirtualView says: player attached " + player.getName());
     }
 
     public Player getPlayer() {

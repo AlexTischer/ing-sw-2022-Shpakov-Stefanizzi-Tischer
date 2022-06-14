@@ -3,7 +3,6 @@ package it.polimi.ingsw.client.view.GUI;
 import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.client.view.GUI.SceneControllers.ConfigurationController;
 import it.polimi.ingsw.client.view.GUI.SceneControllers.LoginController;
-import it.polimi.ingsw.client.view.GUI.SceneControllers.SceneController;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.server.model.Color;
 import javafx.application.Platform;
@@ -19,22 +18,22 @@ public class Gui extends View {
     private int num;
     private Color studentColor = null;
     private boolean done;
+    private ConfigurationController configurationController;
+    private LoginController loginController;
+
 
     public Gui(){
-        new Thread(()-> {
-            GuiApp.main();
-        }).start();
-
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        synchronized (GuiApp.class){
+            new Thread(()-> {
+                GuiApp.main();
+            }).start();
+            try {
+                GuiApp.class.wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
-
-    ConfigurationController configurationController;
-
-    LoginController loginController = new LoginController();
 
     //TODO: In each method, check if destination is compatible with moved element
 
@@ -63,40 +62,50 @@ public class Gui extends View {
         //TODO activate Configuration scene
 
         Platform.runLater(()->{
-            try {
-                System.out.println("ciao");
-                GuiApp.setRoot("/Configuration.fxml");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            synchronized (this) {
+                try {
+                    System.out.println("setting configuration page");
+                    GuiApp.setRoot("/Configuration.fxml");
+                    notifyAll();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
-
-
-        Platform.runLater(()-> {
-        configurationController = (ConfigurationController) GuiApp.getCurrentController();
-        System.out.println("ciao2");
-        });
-
-
-        //così funziona ma dà problemi dopo
-        /*
         try {
-            Thread.sleep(2000);
+            wait();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        configurationController = (ConfigurationController) GuiApp.getCurrentController();
-        System.out.println("ciao2");
-         */
 
+        Platform.runLater(()-> {
+            synchronized (this) {
+                configurationController = (ConfigurationController) GuiApp.getCurrentController();
+                System.out.println(configurationController.toString());
+                this.notifyAll();
+            }
+        });
 
-
-        while(!configurationController.isConfigurationDone()){
+        while(configurationController==null){
             try {
-                configurationController.wait();
+                System.out.println("waiting configurationController");
+                this.wait();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
+            }
+        }
+
+        System.out.println("configController received, notified");
+
+
+        synchronized (configurationController) {
+            while (!configurationController.isConfigurationDone()) {
+                try {
+                    configurationController.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
         return configurationController.getNumOfPlayers();
@@ -116,13 +125,13 @@ public class Gui extends View {
     @Override
     public synchronized String askName() {
 
-        //TODO activate Login scene
-
-        while(loginController.getName().equals("")){
-            try {
-                loginController.wait();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+        synchronized (loginController) {
+            while (!loginController.isLoginDone()) {
+                try {
+                    loginController.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
 
@@ -136,8 +145,6 @@ public class Gui extends View {
 
     @Override
     public int chooseActionStudent(boolean characterActivated) {
-
-
 
         while(!done){
             try {
@@ -207,7 +214,35 @@ public class Gui extends View {
     }
 
     @Override
-    public void showLobby(List<String> userNames) {
+    public synchronized void showLobby(List<String> userNames) {
+        if(loginController==null) {
+            Platform.runLater(() -> {
+                try {
+                    System.out.println("setting login page");
+                    GuiApp.setRoot("/Login.fxml");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            Platform.runLater(() -> {
+                synchronized (this) {
+                    loginController = (LoginController) GuiApp.getCurrentController();
+                    System.out.println(loginController.toString());
+                    this.notifyAll();
+                }
+            });
+            while (loginController == null) {
+                try {
+                    System.out.println("waiting loginController");
+                    this.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            System.out.println("loginController received, notified");
+        }
+
         loginController.update(userNames);
     }
     @Override

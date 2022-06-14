@@ -89,7 +89,7 @@ public class ClientController {
             //all clients start from here, if suddenly game is finished
             //then all clients will exit from all recursion calls because isGameOn() condition doesn't get satisfied
             //while (isGameOn()) {
-                while (isGameOn()&&!gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())) {
+                while (isGameOn() && !gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())) {
                     //continue to process model changes until I receive one that executes setCurrentPlayerName on ClientGameBoard
                     try {
                         connection.waitModelChange();

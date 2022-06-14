@@ -31,12 +31,12 @@ public class Printer {
         printIslands(gameBoard.getIslands(), gameBoard.getPositionOfMotherNature());
 
         System.out.print("\nSchoolboards:\n");
-        printSchoolBoards(gameBoard.getPlayers(), gameBoard.getCurrentPlayerName(), gameBoard.getPlayedCharacters()[0]);
+        printSchoolBoards(gameBoard.getPlayers(), gameBoard.getCurrentPlayerName(), gameBoard.getAdvancedSettings());
 
         System.out.print("\nClouds:\n");
         printClouds(gameBoard.getClouds());
 
-        if(gameBoard.getPlayedCharacters()!=null) {
+        if(gameBoard.getAdvancedSettings()) {
             System.out.print("\nCharacters:\n");
             printCharacters(gameBoard.getPlayedCharacters());
         }
@@ -59,9 +59,9 @@ public class Printer {
         printIslandLine5(islands);
     }
 
-    private void printSchoolBoards(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName, ClientCharacter character){
+    private void printSchoolBoards(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName, boolean advancedSettings){
         printSchoolBoardLine1(clientPlayers, currentPlayerName);
-        printSchoolBoardLine2(clientPlayers, currentPlayerName, character);
+        printSchoolBoardLine2(clientPlayers, currentPlayerName, advancedSettings);
         printSchoolBoardLine3(clientPlayers, currentPlayerName);
         printSchoolBoardLine4(clientPlayers, currentPlayerName);
         printSchoolBoardLine5(clientPlayers, currentPlayerName);
@@ -322,7 +322,7 @@ public class Printer {
 
     }
 
-    private void printSchoolBoardLine2(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName, ClientCharacter character){
+    private void printSchoolBoardLine2(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName, boolean advancedSettings){
 
         String frameColor;
 
@@ -347,7 +347,7 @@ public class Printer {
                 System.out.print("...  ");
             }
 
-            if(character!=null) {
+            if(advancedSettings) {
                 System.out.print("Coins: ");
                 System.out.printf("%2s", clientPlayer.getCoins());
             }

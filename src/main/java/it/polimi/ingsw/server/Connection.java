@@ -139,29 +139,26 @@ public class Connection implements Runnable{
             }
 
             //wait for client packets and forward them to virtualView
-            while(isActive()){
+            while(isActive()) {
                 if (server.isGameReady()) {
                     fromClient = new Object();
                     try {
                         fromClient = socketIn.readObject();
-                        Packet packet = (Packet)fromClient;
+                        Packet packet = (Packet) fromClient;
                         System.out.println("Connection says: I have received packet " + packet.getClass());
                         userVirtualView.sendPacket(packet);
-                    }
-                    catch (ClassCastException | ClassNotFoundException e) {
+                    } catch (ClassCastException | ClassNotFoundException e) {
                         try {
-                            if (fromClient.equals("ping")){
+                            if (fromClient.equals("ping")) {
                                 //client sent ping message, server responds with pong
                                 System.out.println(name + " sent ping");
                                 socketOut.writeObject("pong");
                                 socketOut.flush();
                                 socketOut.reset();
+                            } else {
+                                throw new IllegalArgumentException("Anomalous object received from client " + name);
                             }
-                            else{
-                                throw new IllegalArgumentException("Anomalous object received from client "+name);
-                            }
-                        }
-                        catch (ClassCastException | IllegalArgumentException e2){
+                        } catch (ClassCastException | IllegalArgumentException e2) {
                             //client sent neither packet, neither "ping" string
                             socketOut.writeObject("The packet or ping message is incorrect.");
                             socketOut.flush();
@@ -169,26 +166,22 @@ public class Connection implements Runnable{
                             //TODO manage exception raising if information sent from client is suspicious
                         }
                     }
-                }
-                else{
+                } else {
                     //even if server is not ready, I should be able to respond to ping messages
                     try {
                         fromClient = socketIn.readObject();
-                    }
-                    catch (ClassCastException | ClassNotFoundException e) {
+                    } catch (ClassCastException | ClassNotFoundException e) {
                         try {
-                            if (fromClient.equals("ping")){
+                            if (fromClient.equals("ping")) {
                                 //client sent ping message, server responds with pong
                                 System.out.println(name + " sent ping");
                                 socketOut.writeObject("pong");
                                 socketOut.flush();
                                 socketOut.reset();
-                            }
-                            else{
+                            } else {
                                 throw new IllegalArgumentException();
                             }
-                        }
-                        catch (ClassCastException | IllegalArgumentException e2){
+                        } catch (ClassCastException | IllegalArgumentException e2) {
                             //client sent neither packet, neither "ping" string
                             socketOut.writeObject("The ping message is incorrect. Try again");
                             socketOut.flush();
@@ -201,7 +194,8 @@ public class Connection implements Runnable{
         catch(IOException | InterruptedException e){
             System.err.println(e.getMessage());
             System.out.println("Closing socket of " + name);
-        } finally {
+        }
+        finally {
             this.close();
         }
     }

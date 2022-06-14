@@ -44,8 +44,12 @@ public class Character {
             boolean notRealLeader = false;
             //try to find a leader for each color
             for (Player player: game.getPlayers()) {
-                if (player.getNumOfStudentsInDining(color) > leader.getNumOfStudentsInDining(color))
+                if (player.getNumOfStudentsInDining(color) > leader.getNumOfStudentsInDining(color)) {
                     leader = player;
+                }
+                if(player.getNumOfStudentsInDining(color) == 0){
+                    game.getGameBoard().removeProfessor(player, color);
+                }
             }
             for(Player player : game.getPlayers()){
                 if(player.getNumOfStudentsInDining(color)==leader.getNumOfStudentsInDining(color) && player.getNumOfStudentsInDining(color) > 0 && !player.equals(leader)){
@@ -57,15 +61,12 @@ public class Character {
             if (game.getCurrentPlayer().equals(leader) && leader.getNumOfStudentsInDining(color) > 0 && !notRealLeader) {
                 game.getGameBoard().addProfessor(leader, color);
                 for (Player player: game.getPlayers()) {
-                    if (!player.equals(leader))
+                    if (!player.equals(leader)) {
                         game.getGameBoard().removeProfessor(player, color);
+                    }
                 }
             }
         }
-
-        //tell client to move to the next step in action phase
-        ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        game.getGameBoard().notify(exceptionChange);
     }
 
     public boolean moveMotherNature(int steps){
