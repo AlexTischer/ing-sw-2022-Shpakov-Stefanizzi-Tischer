@@ -8,7 +8,7 @@ import javafx.scene.control.ChoiceBox;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ConfigurationController extends SceneController implements Initializable {
+public class ConfigurationSceneController extends SceneController implements Initializable {
 
     @FXML
     private CheckBox checkBox;
@@ -26,8 +26,6 @@ public class ConfigurationController extends SceneController implements Initiali
         choiceBox.getItems().addAll(players);
     }
     public synchronized void sendConfiguration(){
-        //TODO advancedSettings = checkbox value
-        //TODO numofPlayers = choicebox value
         if(checkBox.isSelected()){
             advancedSettings = "true";
         }

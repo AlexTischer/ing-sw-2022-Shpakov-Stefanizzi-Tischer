@@ -1,7 +1,8 @@
 package it.polimi.ingsw.client.view.GUI;
 
-import it.polimi.ingsw.client.view.GUI.SceneControllers.ConfigurationController;
-import it.polimi.ingsw.client.view.GUI.SceneControllers.LoginController;
+import it.polimi.ingsw.client.view.GUI.SceneControllers.ConfigurationSceneController;
+import it.polimi.ingsw.client.view.GUI.SceneControllers.GameSceneController;
+import it.polimi.ingsw.client.view.GUI.SceneControllers.LoginSceneController;
 import it.polimi.ingsw.client.view.GUI.SceneControllers.SceneController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -20,15 +21,16 @@ public class GuiApp extends Application {
     private static Scene scene;
 
     private static Map<String, SceneController> controllersMap = new HashMap<>() {{
-        put("/Configuration.fxml", new ConfigurationController());
-        put("/Login.fxml", new LoginController());
+        put("/FXML/Configuration.fxml", new ConfigurationSceneController());
+        put("/FXML/Login.fxml", new LoginSceneController());
+        put("/FXML/Game.fxml", new GameSceneController());
     }};
     private static SceneController currentController;
 
     @Override
     public void start(Stage stage) throws Exception {
         synchronized (GuiApp.class) {
-            FXMLLoader fxmlLoader = new FXMLLoader(GuiApp.class.getResource("/SplashScreen.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(GuiApp.class.getResource("/FXML/SplashScreen.fxml"));
             Parent root = fxmlLoader.load();
             scene = new Scene(root);
             stage.setTitle("Eriantys");

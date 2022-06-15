@@ -67,7 +67,14 @@ public class Cli extends View {
     @Override
     public String askName(){
         System.out.println("Please insert your name: ");
-        return stdin.nextLine().toUpperCase(Locale.ROOT);
+        String input = stdin.nextLine().toUpperCase();
+        if (!input.contains(" ") && !input.isEmpty()){
+            return input;
+        }
+        else {
+            System.out.println("The name cannot be empty or contain spaces");
+            return askName();
+        }
     }
 
     public void printMessage(String message){
@@ -121,11 +128,15 @@ public class Cli extends View {
             int input;
 
             while(true){
-                input = Integer.parseInt(stdin.nextLine());
-                if(input == 1){
-                    return input;
+                try{
+                    input = Integer.parseInt(stdin.nextLine());
+                    if(input == 1){
+                        return input;
+                    }
+                    else {
+                        throw new NumberFormatException();}
                 }
-                else {
+                catch (NumberFormatException e){
                     System.out.println("Incorrect value, try again");
                 }
             }
@@ -239,11 +250,16 @@ public class Cli extends View {
             int input;
 
             while(true){
-                input = Integer.parseInt(stdin.nextLine());
-                if(input == 1){
-                    return input;
+                try{
+                    input = Integer.parseInt(stdin.nextLine());
+                    if(input == 1){
+                        return input;
+                    }
+                    else {
+                        throw new NumberFormatException();
+                    }
                 }
-                else {
+                catch (NumberFormatException e){
                     System.out.println("Incorrect value, try again");
                 }
             }
@@ -300,11 +316,16 @@ public class Cli extends View {
             int input;
 
             while(true){
-                input = Integer.parseInt(stdin.nextLine());
-                if(input == 1){
-                    return input;
+                try{
+                    input = Integer.parseInt(stdin.nextLine());
+                    if(input == 1){
+                        return input;
+                    }
+                    else {
+                        throw new NumberFormatException();
+                    }
                 }
-                else {
+                catch (NumberFormatException e){
                     System.out.println("Incorrect value, try again");
                 }
             }

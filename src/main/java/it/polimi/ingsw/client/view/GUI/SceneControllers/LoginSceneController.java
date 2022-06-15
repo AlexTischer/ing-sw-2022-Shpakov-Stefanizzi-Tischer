@@ -10,7 +10,7 @@ import javafx.scene.control.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoginController extends SceneController {
+public class LoginSceneController extends SceneController {
 
     @FXML
     private TextField textField;
@@ -31,7 +31,7 @@ public class LoginController extends SceneController {
             notifyAll();
         }
         else {
-            printErrorMessage("The name field cannot be empty");
+            printErrorMessage("The name field cannot be empty or contain spaces");
         }
     }
 
