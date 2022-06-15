@@ -119,7 +119,9 @@ public class Gui extends View {
 
     @Override
     public void printMessage(String message) {
-
+        Platform.runLater(() -> {
+            GuiApp.getCurrentController().printErrorMessage(message);
+        });
     }
 
     @Override

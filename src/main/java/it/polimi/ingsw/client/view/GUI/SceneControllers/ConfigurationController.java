@@ -2,30 +2,33 @@ package it.polimi.ingsw.client.view.GUI.SceneControllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ConfigurationController extends SceneController{
+public class ConfigurationController extends SceneController implements Initializable {
 
     @FXML
-    private Checkbox checkBox;
-
+    private CheckBox checkBox;
     @FXML
     private ChoiceBox choiceBox;
+
+    private Integer[] players = {2,3,4};
 
     private boolean configurationDone;
     private String advancedSettings;
     private int numOfPlayers;
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        choiceBox.getItems().addAll(players);
+    }
     public synchronized void sendConfiguration(){
         //TODO advancedSettings = checkbox value
         //TODO numofPlayers = choicebox value
-        if(checkBox.getState()){
+        if(checkBox.isSelected()){
             advancedSettings = "true";
         }
         else {
@@ -47,4 +50,5 @@ public class ConfigurationController extends SceneController{
     public int getNumOfPlayers() {
         return numOfPlayers;
     }
+
 }

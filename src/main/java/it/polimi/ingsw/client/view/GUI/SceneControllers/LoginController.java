@@ -1,8 +1,9 @@
 package it.polimi.ingsw.client.view.GUI.SceneControllers;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,14 +12,21 @@ public class LoginController extends SceneController {
     @FXML
     private TextField textField;
     @FXML
-    private Label lbl1, lbl2, lbl3, lbl4;
+    private Label lbl1, lbl2, lbl3, lbl4, errorMessage;
     private boolean loginDone;
-    private String name = "PIPPO";
+    private String name;
 
     public synchronized void sendName(){
-        name = textField.getText();
-        loginDone=true;
-        notifyAll();
+
+    String input = textField.getText();
+        if (!input.contains(" ") && !input.isEmpty()){
+            name = input;
+            loginDone=true;
+            notifyAll();
+        }
+        else {
+            printErrorMessage("The name field cannot be empty");
+        }
     }
 
     public String getName() {
@@ -36,7 +44,7 @@ public class LoginController extends SceneController {
         List<String> names = new ArrayList<>(userNames);
 
         for (Label l : labels){
-            if(names.get(0)!=null) {
+            if(!names.isEmpty()) {
                 l.setText(names.remove(0));
             }
             else {
@@ -47,5 +55,17 @@ public class LoginController extends SceneController {
 
     public boolean isLoginDone() {
         return loginDone;
+    }
+
+    @Override
+    public void printErrorMessage(String message){
+        errorMessage.setText(message);
+        loginDone = false;
+    }
+
+    public void cancelMessage(){
+
+        errorMessage.setText("");
+
     }
 }

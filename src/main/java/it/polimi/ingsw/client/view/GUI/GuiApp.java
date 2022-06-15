@@ -7,6 +7,8 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -29,11 +31,18 @@ public class GuiApp extends Application {
             FXMLLoader fxmlLoader = new FXMLLoader(GuiApp.class.getResource("/SplashScreen.fxml"));
             Parent root = fxmlLoader.load();
             scene = new Scene(root);
-            stage.setTitle("Hello!");
+            stage.setTitle("Eriantys");
             stage.setScene(scene);
             stage.show();
+
+            stage.setOnCloseRequest(event -> {
+                event.consume();
+                logout(stage);
+            });
+
             GuiApp.class.notifyAll();
         }
+
     }
     public static void main() {
         launch();
@@ -49,6 +58,18 @@ public class GuiApp extends Application {
 
     public static SceneController getCurrentController(){
         return currentController;
+    }
+
+    public void logout(Stage stage){
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Quit");
+        alert.setHeaderText("Are you sure to quit?");
+
+        if(alert.showAndWait().get() == ButtonType.OK) {
+            //TODO close connection
+            stage.close();
+        }
     }
 
 }
