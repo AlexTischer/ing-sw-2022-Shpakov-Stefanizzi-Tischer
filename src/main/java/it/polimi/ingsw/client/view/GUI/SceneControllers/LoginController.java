@@ -1,8 +1,11 @@
 package it.polimi.ingsw.client.view.GUI.SceneControllers;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +16,11 @@ public class LoginController extends SceneController {
     private TextField textField;
     @FXML
     private Label lbl1, lbl2, lbl3, lbl4, errorMessage;
+    @FXML
+    private Button button1;
     private boolean loginDone;
     private String name;
+
 
     public synchronized void sendName(){
 
@@ -43,14 +49,22 @@ public class LoginController extends SceneController {
 
         List<String> names = new ArrayList<>(userNames);
 
-        for (Label l : labels){
-            if(!names.isEmpty()) {
-                l.setText(names.remove(0));
-            }
-            else {
-                l.setText("");
-            }
+        for (int i=0; i<names.size(); i++){
+            int finalI = i;
+            Platform.runLater(() -> labels.get(finalI).setText(names.get(finalI)));
         }
+        for (int i=names.size(); i< labels.size(); i++){
+            int finalI = i;
+            Platform.runLater(() -> labels.get(finalI).setText(""));
+        }
+
+        if(userNames.contains(name)){
+            Platform.runLater(() ->{
+                textField.setVisible(false);
+                button1.setVisible(false);
+            });
+        }
+
     }
 
     public boolean isLoginDone() {
