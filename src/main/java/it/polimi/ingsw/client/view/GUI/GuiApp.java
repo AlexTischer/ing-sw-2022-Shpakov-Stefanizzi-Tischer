@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.view.GUI;
 
 import it.polimi.ingsw.client.view.GUI.SceneControllers.ConfigurationSceneController;
+import it.polimi.ingsw.client.view.GUI.SceneControllers.GameSceneController;
 import it.polimi.ingsw.client.view.GUI.SceneControllers.LoginSceneController;
 import it.polimi.ingsw.client.view.GUI.SceneControllers.SceneController;
 import javafx.application.Application;

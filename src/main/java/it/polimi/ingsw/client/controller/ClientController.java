@@ -195,7 +195,6 @@ public class ClientController {
                             //if destination == 0, move the student to dining room
                             if (destination == 0) {
                                 try {
-                                    //TODO check if dining room is full and handle any other exception received from server
                                     connection.send(new MoveStudentToDiningPacket(studentColor));
                                     correctDestination = true;
                                     studentMoves++;

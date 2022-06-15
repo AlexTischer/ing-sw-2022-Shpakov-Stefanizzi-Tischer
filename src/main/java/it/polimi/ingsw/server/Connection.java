@@ -110,7 +110,8 @@ public class Connection implements Runnable{
                     System.out.println("Server received from client: " + fromClient);
                     try {
                         name = (String)fromClient;
-                        server.addClient(this, name.toUpperCase(Locale.ROOT));
+                        name = name.toUpperCase();
+                        server.addClient(this, name);
                         nameReady = true;
 
                         //wait until enough number of clients connect

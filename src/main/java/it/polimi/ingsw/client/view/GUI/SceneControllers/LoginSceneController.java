@@ -31,7 +31,7 @@ public class LoginSceneController extends SceneController {
             notifyAll();
         }
         else {
-            printErrorMessage("The name field cannot be empty");
+            printErrorMessage("The name field cannot be empty or contain spaces");
         }
     }
 

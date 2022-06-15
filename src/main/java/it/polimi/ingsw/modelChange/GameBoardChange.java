@@ -103,7 +103,6 @@ public class GameBoardChange extends ModelChange{
             }
         }
 
-        //TODO check if it's all right
         //setting currentCharacter
         int cnt = 0;
         for(int i=0;i<3;i++) {

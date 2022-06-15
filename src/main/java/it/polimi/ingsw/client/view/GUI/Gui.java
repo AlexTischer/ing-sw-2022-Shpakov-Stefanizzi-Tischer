@@ -7,7 +7,6 @@ import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.server.model.Color;
 import javafx.application.Platform;
 
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.List;
 
@@ -18,8 +17,8 @@ public class Gui extends View {
     private int num;
     private Color studentColor = null;
     private boolean done;
-    private ConfigurationSceneController configurationController;
-    private LoginSceneController loginController;
+    private ConfigurationSceneController configurationSceneController;
+    private LoginSceneController loginSceneController;
 
 
     public Gui(){
@@ -35,12 +34,8 @@ public class Gui extends View {
         }
     }
 
-    //TODO: In each method, check if destination is compatible with moved element
-
-    public synchronized void nameSelected(ActionEvent ae){ //called by student selection via mouse click
-        done=true;
-        notifyAll();
-    }
+/*
+    //TODO insert these methods (or similar) in GameScene
 
     public synchronized void studentSelected(ActionEvent ae){ //called by student selection via mouse click
         chosenAction = 1;
@@ -55,11 +50,11 @@ public class Gui extends View {
         //TODO character=GUI.selectedChar
         notifyAll();
     }
+ */
+
 
     @Override
     public synchronized int askNumOfPlayers() {
-
-        //TODO activate Configuration scene
 
         Platform.runLater(()->{
             synchronized (this) {
@@ -81,15 +76,15 @@ public class Gui extends View {
 
         Platform.runLater(()-> {
             synchronized (this) {
-                configurationController = (ConfigurationSceneController) GuiApp.getCurrentController();
-                System.out.println(configurationController.toString());
+                configurationSceneController = (ConfigurationSceneController) GuiApp.getCurrentController();
+                System.out.println(configurationSceneController.toString());
                 this.notifyAll();
             }
         });
 
-        while(configurationController==null){
+        while(configurationSceneController ==null){
             try {
-                System.out.println("waiting configurationController");
+                System.out.println("waiting configurationSceneController");
                 this.wait();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -99,22 +94,22 @@ public class Gui extends View {
         System.out.println("configController received, notified");
 
 
-        synchronized (configurationController) {
-            while (!configurationController.isConfigurationDone()) {
+        synchronized (configurationSceneController) {
+            while (!configurationSceneController.isConfigurationDone()) {
                 try {
-                    configurationController.wait();
+                    configurationSceneController.wait();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
         }
-        return configurationController.getNumOfPlayers();
+        return configurationSceneController.getNumOfPlayers();
 
     }
 
     @Override
     public String askAdvancedSettings() {
-        return configurationController.getAdvancedSettings();
+        return configurationSceneController.getAdvancedSettings();
     }
 
     @Override
@@ -127,17 +122,17 @@ public class Gui extends View {
     @Override
     public synchronized String askName() {
 
-        synchronized (loginController) {
-            while (!loginController.isLoginDone()) {
+        synchronized (loginSceneController) {
+            while (!loginSceneController.isLoginDone()) {
                 try {
-                    loginController.wait();
+                    loginSceneController.wait();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
         }
 
-        return loginController.getName();
+        return loginSceneController.getName();
     }
 
     @Override
@@ -217,7 +212,7 @@ public class Gui extends View {
 
     @Override
     public synchronized void showLobby(List<String> userNames) {
-        if(loginController==null) {
+        if(loginSceneController ==null) {
             Platform.runLater(() -> {
                 try {
                     System.out.println("setting login page");
@@ -229,23 +224,23 @@ public class Gui extends View {
 
             Platform.runLater(() -> {
                 synchronized (this) {
-                    loginController = (LoginSceneController) GuiApp.getCurrentController();
-                    System.out.println(loginController.toString());
+                    loginSceneController = (LoginSceneController) GuiApp.getCurrentController();
+                    System.out.println(loginSceneController.toString());
                     this.notifyAll();
                 }
             });
-            while (loginController == null) {
+            while (loginSceneController == null) {
                 try {
-                    System.out.println("waiting loginController");
+                    System.out.println("waiting loginSceneController");
                     this.wait();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
-            System.out.println("loginController received, notified");
+            System.out.println("loginSceneController received, notified");
         }
 
-        loginController.update(userNames);
+        loginSceneController.update(userNames);
     }
     @Override
     public boolean askBoolean(String message) {

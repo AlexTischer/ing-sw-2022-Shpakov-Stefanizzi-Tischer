@@ -26,8 +26,6 @@ public class ConfigurationSceneController extends SceneController implements Ini
         choiceBox.getItems().addAll(players);
     }
     public synchronized void sendConfiguration(){
-        //TODO advancedSettings = checkbox value
-        //TODO numofPlayers = choicebox value
         if(checkBox.isSelected()){
             advancedSettings = "true";
         }
