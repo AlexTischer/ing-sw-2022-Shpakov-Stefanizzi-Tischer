@@ -1,8 +1,8 @@
 package it.polimi.ingsw.client.view.GUI;
 
 import it.polimi.ingsw.client.model.ClientGameBoard;
-import it.polimi.ingsw.client.view.GUI.SceneControllers.ConfigurationController;
-import it.polimi.ingsw.client.view.GUI.SceneControllers.LoginController;
+import it.polimi.ingsw.client.view.GUI.SceneControllers.GameConfigurationController;
+import it.polimi.ingsw.client.view.GUI.SceneControllers.GameLoginController;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.server.model.Color;
 import javafx.application.Platform;
@@ -18,8 +18,8 @@ public class Gui extends View {
     private int num;
     private Color studentColor = null;
     private boolean done;
-    private ConfigurationController configurationController;
-    private LoginController loginController;
+    private GameConfigurationController configurationController;
+    private GameLoginController loginController;
 
 
     public Gui(){
@@ -65,7 +65,7 @@ public class Gui extends View {
             synchronized (this) {
                 try {
                     System.out.println("setting configuration page");
-                    GuiApp.setRoot("/Configuration.fxml");
+                    GuiApp.setRoot(FXMLPaths.gameConfiguration);
                     notifyAll();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -81,7 +81,7 @@ public class Gui extends View {
 
         Platform.runLater(()-> {
             synchronized (this) {
-                configurationController = (ConfigurationController) GuiApp.getCurrentController();
+                configurationController = (GameConfigurationController) GuiApp.getCurrentController();
                 System.out.println(configurationController.toString());
                 this.notifyAll();
             }
@@ -221,7 +221,7 @@ public class Gui extends View {
             Platform.runLater(() -> {
                 try {
                     System.out.println("setting login page");
-                    GuiApp.setRoot("/Login.fxml");
+                    GuiApp.setRoot(FXMLPaths.gameLogin);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -229,7 +229,7 @@ public class Gui extends View {
 
             Platform.runLater(() -> {
                 synchronized (this) {
-                    loginController = (LoginController) GuiApp.getCurrentController();
+                    loginController = (GameLoginController) GuiApp.getCurrentController();
                     System.out.println(loginController.toString());
                     this.notifyAll();
                 }
@@ -251,4 +251,5 @@ public class Gui extends View {
     public boolean askBoolean(String message) {
         return false;
     }
+
 }

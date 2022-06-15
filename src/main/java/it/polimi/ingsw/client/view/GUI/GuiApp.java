@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.view.GUI;
 
-import it.polimi.ingsw.client.view.GUI.SceneControllers.ConfigurationController;
-import it.polimi.ingsw.client.view.GUI.SceneControllers.LoginController;
+import it.polimi.ingsw.client.view.GUI.SceneControllers.GameConfigurationController;
+import it.polimi.ingsw.client.view.GUI.SceneControllers.GameLoginController;
 import it.polimi.ingsw.client.view.GUI.SceneControllers.SceneController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -20,15 +20,15 @@ public class GuiApp extends Application {
     private static Scene scene;
 
     private static Map<String, SceneController> controllersMap = new HashMap<>() {{
-        put("/Configuration.fxml", new ConfigurationController());
-        put("/Login.fxml", new LoginController());
+        put(FXMLPaths.gameConfiguration, new GameConfigurationController());
+        put(FXMLPaths.gameLogin, new GameLoginController());
     }};
     private static SceneController currentController;
 
     @Override
     public void start(Stage stage) throws Exception {
         synchronized (GuiApp.class) {
-            FXMLLoader fxmlLoader = new FXMLLoader(GuiApp.class.getResource("/SplashScreen.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(GuiApp.class.getResource(FXMLPaths.waitingForConfiguration));
             Parent root = fxmlLoader.load();
             scene = new Scene(root);
             stage.setTitle("Eriantys");
@@ -67,8 +67,8 @@ public class GuiApp extends Application {
         alert.setHeaderText("Are you sure to quit?");
 
         if(alert.showAndWait().get() == ButtonType.OK) {
-            //TODO close connection
             stage.close();
+            System.exit(0);
         }
     }
 

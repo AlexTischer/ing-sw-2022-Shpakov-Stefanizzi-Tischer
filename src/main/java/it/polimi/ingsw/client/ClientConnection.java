@@ -293,5 +293,6 @@ public class  ClientConnection {
                 fromServer = socketIn.readUTF();
             }
         }
+        this.close();
     }
 }
