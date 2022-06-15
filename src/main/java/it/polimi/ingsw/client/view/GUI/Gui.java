@@ -1,8 +1,8 @@
 package it.polimi.ingsw.client.view.GUI;
 
 import it.polimi.ingsw.client.model.ClientGameBoard;
-import it.polimi.ingsw.client.view.GUI.SceneControllers.GameConfigurationController;
-import it.polimi.ingsw.client.view.GUI.SceneControllers.GameLoginController;
+import it.polimi.ingsw.client.view.GUI.SceneControllers.ConfigurationSceneController;
+import it.polimi.ingsw.client.view.GUI.SceneControllers.LoginSceneController;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.server.model.Color;
 import javafx.application.Platform;
@@ -18,8 +18,8 @@ public class Gui extends View {
     private int num;
     private Color studentColor = null;
     private boolean done;
-    private GameConfigurationController configurationController;
-    private GameLoginController loginController;
+    private ConfigurationSceneController configurationController;
+    private LoginSceneController loginController;
 
 
     public Gui(){
@@ -81,7 +81,7 @@ public class Gui extends View {
 
         Platform.runLater(()-> {
             synchronized (this) {
-                configurationController = (GameConfigurationController) GuiApp.getCurrentController();
+                configurationController = (ConfigurationSceneController) GuiApp.getCurrentController();
                 System.out.println(configurationController.toString());
                 this.notifyAll();
             }
@@ -229,7 +229,7 @@ public class Gui extends View {
 
             Platform.runLater(() -> {
                 synchronized (this) {
-                    loginController = (GameLoginController) GuiApp.getCurrentController();
+                    loginController = (LoginSceneController) GuiApp.getCurrentController();
                     System.out.println(loginController.toString());
                     this.notifyAll();
                 }

@@ -8,7 +8,7 @@ import javafx.scene.control.ChoiceBox;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class GameConfigurationController extends SceneController implements Initializable {
+public class ConfigurationSceneController extends SceneController implements Initializable {
 
     @FXML
     private CheckBox checkBox;

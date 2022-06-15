@@ -10,7 +10,7 @@ import javafx.scene.control.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameLoginController extends SceneController {
+public class LoginSceneController extends SceneController {
 
     @FXML
     private TextField textField;

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.view.GUI;
 
-import it.polimi.ingsw.client.view.GUI.SceneControllers.GameConfigurationController;
-import it.polimi.ingsw.client.view.GUI.SceneControllers.GameLoginController;
+import it.polimi.ingsw.client.view.GUI.SceneControllers.ConfigurationSceneController;
+import it.polimi.ingsw.client.view.GUI.SceneControllers.LoginSceneController;
 import it.polimi.ingsw.client.view.GUI.SceneControllers.SceneController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -20,8 +20,8 @@ public class GuiApp extends Application {
     private static Scene scene;
 
     private static Map<String, SceneController> controllersMap = new HashMap<>() {{
-        put(FXMLPaths.gameConfiguration, new GameConfigurationController());
-        put(FXMLPaths.gameLogin, new GameLoginController());
+        put(FXMLPaths.gameConfiguration, new ConfigurationSceneController());
+        put(FXMLPaths.gameLogin, new LoginSceneController());
     }};
     private static SceneController currentController;
 
