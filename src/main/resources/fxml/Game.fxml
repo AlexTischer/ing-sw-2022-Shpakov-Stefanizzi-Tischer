@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="FXML.Game"
-            prefHeight="400.0" prefWidth="600.0">
 
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Button fx:id="btn1" layoutX="109.0" layoutY="120.0" mnemonicParsing="false" text="Button" />
+      <Button fx:id="btn2" layoutX="205.0" layoutY="120.0" mnemonicParsing="false" text="Button" />
+      <Button fx:id="btn3" layoutX="300.0" layoutY="120.0" mnemonicParsing="false" text="Button" />
+      <Button fx:id="btn4" layoutX="400.0" layoutY="120.0" mnemonicParsing="false" text="Button" />
+      <Button fx:id="btn5" layoutX="153.0" layoutY="188.0" mnemonicParsing="false" text="Button" />
+      <Button fx:id="btn6" layoutX="248.0" layoutY="188.0" mnemonicParsing="false" text="Button" />
+   </children>
 </AnchorPane>

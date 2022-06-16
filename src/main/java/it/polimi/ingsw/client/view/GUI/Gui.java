@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.view.GUI;
 
 import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.client.view.GUI.SceneControllers.ConfigurationSceneController;
+import it.polimi.ingsw.client.view.GUI.SceneControllers.GameSceneController;
 import it.polimi.ingsw.client.view.GUI.SceneControllers.LoginSceneController;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.server.model.Color;
@@ -10,15 +11,18 @@ import javafx.application.Platform;
 import java.io.IOException;
 import java.util.List;
 
+import static it.polimi.ingsw.client.view.GUI.FXMLPaths.*;
+
 public class Gui extends View {
 
     private String string = null;
     private int chosenAction;
     private int num;
     private Color studentColor = null;
-    private boolean done;
+    private boolean done=false;
     private ConfigurationSceneController configurationSceneController;
     private LoginSceneController loginSceneController;
+    private GameSceneController gameSceneController;
 
 
     public Gui(){
@@ -34,24 +38,6 @@ public class Gui extends View {
         }
     }
 
-/*
-    //TODO insert these methods (or similar) in GameScene
-
-    public synchronized void studentSelected(ActionEvent ae){ //called by student selection via mouse click
-        chosenAction = 1;
-        done=true;
-        //TODO studentColor=GUI.selectedColor
-        notifyAll();
-    }
-
-    public synchronized void characterSelected(ActionEvent ae){ //called by character selection via mouse click
-        chosenAction = 2;
-        done=true;
-        //TODO character=GUI.selectedChar
-        notifyAll();
-    }
- */
-
 
     @Override
     public synchronized int askNumOfPlayers() {
@@ -60,7 +46,7 @@ public class Gui extends View {
             synchronized (this) {
                 try {
                     System.out.println("setting configuration page");
-                    GuiApp.setRoot(FXMLPaths.gameConfiguration);
+                    GuiApp.setRoot(ConfigurationScene.getPath());
                     notifyAll();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -136,12 +122,52 @@ public class Gui extends View {
     }
 
     @Override
-    public int askAssistant() {
-        return 0;
+    public synchronized int askAssistant() {
+        if(gameSceneController ==null) {
+            Platform.runLater(() -> {
+                try {
+                    System.out.println("setting game page");
+                    GuiApp.setRoot(GameScene.getPath());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            Platform.runLater(() -> {
+                synchronized (this) {
+                    gameSceneController = (GameSceneController) GuiApp.getCurrentController();
+                    System.out.println(gameSceneController.toString());
+                    this.notifyAll();
+                }
+            });
+            while (gameSceneController == null) {
+                try {
+                    System.out.println("waiting gameSceneController");
+                    this.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            System.out.println("gameSceneController received, notified");
+        }
+
+        gameSceneController.askAssistant();
+
+        synchronized (gameSceneController) {
+            while (!gameSceneController.isAskingDone()) {
+                try {
+                    System.out.println("waiting assistantRank");
+                    gameSceneController.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return gameSceneController.getAssistantRank();
     }
 
     @Override
-    public int chooseActionStudent(boolean characterActivated) {
+    public synchronized int chooseActionStudent(boolean characterActivated) {
 
         while(!done){
             try {
@@ -216,7 +242,7 @@ public class Gui extends View {
             Platform.runLater(() -> {
                 try {
                     System.out.println("setting login page");
-                    GuiApp.setRoot(FXMLPaths.gameLogin);
+                    GuiApp.setRoot(LoginScene.getPath());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

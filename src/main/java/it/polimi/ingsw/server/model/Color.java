@@ -24,7 +24,6 @@ public enum Color {
     Color(String ansi , String label) {
         this.ansi = ansi;
         this.label = label;
-
     }
 
     public static Optional<Color> getColorByLabel(String value) {
