@@ -53,6 +53,8 @@ public class LoginSceneController extends SceneController {
             }
         });
 
+        Platform.runLater(() -> textField.setOnKeyPressed(event -> {if( event.getCode() == KeyCode.ENTER ) {sendName();}}));
+
         if(loginDone){
             Platform.runLater(() ->{
                 textField.setVisible(false);

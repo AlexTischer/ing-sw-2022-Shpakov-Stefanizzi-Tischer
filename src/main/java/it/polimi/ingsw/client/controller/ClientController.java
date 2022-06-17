@@ -97,7 +97,6 @@ public class ClientController {
                         System.out.println("ClientController says: closing connection due IOException");
                         connection.close();
                     } catch (EndOfChangesException e) {
-                        System.out.println("ClientController says: I have received and caught EndOfChangesException");
                     }
                 }
         }
@@ -124,8 +123,8 @@ public class ClientController {
     }
 
     public void useAssistant(){
-        //TODO move if isGameOn here
         int assistantRank = view.askAssistant();
+        //todo: move if isgameon here
         //checking if assistant rank is available
         if(isGameOn() && gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getAssistants()[assistantRank-1]!=null){
 
@@ -152,7 +151,7 @@ public class ClientController {
     }
 
     public void planningPhase() {
-        System.out.println("ClientController says: " + gameBoard.getClientName() + " is in planning phase");
+        System.out.println("ClientController says: planning phase");
         boolean correctAssistant = false;
         while(!correctAssistant) {
             try {

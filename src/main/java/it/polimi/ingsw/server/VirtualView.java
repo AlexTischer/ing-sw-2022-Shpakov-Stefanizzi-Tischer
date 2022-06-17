@@ -23,8 +23,7 @@ public class VirtualView implements Observer<ModelChange> {
 
     public void sendPacket(Packet packet) {
         /*send message to client*/
-        System.out.println("Virtual View says: I am in sendPacket(). I have received " + packet.getClass());
-        System.out.println("My player is " + player.getName() + " Current player is " + game.getCurrentPlayer().getName());
+        System.out.println("VirtualView says: I am in sendPacket(). I have received " + packet.getClass() + " from " + game.getCurrentPlayer().getName());
 
         //sends exception back to the client in case of error
         if (!player.getName().equals(game.getCurrentPlayer().getName())) {
@@ -58,7 +57,6 @@ public class VirtualView implements Observer<ModelChange> {
 
     public void attachPlayer(Player player){
         this.player=player;
-        System.out.println("VirtualView says: player attached " + player.getName());
     }
 
     public Player getPlayer() {

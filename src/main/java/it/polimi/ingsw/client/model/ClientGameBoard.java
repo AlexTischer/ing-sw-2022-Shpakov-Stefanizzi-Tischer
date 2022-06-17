@@ -103,7 +103,6 @@ public class ClientGameBoard {
 
     public void setCurrentPlayerName(String currentPlayerName) {
         this.currentPlayerName = currentPlayerName;
-        System.out.println("current player name was set to " + currentPlayerName);
         showOnView();
         view.startTurn();
     }

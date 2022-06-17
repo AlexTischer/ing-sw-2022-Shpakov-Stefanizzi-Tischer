@@ -77,7 +77,6 @@ public class Connection implements Runnable{
     @Override
     public void run() {
         //receives client name, sends lobby change and receives client packets during the game
-        System.out.println("I am connection. I have started !");
         try{
             isActive = true;
 
@@ -100,7 +99,6 @@ public class Connection implements Runnable{
                     fromClient = socketIn.readObject();
                     //if client sent ping message, then i need to respond and wait for the next input
                     if (fromClient.equals("ping")){
-                        System.out.println(name + " sent ping");
                         socketOut.writeObject("pong");
                         socketOut.flush();
                         socketOut.reset();
@@ -119,7 +117,6 @@ public class Connection implements Runnable{
                             fromClient = socketIn.readObject();
                             //if client sent ping message, then I need to respond and wait for the next input
                             if (fromClient.equals("ping")){
-                                System.out.println(name + " sent ping");
                                 socketOut.writeObject("pong");
                                 socketOut.flush();
                                 socketOut.reset();
@@ -146,13 +143,11 @@ public class Connection implements Runnable{
                     try {
                         fromClient = socketIn.readObject();
                         Packet packet = (Packet) fromClient;
-                        System.out.println("Connection says: I have received packet " + packet.getClass());
                         userVirtualView.sendPacket(packet);
                     } catch (ClassCastException | ClassNotFoundException e) {
                         try {
                             if (fromClient.equals("ping")) {
                                 //client sent ping message, server responds with pong
-                                System.out.println(name + " sent ping");
                                 socketOut.writeObject("pong");
                                 socketOut.flush();
                                 socketOut.reset();
@@ -175,7 +170,6 @@ public class Connection implements Runnable{
                         try {
                             if (fromClient.equals("ping")) {
                                 //client sent ping message, server responds with pong
-                                System.out.println(name + " sent ping");
                                 socketOut.writeObject("pong");
                                 socketOut.flush();
                                 socketOut.reset();
