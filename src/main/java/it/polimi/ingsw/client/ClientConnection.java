@@ -87,7 +87,6 @@ public class  ClientConnection {
                 //after start, can receive only gameBoardChange or pong messages
                 String fromServer = (String) modelChange;
                 if (fromServer.equals("pong")) {
-                    System.out.println("ClientConnection says: server sent pong");
                 }
                 else {
                     System.out.println("ClientConnection says: Error from server received: \n" + fromServer);
@@ -119,11 +118,9 @@ public class  ClientConnection {
         while (!fromServer.equals("start")) {
             //if the pong message from server was received , client should wait for the next different message
             while (fromServer.equals("pong")){
-                System.out.println("ClientConnection says: Client received from server:" + fromServer);
                 fromServer = socketIn.readUTF();
             }
             if (fromServer.equals("config")) {
-                //System.out.println("ClientConnection says: config started " + fromServer);
                 //let client insert a configuration
                 /*ask view to print the messages and request input*/
                 boolean inputCorrect = false;
@@ -145,7 +142,6 @@ public class  ClientConnection {
                     }
                     if (fromServer.equals("ok")) {
                         inputCorrect = true;
-                        System.out.println("ClientConnection says: Client received from server:" + fromServer);
                     } else {
                         inputCorrect = false;
                         System.out.println("ClientConnection says: Error from server received:" + fromServer);
@@ -172,7 +168,6 @@ public class  ClientConnection {
                     }
                     if (fromServer.equals("ok")) {
                         inputCorrect = true;
-                        System.out.println("ClientConnection says: Client received from server: " + fromServer);
                     } else {
                         inputCorrect = false;
                         System.out.println("ClientConnection says: Error from server received: \n" + fromServer);
@@ -199,7 +194,6 @@ public class  ClientConnection {
                     try {
                         fromServer = (String) modelChange;
                         if (fromServer.equals("pong")) {
-                            System.out.println("ClientConnection says: server sent pong");
                         }
                     } catch (ClassCastException e2) {
                         System.out.println("ClientConnection says: error class cast ex");
@@ -254,7 +248,6 @@ public class  ClientConnection {
                                     try {
                                         fromServer = (String) modelChange;
                                         if (fromServer.equals("pong")) {
-                                            System.out.println("ClientConnection says: server sent pong");
                                             continue;
                                         } else if (fromServer.equals("start")) {
                                             waitingModelChange = false;
@@ -278,7 +271,6 @@ public class  ClientConnection {
                 }
             }
             if (fromServer.equals("start")) {
-                System.out.println("ClientConnection says: start received");
                 clientController.setClientName(name);
                 //command that starts the game
                 clientController.startTurn();

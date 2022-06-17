@@ -14,10 +14,7 @@ import it.polimi.ingsw.client.view.GUI.SceneControllers.ConfigurationSceneContro
 import it.polimi.ingsw.client.view.GUI.SceneControllers.GameSceneController;
 import it.polimi.ingsw.client.view.GUI.SceneControllers.LoginSceneController;
 import it.polimi.ingsw.client.view.GUI.SceneControllers.SceneController;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.Optional;
 
 public enum FXMLPaths{
 

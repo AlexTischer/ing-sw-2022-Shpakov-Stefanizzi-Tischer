@@ -77,7 +77,6 @@ public class Server {
     private void addToLobby(Connection connection, String name) throws InterruptedException{
 
         if (waitingConnection.keySet().contains(name)) {
-            System.out.println("Server says: name already used");
             throw new IllegalArgumentException();
         }
         else {
@@ -87,7 +86,6 @@ public class Server {
             ModelChange lobbyChange = new LobbyChange(waitingConnection.keySet().stream().toList());
             for (String n : waitingConnection.keySet()) {
                 waitingConnection.get(n).send(lobbyChange);
-                System.out.println("Server says: Sending lobby change to " + n);
             }
 
             if (waitingConnection.size() == numOfPlayers) {
@@ -95,7 +93,6 @@ public class Server {
                 createGame();
             }
         }
-//        System.out.println("Server says: after else:" + waitingConnection.keySet().stream().toList());
     }
 
     private void createGame() throws InterruptedException{
@@ -212,7 +209,6 @@ public class Server {
                         fromClient = socketIn.readObject();
                         //server sends config message only after it received ping from client
                         if (fromClient.equals("ping")) {
-                            System.out.println("Server received ping from first client");
                             //client sent ping message, server responds with pong
                             socketOut.writeUTF("pong");
                             socketOut.flush();

@@ -15,11 +15,6 @@ import static it.polimi.ingsw.client.view.GUI.FXMLPaths.*;
 
 public class Gui extends View {
 
-    private String string = null;
-    private int chosenAction;
-    private int num;
-    private Color studentColor = null;
-    private boolean done=false;
     private ConfigurationSceneController configurationSceneController;
     private LoginSceneController loginSceneController;
     private GameSceneController gameSceneController;
@@ -37,7 +32,6 @@ public class Gui extends View {
             }
         }
     }
-
 
     @Override
     public synchronized int askNumOfPlayers() {
@@ -68,7 +62,7 @@ public class Gui extends View {
             }
         });
 
-        while(configurationSceneController ==null){
+        while(configurationSceneController == null){
             try {
                 System.out.println("waiting configurationSceneController");
                 this.wait();
@@ -125,13 +119,22 @@ public class Gui extends View {
     public synchronized int askAssistant() {
         if(gameSceneController ==null) {
             Platform.runLater(() -> {
-                try {
-                    System.out.println("setting game page");
-                    GuiApp.setRoot(GameScene.getPath());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                synchronized (this) {
+                    try {
+                        System.out.println("setting game page");
+                        GuiApp.setRoot(GameScene.getPath());
+                        notifyAll();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             });
+
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
             Platform.runLater(() -> {
                 synchronized (this) {
@@ -168,72 +171,180 @@ public class Gui extends View {
 
     @Override
     public synchronized int chooseActionStudent(boolean characterActivated) {
+        if (!characterActivated) {
+            gameSceneController.chooseActionStudent();
 
-        while(!done){
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            while (!gameSceneController.isAskingDone()) {
+                try {
+                    System.out.println("waiting studentAction");
+                    gameSceneController.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
-        }
 
-        return chosenAction;
+            return gameSceneController.getChosenAction();
+        }
+        else {
+            return 1;
+        }
     }
 
     @Override
-    public Color askStudentColor() {
+    public synchronized Color askStudentColor() {
 
-        while(!done){
+        if(!gameSceneController.isAskingDone()) {
+            gameSceneController.askStudentColor();
+        }
+
+        while(!gameSceneController.isAskingDone()){
             try {
-                wait();
+                System.out.println("waiting studentColor");
+                gameSceneController.wait();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        done=false;
-
-        return studentColor;
+        return gameSceneController.getStudentColor();
     }
 
     @Override
     public int askStudentDestination() {
-        return 0;
+        if(!gameSceneController.isAskingDone()) {
+            gameSceneController.askStudentDestination();
+        }
+
+        while(!gameSceneController.isAskingDone()){
+            try {
+                System.out.println("waiting StudentDestination");
+                gameSceneController.wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return gameSceneController.getStudentDestination();
     }
 
     @Override
     public void showModel(ClientGameBoard gameBoard) {
-
+        gameSceneController.showModel();
     }
 
     @Override
     public int chooseActionMotherNature(boolean characterActivated) {
-        return 0;
+        if (!characterActivated) {
+            gameSceneController.chooseActionMotherNature();
+
+            while (!gameSceneController.isAskingDone()) {
+                try {
+                    System.out.println("waiting motherNatureAction");
+                    gameSceneController.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            return gameSceneController.getChosenAction();
+        }
+        else {
+            return 1;
+        }
     }
 
     @Override
     public int askMotherNatureSteps() {
-        return 0;
+        if(!gameSceneController.isAskingDone()) {
+            gameSceneController.askMotherNatureSteps();
+        }
+
+        while(!gameSceneController.isAskingDone()){
+            try {
+                System.out.println("waiting MotherNatureSteps");
+                gameSceneController.wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return gameSceneController.getMotherNatureSteps();
     }
 
     @Override
     public int chooseActionClouds(boolean characterActivated) {
-        return 0;
+        if (!characterActivated) {
+            gameSceneController.chooseActionCloud();
+
+            while (!gameSceneController.isAskingDone()) {
+                try {
+                    System.out.println("waiting cloudAction");
+                    gameSceneController.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            return gameSceneController.getChosenAction();
+        }
+        else {
+            return 1;
+        }
     }
 
     @Override
     public int askCloudNumber() {
-        return 0;
+
+        if(!gameSceneController.isAskingDone()) {
+            gameSceneController.askCloudNumber();
+        }
+
+        while(!gameSceneController.isAskingDone()){
+            try {
+                System.out.println("waiting Cloud Number");
+                gameSceneController.wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return gameSceneController.getCloudNumber();
     }
 
     @Override
     public int askCharacterNumber() {
-        return 0;
+        if(!gameSceneController.isAskingDone()) {
+            gameSceneController.askCharacterNumber();
+        }
+
+        while(!gameSceneController.isAskingDone()){
+            try {
+                System.out.println("waiting Character Number");
+                gameSceneController.wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return gameSceneController.getCharacterNumber();
     }
 
     @Override
     public int askIslandNumber() {
-        return 0;
+        if(!gameSceneController.isAskingDone()) {
+            gameSceneController.askIslandNumber();
+        }
+
+        while(!gameSceneController.isAskingDone()){
+            try {
+                System.out.println("waiting StudentDestination");
+                gameSceneController.wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return gameSceneController.getIslandNumber();
     }
 
     @Override
@@ -268,6 +379,7 @@ public class Gui extends View {
 
         loginSceneController.update(userNames);
     }
+
     @Override
     public boolean askBoolean(String message) {
         return false;

@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 
 
 import java.util.ArrayList;
@@ -57,6 +58,8 @@ public class LoginSceneController extends SceneController {
             int finalI = i;
             Platform.runLater(() -> labels.get(finalI).setText(""));
         }
+
+        Platform.runLater(() -> textField.setOnKeyPressed(event -> {if( event.getCode() == KeyCode.ENTER ) {sendName();}}));
 
         if(loginDone){
             Platform.runLater(() ->{
