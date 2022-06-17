@@ -123,33 +123,6 @@ public class Gui extends View {
 
     @Override
     public synchronized int askAssistant() {
-        if(gameSceneController ==null) {
-            Platform.runLater(() -> {
-                try {
-                    System.out.println("setting game page");
-                    GuiApp.setRoot(GameScene.getPath());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-
-            Platform.runLater(() -> {
-                synchronized (this) {
-                    gameSceneController = (GameSceneController) GuiApp.getCurrentController();
-                    System.out.println(gameSceneController.toString());
-                    this.notifyAll();
-                }
-            });
-            while (gameSceneController == null) {
-                try {
-                    System.out.println("waiting gameSceneController");
-                    this.wait();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            System.out.println("gameSceneController received, notified");
-        }
 
         gameSceneController.askAssistant();
 
@@ -202,7 +175,46 @@ public class Gui extends View {
     }
 
     @Override
-    public void showModel(ClientGameBoard gameBoard) {
+    public synchronized void showModel(ClientGameBoard gameBoard) {
+        if(gameSceneController ==null) {
+            Platform.runLater(() -> {
+                synchronized (this) {
+                    try {
+                        System.out.println("setting game page");
+                        GuiApp.setRoot(GameScene.getPath());
+                        notifyAll();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+
+
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            Platform.runLater(() -> {
+                synchronized (this) {
+                    gameSceneController = (GameSceneController) GuiApp.getCurrentController();
+                    System.out.println(gameSceneController.toString());
+                    this.notifyAll();
+                }
+            });
+            while (gameSceneController == null) {
+                try {
+                    System.out.println("waiting gameSceneController");
+                    this.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            System.out.println("gameSceneController received, notified");
+        }
+
+        gameSceneController.showModel(gameBoard);
 
     }
 

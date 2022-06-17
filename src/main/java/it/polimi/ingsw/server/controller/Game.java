@@ -467,6 +467,7 @@ public class Game implements GameForClient{
      * and returns true, otherwise just returns false*/
     public boolean checkEndGame(){
 
+        //TODO check 4 players end game
         //the game finishes immediately when a player puts his last tower on an island
         for (Player p : players){
             if(p.checkEmptyTowers()){

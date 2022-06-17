@@ -1,23 +1,10 @@
 package it.polimi.ingsw.client.view.GUI;
 
-/*public class FXMLPaths {
-
-    public static String gameConfiguration = "/fxml/Configuration.fxml";
-    public static String gameLogin = "/fxml/Login.fxml";
-    public static String waitingForConfiguration = "/fxml/WaitingForConfiguration.fxml";
-    public static String game = "/fxml/Game.fxml";
-
-
-}*/
-
 import it.polimi.ingsw.client.view.GUI.SceneControllers.ConfigurationSceneController;
 import it.polimi.ingsw.client.view.GUI.SceneControllers.GameSceneController;
 import it.polimi.ingsw.client.view.GUI.SceneControllers.LoginSceneController;
 import it.polimi.ingsw.client.view.GUI.SceneControllers.SceneController;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.Optional;
 
 public enum FXMLPaths{
 

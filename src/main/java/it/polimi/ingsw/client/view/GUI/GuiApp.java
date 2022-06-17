@@ -26,6 +26,10 @@ public class GuiApp extends Application {
             scene = new Scene(root);
             stage.setTitle("Eriantys");
             stage.setScene(scene);
+
+            stage.setMaximized(true);
+            stage.setFullScreen(true);
+
             stage.show();
 
             stage.setOnCloseRequest(event -> {

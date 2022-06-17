@@ -5,13 +5,12 @@
 <?import javafx.scene.layout.*?>
 <?import java.lang.Integer?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Button layoutX="256.0" layoutY="291.0" mnemonicParsing="false" onAction="#sendConfiguration" text="Confirm" />
-      <CheckBox fx:id="checkBox" layoutX="378.0" layoutY="213.0" mnemonicParsing="false" />
-      <ChoiceBox fx:id="choiceBox" layoutX="378.0" layoutY="132.0" prefHeight="39.0" prefWidth="38.0" />
-      <Label layoutX="201.0" layoutY="138.0" text="Number of players:" />
-      <Label layoutX="201.0" layoutY="213.0" text="Advanced settings:" />
+      <Button layoutX="583.0" layoutY="420.0" mnemonicParsing="false" onAction="#sendConfiguration" text="Confirm" />
+      <CheckBox fx:id="checkBox" layoutX="705.0" layoutY="342.0" mnemonicParsing="false" />
+      <ChoiceBox fx:id="choiceBox" layoutX="705.0" layoutY="261.0" prefHeight="39.0" prefWidth="38.0" />
+      <Label layoutX="528.0" layoutY="267.0" text="Number of players:" />
+      <Label layoutX="528.0" layoutY="342.0" text="Advanced settings:" />
    </children>
 </AnchorPane>

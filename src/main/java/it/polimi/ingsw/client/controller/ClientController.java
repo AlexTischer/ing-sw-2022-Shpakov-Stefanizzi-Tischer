@@ -124,8 +124,8 @@ public class ClientController {
     }
 
     public void useAssistant(){
+        //TODO move if isGameOn here
         int assistantRank = view.askAssistant();
-
         //checking if assistant rank is available
         if(isGameOn() && gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getAssistants()[assistantRank-1]!=null){
 

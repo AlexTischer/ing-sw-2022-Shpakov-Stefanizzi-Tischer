@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 
 
 import java.util.ArrayList;
@@ -14,10 +15,13 @@ public class LoginSceneController extends SceneController {
 
     @FXML
     private TextField textField;
+    @FXML Label errorMessage;
     @FXML
-    private Label lbl1, lbl2, lbl3, lbl4, errorMessage;
+    private ArrayList<Label> labelList;
     @FXML
     private Button button1;
+
+
     private boolean loginDone;
     private String name;
 
@@ -40,23 +44,14 @@ public class LoginSceneController extends SceneController {
     }
 
     public void update(List<String> userNames){
-        ArrayList<Label> labels = new ArrayList<Label>();
 
-        labels.add(lbl1);
-        labels.add(lbl2);
-        labels.add(lbl3);
-        labels.add(lbl4);
+        Platform.runLater(() -> textField.setOnKeyPressed((event -> {if(event.getCode() == KeyCode.ENTER) {sendName();}})));
 
-        List<String> names = new ArrayList<>(userNames);
-
-        for (int i=0; i<names.size(); i++){
-            int finalI = i;
-            Platform.runLater(() -> labels.get(finalI).setText(names.get(finalI)));
-        }
-        for (int i=names.size(); i< labels.size(); i++){
-            int finalI = i;
-            Platform.runLater(() -> labels.get(finalI).setText(""));
-        }
+        Platform.runLater(()-> {
+            for(int i=0; i< userNames.size(); i++){
+                labelList.get(i).setText(userNames.get(i));
+            }
+        });
 
         if(loginDone){
             Platform.runLater(() ->{
@@ -82,8 +77,6 @@ public class LoginSceneController extends SceneController {
     }
 
     public void cancelMessage(){
-
         errorMessage.setText("");
-
     }
 }
