@@ -28,7 +28,7 @@ public class GuiApp extends Application {
             stage.setScene(scene);
 
             stage.setMaximized(true);
-            stage.setFullScreen(true);
+            stage.setFullScreen(false);
 
             stage.show();
 

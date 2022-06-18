@@ -1,14 +1,16 @@
 package it.polimi.ingsw.client.view.GUI.SceneControllers;
 
 import it.polimi.ingsw.client.model.ClientGameBoard;
-import it.polimi.ingsw.client.view.GUI.LayoutObjects;
-import it.polimi.ingsw.client.view.GUI.LayoutProperties;
 import it.polimi.ingsw.server.model.Color;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+
+import java.util.ArrayList;
 
 import static it.polimi.ingsw.server.model.Color.*;
 
@@ -16,10 +18,15 @@ public class GameSceneController extends SceneController {
 
     //TODO implement every method
 
-    @FXML
-    private GridPane layoutGridPane;
 
-    //TODO implement every method
+    @FXML
+    private ArrayList<Group> playersList;
+
+    @FXML
+    private ArrayList<GridPane> diningRoomList, professorsList;
+
+    @FXML
+    private ArrayList<ArrayList<Pane>> entrancesList, towerTablesList;
 
     private boolean askingDone = false; //Boolean used to say to the controller thread that all the questions to the user have been answered TODO: change this description
     private int assistantRank;
@@ -30,6 +37,76 @@ public class GameSceneController extends SceneController {
     private int motherNatureSteps;
     private Color studentColor;
     private int positionOfMotherNature;
+
+    public void showModel(ClientGameBoard gameBoard) {
+
+        Platform.runLater(()-> {
+            //setting playground according to num of players
+            for(int i=4; i>gameBoard.getPlayers().size(); i--){
+                playersList.get(i-1).getChildren().remove(0,playersList.get(i-1).getChildren().size());
+            }
+
+            //setting schoolboards
+            for(int p = 0; p <gameBoard.getPlayers().size(); p++){
+
+
+                //entrance
+                ArrayList<Color> entrance = gameBoard.getPlayers().get(p).getSchoolBoard().getEntrance();
+
+                for(int student=0; student<entrance.size(); student++){
+                    entrancesList.get(p).get(student).getChildren().add(loadImage(entrance.get(student).student ,20,20));
+                }
+
+
+                //diningRoom
+                for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(GREEN); student++) {
+                    diningRoomList.get(p).add(loadImage(GREEN.student, 15,15), student, 0);
+                }
+                for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(RED); student++) {
+                    diningRoomList.get(p).add(loadImage(RED.student, 15,15), student, 0);
+                }
+                for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(YELLOW); student++) {
+                    diningRoomList.get(p).add(loadImage(YELLOW.student, 15,15), student, 0);
+                }
+                for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(PINK); student++) {
+                    diningRoomList.get(p).add(loadImage(PINK.student, 15,15), student, 0);
+                }
+                for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(BLUE); student++) {
+                    diningRoomList.get(p).add(loadImage(BLUE.student, 15,15), student, 0);
+                }
+
+
+                //professors
+                if(gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(GREEN)==1){
+                    professorsList.get(p).add(loadImage(GREEN.professor, 25,25),0,0);
+                }
+                if(gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(RED)==1){
+                    professorsList.get(p).add(loadImage(RED.professor, 25,25),0,1);
+                }
+                if(gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(YELLOW)==1){
+                    professorsList.get(p).add(loadImage(YELLOW.professor, 25,25),0,2);
+                }
+                if(gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(YELLOW)==1){
+                    professorsList.get(p).add(loadImage(YELLOW.professor, 25,25),0,3);
+                }
+                if(gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(YELLOW)==1){
+                    professorsList.get(p).add(loadImage(YELLOW.professor, 25,25),0,4);
+                }
+
+                //towers
+                for(int tower=0; tower<gameBoard.getPlayers().get(p).getSchoolBoard().getNumOfTowers(); tower++){
+                    towerTablesList.get(p).get(tower).getChildren().add(loadImage(gameBoard.getPlayers().get(p).getTowerColor().tower, 30,30));
+                }
+
+            }
+        });
+
+    }
+
+
+
+
+
 
     public synchronized void selectStudent(Color studentColor){
         askingDone=true;
@@ -162,11 +239,8 @@ public class GameSceneController extends SceneController {
         return characterNumber;
     }
 
-    public void showModel(ClientGameBoard gameBoard) {
 
-            placeSchoolBoards(gameBoard);
-    }
-
+    /*
     public void placeSchoolBoards(ClientGameBoard clientGameBoard){
 
         Platform.runLater(()-> {
@@ -184,16 +258,17 @@ public class GameSceneController extends SceneController {
 
         });
 
-
-
     }
 
-    public ImageView loadImage(String path, int width, int height){
-        Image image = new Image(getClass().getResourceAsStream(path));
-        ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(width);
-        imageView.setFitHeight(height);
+     */
 
-        return imageView;
+
+
+    public int getStudentDestination() {
+        return 0;
+    }
+
+    public int getIslandNumber() {
+        return 0;
     }
 }

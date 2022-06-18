@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import java.lang.Integer?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+
+<StackPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Button layoutX="583.0" layoutY="420.0" mnemonicParsing="false" onAction="#sendConfiguration" text="Confirm" />
-      <CheckBox fx:id="checkBox" layoutX="705.0" layoutY="342.0" mnemonicParsing="false" />
-      <ChoiceBox fx:id="choiceBox" layoutX="705.0" layoutY="261.0" prefHeight="39.0" prefWidth="38.0" />
-      <Label layoutX="528.0" layoutY="267.0" text="Number of players:" />
-      <Label layoutX="528.0" layoutY="342.0" text="Advanced settings:" />
+      <AnchorPane prefHeight="720.0" prefWidth="1280.0">
+         <children>
+            <Button layoutX="583.0" layoutY="420.0" mnemonicParsing="false" onAction="#sendConfiguration" text="Confirm" />
+            <CheckBox fx:id="checkBox" layoutX="705.0" layoutY="342.0" mnemonicParsing="false" />
+            <ChoiceBox fx:id="choiceBox" layoutX="705.0" layoutY="261.0" prefHeight="39.0" prefWidth="38.0" />
+            <Label layoutX="528.0" layoutY="267.0" text="Number of players:" />
+            <Label layoutX="528.0" layoutY="342.0" text="Advanced settings:" />
+         </children>
+      </AnchorPane>
    </children>
-</AnchorPane>
+</StackPane>

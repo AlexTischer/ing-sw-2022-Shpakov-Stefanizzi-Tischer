@@ -1,38 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.canvas.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
 
 <?import java.util.ArrayList?>
-<AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-
-      <Label fx:id="lbl1" layoutX="76.0" layoutY="58.0" text="A" />
-      <Label fx:id="lbl2" layoutX="214.0" layoutY="58.0" text="B" />
-      <Label fx:id="lbl3" layoutX="351.0" layoutY="58.0" text="C" />
-      <Label fx:id="lbl4" layoutX="461.0" layoutY="58.0" text="D" />
-
-      <fx:define>
-         <ArrayList fx:id="labelList">
-            <fx:reference source="lbl1" />
-            <fx:reference source="lbl2" />
-            <fx:reference source="lbl3" />
-            <fx:reference source="lbl4" />
-         </ArrayList>
-      </fx:define>
-
-
-      <Canvas height="82.0" layoutX="14.0" layoutY="25.0" width="104.0" />
-      <Canvas height="82.0" layoutX="24.0" layoutY="35.0" width="104.0" />
-      <Canvas height="82.0" layoutX="34.0" layoutY="45.0" width="104.0" />
-
-      <Label fx:id="errorMessage" alignment="CENTER" layoutX="428.0" layoutY="263.0" prefHeight="76.0" prefWidth="600.0" textAlignment="CENTER" />
-
-      <TextField fx:id="textField" alignment="CENTER" layoutX="640.0" layoutY="360.0" onMouseClicked="#cancelMessage" promptText="Your name here" />
-
-      <Button fx:id="button1" layoutX="689.0" layoutY="424.0" mnemonicParsing="false" onAction="#sendName" text="Button" />
+      <AnchorPane prefHeight="720.0" prefWidth="1280.0">
+         <children>
+      
+            <Label fx:id="lbl1" layoutX="76.0" layoutY="58.0" />
+            <Label fx:id="lbl2" layoutX="422.0" layoutY="53.0" />
+            <Label fx:id="lbl3" layoutX="744.0" layoutY="54.0" />
+            <Label fx:id="lbl4" layoutX="1023.0" layoutY="54.0" />
+      
+            <fx:define>
+               <ArrayList fx:id="labelList">
+                  <fx:reference source="lbl1" />
+                  <fx:reference source="lbl2" />
+                  <fx:reference source="lbl3" />
+                  <fx:reference source="lbl4" />
+               </ArrayList>
+            </fx:define>
+      
+      
+            <Canvas height="82.0" layoutX="14.0" layoutY="25.0" width="104.0" />
+            <Canvas height="82.0" layoutX="24.0" layoutY="35.0" width="104.0" />
+            <Canvas height="82.0" layoutX="34.0" layoutY="45.0" width="104.0" />
+      
+            <Label fx:id="errorMessage" alignment="CENTER" layoutX="428.0" layoutY="263.0" prefHeight="76.0" prefWidth="600.0" textAlignment="CENTER" />
+      
+            <TextField fx:id="textField" alignment="CENTER" layoutX="575.0" layoutY="341.0" onMouseClicked="#cancelMessage" promptText="Your name here" />
+      
+            <Button fx:id="button1" layoutX="619.0" layoutY="395.0" mnemonicParsing="false" onAction="#sendName" text="Button" />
+         </children>
+      
+      
+      </AnchorPane>
    </children>
-
-
-</AnchorPane>
+</StackPane>
