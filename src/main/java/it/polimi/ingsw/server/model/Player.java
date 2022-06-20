@@ -35,7 +35,7 @@ public class Player implements Comparable{
         if (comparePlayer instanceof Player) {
             /* For ascending order*/
             //if this player is not active then he moves to the end of players array
-            if (!isActive)
+            if (playedAssistant == null)
                 return 1;
 
             //if player to compare is not active then he moves to the end of players array
@@ -103,7 +103,7 @@ public class Player implements Comparable{
             assistants[rank - 1] = null;
         } else if (rank == 0) {
             playedAssistant = null;
-        } else throw new InvalidParameterException();
+        } else throw new InvalidParameterException("You already played this assistant!");
     }
 
     public void removeCoins(int coins) throws NoEnoughCoinsException {

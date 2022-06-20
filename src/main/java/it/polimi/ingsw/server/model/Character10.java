@@ -43,14 +43,34 @@ public class Character10 extends Character {
 
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.getGameBoard().removeCoins(game.getCurrentPlayer(), cost);
+        game.getGameBoard().removeCoinsFromPlayer(game.getCurrentPlayer(), cost);
+        //if it's first use then we need to leave one coin on the card
+        if (firstUse){
+            game.getGameBoard().addCoinsToBank(cost-1);
+            firstUse = false;
+        }
+        else {
+            game.getGameBoard().addCoinsToBank(cost);
+        }
         cost = 3;
     }
 
+    @Override
+    public Color[] getStudentsSlot(){
+        Color[] toReturnStudents = null;
+        if (students != null){
+           toReturnStudents = new Color[students.size()];
+
+            for (int i = 0; i < students.size(); i++)
+                toReturnStudents[i] = students.get(i);
+        }
+
+        return toReturnStudents;
+    }
 
     @Override
     public ClientCharacter createClientCharacter(){
-        ClientCharacter character = new ClientCharacter10();
+        ClientCharacter10 character = new ClientCharacter10();
 
         character.setCost(cost);
         character.setDescription(description);

@@ -41,7 +41,7 @@ public class SchoolBoard {
         if(entrance.contains(studentColor)) {
             entrance.remove(studentColor);
         }
-        else throw new StudentNotFoundException();
+        else throw new StudentNotFoundException("You have no such student in entrance!");
     }
 
     public void moveStudentToDining(Color color) throws NumOfStudentsExceeded{
@@ -63,7 +63,7 @@ public class SchoolBoard {
         if (diningRoom.get(studentColor) < 10) {
             diningRoom.put(studentColor, diningRoom.get(studentColor) + 1);
         }
-        else throw new NumOfStudentsExceeded();
+        else throw new NumOfStudentsExceeded("There is no space in dining room!");
     }
 
     public int getNumOfStudentsInDining(Color studentColor){
@@ -118,14 +118,14 @@ public class SchoolBoard {
         numOfTowers--;
     }
 
+    public int getNumOfTowers(){
+        return numOfTowers;
+    }
+
     /*TEST METHODS*/
 
     public ArrayList<Color> getStudentsInEntrance(){
         return (ArrayList<Color>) entrance.clone();
-    }
-
-    public int getNumOfTowers(){
-        return numOfTowers;
     }
 
 

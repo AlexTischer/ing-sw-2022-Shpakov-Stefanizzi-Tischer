@@ -23,13 +23,13 @@ public class VirtualView implements Observer<ModelChange> {
 
     public void sendPacket(Packet packet) {
         /*send message to client*/
-        System.out.println("VirtualView says: I am in sendPacket(). I have received " + packet.getClass() + " from " + game.getCurrentPlayer().getName());
+        System.out.println("VirtualView says: I am in sendPacket(). I have received " + packet.getClass() + " from " + player.getName());
 
         //sends exception back to the client in case of error
         if (!player.getName().equals(game.getCurrentPlayer().getName())) {
             System.out.println(player.getName() + " is not current player");
             //if client tries to act while it's not his turn, then it is the wrong action
-            clientConnection.send(new ExceptionChange(new WrongActionException()));
+            clientConnection.send(new ExceptionChange(new WrongActionException("You are not current player!")));
         }
         else if(game.getGameBoard().isGameOn()){
             try{
@@ -72,7 +72,7 @@ public class VirtualView implements Observer<ModelChange> {
     }
 
     public void changePlayerStatus(boolean status) {
-        //player will become active only after the lock on game is released
+        //player can change status after the lock on game is released
         //which means that game waits for some player's action
         //commutation between player active and not active happens in pauses between player's actions
         synchronized (game) {

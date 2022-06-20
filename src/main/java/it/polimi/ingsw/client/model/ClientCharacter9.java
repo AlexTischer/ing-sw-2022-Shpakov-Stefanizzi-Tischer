@@ -10,6 +10,8 @@ import java.util.Arrays;
 
 public class ClientCharacter9 extends ClientCharacter{
 
+    private Color[] students;
+
     @Override
     public ActivateCharacterPacket createPacket(View view){
 
@@ -25,7 +27,7 @@ public class ClientCharacter9 extends ClientCharacter{
             while (!correctStudent) {
                 view.printMessage("Select the student from this card you want to swap");
                 student = view.askStudentColor();
-                if (Arrays.stream(getStudents()).toList().contains(student)) {
+                if (Arrays.stream(students).toList().contains(student)) {
                     correctStudent = true;
                 } else {
                     view.printMessage("No such student on this card. Try again");
@@ -55,5 +57,13 @@ public class ClientCharacter9 extends ClientCharacter{
 
         packet = new ActivateCharacter4Packet(selectedStudents, toBeSwappedStudents);
         return packet;
+    }
+
+    public Color[] getStudents() {
+        return students;
+    }
+
+    public void setStudents(Color[] students) {
+        this.students = students;
     }
 }

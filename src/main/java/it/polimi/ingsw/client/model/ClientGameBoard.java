@@ -117,9 +117,30 @@ public class ClientGameBoard {
     }
 
     public void setPlayers(ArrayList<ClientPlayer> players) {
+        boolean statusChanged = false;
+
+        if (getPlayers() != null) {
+            for (int i = 0; i < getPlayers().size(); i++) {
+                if (this.players.get(i).getConnectionStatus() != players.get(i).getConnectionStatus()) {
+                    statusChanged = true;
+                }
+            }
+        }
+
         this.players = players;
 
+        if (statusChanged) {
+            showOnView();
+        }
+
         System.out.println("setting players");
+    }
+
+    public void setPlayerStatus(String name, boolean connectionStatus) {
+        if (getPlayer(name).getConnectionStatus() != connectionStatus) {
+            getPlayer(name).setConnectionStatus(connectionStatus);
+            showOnView();
+        }
     }
 
     public ArrayList<ClientPlayer> getPlayers() {

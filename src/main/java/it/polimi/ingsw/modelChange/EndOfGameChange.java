@@ -10,6 +10,7 @@ public class EndOfGameChange extends ModelChange{
 
     public void execute(ClientGameBoard gameBoard){
         String message;
+        String cowinner = "";
         if(winner == null){
             message = "You can't play. There is no free space. Try to reconnect later!";
         }
@@ -17,10 +18,10 @@ public class EndOfGameChange extends ModelChange{
             if(gameBoard.getPlayers().size() == 4){
                 for (ClientPlayer p : gameBoard.getPlayers()) {
                     if (!p.getName().equals(winner) && p.getTowerColor().equals(gameBoard.getPlayer(winner).getTowerColor())) {
-                        winner = p.getName();
+                        cowinner = p.getName();
                     }
                 }
-                message = "You and " + winner + " win!";
+                message = "You and " + cowinner + " win!";
             }
             else {
                 message = "You win!";

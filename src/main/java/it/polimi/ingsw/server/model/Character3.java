@@ -5,8 +5,8 @@ import it.polimi.ingsw.server.controller.Game;
 import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 import it.polimi.ingsw.exceptions.NoEntryException;
 
+/*does not count towers in influence*/
 public class Character3 extends Character {
-    /*does not count towers in influence*/
 
     private int cost = 3;
     private String description = "When calculating influence, Towers won't count";
@@ -33,7 +33,15 @@ public class Character3 extends Character {
     }
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.getGameBoard().removeCoins(game.getCurrentPlayer(), cost);
+        game.getGameBoard().removeCoinsFromPlayer(game.getCurrentPlayer(), cost);
+        //if it's first use then we need to leave one coin on the card
+        if (firstUse){
+            game.getGameBoard().addCoinsToBank(cost-1);
+            firstUse = false;
+        }
+        else {
+            game.getGameBoard().addCoinsToBank(cost);
+        }
         cost = 4;
     }
 

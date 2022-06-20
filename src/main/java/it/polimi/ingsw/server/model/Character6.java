@@ -1,13 +1,11 @@
 package it.polimi.ingsw.server.model;
 
 import it.polimi.ingsw.client.model.ClientCharacter;
-import it.polimi.ingsw.exceptions.EndOfChangesException;
-import it.polimi.ingsw.modelChange.ExceptionChange;
 import it.polimi.ingsw.server.controller.Game;
 import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 
+/*When reassigning professor in a Tie, currentPlayer wins*/
 public class Character6 extends Character {
-    /*In a Tie, currentPlayer wins*/
 
     private int cost = 2;
     private String description  = "You can get the professor even if you have the same number of students as the player who currently controls that professor";
@@ -45,7 +43,15 @@ public class Character6 extends Character {
     }
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.getGameBoard().removeCoins(game.getCurrentPlayer(), cost);
+        game.getGameBoard().removeCoinsFromPlayer(game.getCurrentPlayer(), cost);
+        //if it's first use then we need to leave one coin on the card
+        if (firstUse){
+            game.getGameBoard().addCoinsToBank(cost-1);
+            firstUse = false;
+        }
+        else {
+            game.getGameBoard().addCoinsToBank(cost);
+        }
         cost = 3;
     }
 

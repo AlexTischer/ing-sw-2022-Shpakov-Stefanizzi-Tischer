@@ -10,8 +10,6 @@ import java.io.Serializable;
 public class ClientCharacter implements Serializable {
 
     private int cost;
-    private int noEntryTiles;
-    private Color[] students;
     private String description;
 
     public int getCost() {
@@ -23,23 +21,25 @@ public class ClientCharacter implements Serializable {
     }
 
     public int getNoEntryTiles() {
-        return noEntryTiles;
+        //characters 2,3,6,8 don't have noEntryTiles so default value is -1
+        return -1;
     }
 
     public void setNoEntryTiles(int noEntryTiles) {
-        this.noEntryTiles = noEntryTiles;
+       return;
     }
 
     public Color[] getStudents() {
-        return students;
+        //characters 2,3,6,8 don't have any students so default value is null
+        return null;
     }
 
     public void setStudents(Color[] students) {
-        this.students = students;
+        return;
     }
 
     public ActivateCharacterPacket createPacket(View view){
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("This character doesn't need activation");
     }
 
     public void setDescription(String description) {

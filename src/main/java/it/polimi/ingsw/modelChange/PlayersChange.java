@@ -74,6 +74,7 @@ public class PlayersChange extends ModelChange{
             clientPlayer.setAssistantType(p.getAssistantType());
             clientPlayer.setPlayedAssistant(p.getPlayedAssistant());
             clientPlayer.setAssistants(p.getAssistants());
+            clientPlayer.setConnectionStatus(p.isActive());
 
             clientPlayers.add(clientPlayer);
         }

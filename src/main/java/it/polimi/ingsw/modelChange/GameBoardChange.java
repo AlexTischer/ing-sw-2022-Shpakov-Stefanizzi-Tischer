@@ -164,6 +164,7 @@ public class GameBoardChange extends ModelChange{
             clientPlayer.setAssistants(p.getAssistants());
             clientPlayer.setPlayedAssistant(p.getPlayedAssistant());
             clientPlayer.setSchoolBoard(clientSchoolBoard);
+            clientPlayer.setConnectionStatus(p.isActive());
 
             clientPlayers.add(clientPlayer);
         }

@@ -76,10 +76,6 @@ public class ClientController {
             System.out.println("Client Controller says: this is my turn - " + connection.getName());
             if (gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getPlayedAssistant() == null) {
                 // if client's player does not have a played Assistant, it means it has to be set, and we are in planning phase.
-                //TODO check for possible conflicts when this client
-                // makes an action and there is another client that has been reconnected to the server
-                //TODO ideally client must process any modelChange before endOfChanges arrives
-                // client will see updated picture only after having completed an action when it receives endOfChanges or setCurrentPlayerName
                 planningPhase();
             } else {
                 actionPhase();
@@ -88,17 +84,59 @@ public class ClientController {
         else {
             //all clients start from here, if suddenly game is finished
             //then all clients will exit from all recursion calls because isGameOn() condition doesn't get satisfied
-            //while (isGameOn()) {
-                while (isGameOn() && !gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())) {
-                    //continue to process model changes until I receive one that executes setCurrentPlayerName on ClientGameBoard
-                    try {
-                        connection.waitModelChange();
-                    } catch (IOException e) {
-                        System.out.println("ClientController says: closing connection due IOException");
-                        connection.close();
-                    } catch (EndOfChangesException e) {
-                    }
+            while (isGameOn() && !gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())) {
+                //continue to process model changes until I receive one that executes setCurrentPlayerName on ClientGameBoard
+                try {
+                    connection.waitModelChange();
+                } catch (IOException e) {
+                    System.out.println("ClientController says: closing connection due IOException");
+                    connection.close();
+                } catch (EndOfChangesException e) {
                 }
+            }
+        }
+    }
+
+    public void planningPhase() {
+        System.out.println("ClientController says: planning phase");
+        boolean correctAssistant = false;
+        while(!correctAssistant) {
+            try {
+                //client can make any move only if game is on
+                useAssistant();
+                correctAssistant = true;
+            }
+            catch (RuntimeException e){
+                //any exception sent from server
+                printMessage(e.getMessage());
+            }
+        }
+    }
+
+    public void useAssistant(){
+        if (isGameOn()) {
+            int assistantRank = view.askAssistant();
+
+            //checking if assistant rank is available
+            if (gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getAssistants()[assistantRank - 1] != null) {
+
+                //checking if player is allowed to play that assistant
+                boolean allowedAssistant = checkAssistant(assistantRank, gameBoard.getPlayer(gameBoard.getCurrentPlayerName()));
+
+                if (allowedAssistant) {
+                    Packet packet = new UseAssistantPacket(assistantRank);
+                    try {
+                        this.connection.send(packet);
+                    } catch (IOException e) {
+                        this.connection.close();
+                        gameBoard.setGameOn(false);
+                    }
+                } else {
+                    throw new RepeatedAssistantRankException();
+                }
+            } else {
+                throw new InvalidParameterException("You don't have this assistant");
+            }
         }
     }
 
@@ -122,47 +160,13 @@ public class ClientController {
         return true;
     }
 
-    public void useAssistant(){
-        int assistantRank = view.askAssistant();
-        //todo: move if isgameon here
-        //checking if assistant rank is available
-        if(isGameOn() && gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getAssistants()[assistantRank-1]!=null){
+    public void actionPhase() {
+        System.out.println("ClientController says: action phase");
 
-            //checking if another player has already played the same rank
-            boolean alreadyPlayed = checkAssistant(assistantRank,gameBoard.getPlayer(gameBoard.getCurrentPlayerName()));
+        moveStudents();
+        moveMotherNature();
+        useCloud();
 
-            //if not, generate the Packet
-            if(alreadyPlayed) {
-                Packet packet = new UseAssistantPacket(assistantRank);
-                try {
-                    this.connection.send(packet);
-                }
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            else {
-                throw new RepeatedAssistantRankException();
-            }
-        }
-        else{
-            throw new InvalidParameterException("You don't have this assistant");
-        }
-    }
-
-    public void planningPhase() {
-        System.out.println("ClientController says: planning phase");
-        boolean correctAssistant = false;
-        while(!correctAssistant) {
-            try {
-                //client can make any move only if game is on
-                useAssistant();
-                correctAssistant = true;
-            }
-            catch (InvalidParameterException | RepeatedAssistantRankException e){
-                printMessage(e.getMessage());
-            }
-        }
     }
 
     private void moveStudents(){
@@ -171,68 +175,68 @@ public class ClientController {
         boolean correctStudent;
         boolean correctDestination;
 
-        while (studentMoves < (gameBoard.getPlayers().size() == 3? 4: 3) && isGameOn()){
+        while (isGameOn() && studentMoves < (gameBoard.getPlayers().size() == 3? 4: 3)){
             correctStudent = false;
             correctDestination = false;
-
-            if (view.chooseActionStudent(characterActivated) == 1) {
-
+            try {
                 //client has chosen to move a student
-                while (!correctStudent) {
+                if (view.chooseActionStudent(characterActivated) == 1) {
 
-                    //asking the color of the student
-                    studentColor = view.askStudentColor();
+                    while (isGameOn() && !correctStudent) {
 
-                    //checking if client has the selected student
-                    if (gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getSchoolBoard().getEntrance().contains(studentColor)) {
+                        //asking the color of the student
+                        studentColor = view.askStudentColor();
 
-                        correctStudent = true;
-                        //asking the destination for the student
-                        while (!correctDestination) {
-                            int destination = view.askStudentDestination();
+                        //checking if client has the selected student
+                        if (gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getSchoolBoard().getEntrance().contains(studentColor)) {
 
-                            //if destination == 0, move the student to dining room
-                            if (destination == 0) {
-                                try {
-                                    connection.send(new MoveStudentToDiningPacket(studentColor));
-                                    correctDestination = true;
-                                    studentMoves++;
-                                }
-                                catch (NumOfStudentsExceeded e){
-                                    printMessage("The dining room is full for this student. Insert an island number!");
-                                }
-                                catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
+                            correctStudent = true;
+                            //asking the destination for the student
+                            while (isGameOn() && !correctDestination) {
+                                int destination = view.askStudentDestination();
 
-                            //if destination is [1-12]
-                            } else {
-                                //check if the island with the given destination exist
-                                if(gameBoard.getIslands().size()>=destination){
+                                //if destination == 0, move the student to dining room
+                                if (destination == 0) {
                                     try {
-                                        //decrement destination because on server side counting starts from 0
-                                        connection.send(new MoveStudentToIslandPacket(studentColor, destination-1));
+                                        connection.send(new MoveStudentToDiningPacket(studentColor));
                                         correctDestination = true;
                                         studentMoves++;
                                     } catch (IOException e) {
-                                        System.out.println("Ooops. Something went wrong!");
-                                        e.printStackTrace();
+                                        connection.close();
+                                        gameBoard.setGameOn(false);
                                     }
                                 }
-
-                                //if not, retry
-                                else{
-                                    printMessage("This island does not exist, select another destination");
+                                //if destination is [1-12]
+                                else {
+                                    //check if the island with the given destination exist
+                                    if (gameBoard.getIslands().size() >= destination) {
+                                        try {
+                                            //decrement destination because on server side counting starts from 0
+                                            connection.send(new MoveStudentToIslandPacket(studentColor, destination - 1));
+                                            correctDestination = true;
+                                            studentMoves++;
+                                        } catch (IOException e) {
+                                            connection.close();
+                                            gameBoard.setGameOn(false);
+                                        }
+                                    }
+                                    //if not, retry
+                                    else {
+                                        printMessage("This island does not exist, select another destination");
+                                    }
                                 }
                             }
+                        } else {
+                            printMessage("Student does not exist, try again");
                         }
-                    } else {
-                        printMessage("Student does not exist, try again");
                     }
                 }
+                else {
+                    buyAndActivateCharacter();
+                }
             }
-            else{
-                buyAndActivateCharacter();
+            catch (RuntimeException e){
+                printMessage(e.getMessage());
             }
         }
     }
@@ -258,81 +262,78 @@ public class ClientController {
             try {
                 connection.send(new BuyCharacterPacket(i-1));
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                connection.close();
+                gameBoard.setGameOn(false);
             }
         }
         if(correctCharacter && isGameOn()){
             try {
                 ActivateCharacterPacket packet = gameBoard.getPlayedCharacters()[i-1].createPacket(view);
                 connection.send(packet);
-            } catch (UnsupportedOperationException e) {
-
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                connection.close();
+                gameBoard.setGameOn(false);
             }
-        }
-        else{
-            //TODO control on client side failed
         }
     }
 
     private void moveMotherNature() {
         //the control is done on server
         boolean movedMN = false;
-        if (view.chooseActionMotherNature(characterActivated) == 1 && isGameOn()) {
-            while (!movedMN && isGameOn()) {
-                int steps = view.askMotherNatureSteps();
-                try {
-                    connection.send(new MoveMotherNaturePacket(steps));
-                    movedMN = true;
-                } catch (IOException e) {
-                    System.out.println("Ooops. Something went wrong!");
-                    e.printStackTrace();
-                } catch (IllegalArgumentException ex) {
-                    printMessage(ex.getMessage());
+        while (!movedMN && isGameOn()) {
+            try {
+                movedMN = false;
+                if (view.chooseActionMotherNature(characterActivated) == 1) {
+                    int steps = view.askMotherNatureSteps();
+                    try {
+                        connection.send(new MoveMotherNaturePacket(steps));
+                        movedMN = true;
+                    } catch (IOException e) {
+                        connection.close();
+                        gameBoard.setGameOn(false);
+                    }
+                } else {
+                    buyAndActivateCharacter();
                 }
             }
-        } else {
-            buyAndActivateCharacter();
+            catch (RuntimeException e){
+                printMessage(e.getMessage());
+            }
         }
     }
 
     private void useCloud(){
         boolean usedCloud = false;
+        boolean correctCloud = false;
         while(!usedCloud && isGameOn()) {
-            if (view.chooseActionClouds(characterActivated) == 1) {
-                boolean correctCloud = false;
-                while (!correctCloud) {
-                    int cloudNumber = view.askCloudNumber();
-                    if (cloudNumber <= gameBoard.getPlayers().size() && cloudNumber > 0 && !(gameBoard.getCloud(cloudNumber-1).getStudents().isEmpty())) {
-                        try {
-                            connection.send(new UseCloudPacket(cloudNumber-1));
-                            correctCloud = true;
-                            usedCloud = true;
-                        } catch (IOException e) {
-                            System.out.println("Ooops. Something went wrong!");
-                            e.printStackTrace();
+            try {
+                usedCloud = false;
+                if (view.chooseActionClouds(characterActivated) == 1) {
+                    correctCloud = false;
+                    while (!correctCloud && isGameOn()) {
+                        int cloudNumber = view.askCloudNumber();
+                        if (cloudNumber <= gameBoard.getPlayers().size() && cloudNumber > 0 && !(gameBoard.getCloud(cloudNumber - 1).getStudents().isEmpty())) {
+                            try {
+                                connection.send(new UseCloudPacket(cloudNumber - 1));
+                                correctCloud = true;
+                                usedCloud = true;
+                            } catch (IOException e) {
+                                connection.close();
+                                gameBoard.setGameOn(false);
+                            }
+                        } else {
+                            printMessage("the cloud is empty, select another cloud");
                         }
-                    }
-                    else{
-                        printMessage("the cloud is empty, select another cloud");
-                    }
 
+                    }
+                } else {
+                    buyAndActivateCharacter();
                 }
             }
-            else {
-                buyAndActivateCharacter();
+            catch (RuntimeException e){
+                printMessage(e.getMessage());
             }
         }
-    }
-
-    public void actionPhase() {
-        System.out.println("ClientController says: action phase");
-
-        moveStudents();
-        moveMotherNature();
-        useCloud();
-
     }
 
     public int askNumOfPlayers() {

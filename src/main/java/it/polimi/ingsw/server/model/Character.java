@@ -16,6 +16,7 @@ public class Character {
     protected Game game;
     protected int cost;
     protected String description = "ERROR";
+    protected boolean firstUse = true;
 
 
     public int calculateInfluence(Island island, int islandNumber, Player player) throws NoEntryException {
@@ -87,19 +88,19 @@ public class Character {
     }
 
     public void setSelectedStudent(Color selectedStudent){
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Students cannot be set on default character");
     }
 
     public void setSelectedIslandNumber(int selectedIsland) throws NoEnoughStudentsException {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Island cannot be set on default character");
     }
 
     public void setSelectedStudents(ArrayList<Color> selectedStudents){
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Students cannot be set on default character");
     }
 
     public void setToBeSwappedStudents(ArrayList<Color> toBeSwappedStudents){
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Students cannot be set on default character");
     }
 
     public void addNoEntryTile(){}
@@ -113,6 +114,6 @@ public class Character {
     }
 
     public ClientCharacter createClientCharacter() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Client Character cannot be created on default character");
     }
 }
