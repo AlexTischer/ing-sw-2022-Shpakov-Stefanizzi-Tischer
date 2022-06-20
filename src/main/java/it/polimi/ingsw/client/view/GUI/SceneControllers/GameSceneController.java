@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.view.GUI.SceneControllers;
 
 import it.polimi.ingsw.client.model.ClientGameBoard;
+import it.polimi.ingsw.client.view.GUI.GuiApp;
 import it.polimi.ingsw.server.model.Color;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -37,8 +38,11 @@ public class GameSceneController extends SceneController {
     private int motherNatureSteps;
     private Color studentColor;
     private int positionOfMotherNature;
+    private boolean choice;
 
     public void showModel(ClientGameBoard gameBoard) {
+
+        this.positionOfMotherNature=gameBoard.getPositionOfMotherNature();
 
         Platform.runLater(()-> {
             //setting playground according to num of players
@@ -104,10 +108,6 @@ public class GameSceneController extends SceneController {
     }
 
 
-
-
-
-
     public synchronized void selectStudent(Color studentColor){
         askingDone=true;
         chosenAction = 1;
@@ -132,11 +132,17 @@ public class GameSceneController extends SceneController {
     }
 
     public synchronized void selectDestination(int index){
-
+        askingDone=true;
+        // TODO: this.destination = index;
+        /*TODO: disable islands and dining room*/
+        notifyAll();
     }
 
     public synchronized void selectCloud(int index){
-
+        askingDone=true;
+        // TODO: this.cloudNumber = index;
+        /*TODO: disable clouds*/
+        notifyAll();
     }
 
     public synchronized void selectMotherNature(int selectedIsland){
@@ -146,8 +152,10 @@ public class GameSceneController extends SceneController {
         notifyAll();
     }
 
-    public synchronized void cancelOperation(){
-
+    public synchronized void selectBoolean(boolean choice){
+        askingDone=true;
+        this.choice=choice;
+        notifyAll();
     }
 
     public synchronized void askAssistant(){
@@ -190,7 +198,12 @@ public class GameSceneController extends SceneController {
     public void askCharacterNumber() {
         askingDone=false;
         /*TODO: print: Select a Character*/
-        /*TODO: enable clouds and set onMouseClickAction to selectCharacter(index+1)*/
+        /*TODO: enable characters and cancelButton and set onMouseClickAction to selectCharacter(index+1) for characters, selectCharacter(-1) for cancelButton*/
+    }
+
+    public void askBoolean() {
+        askingDone=false;
+        /*TODO: enable tickButton and cancelButton and set onMouseClickAction to selectBoolean(true) for tickButton and to selectBoolean(false) for cancelButton*/
     }
 
     public void chooseActionStudent() {
@@ -227,6 +240,10 @@ public class GameSceneController extends SceneController {
         return RED;
     }
 
+    public int getIslandNumber() {
+        return destination;
+    }
+
     public int getMotherNatureSteps() {
         return motherNatureSteps;
     }
@@ -239,36 +256,37 @@ public class GameSceneController extends SceneController {
         return characterNumber;
     }
 
-
-    /*
-    public void placeSchoolBoards(ClientGameBoard clientGameBoard){
-
-        Platform.runLater(()-> {
-
-            ArrayList<LayoutProperties> schoolboardsProperties = LayoutObjects.getSchoolBoards();
-
-            for(int i=0; i<clientGameBoard.getPlayers().size();i++){
-
-                ImageView imageView = loadImage(schoolboardsProperties.get(i).getPath(),
-                                                schoolboardsProperties.get(i).getImageWidth(),
-                                                schoolboardsProperties.get(i).getImageHeight());
-
-                layoutGridPane.add(imageView,schoolboardsProperties.get(i).getxPos(),schoolboardsProperties.get(i).getyPos());
-            }
-
-        });
-
-    }
-
-     */
-
-
-
     public int getStudentDestination() {
-        return 0;
+        return destination;
     }
 
-    public int getIslandNumber() {
-        return 0;
+    public boolean getChoice() {
+        return choice;
     }
+
+
+    public ImageView loadImage(String path, int width, int height){
+        Image image = new Image(getClass().getResourceAsStream(path));
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(width);
+        imageView.setFitHeight(height);
+
+        return imageView;
+    }
+
+    private int[] calculateIslandPosition(int n, int islandIndex, int dim){
+
+        int a=400;
+        int b=50;
+        int x;
+        int y;
+        int h = 0; //TODO: =islandsPane.getHeight
+        int w = 0; //TODO: =islandsPane.getWidth
+
+        y= (int) (b*Math.sin(2*Math.PI*islandIndex/n)+h/2-dim/2);
+        x= (int) (a*Math.cos(2*Math.PI*islandIndex/n)+w/2-dim/2);
+
+        return new int[]{x, y};
+    }
+
 }
