@@ -385,7 +385,20 @@ public class Gui extends View {
 
     @Override
     public boolean askBoolean(String message) {
-        return false;
+        if(!gameSceneController.isAskingDone()) {
+            gameSceneController.askBoolean();
+        }
+
+        while(!gameSceneController.isAskingDone()){
+            try {
+                System.out.println("waiting StudentDestination");
+                gameSceneController.wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return gameSceneController.getChoice();
     }
 
 }
