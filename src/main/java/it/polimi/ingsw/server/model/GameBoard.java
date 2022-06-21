@@ -97,8 +97,6 @@ public class GameBoard extends Observable<ModelChange> {
             }
             CloudsChange cloudsChange = new CloudsChange(clouds);
             notify(cloudsChange);
-            //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-            //notify(exceptionChange);
         }
         catch (NoEnoughStudentsException e) {
             //all students were exhausted, game is finished
@@ -174,23 +172,29 @@ public class GameBoard extends Observable<ModelChange> {
     }
 
     public void useCloud(int cloudNumber) {
+        useCloud(cloudNumber, currentPlayer);
+    }
+    public void useCloud(int cloudNumber, Player player) {
         if (cloudNumber < 0 || cloudNumber >= clouds.size())
-            throw new IllegalArgumentException("Error: invalid island number");
+            throw new IllegalArgumentException("You have inserted invalid island number");
 
         if(clouds.get(cloudNumber).getStudentsColors().isEmpty())
-            throw new StudentNotFoundException();
+            throw new StudentNotFoundException("This cloud is empty! Choose another one");
 
         for (Color color : clouds.get(cloudNumber).getStudentsColors()) {
             //add only as many students as needed
-            if (currentPlayer.getNumOfStudentsInEntrance() < this.maxNumOfStudentsInEntrance) {
-                currentPlayer.addStudentToEntrance(color);
+            if (player.getNumOfStudentsInEntrance() < this.maxNumOfStudentsInEntrance) {
+                player.addStudentToEntrance(color);
                 clouds.get(cloudNumber).removeStudent(color);
+            }
+            else {
+                throw new NumOfStudentsExceeded("The entrance is full. There is no empty space for any student!");
             }
         }
 
         CloudChange cloudChange = new CloudChange(clouds.get(cloudNumber), cloudNumber);
         notify(cloudChange);
-        SchoolBoardChange schoolBoardChange = new SchoolBoardChange(currentPlayer);
+        SchoolBoardChange schoolBoardChange = new SchoolBoardChange(player);
         notify(schoolBoardChange);
 
         //does not send endOfChanges because after useCloud current player should change
@@ -323,7 +327,7 @@ public class GameBoard extends Observable<ModelChange> {
         //notify(exceptionChange);
     }
 
-    public void getCoin() throws NoEnoughCoinsException {
+    public void getCoinFromBank() throws NoEnoughCoinsException {
         if (numOfCoins <= 0)
             throw new NoEnoughCoinsException("The Game board has no coins available");
         numOfCoins--;
@@ -333,12 +337,12 @@ public class GameBoard extends Observable<ModelChange> {
         //notify(exceptionChange);
     }
 
-    public void addCoin() throws NumOfCoinsExceeded {
-        if (numOfCoins >= 20 - game.getPlayers().size())
+    public void addCoinsToBank(int numOfCoins) throws NumOfCoinsExceeded {
+        if (this.numOfCoins + numOfCoins > 20 )
             throw new NumOfCoinsExceeded();
 
-        numOfCoins++;
-        CoinsOfGameBoardChange coinsOfGameBoardChange = new CoinsOfGameBoardChange(numOfCoins);
+        this.numOfCoins+=numOfCoins;
+        CoinsOfGameBoardChange coinsOfGameBoardChange = new CoinsOfGameBoardChange(this.numOfCoins);
         notify(coinsOfGameBoardChange);
         //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
         //notify(exceptionChange);
@@ -360,12 +364,10 @@ public class GameBoard extends Observable<ModelChange> {
     }
 
     public void buyCharacter(int characterNumber) {
-        if (characterNumber < 0 || characterNumber > 3)
+        if (characterNumber < 0 || characterNumber >= 3)
             throw new IllegalArgumentException("Error: invalid island number");
 
         playedCharacters[characterNumber].buy();
-        for (int i = 0; i < playedCharacters[characterNumber].getCost(); i++)
-            addCoin();
 
         currentCharacter=playedCharacters[characterNumber];
 
@@ -382,15 +384,15 @@ public class GameBoard extends Observable<ModelChange> {
 
     }
 
-    public void removeCoins(Player player, int cost){
+    public void removeCoinsFromPlayer(Player player, int cost){
         player.removeCoins(cost);
         CoinsOfPlayerChange coinsOfPlayerChange = new CoinsOfPlayerChange(player);
         notify(coinsOfPlayerChange);
     }
 
-    public void addCoins(Player player, int coins){
+    public void addCoinsToPlayer(Player player, int coins){
         for (int i = 0; i < coins; i++) {
-            getCoin();
+            getCoinFromBank();
             player.addCoins(1);
         }
 
@@ -484,7 +486,7 @@ public class GameBoard extends Observable<ModelChange> {
 
     public void setCurrentCharacterToDefault(Character character) {
         currentCharacter=character;
-        CharacterChange characterChange = new CharacterChange(currentCharacter, -1);
+        DefaultCharacterChange characterChange = new DefaultCharacterChange();
         notify(characterChange);
         ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
         notify(exceptionChange);

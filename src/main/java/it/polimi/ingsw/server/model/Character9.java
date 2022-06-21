@@ -14,7 +14,7 @@ import java.util.List;
 public class Character9 extends Character {
 
     private int id=9;
-    private Color[] students;
+    private List<Color> students;
     private List<Color> selectedStudents;
     private List<Color> toBeSwappedStudents;
     private int cost = 1;
@@ -23,10 +23,10 @@ public class Character9 extends Character {
 
     public void initialFill(Game game){
         super.initialFill(game);
-        students = new Color[6];
+        students = new ArrayList<Color>();
 
         for (int i = 0; i < 6; i++)
-            students[i] = game.getStudent();
+            students.add(i, game.getStudent());
 
     }
 
@@ -34,7 +34,7 @@ public class Character9 extends Character {
         if(selectedStudents.size() > 3)
             throw new IllegalArgumentException("You can select at most 3 students");
 
-        List<Color> testStudents = new LinkedList<Color>(Arrays.asList(students));
+        List<Color> testStudents = new LinkedList<Color>(students);
         for (Color studentColor: selectedStudents) {
             if (testStudents.contains(studentColor))
                 testStudents.remove(studentColor);
@@ -65,7 +65,7 @@ public class Character9 extends Character {
             throw new IllegalArgumentException("2 lists don`t have the same size");
 
         /*create temporary list to remove students easily*/
-        List<Color> tempStudents = new ArrayList<Color>(Arrays.asList(students));
+        List<Color> tempStudents = new ArrayList<Color>(students);
 
         for(int i = 0; i < selectedStudents.size(); i++){
             Color studentToEntrance = selectedStudents.get(i);
@@ -79,26 +79,42 @@ public class Character9 extends Character {
         }
 
         for(int i=0; i <tempStudents.size();i++){
-            students[i] = tempStudents.get(i);
+            students.add(i, tempStudents.get(i));
         }
 
     }
 
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.getGameBoard().removeCoins(game.getCurrentPlayer(), cost);
+        game.getGameBoard().removeCoinsFromPlayer(game.getCurrentPlayer(), cost);
+        //if it's first use then we need to leave one coin on the card
+        if (firstUse){
+            game.getGameBoard().addCoinsToBank(cost-1);
+            firstUse = false;
+        }
+        else {
+            game.getGameBoard().addCoinsToBank(cost);
+        }
         cost = 2;
     }
 
     @Override
     public Color[] getStudentsSlot(){
-        return students.clone();
+        Color[] toReturnStudents = null;
+        if (students != null){
+           toReturnStudents = new Color[students.size()];
+
+            for (int i = 0; i < students.size(); i++)
+                toReturnStudents[i] = students.get(i);
+        }
+
+        return toReturnStudents;
     }
 
 
     @Override
     public ClientCharacter createClientCharacter(){
-        ClientCharacter character = new ClientCharacter9();
+        ClientCharacter9 character = new ClientCharacter9();
 
         character.setId(id);
         character.setCost(cost);

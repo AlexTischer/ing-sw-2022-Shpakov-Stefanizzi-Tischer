@@ -12,6 +12,8 @@ import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
 
+import java.util.ArrayList;
+
 import static it.polimi.ingsw.server.model.Color.*;
 
 public class GameSceneController extends SceneController {

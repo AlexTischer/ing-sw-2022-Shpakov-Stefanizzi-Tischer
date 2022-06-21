@@ -24,7 +24,15 @@ public class Character8 extends Character {
 
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.getGameBoard().removeCoins(game.getCurrentPlayer(), cost);
+        game.getGameBoard().removeCoinsFromPlayer(game.getCurrentPlayer(), cost);
+        //if it's first use then we need to leave one coin on the card
+        if (firstUse){
+            game.getGameBoard().addCoinsToBank(cost-1);
+            firstUse = false;
+        }
+        else {
+            game.getGameBoard().addCoinsToBank(cost);
+        }
         cost = 2;
     }
 

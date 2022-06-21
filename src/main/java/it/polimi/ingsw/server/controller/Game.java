@@ -1,14 +1,11 @@
 package it.polimi.ingsw.server.controller;
 
-import it.polimi.ingsw.exceptions.EndOfChangesException;
-import it.polimi.ingsw.exceptions.WrongActionException;
+import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.modelChange.EndOfGameChange;
 import it.polimi.ingsw.modelChange.ExceptionChange;
 import it.polimi.ingsw.server.model.*;
 import it.polimi.ingsw.packets.Packet;
 import it.polimi.ingsw.server.model.Character;
-import it.polimi.ingsw.exceptions.NoEntryException;
-import it.polimi.ingsw.exceptions.RepeatedAssistantRankException;
 
 import java.security.InvalidParameterException;
 import java.util.*;
@@ -24,6 +21,8 @@ public class Game implements GameForClient{
     private int studentMove;
     private boolean motherNatureMove;
     private boolean useCloudMove;
+
+    private boolean characterUsed;
 
     public static Game getInstanceOfGame() {
         if(instanceOfGame==null){
@@ -86,6 +85,7 @@ public class Game implements GameForClient{
         studentMove = 0;
         motherNatureMove = false;
         useCloudMove = false;
+        characterUsed = false;
 
         //create separate thread that will wait until all clients insert assistants and execute action phase
         //it will execute until game ends
@@ -108,7 +108,7 @@ public class Game implements GameForClient{
 
     public synchronized void moveStudentToIsland(Color studentColor, int islandNumber){
         if (studentMove > (players.size() == 3? 4: 3))
-            throw new WrongActionException();
+            throw new WrongActionException("You have already moved all students");
 
         gameBoard.addStudentToIsland(gameBoard.getCurrentPlayer(), studentColor, islandNumber);
         studentMove++;
@@ -117,7 +117,7 @@ public class Game implements GameForClient{
 
     public synchronized void moveStudentToDining(Color studentColor){
         if (studentMove > (players.size() == 3? 4: 3))
-            throw new WrongActionException();
+            throw new WrongActionException("You have already moved all students");
 
         removeStudentFromEntrance(studentColor);
         addStudentToDining(gameBoard.getCurrentPlayer(), studentColor);
@@ -130,7 +130,7 @@ public class Game implements GameForClient{
 
         /*if this is advanced version of game, I pay 1 coin to player for each 3rd student*/
         if ( advancedSettings && player.getNumOfStudentsInDining(studentColor) % 3==0 ){
-            gameBoard.addCoins(player, 1);
+            gameBoard.addCoinsToPlayer(player, 1);
         }
         //check if professor gets reassigned
         reassignProfessor();
@@ -260,9 +260,12 @@ public class Game implements GameForClient{
     }
 
     public synchronized void moveMotherNature(int steps){
-        if (studentMove != (players.size() == 3? 4: 3) || motherNatureMove) {
-            //client can't make this action if students weren't moved or if mother nature was already moved
-            throw new WrongActionException();
+        //client can't make this action if students weren't moved or if mother nature was already moved
+        if (studentMove != (players.size() == 3? 4: 3) ) {
+            throw new WrongActionException("You have not moved all students yet!");
+        }
+        if (motherNatureMove){
+            throw new WrongActionException("You have already moved mother nature!");
         }
 
         gameBoard.moveMotherNature(steps);
@@ -281,55 +284,80 @@ public class Game implements GameForClient{
         this.notifyAll();
     }
 
-    public void buyCharacter(int characterNumber){
-        if (!advancedSettings)
-            throw new UnsupportedOperationException("You can't use characters. Advanced settings were set to false");
+    public synchronized void buyCharacter(int characterNumber){
+        if (characterUsed){
+            throw new WrongActionException("You have already used character in this turn!");
+        }
+        if (!advancedSettings) {
+            throw new WrongActionException("You can't use characters. Advanced settings were set to false!");
+        }
 
         gameBoard.buyCharacter(characterNumber);
+        characterUsed = true;
+
+        //don't notify game thread since only the characters that need activation may end the game
     }
 
-    public void activateCharacter(int islandNumber){
+    public synchronized void activateCharacter(int islandNumber){
         if (!advancedSettings)
-            throw new UnsupportedOperationException("You can't use characters. Advanced settings were set to false");
+            throw new WrongActionException("You can't use characters. Advanced settings were set to false");
 
         gameBoard.activateCharacter(islandNumber);
+
+        //wake up the game thread that waits for action
+        //check end game will be done in newTurn()
+        this.notifyAll();
     }
 
-    public void activateCharacter(ArrayList<Color> toBeSwappedStudents, ArrayList<Color> selectedStudents){
+    public synchronized void activateCharacter(ArrayList<Color> toBeSwappedStudents, ArrayList<Color> selectedStudents){
         if (!advancedSettings)
-            throw new UnsupportedOperationException("You can't use characters. Advanced settings were set to false");
+            throw new WrongActionException("You can't use characters. Advanced settings were set to false");
 
         gameBoard.activateCharacter(toBeSwappedStudents, selectedStudents);
+
+        //wake up the game thread that waits for action
+        //check end game will be done in newTurn()
+        this.notifyAll();
     }
 
-    public void activateCharacter(Color color, int islandNumber){
+    public synchronized void activateCharacter(Color color, int islandNumber){
         if (!advancedSettings)
-            throw new UnsupportedOperationException("You can't use characters. Advanced settings were set to false");
+            throw new WrongActionException("You can't use characters. Advanced settings were set to false");
 
         gameBoard.activateCharacter(color, islandNumber);
+
+        //wake up the game thread that waits for action
+        //check end game will be done in newTurn()
+        this.notifyAll();
     }
 
-    public void activateCharacter(Color color){
+    public synchronized void activateCharacter(Color color){
         if (!advancedSettings)
-            throw new UnsupportedOperationException("You can't use characters. Advanced settings were set to false");
+            throw new WrongActionException("You can't use characters. Advanced settings were set to false");
 
         gameBoard.activateCharacter(color);
+
+        //wake up the game thread that waits for action
+        //check end game will be done in newTurn()
+        this.notifyAll();
     }
 
     public synchronized void useCloud(int cloudNumber){
         if (studentMove != (players.size() == 3? 4: 3) || !motherNatureMove || useCloudMove) {
             //client can't make this action if students weren't moved
             //or if mother nature wasn't already moved or cloud was already used
-            throw new WrongActionException();
+            throw new WrongActionException("You cannot use cloud right now!");
         }
         gameBoard.useCloud(cloudNumber);
         useCloudMove = true;
         this.notifyAll();
     }
 
-    //sets assistant of current player and makes the next player current to let him call use assistant from virtual view
+    //sets assistant of current player and makes the next player current to let him call use assistant from VirtualView
     public synchronized void useAssistant(int assistantRank){
-
+        if (assistantRank < 1 || assistantRank > 10){
+            throw new IllegalArgumentException("Assistant rank value is wrong");
+        }
         //checks if player can use this assistant
         if (checkAssistant(assistantRank, gameBoard.getCurrentPlayer())) {
             //sends 1 model change
@@ -355,16 +383,16 @@ public class Game implements GameForClient{
             newRound();
         }
 
-        //TODO manage end of game
-        //GameBoard might send endOfGameChange
         System.out.println("Game says: The game was finished !");
     }
 
 
+    /**Starts a new round. New round is a sequence of actions consisting of
+     * refillClouds(), useAssistant() for each active player, sorting of players based on assistants played,
+     * newTurn() for each active player, eventually assigning unused clouds for not active players and reset of playedAssistant for all players*/
     private void newRound() throws InterruptedException {
         //if player is not active then skip him until next planning phase
         //in planning phase check isActive variable , in action phase it is enough to check playedAssistant variable
-
 
         //checkEndGame() is called inside refillClouds() since this is the action that might finish the game
         gameBoard.refillClouds();
@@ -396,8 +424,8 @@ public class Game implements GameForClient{
 
         /*action phase*/
         for (Player p : players) {
-            //give the turn only if this is not the end of the Game and only
-            //the player has playedAssistant which implies that it is active
+            //give the turn only if this is not the end of the Game and only to
+            //the player that has playedAssistant which implies that it is active
             if (gameBoard.isGameOn() && p.getPlayedAssistant()!=null) {
                 newTurn(p);
             }
@@ -411,23 +439,32 @@ public class Game implements GameForClient{
                 //chose random cloud from those unused
                 int cloudNumber = new Random().nextInt(unusedClouds.size());
                 //use the cloud that server chosen for inactive player
-                gameBoard.useCloud(gameBoard.getClouds().indexOf(unusedClouds.get(cloudNumber)));
+                try {
+                    gameBoard.useCloud(gameBoard.getClouds().indexOf(unusedClouds.get(cloudNumber)), p);
+                }
+                catch (NumOfStudentsExceeded e){
+
+                }
             }
         }
+
 
         for (Player p : players) {
             gameBoard.setPlayedAssistantRank(0, p);
         }
     }
 
+    /**Starts a new turn for a player which consists of
+     * Setting this player as a current
+     * Accepting actions related to studentMove, motherNatureMove, useCloudMove and eventually characterUsed*/
     private void newTurn(Player p) throws InterruptedException {
         /*virtual view controls current player before forwarding any method to controller*/
         gameBoard.setCurrentPlayer(p);
 
+        //need to wait until all 3 conditions are satisfied unless player gets deactivated and unless game is finished
+        //thread gets waked up by other threads that invoke moveStudent(), moveMN(), useCloud() and buy/activateCharacter()
+        //or if player gets disconnected inside changePlayerStatus() of VirtualView
         while ( gameBoard.isGameOn() && (studentMove != (players.size() == 3? 4: 3) || !motherNatureMove || !useCloudMove) && p.getPlayedAssistant()!=null ) {
-            //need to wait until all 3 conditions are satisfied unless player gets deactivated and unless game is finished
-            //thread gets waked up by other threads that invoke moveStudent(), moveMN() and useCloud()
-            //or if player gets disconnected inside changePlayerStatus() of VirtualView
             this.wait();
             //endOfGame is sent inside checkEndGame only if game was active previously
             gameBoard.setGameOn(!checkEndGame());
@@ -436,6 +473,7 @@ public class Game implements GameForClient{
         studentMove = 0;
         motherNatureMove = false;
         useCloudMove = false;
+        characterUsed = false;
     }
 
     /*check whether a player can play an assistant with a certain rank*/
@@ -463,8 +501,14 @@ public class Game implements GameForClient{
     /*the game is finished when there is a player that has no assistants or
     has no towers or there is a team that has no towers (in case of 4 players) or
     the bag is empty or the number of islands is less than 3*/
-    /**checks whether the game is finished and in affermative case sends EndOfGameChange to all active clients
-     * and returns true, otherwise just returns false*/
+    /**Checks whether the game is finished and in affermative case sends EndOfGameChange to all active clients
+     * and returns true, otherwise just returns false and doesn't send EndOfGameChange.
+     * The game is finished when one of the following conditions verifies:
+     * 1.A player puts his last tower on an island ( that particular player becomes the winner )
+     * 2.A player has no assistants ( player that has fewer towers becomes the winner )
+     * 3.The bag is empty ( player that has fewer towers becomes the winner )
+     * 4.Number of islands is less or equal than 3 ( player that has fewer towers becomes the winner )
+     * 5.Only one active player or active team has remained connected ( that player or team becomes the winner )*/
     public boolean checkEndGame(){
 
         //TODO check 4 players end game
@@ -473,6 +517,7 @@ public class Game implements GameForClient{
             if(p.checkEmptyTowers()){
                 if(players.size()>3){
                     for (Player q : players){
+                        //check that a teammate has no towers as well
                         if (!p.equals(q) && p.getTowerColor().equals(q.getTowerColor()) && q.checkEmptyTowers()) {
                             if (gameBoard.isGameOn())
                                 gameBoard.notify(new EndOfGameChange(p.getName()));
@@ -492,21 +537,17 @@ public class Game implements GameForClient{
         }
 
         //search for the player that has fewer towers on SchoolBoard since this is the one that has conquered more islands
-        Player leader = players.get(0);
-
-        for(Player p : players) {
-            if (!p.equals(leader) && p.getTowerColor().equals(leader.getTowerColor()) && p.getNumOfTowers() > 0) {
-                //do this in case players[0] is the one that doesn't hold any towers
-                leader = p;
-            } else if (!p.equals(leader) && p.getNumOfTowers() < leader.getNumOfTowers()) {
-                leader = p;
-            } else if (!p.equals(leader) && p.getNumOfTowers() == leader.getNumOfTowers() && p.getNumOfTowers() > 0) {
-                //in case of draw compare number of professors
-                if (p.getProfessorsColor().size() > leader.getProfessorsColor().size()) {
-                    leader = p;
-                }
+        List<Player> towersPlayers = players.stream().filter((p)->p.getNumOfTowers() > 0).sorted((p1, p2) -> {
+            if (p1.getNumOfTowers() == p2.getNumOfTowers()){
+                return p2.getProfessorsColor().size() - p1.getProfessorsColor().size();
             }
-        }
+            else{
+                return p1.getNumOfTowers() - p2.getNumOfTowers();
+            }
+        }).collect(Collectors.toList());
+
+        Player leader = towersPlayers.get(0);
+
 
         boolean foundPlayerNoAssistants = false;
         for (Player p: players){
@@ -524,12 +565,23 @@ public class Game implements GameForClient{
             return true;
         }
 
-        //if there is only 1 active player then the game is finished and the remained player is the winner
-        if (players.stream().filter(p -> p.isActive()).collect(Collectors.toList()).size() == 1) {
+        //if there is only 1 active player in case of 2-3 players then the game is finished and the remained player is the winner
+        List<Player> activePlayers = players.stream().filter(p -> p.isActive()).collect(Collectors.toList());
+        if (activePlayers.size() == 1) {
             if (gameBoard.isGameOn()) {
-                gameBoard.notify(new EndOfGameChange(players.stream().filter(p -> p.isActive()).collect(Collectors.toList()).get(0).getName()));
+                gameBoard.notify(new EndOfGameChange(activePlayers.get(0).getName()));
             }
             return true;
+        }
+        //if there are 2 active players from the same team then the game is finished and the remained team is the winner
+        else if (activePlayers.size() == 2 && players.size() == 4) {
+            if (activePlayers.get(0).getTowerColor().equals(activePlayers.get(1).getTowerColor())){
+                if (gameBoard.isGameOn()) {
+                    gameBoard.notify(new EndOfGameChange(activePlayers.get(0).getName()));
+                }
+                return true;
+            }
+
         }
 
         //if nothing from above is true then this is not yet the end of the game

@@ -37,19 +37,19 @@ public class  ClientConnection {
     }
 
     public void close(){
-        //stop connection tracker
-        isActive = false;
-        trackerThread.interrupt();
+        if (isActive) {
+            //stop connection tracker
+            trackerThread.interrupt();
 
-        System.out.println("Closing connection");
-        clientController.detachConnection();
-        try{
-            socket.close();
-        }catch (IOException e){
-            System.err.println(e.getMessage());
+            System.out.println("Closing connection");
+            try {
+                socket.close();
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+            }
+            isActive = false;
+            System.out.println("Done!");
         }
-
-        System.out.println("Done!");
     }
 
     public void attachController(ClientController controller){
@@ -57,47 +57,48 @@ public class  ClientConnection {
     }
 
     public void send(Packet packet) throws IOException{
-        synchronized (this) {
-            socketOut.writeObject(packet);
-            socketOut.flush();
-            socketOut.reset();
-        }
-
-        /*each send of packet is followed by read of model change or pong message*/
-        boolean waitEndOfChanges = true;
-        while(waitEndOfChanges){
-            try {
-                waitModelChange();
+        if (isActive) {
+            synchronized (this) {
+                socketOut.writeObject(packet);
+                socketOut.flush();
+                socketOut.reset();
             }
-            catch (EndOfChangesException e){
-                waitEndOfChanges = false;
+
+            /*each send of packet is followed by read of model change or pong message*/
+            boolean waitEndOfChanges = true;
+            while (waitEndOfChanges) {
+                try {
+                    waitModelChange();
+                } catch (EndOfChangesException e) {
+                    waitEndOfChanges = false;
+                }
             }
         }
     }
 
     public void waitModelChange() throws IOException{
-        Object modelChange = new Object();
+        if (isActive) {
+            Object modelChange = new Object();
 
-        try {
-            modelChange = socketIn.readObject();
-            clientController.changeModel((ModelChange) modelChange);
-        }
-        catch (ClassCastException e) {
             try {
-                //after start, can receive only gameBoardChange or pong messages
-                String fromServer = (String) modelChange;
-                if (fromServer.equals("pong")) {
+                modelChange = socketIn.readObject();
+                clientController.changeModel((ModelChange) modelChange);
+            } catch (ClassCastException e) {
+                try {
+                    //after start, can receive only gameBoardChange or pong messages
+                    String fromServer = (String) modelChange;
+                    if (fromServer.equals("pong")) {
+                    } else {
+                        System.out.println("ClientConnection.waitModelChanges says: Error from server received: " + fromServer);
+                        clientController.getGameBoard().setGameOn(false);
+                    }
+                } catch (ClassCastException e2) {
+                    System.out.println("ClientConnection says: Error from server side");
+                    clientController.getGameBoard().setGameOn(false);
                 }
-                else {
-                    System.out.println("ClientConnection says: Error from server received: \n" + fromServer);
-                }
+            } catch (ClassNotFoundException e) {
+                System.out.println("ClientConnection says: error class not found ex");
             }
-            catch (ClassCastException e2) {
-                System.out.println("ClientConnection says: Error from server side");
-            }
-        }
-        catch (ClassNotFoundException e) {
-            System.out.println("ClientConnection says: error class not found ex");
         }
     }
 
@@ -144,7 +145,7 @@ public class  ClientConnection {
                         inputCorrect = true;
                     } else {
                         inputCorrect = false;
-                        System.out.println("ClientConnection says: Error from server received:" + fromServer);
+                        System.out.println("ClientConnection.init.config says: Error from server received:" + fromServer);
                         continue;
                     }
                 }
@@ -170,7 +171,7 @@ public class  ClientConnection {
                         inputCorrect = true;
                     } else {
                         inputCorrect = false;
-                        System.out.println("ClientConnection says: Error from server received: \n" + fromServer);
+                        System.out.println("ClientConnection.init.advSett says: Error from server received: " + fromServer);
                     }
 
                 }
@@ -186,7 +187,7 @@ public class  ClientConnection {
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
-                //can receive lobbychange, endofgamechange or GameBoardChange ( reconnection ) or ping or start or error
+                //can receive lobbyChange, endOfGameChange or GameBoardChange ( reconnection ) or ping or start or error
                 try{
                     clientController.changeModel((LobbyChange) modelChange);
                 }
@@ -221,6 +222,12 @@ public class  ClientConnection {
                     while (waitingModelChange) {
                         try {
                             modelChange = socketIn.readObject();
+                            try {
+                                System.out.println(modelChange);
+                            }
+                            catch (Exception ee){
+                                ee.printStackTrace();
+                            }
                             //can receive lobbychange, endofgamechange or GameBoardChange ( reconnection ) or ping or start or error
                             clientController.changeModel((LobbyChange) modelChange);
                             inputCorrect = true;
@@ -252,7 +259,7 @@ public class  ClientConnection {
                                         } else if (fromServer.equals("start")) {
                                             waitingModelChange = false;
                                         } else {
-                                            clientController.printMessage("Error from server received: \n" + fromServer);
+                                            clientController.printMessage("ClientConnection.init.name says: Error from server received: " + fromServer);
                                             waitingModelChange = false;
                                         }
                                     } catch (ClassCastException e4) {
@@ -278,8 +285,6 @@ public class  ClientConnection {
             else if (fromServer.equals("stop")){
                 fromServer = "start";
                 //set to start in order to exit from loop
-                //close the connection
-                close();
             }
             else {
                 fromServer = socketIn.readUTF();

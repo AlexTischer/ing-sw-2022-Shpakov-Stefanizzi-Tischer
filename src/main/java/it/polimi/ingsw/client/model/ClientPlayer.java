@@ -89,6 +89,10 @@ public class ClientPlayer implements Serializable {
         System.out.println("Player " + name + " changed its status to " + connectionStatus);
     }
 
+    public boolean getConnectionStatus(){
+        return connectionStatus;
+    }
+
     public List<Integer> getAssistantsRanks(){
         return Arrays.stream(assistants).filter(a -> a!=null).map(a -> a.getRank()).toList();
     }

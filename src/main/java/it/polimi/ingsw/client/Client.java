@@ -4,7 +4,6 @@ import it.polimi.ingsw.client.controller.ClientController;
 import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.client.view.CLI.Cli;
 import it.polimi.ingsw.client.view.GUI.Gui;
-import it.polimi.ingsw.client.view.GUI.GuiApp;
 import it.polimi.ingsw.client.view.View;
 import javafx.application.Application;
 

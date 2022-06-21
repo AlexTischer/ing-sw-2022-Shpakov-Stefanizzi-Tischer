@@ -69,7 +69,9 @@ public class Printer {
         printSchoolBoardLine7(clientPlayers, currentPlayerName);
         printSchoolBoardLine8(clientPlayers, currentPlayerName);
         printSchoolBoardLine9(clientPlayers, currentPlayerName);
-        printSchoolBoardLine10(clientPlayers, currentPlayerName);
+        if (clientPlayers.size() == 4)
+            printSchoolBoardLine10(clientPlayers, currentPlayerName);
+        printSchoolBoardLine11(clientPlayers, currentPlayerName);
     }
 
     private void printClouds(List<ClientCloud> clientClouds){
@@ -299,7 +301,6 @@ public class Printer {
 
 
 
-    //TODO somehow show if a player is not active
 
     private void printSchoolBoardLine1(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
 
@@ -315,6 +316,9 @@ public class Printer {
                 frameColor = AnsiKeys.COLOR_RESET;
             }
 
+            if (!clientPlayer.getConnectionStatus()){
+                frameColor = AnsiKeys.DISCONNECTEDPLAYER_FRAME_COLOR;
+            }
             printColored("╔══════════════════════════════════╗", frameColor);
             System.out.print("  ");
         }
@@ -334,7 +338,9 @@ public class Printer {
             } else {
                 frameColor = AnsiKeys.COLOR_RESET;
             }
-
+            if (!clientPlayer.getConnectionStatus()){
+                frameColor = AnsiKeys.DISCONNECTEDPLAYER_FRAME_COLOR;
+            }
             printColored("║", frameColor);
 
             System.out.print("Name: ");
@@ -376,6 +382,10 @@ public class Printer {
                 frameColor = AnsiKeys.COLOR_RESET;
             }
 
+            if (!clientPlayer.getConnectionStatus()){
+                frameColor = AnsiKeys.DISCONNECTEDPLAYER_FRAME_COLOR;
+            }
+
             printColored("║", frameColor);
             System.out.print("╔════╦════════════╦═══╦════╗      ");
 
@@ -397,6 +407,10 @@ public class Printer {
             }
             else {
                 frameColor = AnsiKeys.COLOR_RESET;
+            }
+
+            if (!clientPlayer.getConnectionStatus()){
+                frameColor = AnsiKeys.DISCONNECTEDPLAYER_FRAME_COLOR;
             }
 
             printColored("║", frameColor);
@@ -471,7 +485,9 @@ public class Printer {
             else {
                 frameColor = AnsiKeys.COLOR_RESET;
             }
-
+            if (!clientPlayer.getConnectionStatus()){
+                frameColor = AnsiKeys.DISCONNECTEDPLAYER_FRAME_COLOR;
+            }
             printColored("║", frameColor);
 
             System.out.print("║ ");
@@ -546,7 +562,9 @@ public class Printer {
             else {
                 frameColor = AnsiKeys.COLOR_RESET;
             }
-
+            if (!clientPlayer.getConnectionStatus()){
+                frameColor = AnsiKeys.DISCONNECTEDPLAYER_FRAME_COLOR;
+            }
             printColored("║", frameColor);
             System.out.print("║ ");
             //printing first & second entrance item (if they exist)
@@ -617,7 +635,9 @@ public class Printer {
             else {
                 frameColor = AnsiKeys.COLOR_RESET;
             }
-
+            if (!clientPlayer.getConnectionStatus()){
+                frameColor = AnsiKeys.DISCONNECTEDPLAYER_FRAME_COLOR;
+            }
             printColored("║", frameColor);
             System.out.print("║ ");
             //printing first & second entrance item (if they exist)
@@ -690,7 +710,9 @@ public class Printer {
             else {
                 frameColor = AnsiKeys.COLOR_RESET;
             }
-
+            if (!clientPlayer.getConnectionStatus()){
+                frameColor = AnsiKeys.DISCONNECTEDPLAYER_FRAME_COLOR;
+            }
             printColored("║", frameColor);
 
             System.out.print("║ ");
@@ -762,7 +784,9 @@ public class Printer {
             else {
                 frameColor = AnsiKeys.COLOR_RESET;
             }
-
+            if (!clientPlayer.getConnectionStatus()){
+                frameColor = AnsiKeys.DISCONNECTEDPLAYER_FRAME_COLOR;
+            }
             printColored("║", frameColor);
             System.out.print("╚════╩════════════╩═══╩════╝      ");
             printColored("║", frameColor);
@@ -772,6 +796,31 @@ public class Printer {
     }
 
     private void printSchoolBoardLine10(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
+        String frameColor;
+
+        for(ClientPlayer clientPlayer : clientPlayers) {
+
+            //setting frame color for current player
+            if (clientPlayer.getName().equals(currentPlayerName)) {
+                frameColor = AnsiKeys.CURRENTPLAYER_FRAME_COLOR;
+            } else {
+                frameColor = AnsiKeys.COLOR_RESET;
+            }
+            if (!clientPlayer.getConnectionStatus()){
+                frameColor = AnsiKeys.DISCONNECTEDPLAYER_FRAME_COLOR;
+            }
+            printColored("║", frameColor);
+
+            System.out.printf("%-29s", "Team color: " + clientPlayer.getTowerColor().toString());
+
+            printColored("     ║", frameColor);
+
+            System.out.print("  ");
+        }
+        System.out.print("\n");
+    }
+
+    private void printSchoolBoardLine11(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
 
         String frameColor;
 
@@ -784,7 +833,9 @@ public class Printer {
             else {
                 frameColor = AnsiKeys.COLOR_RESET;
             }
-
+            if (!clientPlayer.getConnectionStatus()){
+                frameColor = AnsiKeys.DISCONNECTEDPLAYER_FRAME_COLOR;
+            }
             printColored("╚══════════════════════════════════╝", frameColor);
             System.out.print("  ");
         }

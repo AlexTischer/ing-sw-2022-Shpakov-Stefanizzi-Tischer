@@ -4,8 +4,8 @@ import it.polimi.ingsw.client.model.ClientCharacter4;
 import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 import it.polimi.ingsw.exceptions.NoEntryException;
 
+/*students of selectedStudent color don’t count in influence*/
 public class Character4 extends Character {
-    /*students of selectedStudent color don’t count in influence*/
 
     private int id = 4;
     private Color selectedStudent;
@@ -40,14 +40,22 @@ public class Character4 extends Character {
 
     @Override
     public void buy() throws NoEnoughCoinsException {
-        game.getGameBoard().removeCoins(game.getCurrentPlayer(), cost);
+        game.getGameBoard().removeCoinsFromPlayer(game.getCurrentPlayer(), cost);
+        //if it's first use then we need to leave one coin on the card
+        if (firstUse){
+            game.getGameBoard().addCoinsToBank(cost-1);
+            firstUse = false;
+        }
+        else {
+            game.getGameBoard().addCoinsToBank(cost);
+        }
         cost = 4;
     }
 
     @Override
     public ClientCharacter createClientCharacter(){
 
-        ClientCharacter character = new ClientCharacter4();
+        ClientCharacter4 character = new ClientCharacter4();
 
         character.setId(id);
         character.setCost(cost);

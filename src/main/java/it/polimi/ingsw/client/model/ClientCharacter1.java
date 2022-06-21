@@ -9,6 +9,8 @@ import java.util.Arrays;
 
 public class ClientCharacter1 extends ClientCharacter{
 
+    private Color[] students;
+
     @Override
     public ActivateCharacterPacket createPacket(View view){
 
@@ -18,7 +20,7 @@ public class ClientCharacter1 extends ClientCharacter{
         while(!correctStudent) {
             view.printMessage("From this card, select the student you want to move");
             student = view.askStudentColor();
-            if(Arrays.stream(getStudents()).toList().contains(student))
+            if(Arrays.stream(students).toList().contains(student))
             {correctStudent=true;}
             else{
                 view.printMessage("No such student on this card. Try again");
@@ -27,9 +29,16 @@ public class ClientCharacter1 extends ClientCharacter{
         view.printMessage("Choose the island you want to move the student to");
         int islandNumber = view.askIslandNumber();
 
-        ActivateCharacter2Packet packet = new ActivateCharacter2Packet(student, islandNumber--);
+        ActivateCharacter2Packet packet = new ActivateCharacter2Packet(student, islandNumber-1);
 
         return packet;
+    }
+
+    public void setStudents(Color[] students) {
+        this.students = students;
+    }
+    public Color[] getStudents() {
+        return students;
     }
 
 }

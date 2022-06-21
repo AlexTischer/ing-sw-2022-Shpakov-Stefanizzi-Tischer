@@ -17,6 +17,8 @@ public class PlayerChange extends ModelChange{
     private Assistant playedAssistant;
     private Assistant[] assistants;
 
+    private boolean connectionStatus;
+
     @Override
     public void execute(ClientGameBoard gameBoard){
         gameBoard.getPlayer(name).setSchoolBoard(schoolBoard);
@@ -25,6 +27,7 @@ public class PlayerChange extends ModelChange{
         gameBoard.getPlayer(name).setAssistantType(assistantType);
         gameBoard.getPlayer(name).setPlayedAssistant(playedAssistant);
         gameBoard.getPlayer(name).setAssistants(assistants);
+        gameBoard.setPlayerStatus(name, connectionStatus);
     }
 
     public PlayerChange(Player player){
@@ -60,5 +63,6 @@ public class PlayerChange extends ModelChange{
         this.assistantType = player.getAssistantType();
         this.playedAssistant = player.getPlayedAssistant();
         this.assistants = player.getAssistants();
+        this.connectionStatus = player.isActive();
     }
 }

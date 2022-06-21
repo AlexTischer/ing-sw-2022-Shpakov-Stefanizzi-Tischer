@@ -97,6 +97,9 @@ public class Connection implements Runnable{
                 /*allows client to insert the name*/
                 try {
                     fromClient = socketIn.readObject();
+                    System.out.println("Connection says: I am ready to receive the name!");
+                    System.out.println(fromClient);
+                    System.out.println(fromClient.getClass());
                     //if client sent ping message, then i need to respond and wait for the next input
                     if (fromClient.equals("ping")){
                         socketOut.writeObject("pong");
@@ -110,6 +113,7 @@ public class Connection implements Runnable{
                         name = (String)fromClient;
                         name = name.toUpperCase();
                         server.addClient(this, name);
+
                         nameReady = true;
 
                         //wait until enough number of clients connect
@@ -187,7 +191,6 @@ public class Connection implements Runnable{
             }
         }
         catch(IOException | InterruptedException e){
-            System.err.println(e.getMessage());
             System.out.println("Closing socket of " + name);
         }
         finally {

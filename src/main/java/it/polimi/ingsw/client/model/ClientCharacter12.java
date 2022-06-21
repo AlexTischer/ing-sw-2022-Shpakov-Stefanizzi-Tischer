@@ -12,7 +12,7 @@ public class ClientCharacter12 extends ClientCharacter{
         view.printMessage("Insert island number you want to calculate influence in");
         int islandNumber = view.askIslandNumber();
 
-        ActivateCharacter3Packet packet = new ActivateCharacter3Packet(islandNumber--);
+        ActivateCharacter3Packet packet = new ActivateCharacter3Packet(islandNumber-1);
 
         return packet;
     }
