@@ -6,6 +6,7 @@ import it.polimi.ingsw.server.model.Color;
 
 public class CharacterChange extends ModelChange{
 
+    private int id;
     private int cost;
     private int noEntryTiles;
     private Color[] students;
@@ -15,6 +16,7 @@ public class CharacterChange extends ModelChange{
     public void execute(ClientGameBoard gameBoard){
         gameBoard.setCurrentCharacter(characterIndex);
 
+        gameBoard.getCurrentCharacter().setId(id);
         gameBoard.getCurrentCharacter().setCost(cost);
 
         if(noEntryTiles!=-1)
@@ -25,6 +27,7 @@ public class CharacterChange extends ModelChange{
     }
 
     public CharacterChange(Character character, int index){ //index must be -1 for defaultCharacter
+        id = character.getId();
         cost = character.getCost();
         noEntryTiles = character.getNoEntryTiles();
         students = character.getStudentsSlot();

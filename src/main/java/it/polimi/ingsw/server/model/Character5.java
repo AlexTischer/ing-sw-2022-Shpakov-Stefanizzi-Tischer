@@ -8,6 +8,8 @@ import it.polimi.ingsw.exceptions.NoEnoughEntryTilesException;
 
 /**sets noEntry tiles on islands*/
 public class Character5 extends Character {
+
+    private int id = 5;
     private int noEntryTiles;
     protected int selectedIslandNumber;
     private int cost = 2;
@@ -54,6 +56,7 @@ public class Character5 extends Character {
     public ClientCharacter createClientCharacter(){
         ClientCharacter character = new ClientCharacter5();
 
+        character.setId(id);
         character.setCost(cost);
         character.setDescription(description);
 

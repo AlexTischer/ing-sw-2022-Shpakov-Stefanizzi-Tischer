@@ -4,6 +4,7 @@ import it.polimi.ingsw.server.model.Color;
 import it.polimi.ingsw.server.model.TowerColor;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class ClientIsland implements Serializable {
@@ -51,5 +52,17 @@ public class ClientIsland implements Serializable {
 
     public void setNoEntry(boolean noEntry) {
         this.noEntry = noEntry;
+    }
+
+    public ArrayList<Color> getStudentsAsArray(){
+        ArrayList<Color> studentsArray = new ArrayList<>();
+
+        for(Color c : Color.values()){
+            for(int i=0;i<this.students.get(c); i++){
+                studentsArray.add(c);
+            }
+        }
+
+        return studentsArray;
     }
 }

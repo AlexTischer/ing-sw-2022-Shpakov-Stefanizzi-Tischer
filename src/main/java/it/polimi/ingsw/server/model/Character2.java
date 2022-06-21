@@ -8,6 +8,7 @@ import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 /** adds 2 points to influence of currentPlayer */
 public class Character2 extends Character {
 
+    private int id=2;
     private int cost = 2;
     private String description = "You get 2 more influence points";
 
@@ -38,6 +39,7 @@ public class Character2 extends Character {
     @Override
     public ClientCharacter createClientCharacter() {
         ClientCharacter clientCharacter = new ClientCharacter();
+        clientCharacter.setId(id);
         clientCharacter.setCost(cost);
         clientCharacter.setDescription(description);
         return clientCharacter;

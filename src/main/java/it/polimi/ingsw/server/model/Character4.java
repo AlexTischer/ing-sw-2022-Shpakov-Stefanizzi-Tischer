@@ -7,6 +7,7 @@ import it.polimi.ingsw.exceptions.NoEntryException;
 public class Character4 extends Character {
     /*students of selectedStudent color don’t count in influence*/
 
+    private int id = 4;
     private Color selectedStudent;
     private int cost = 3;
     private String description = "When calculating influence, student's color of your choice won't count";
@@ -48,6 +49,7 @@ public class Character4 extends Character {
 
         ClientCharacter character = new ClientCharacter4();
 
+        character.setId(id);
         character.setCost(cost);
         character.setDescription(description);
 

@@ -13,6 +13,7 @@ public class ClientCharacter implements Serializable {
     private int noEntryTiles;
     private Color[] students;
     private String description;
+    private int id;
 
     public int getCost() {
         return cost;
@@ -48,5 +49,13 @@ public class ClientCharacter implements Serializable {
 
     public String getDescription() {
         return description;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId(){
+        return this.id;
     }
 }

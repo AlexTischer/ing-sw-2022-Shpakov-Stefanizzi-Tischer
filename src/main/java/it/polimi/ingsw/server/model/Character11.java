@@ -8,6 +8,7 @@ import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 public class Character11 extends Character {
     /*Removes 3 Students of studentColor from each player`s Dining*/
 
+    private int id=11;
     private Color selectedStudent;
     private int cost = 3;
     private String description = "Every player (including yourself) must return 3 students of a color of your choice from their dining room to the bag";
@@ -42,6 +43,7 @@ public class Character11 extends Character {
     public ClientCharacter createClientCharacter(){
         ClientCharacter character = new ClientCharacter11();
 
+        character.setId(id);
         character.setCost(cost);
         character.setDescription(description);
 

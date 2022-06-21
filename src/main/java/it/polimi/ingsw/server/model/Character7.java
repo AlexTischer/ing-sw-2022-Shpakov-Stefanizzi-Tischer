@@ -9,6 +9,7 @@ import java.util.*;
 /**Swaps selectedStudents from Dining with toBeSwappedStudents from Entrance in currentPlayer`s schoolBoard **/
 public class Character7 extends Character {
 
+    private int id=7;
     private List<Color> selectedStudents;
     private List<Color> toBeSwappedStudents;
     private int cost = 1;
@@ -75,6 +76,7 @@ public class Character7 extends Character {
 
         ClientCharacter character = new ClientCharacter7();
 
+        character.setId(id);
         character.setCost(cost);
         character.setDescription(description);
 

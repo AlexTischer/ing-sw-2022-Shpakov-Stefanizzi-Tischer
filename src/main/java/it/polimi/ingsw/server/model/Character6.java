@@ -9,6 +9,7 @@ import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 public class Character6 extends Character {
     /*In a Tie, currentPlayer wins*/
 
+    private int id=6;
     private int cost = 2;
     private String description  = "You can get the professor even if you have the same number of students as the player who currently controls that professor";
     @Override
@@ -52,6 +53,7 @@ public class Character6 extends Character {
     @Override
     public ClientCharacter createClientCharacter() {
         ClientCharacter clientCharacter = new ClientCharacter();
+        clientCharacter.setId(id);
         clientCharacter.setCost(cost);
         clientCharacter.setDescription(description);
         return clientCharacter;

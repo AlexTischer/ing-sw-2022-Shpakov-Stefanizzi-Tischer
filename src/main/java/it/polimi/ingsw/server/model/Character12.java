@@ -7,6 +7,8 @@ import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 
 /** resolves an island without moving mother nature*/
 public class Character12 extends Character {
+
+    private int id=12;
     protected int selectedIslandNumber;
     private int cost = 3;
     private String description = "Choose an Island and resolve it as if Mother Nature had ended her movement there";
@@ -36,6 +38,7 @@ public class Character12 extends Character {
     public ClientCharacter createClientCharacter(){
         ClientCharacter character = new ClientCharacter12();
 
+        character.setId(id);
         character.setCost(cost);
         character.setDescription(description);
 

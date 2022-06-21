@@ -11,6 +11,8 @@ import java.util.ArrayList;
 /** moves selected student to currentPlayer dining*/
 
 public class Character10 extends Character {
+
+    private int id=10;
     private ArrayList<Color> students;
     protected Color selectedStudent;
     private int cost = 2;
@@ -52,6 +54,7 @@ public class Character10 extends Character {
     public ClientCharacter createClientCharacter(){
         ClientCharacter character = new ClientCharacter10();
 
+        character.setId(id);
         character.setCost(cost);
         character.setDescription(description);
 

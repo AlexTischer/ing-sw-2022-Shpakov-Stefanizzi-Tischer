@@ -8,6 +8,7 @@ import it.polimi.ingsw.exceptions.NoEntryException;
 public class Character3 extends Character {
     /*does not count towers in influence*/
 
+    private int id=3;
     private int cost = 3;
     private String description = "When calculating influence, Towers won't count";
 
@@ -40,6 +41,7 @@ public class Character3 extends Character {
     @Override
     public ClientCharacter createClientCharacter() {
         ClientCharacter clientCharacter = new ClientCharacter();
+        clientCharacter.setId(id);
         clientCharacter.setCost(cost);
         clientCharacter.setDescription(description);
         return clientCharacter;

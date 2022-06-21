@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 /** Move selected student to selected island */
 public class Character1 extends Character {
+
+    private int id=1;
     private ArrayList<Color> students;
     protected Color selectedStudent;
     protected int selectedIslandNumber;
@@ -64,6 +66,7 @@ public class Character1 extends Character {
     public ClientCharacter createClientCharacter(){
         ClientCharacter character = new ClientCharacter1();
 
+        character.setId(id);
         character.setCost(cost);
         character.setDescription(description);
 

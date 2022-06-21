@@ -1,15 +1,14 @@
 package it.polimi.ingsw.client.view.GUI.SceneControllers;
 
 import it.polimi.ingsw.client.model.ClientGameBoard;
-import it.polimi.ingsw.client.view.GUI.GuiApp;
 import it.polimi.ingsw.server.model.Color;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+
 
 import java.util.ArrayList;
 
@@ -22,12 +21,23 @@ public class GameSceneController extends SceneController {
 
     @FXML
     private ArrayList<Group> playersList;
-
+    @FXML
+    private ArrayList<Pane> islandsList;
     @FXML
     private ArrayList<GridPane> diningRoomList, professorsList;
-
     @FXML
     private ArrayList<ArrayList<Pane>> entrancesList, towerTablesList;
+
+    @FXML
+    private Group islands, assistants, clouds, characters;
+    @FXML
+    private Pane zoomedAssistant;
+
+    @FXML
+    private Label characterDescription;
+
+
+
 
     private boolean askingDone = false; //Boolean used to say to the controller thread that all the questions to the user have been answered TODO: change this description
     private int assistantRank;
@@ -40,72 +50,335 @@ public class GameSceneController extends SceneController {
     private int positionOfMotherNature;
     private boolean choice;
 
-    public void showModel(ClientGameBoard gameBoard) {
+    private int numOfIslands = 12;
+
+    private boolean firstModelShown = false;
+
+
+
+    public void showModel(ClientGameBoard gameBoard){
+        if(!firstModelShown){
+            showFirstModel(gameBoard);
+            firstModelShown = true;
+        }
+        else{
+            updateModel(gameBoard);
+        }
+    }
+
+    private void showFirstModel(ClientGameBoard gameBoard) {
 
         this.positionOfMotherNature=gameBoard.getPositionOfMotherNature();
 
         Platform.runLater(()-> {
+
             //setting playground according to num of players
             for(int i=4; i>gameBoard.getPlayers().size(); i--){
+
+                //removing unnecessary schoolboards
                 playersList.get(i-1).getChildren().remove(0,playersList.get(i-1).getChildren().size());
+
+                //removing unnecessary clouds
+                clouds.getChildren().remove(i-1);
             }
 
-            //setting schoolboards
+
+            //setting objects on schoolboards
+            int schoolBoardIndex = 1;
             for(int p = 0; p <gameBoard.getPlayers().size(); p++){
 
+                //checking if player with index p is client player
+                if(!gameBoard.getPlayers().get(p).getName().equalsIgnoreCase(gameBoard.getClientName())) {
 
-                //entrance
-                ArrayList<Color> entrance = gameBoard.getPlayers().get(p).getSchoolBoard().getEntrance();
-
-                for(int student=0; student<entrance.size(); student++){
-                    entrancesList.get(p).get(student).getChildren().add(loadImage(entrance.get(student).student ,20,20));
+                    //if not, show player schoolboard starting from schoolboard with index 1
+                    fillSchoolBoard(gameBoard, p, schoolBoardIndex);
+                    schoolBoardIndex++;
                 }
-
-
-                //diningRoom
-                for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(GREEN); student++) {
-                    diningRoomList.get(p).add(loadImage(GREEN.student, 15,15), student, 0);
+                else{
+                    //show schoolboard of client on schoolboard with index 0
+                    fillSchoolBoard(gameBoard, p,0);
                 }
-                for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(RED); student++) {
-                    diningRoomList.get(p).add(loadImage(RED.student, 15,15), student, 0);
-                }
-                for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(YELLOW); student++) {
-                    diningRoomList.get(p).add(loadImage(YELLOW.student, 15,15), student, 0);
-                }
-                for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(PINK); student++) {
-                    diningRoomList.get(p).add(loadImage(PINK.student, 15,15), student, 0);
-                }
-                for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(BLUE); student++) {
-                    diningRoomList.get(p).add(loadImage(BLUE.student, 15,15), student, 0);
-                }
+            }
 
 
-                //professors
-                if(gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(GREEN)==1){
-                    professorsList.get(p).add(loadImage(GREEN.professor, 25,25),0,0);
+            //updating position of islands
+            if(numOfIslands!=gameBoard.getIslands().size()){
+                numOfIslands = gameBoard.getIslands().size();
+                int islandDim;
+
+                for(int i=0; i<numOfIslands; i++){
+
+                    if(gameBoard.getIslands().get(i).getNumOfIslands()>1){
+                        islandDim=150;
+                    }
+                    else{
+                        islandDim=60;
+                    }
+
+                    islands.getChildren().get(i).setLayoutX(calculateIslandPosition(numOfIslands,i, islandDim)[0]);
+                    islands.getChildren().get(i).setLayoutY(calculateIslandPosition(numOfIslands,i, islandDim)[1]);
+                    islands.getChildren().get(i).setScaleX(islandDim/60.0);
+                    islands.getChildren().get(i).setScaleY(islandDim/60.0);
                 }
-                if(gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(RED)==1){
-                    professorsList.get(p).add(loadImage(RED.professor, 25,25),0,1);
-                }
-                if(gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(YELLOW)==1){
-                    professorsList.get(p).add(loadImage(YELLOW.professor, 25,25),0,2);
-                }
-                if(gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(YELLOW)==1){
-                    professorsList.get(p).add(loadImage(YELLOW.professor, 25,25),0,3);
-                }
-                if(gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(YELLOW)==1){
-                    professorsList.get(p).add(loadImage(YELLOW.professor, 25,25),0,4);
+            }
+
+            //setting objects on islands
+            for(int i=0; i<gameBoard.getIslands().size(); i++){
+
+
+
+                //students
+                ArrayList<Color> students = gameBoard.getIslands().get(i).getStudentsAsArray();
+
+                for(int s=0; s < students.size(); s++) {
+                    ((GridPane) islandsList.get(i).getChildren().get(1))
+                            .add(loadImage(students.get(s).student,
+                                    15, 15), studentOnIslandColumn(s), studentOnIslandRow(s));
                 }
 
                 //towers
-                for(int tower=0; tower<gameBoard.getPlayers().get(p).getSchoolBoard().getNumOfTowers(); tower++){
-                    towerTablesList.get(p).get(tower).getChildren().add(loadImage(gameBoard.getPlayers().get(p).getTowerColor().tower, 30,30));
+                for(int t =0; t<gameBoard.getIslands().get(i).getNumOfTowers();t++){
+                    ((GridPane)((Pane)islands.getChildren().get(i)).getChildren().get(2))
+                            .add(loadImage(gameBoard.getIslands().get(i).getTowersColor().tower,
+                                    25,25),towerOnIslandRow(t),towerOnIslandColumn(t));
                 }
 
+                //mother nature
+                if(i==positionOfMotherNature){
+                    ((GridPane) islandsList.get(i).getChildren().get(1))
+                            .add(loadImage("/images/misc/mother_nature.png",
+                                    25,25),2,1);
+                }
+
+
+
+            }
+
+
+            //initializing assistants
+            assistants.getChildren().get(0).setOnMouseEntered(event -> {showAssistant(1);});
+            assistants.getChildren().get(1).setOnMouseEntered(event -> {showAssistant(2);});
+            assistants.getChildren().get(2).setOnMouseEntered(event -> {showAssistant(3);});
+            assistants.getChildren().get(3).setOnMouseEntered(event -> {showAssistant(4);});
+            assistants.getChildren().get(4).setOnMouseEntered(event -> {showAssistant(5);});
+            assistants.getChildren().get(5).setOnMouseEntered(event -> {showAssistant(6);});
+            assistants.getChildren().get(6).setOnMouseEntered(event -> {showAssistant(7);});
+            assistants.getChildren().get(7).setOnMouseEntered(event -> {showAssistant(8);});
+            assistants.getChildren().get(8).setOnMouseEntered(event -> {showAssistant(9);});
+            assistants.getChildren().get(9).setOnMouseEntered(event -> {showAssistant(10);});
+
+            assistants.getChildren().get(0).setOnMouseExited(event -> {removeShowAssistant();});
+            assistants.getChildren().get(1).setOnMouseExited(event -> {removeShowAssistant();});
+            assistants.getChildren().get(2).setOnMouseExited(event -> {removeShowAssistant();});
+            assistants.getChildren().get(3).setOnMouseExited(event -> {removeShowAssistant();});
+            assistants.getChildren().get(4).setOnMouseExited(event -> {removeShowAssistant();});
+            assistants.getChildren().get(5).setOnMouseExited(event -> {removeShowAssistant();});
+            assistants.getChildren().get(6).setOnMouseExited(event -> {removeShowAssistant();});
+            assistants.getChildren().get(7).setOnMouseExited(event -> {removeShowAssistant();});
+            assistants.getChildren().get(8).setOnMouseExited(event -> {removeShowAssistant();});
+            assistants.getChildren().get(9).setOnMouseExited(event -> {removeShowAssistant();});
+
+
+            //setting students on clouds
+            for(int c=0; c<clouds.getChildren().size(); c++){
+
+                ArrayList<Color> students = gameBoard.getClouds().get(c).getStudents();
+                int student = 0;
+
+                for(int i=0; i<2 && student<students.size(); i++){
+                    for(int j=0; j<2 && student<students.size(); j++){
+                        ((GridPane)((Pane) clouds.getChildren().get(c)).getChildren().get(1))
+                                .add(loadImage(students.get(student).student, 15,15), j,i);
+                        student++;
+                    }
+                }
+            }
+
+            //setting played characters
+
+            for(int i=0; i<characters.getChildren().size(); i++) {
+
+
+                ((Pane) characters.getChildren().get(i)).getChildren()
+                        .add(loadImage(getCharacterPath(gameBoard.getPlayedCharacters()[i].getId()), 80, 120));
+
+                ((Pane) characters.getChildren().get(i)).getChildren().get(1).toBack();
+
+
+                fillCharacter(gameBoard, i);
             }
         });
 
     }
+
+    private void updateModel(ClientGameBoard gameBoard){
+
+        //updating schoolboards
+
+    }
+
+
+    private void fillCharacter(ClientGameBoard gameBoard, int index){
+
+        if(gameBoard.getPlayedCharacters()[index].getNoEntryTiles()!=0){
+            int tile=0;
+            for(int i=0; i<2 && tile<gameBoard.getPlayedCharacters()[index].getNoEntryTiles(); i++){
+                for(int j=0; j<3 && tile<gameBoard.getPlayedCharacters()[index].getNoEntryTiles(); j++){
+
+                    ((GridPane)((Pane) characters.getChildren().get(index)).getChildren().get(1))
+                            .add(loadImage("/images/misc/deny_island.png",15,15),j,i);
+
+                    tile++;
+                }
+            }
+        }
+
+        if(gameBoard.getPlayedCharacters()[index].getStudents()!=null){
+            Color[] students = gameBoard.getPlayedCharacters()[index].getStudents();
+            int student=0;
+            for(int i=0; i<2 && student<students.length; i++){
+                for(int j=0; j<3 && student<students.length; j++){
+
+                    ((GridPane)((Pane) characters.getChildren().get(index)).getChildren().get(1))
+                            .add(loadImage(students[student].student,15,15),j,i);
+
+                    student++;
+                }
+            }
+        }
+    }
+
+
+    /* SHOWS PLAYER SCHOOLBOARD
+       p = player index in array of players
+       s = schoolBoard index in schoolBoardsList */
+    private void fillSchoolBoard(ClientGameBoard gameBoard, int p, int s){
+        //entrance
+        ArrayList<Color> entrance = gameBoard.getPlayers().get(p).getSchoolBoard().getEntrance();
+
+
+        for (int student = 0; student < entrance.size(); student++) {
+            entrancesList.get(s).get(student).getChildren().add(loadImage(entrance.get(student).student, 20, 20));
+            //((Pane)((Group) playersList.get(p).getChildren().get(1)).getChildren().get(student)).getChildren()
+            //        .add(loadImage(entrance.get(student).student, 20, 20));
+        }
+
+
+        //diningRoom
+        for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(GREEN); student++) {
+            diningRoomList.get(s).add(loadImage(GREEN.student, 15, 15), student, 0);
+        }
+        for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(RED); student++) {
+            diningRoomList.get(s).add(loadImage(RED.student, 15, 15), student, 0);
+        }
+        for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(YELLOW); student++) {
+            diningRoomList.get(s).add(loadImage(YELLOW.student, 15, 15), student, 0);
+        }
+        for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(PINK); student++) {
+            diningRoomList.get(s).add(loadImage(PINK.student, 15, 15), student, 0);
+        }
+        for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(BLUE); student++) {
+            diningRoomList.get(s).add(loadImage(BLUE.student, 15, 15), student, 0);
+        }
+
+
+        //professors
+        if (gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(GREEN) == 1) {
+            professorsList.get(s).add(loadImage(GREEN.professor, 25, 25), 0, 0);
+        }
+        if (gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(RED) == 1) {
+            professorsList.get(s).add(loadImage(RED.professor, 25, 25), 0, 1);
+        }
+        if (gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(YELLOW) == 1) {
+            professorsList.get(s).add(loadImage(YELLOW.professor, 25, 25), 0, 2);
+        }
+        if (gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(YELLOW) == 1) {
+            professorsList.get(s).add(loadImage(YELLOW.professor, 25, 25), 0, 3);
+        }
+        if (gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(YELLOW) == 1) {
+            professorsList.get(s).add(loadImage(YELLOW.professor, 25, 25), 0, 4);
+        }
+
+        //towers
+        for (int tower = 0; tower < gameBoard.getPlayers().get(p).getSchoolBoard().getNumOfTowers(); tower++) {
+            towerTablesList.get(s).get(tower).getChildren().add(loadImage(gameBoard.getPlayers().get(p).getTowerColor().tower, 30, 30));
+        }
+
+    }
+
+
+
+    /*METHODS FOR POSITIONING STUDENTS*/
+    private int studentOnIslandRow(int num){
+        Integer[] positions = {1,2,0,1,0,2,2,0,0,1,1};
+        return positions[num];
+    }
+
+    private int studentOnIslandColumn(int num){
+        Integer[] positions = {1,2,1,3,3,1,3,0,4,0,4};
+        return positions[num];
+    }
+
+    private int towerOnIslandRow(int num){
+        Integer[] positions = {1,1,1,1,1,0,0,0,0,0};
+        return positions[num];
+
+    }
+
+    private int towerOnIslandColumn(int num){
+        Integer[] positions = {1,3,2,0,4,1,3,2,0,4};
+        return positions[num];
+
+    }
+
+
+    /*METHODS ASSIGNED TO ASSISTANTS DURING INITIALIZATION*/
+    public void showAssistant(int rank){
+        zoomedAssistant.getChildren().add(loadImage(getAssistantPath(rank),100,150));
+    }
+
+    public void removeShowAssistant(){
+        zoomedAssistant.getChildren().remove(0);
+    }
+
+    private String getAssistantPath(int rank){
+        String[] paths = {
+                "/images/assistants/Assistente (1).png",
+                "/images/assistants/Assistente (2).png",
+                "/images/assistants/Assistente (3).png",
+                "/images/assistants/Assistente (4).png",
+                "/images/assistants/Assistente (5).png",
+                "/images/assistants/Assistente (6).png",
+                "/images/assistants/Assistente (7).png",
+                "/images/assistants/Assistente (8).png",
+                "/images/assistants/Assistente (9).png",
+                "/images/assistants/Assistente (10).png",
+        };
+
+        return paths[rank-1];
+    }
+
+    private String getCharacterPath(int id){
+        String[] paths = {
+                "/images/characters/Character1.jpg",
+                "/images/characters/Character2.jpg",
+                "/images/characters/Character3.jpg",
+                "/images/characters/Character4.jpg",
+                "/images/characters/Character5.jpg",
+                "/images/characters/Character6.jpg",
+                "/images/characters/Character7.jpg",
+                "/images/characters/Character8.jpg",
+                "/images/characters/Character9.jpg",
+                "/images/characters/Character10.jpg",
+                "/images/characters/Character11.jpg",
+                "/images/characters/Character12.jpg",
+        };
+        return paths[id-1];
+    }
+
+
+
+
 
 
     public synchronized void selectStudent(Color studentColor){
@@ -265,28 +538,32 @@ public class GameSceneController extends SceneController {
     }
 
 
-    public ImageView loadImage(String path, int width, int height){
-        Image image = new Image(getClass().getResourceAsStream(path));
-        ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(width);
-        imageView.setFitHeight(height);
-
-        return imageView;
-    }
-
-    private int[] calculateIslandPosition(int n, int islandIndex, int dim){
+    public int[] calculateIslandPosition(int n, int islandIndex, int dim){
 
         int a=400;
-        int b=50;
+        int b=150;
         int x;
         int y;
-        int h = 0; //TODO: =islandsPane.getHeight
-        int w = 0; //TODO: =islandsPane.getWidth
+        int h = 720; //TODO: =islandsPane.getHeight
+        int w = 1280; //TODO: =islandsPane.getWidth
 
-        y= (int) (b*Math.sin(2*Math.PI*islandIndex/n)+h/2-dim/2);
+        y= (int) (b*Math.sin(2*Math.PI*islandIndex/n)+h/2-dim/2 - 30);
         x= (int) (a*Math.cos(2*Math.PI*islandIndex/n)+w/2-dim/2);
 
         return new int[]{x, y};
+    }
+
+    public static void main(String args[]){
+
+
+        GameSceneController gameSceneController = new GameSceneController();
+
+
+        for(int i =0; i<12; i++){
+            int[] coordinate = gameSceneController.calculateIslandPosition(12,i,60);
+            System.out.println(coordinate[0] +", "+ coordinate[1]);
+        }
+
     }
 
 }

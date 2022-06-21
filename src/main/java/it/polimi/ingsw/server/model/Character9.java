@@ -12,6 +12,8 @@ import java.util.List;
 
 /**Swaps selectedStudents in students on card with toBeSwappedStudents in currentPlayer Entrance **/
 public class Character9 extends Character {
+
+    private int id=9;
     private Color[] students;
     private List<Color> selectedStudents;
     private List<Color> toBeSwappedStudents;
@@ -98,6 +100,7 @@ public class Character9 extends Character {
     public ClientCharacter createClientCharacter(){
         ClientCharacter character = new ClientCharacter9();
 
+        character.setId(id);
         character.setCost(cost);
         character.setDescription(description);
 

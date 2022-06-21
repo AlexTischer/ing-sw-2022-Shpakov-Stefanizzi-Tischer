@@ -16,6 +16,7 @@ public class Character {
     protected Game game;
     protected int cost;
     protected String description = "ERROR";
+    protected int id;
 
 
     public int calculateInfluence(Island island, int islandNumber, Player player) throws NoEntryException {
@@ -114,5 +115,9 @@ public class Character {
 
     public ClientCharacter createClientCharacter() {
         throw new UnsupportedOperationException();
+    }
+
+    public int getId() {
+        return id;
     }
 }
