@@ -6,8 +6,10 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 
 
 import java.awt.*;
@@ -33,11 +35,18 @@ public class GameSceneController extends SceneController {
     private Group islands, assistants, clouds, characters;
     @FXML
     private Pane zoomedAssistant;
-
     @FXML
-    private Label characterDescription;
+    private Text characterDescription;
     @FXML
     private Group group;
+
+    @FXML
+    private Text dialogText;
+
+
+    int assistantPlayedChildren = 5;
+    int nameLabelChildren = 6;  int imageOfCoinChildren = 7;
+    int numOfCoinsChildren = 8;
 
 
 
@@ -86,6 +95,17 @@ public class GameSceneController extends SceneController {
                 clouds.getChildren().remove(i-1);
             }
 
+            //removing objects for advanced settings
+            if(!gameBoard.getAdvancedSettings()){
+
+                characters.getChildren().remove(0,characters.getChildren().size()-1);
+
+                for(int i=0; i<gameBoard.getPlayers().size(); i++){
+                    playersList.get(i).getChildren().remove(numOfCoinsChildren);
+                    playersList.get(i).getChildren().remove(imageOfCoinChildren);
+                }
+            }
+
 
             //setting objects on schoolboards
             int schoolBoardIndex = 1;
@@ -94,12 +114,14 @@ public class GameSceneController extends SceneController {
                 //checking if player with index p is client player
                 if(!gameBoard.getPlayers().get(p).getName().equalsIgnoreCase(gameBoard.getClientName())) {
 
-                    //if not, show player schoolboard starting from schoolboard with index 1
+                    //if not, show player schoolboard and name starting from schoolboard with index 1
+                    ((Label)playersList.get(schoolBoardIndex).getChildren().get(nameLabelChildren)).setText(gameBoard.getPlayers().get(p).getName());
                     fillSchoolBoard(gameBoard, p, schoolBoardIndex);
                     schoolBoardIndex++;
                 }
                 else{
                     //show schoolboard of client on schoolboard with index 0
+                    ((Label)playersList.get(0).getChildren().get(nameLabelChildren)).setText(gameBoard.getClientName());
                     fillSchoolBoard(gameBoard, p,0);
                 }
             }
@@ -180,21 +202,31 @@ public class GameSceneController extends SceneController {
 
 
             //setting played characters
-            for(int i=0; i<characters.getChildren().size(); i++) {
+            if(gameBoard.getAdvancedSettings()) {
+                for (int i = 0; i < gameBoard.getPlayedCharacters().length; i++) {
 
-                int finalId = gameBoard.getPlayedCharacters()[i].getId();
-                characters.getChildren().get(i).setOnMouseEntered(mouseEvent -> {characterDescription.setText(getCharacterDescription(finalId));});
-                characters.getChildren().get(i).setOnMouseExited(mouseEvent -> {characterDescription.setText("");});
+                    String finalDescription = gameBoard.getPlayedCharacters()[i].getDescription();
+                    characters.getChildren().get(i).setOnMouseEntered(mouseEvent -> {
+                        characterDescription.setText(finalDescription);
+                    });
+                    characters.getChildren().get(i).setOnMouseExited(mouseEvent -> {
+                        characterDescription.setText("");
+                    });
 
-                ((Pane) characters.getChildren().get(i)).getChildren()
-                        .add(loadImage(getCharacterPath(gameBoard.getPlayedCharacters()[i].getId()), 80, 120));
+                    ((Pane) characters.getChildren().get(i)).getChildren()
+                            .add(loadImage(getCharacterPath(gameBoard.getPlayedCharacters()[i].getId()), 80, 120));
 
-                ((Pane) characters.getChildren().get(i)).getChildren().get(1).toBack();
+                    ((Pane) characters.getChildren().get(i)).getChildren().get(1).toBack();
 
 
-                fillCharacter(gameBoard, i);
-
+                    fillCharacter(gameBoard, i);
+                }
             }
+
+
+
+
+
         });
 
     }
@@ -322,24 +354,6 @@ public class GameSceneController extends SceneController {
         zoomedAssistant.getChildren().remove(0);
     }
 
-    public String getCharacterDescription(int id) {
-        String[] description = {
-                "Take 1 Student from this card and place it on an Island of your choice",
-                "You get 2 more influence points",
-                "When calculating influence, Towers won't count",
-                "When calculating influence, student's color of your choice won't count",
-                "Place a No Entry tile on an island of your choice. The first time \nMother Nature ends her movement there, influence will not be calculated.",
-                "You can get the professor even if you have the same number \nof students as the player who currently controls that professor",
-                "You can swap up to 2 students between your entrance \nand your dining room",
-                "You can move Mother Nature up to 2 steps more than \nwhat's indicated by the Assistant card you played",
-                "Take up to 3 students from this card and replace them \nwith the same number of students from your entrance",
-                "Take 1 student from this card and place it in your dining room",
-                "Every player (including yourself) must return 3 students \nof a color of your choice from their dining room to the bag",
-                "Choose an Island and resolve it as if Mother Nature \nhad ended her movement there"};
-
-        return description[id - 1];
-    }
-
     private String getAssistantPath(int rank){
         String[] paths = {
                 "/images/assistants/Assistente (1).png",
@@ -400,6 +414,19 @@ public class GameSceneController extends SceneController {
         askingDone=true;
         this.assistantRank= assistantRank;
         /*TODO: disable assistant cards*/
+        Platform.runLater(()->{
+
+            assistants.getChildren().get(assistantRank-1).setDisable(true);
+
+            ((Pane)assistants.getChildren().get(assistantRank-1)).getChildren().remove(0);
+
+            ((Pane)playersList.get(0).getChildren().get(assistantPlayedChildren)).getChildren()
+                    .add(loadImage(getAssistantPath(assistantRank),98,144));
+
+            for(int i=0; i<assistants.getChildren().size(); i++){
+                assistants.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
+            }
+        });
         notifyAll();
     }
 
@@ -434,6 +461,15 @@ public class GameSceneController extends SceneController {
         askingDone=false;
         /*TODO: print: Select an assistant from your Deck*/
         /*TODO: enable Assistants and set onMouseClickAction to selectAssistant(index+1)*/
+        Platform.runLater(()->{
+            dialogText.setText("Select an assistant from your Deck");
+
+            for(int i=0; i<assistants.getChildren().size(); i++){
+                int finalI = i;
+                assistants.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectAssistant(finalI+1);});
+            }
+        });
+
     }
 
     public void askStudentColor() {

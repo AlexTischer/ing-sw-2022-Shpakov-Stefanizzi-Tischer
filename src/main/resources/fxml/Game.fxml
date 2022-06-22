@@ -12,6 +12,8 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
 
 <?import java.util.ArrayList?>
 <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-alignment: center;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
@@ -117,11 +119,18 @@
                                  <fx:reference source="tower18" />
                              </ArrayList>
                          </fx:define>
+                        <Label layoutX="150.0" layoutY="-20.0" prefHeight="17.0" prefWidth="175.0" text="Name" />
+                        <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="350.0" layoutY="-35.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/misc/coin2.png" />
+                           </image>
+                        </ImageView>
+                        <Label layoutX="385.0" layoutY="-27.0" prefHeight="17.0" prefWidth="26.0" text="0" />
       
                          
                            </children>
                   </Group>
-                  <Group fx:id="player2" layoutX="-134.0" layoutY="238.0" rotate="90.0" scaleX="0.7" scaleY="0.7">
+                  <Group fx:id="player2" layoutX="-110.0" layoutY="238.0" rotate="90.0" scaleX="0.7" scaleY="0.7">
                      <children>
                         <ImageView fx:id="schoolBoard2" fitHeight="179.0" fitWidth="420.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -189,6 +198,14 @@
                               <Pane fx:id="tower28" layoutX="31.0" layoutY="89.0" prefHeight="23.0" prefWidth="23.0" />
                            </children>
                         </Group>
+                        <Pane layoutX="-106.0" layoutY="14.0" prefHeight="150.0" prefWidth="100.0" />
+                        <Label layoutX="340.0" layoutY="80.0" prefHeight="17.0" prefWidth="173.0" rotate="270.0" text="Name" />
+                        <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="440.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true" rotate="270.0">
+                           <image>
+                              <Image url="@../images/misc/coin2.png" />
+                           </image>
+                        </ImageView>
+                        <Label layoutX="438.0" layoutY="120.0" prefHeight="17.0" prefWidth="30.0" rotate="270.0" text="0" />
                      </children>
       
                       <fx:define>
@@ -220,7 +237,7 @@
       
       
                   </Group>
-                  <Group fx:id="player3" layoutX="378.0" layoutY="-20.0" rotate="180.0" scaleX="0.7" scaleY="0.7">
+                  <Group fx:id="player3" layoutX="400.0" layoutY="-15.0" rotate="180.0" scaleX="0.7" scaleY="0.7">
                      <children>
                         <ImageView fx:id="schoolBoard3" fitHeight="179.0" fitWidth="420.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -288,6 +305,14 @@
                               <Pane fx:id="tower38" layoutX="31.0" layoutY="88.0" prefHeight="23.0" prefWidth="23.0" />
                            </children>
                         </Group>
+                        <Pane layoutX="-110.0" layoutY="20.0" prefHeight="150.0" prefWidth="100.0" />
+                        <Label alignment="CENTER_RIGHT" layoutX="420.0" layoutY="157.0" prefHeight="17.0" prefWidth="144.0" rotate="180.0" text="Name" textAlignment="RIGHT" />
+                        <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="445.0" layoutY="130.0" pickOnBounds="true" preserveRatio="true" rotate="180.0">
+                           <image>
+                              <Image url="@../images/misc/coin2.png" />
+                           </image>
+                        </ImageView>
+                        <Label layoutX="415.0" layoutY="135.0" prefHeight="17.0" prefWidth="24.0" rotate="180.0" text="0" />
                      </children>
       
                       <fx:define>
@@ -319,7 +344,7 @@
       
       
                   </Group>
-                  <Group fx:id="player4" layoutX="1146.0" layoutY="185.0">
+                  <Group fx:id="player4" layoutX="1146.0" layoutY="130.0">
                      <children>
                         <ImageView fx:id="schoolBoard4" fitHeight="294.0" fitWidth="179.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -387,6 +412,14 @@
                               <Pane fx:id="tower48" layoutX="31.0" layoutY="90.0" prefHeight="23.0" prefWidth="23.0" />
                            </children>
                         </Group>
+                        <Pane layoutX="28.0" layoutY="290.0" prefHeight="105.0" prefWidth="70.0" rotate="270.0" />
+                        <Label layoutX="-20.0" layoutY="-15.0" prefHeight="17.0" prefWidth="126.0" scaleX="0.7" scaleY="0.7" text="Name" />
+                        <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="-5.0" layoutY="-35.0" pickOnBounds="true" preserveRatio="true" scaleX="0.7" scaleY="0.7">
+                           <image>
+                              <Image url="@../images/misc/coin2.png" />
+                           </image>
+                        </ImageView>
+                        <Label layoutX="16.0" layoutY="-31.0" prefHeight="17.0" prefWidth="24.0" scaleX="0.7" scaleY="0.7" text="0" />
                      </children>
       
                       <fx:define>
@@ -947,6 +980,7 @@
                         </Pane>
                      </children>
                   </Group>
+                  <Pane fx:id="zoomedAssistant" layoutX="160.0" layoutY="420.0" prefHeight="174.0" prefWidth="116.0" scaleX="0.8" scaleY="0.8" />
                   <Group fx:id="clouds" layoutX="400.0" layoutY="275.0">
                      <children>
                         <Pane prefHeight="50.0" prefWidth="50.0">
@@ -1086,11 +1120,6 @@
                            <fx:reference source="player4" />
                        </ArrayList>
                    </fx:define>
-                  <Label fx:id="characterDescription" alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="580.0" layoutY="250.0" prefHeight="30.0" prefWidth="250.0" textAlignment="CENTER">
-                     <font>
-                        <Font size="8.0" />
-                     </font>
-                  </Label>
       
                    <fx:define>
                        <ArrayList fx:id="entrancesList">
@@ -1101,6 +1130,13 @@
       
                        </ArrayList>
                    </fx:define>
+                  <TextFlow layoutX="585.0" layoutY="240.0" prefHeight="40.0" prefWidth="250.0" textAlignment="CENTER">
+                     <children>
+                        <Text fx:id="characterDescription" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" textOrigin="CENTER" x="125.0">
+                           <font>
+                              <Font size="10.0" />
+                           </font></Text>
+                     </children></TextFlow>
       
                    <fx:define>
                        <ArrayList fx:id="diningRoomsList">
@@ -1145,7 +1181,11 @@
                            <fx:reference source="island12" />
                        </ArrayList>
                    </fx:define>
-                  <Pane fx:id="zoomedAssistant" layoutX="160.0" layoutY="420.0" prefHeight="174.0" prefWidth="116.0" scaleX="0.8" scaleY="0.8" />
+                  <TextFlow fx:id="dialog" layoutX="1034.0" layoutY="488.0" prefHeight="200.0" prefWidth="199.0">
+                     <children>
+                        <Text fx:id="dialogText" strokeType="OUTSIDE" strokeWidth="0.0" />
+                     </children>
+                  </TextFlow>
       
                </children>
             </AnchorPane>

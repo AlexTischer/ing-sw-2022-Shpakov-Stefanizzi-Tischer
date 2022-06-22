@@ -13,10 +13,10 @@ public class SceneController {
 
     public void resizeScreen(Group group){
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int screenWidth = screenSize.width;
         int screenHeight = screenSize.height;
-        group.setScaleX(screenWidth/1280.0);
-        group.setScaleY(screenHeight/720.0);
+        double scale = screenHeight/720.0;
+        group.setScaleX(scale);
+        group.setScaleY(scale);
     }
 
     public ImageView loadImage(String path, int width, int height){
