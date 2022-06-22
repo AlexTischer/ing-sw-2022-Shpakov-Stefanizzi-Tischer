@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.view.GUI.SceneControllers;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
@@ -20,6 +21,9 @@ public class LoginSceneController extends SceneController {
     private ArrayList<Label> labelList;
     @FXML
     private Button button1;
+
+    @FXML
+    private Group group;
 
 
     private boolean loginDone;
@@ -44,6 +48,10 @@ public class LoginSceneController extends SceneController {
     }
 
     public void update(List<String> userNames){
+
+        Platform.runLater(()->{
+            resizeScreen(group);
+        });
 
         Platform.runLater(() -> textField.setOnKeyPressed((event -> {if(event.getCode() == KeyCode.ENTER) {sendName();}})));
 

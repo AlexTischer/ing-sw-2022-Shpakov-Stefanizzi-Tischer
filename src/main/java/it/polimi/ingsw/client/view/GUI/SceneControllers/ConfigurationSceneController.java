@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.view.GUI.SceneControllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Group;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 
@@ -15,6 +16,9 @@ public class ConfigurationSceneController extends SceneController implements Ini
     @FXML
     private ChoiceBox choiceBox;
 
+    @FXML
+    private Group group;
+
     private Integer[] players = {2,3,4};
 
     private boolean configurationDone;
@@ -23,6 +27,7 @@ public class ConfigurationSceneController extends SceneController implements Ini
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        resizeScreen(group);
         choiceBox.getItems().addAll(players);
     }
     public synchronized void sendConfiguration(){

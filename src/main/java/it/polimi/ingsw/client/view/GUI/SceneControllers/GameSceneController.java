@@ -10,8 +10,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
 
-import java.util.ArrayList;
-
+import java.awt.*;
 import java.util.ArrayList;
 
 import static it.polimi.ingsw.server.model.Color.*;
@@ -37,7 +36,8 @@ public class GameSceneController extends SceneController {
 
     @FXML
     private Label characterDescription;
-
+    @FXML
+    private Group group;
 
 
 
@@ -73,6 +73,8 @@ public class GameSceneController extends SceneController {
         this.positionOfMotherNature=gameBoard.getPositionOfMotherNature();
 
         Platform.runLater(()-> {
+
+            resizeScreen(group);
 
             //setting playground according to num of players
             for(int i=4; i>gameBoard.getPlayers().size(); i--){
@@ -128,7 +130,6 @@ public class GameSceneController extends SceneController {
             for(int i=0; i<gameBoard.getIslands().size(); i++){
 
 
-
                 //students
                 ArrayList<Color> students = gameBoard.getIslands().get(i).getStudentsAsArray();
 
@@ -152,34 +153,7 @@ public class GameSceneController extends SceneController {
                                     25,25),2,1);
                 }
 
-
-
             }
-
-
-            //initializing assistants
-            assistants.getChildren().get(0).setOnMouseEntered(event -> {showAssistant(1);});
-            assistants.getChildren().get(1).setOnMouseEntered(event -> {showAssistant(2);});
-            assistants.getChildren().get(2).setOnMouseEntered(event -> {showAssistant(3);});
-            assistants.getChildren().get(3).setOnMouseEntered(event -> {showAssistant(4);});
-            assistants.getChildren().get(4).setOnMouseEntered(event -> {showAssistant(5);});
-            assistants.getChildren().get(5).setOnMouseEntered(event -> {showAssistant(6);});
-            assistants.getChildren().get(6).setOnMouseEntered(event -> {showAssistant(7);});
-            assistants.getChildren().get(7).setOnMouseEntered(event -> {showAssistant(8);});
-            assistants.getChildren().get(8).setOnMouseEntered(event -> {showAssistant(9);});
-            assistants.getChildren().get(9).setOnMouseEntered(event -> {showAssistant(10);});
-
-            assistants.getChildren().get(0).setOnMouseExited(event -> {removeShowAssistant();});
-            assistants.getChildren().get(1).setOnMouseExited(event -> {removeShowAssistant();});
-            assistants.getChildren().get(2).setOnMouseExited(event -> {removeShowAssistant();});
-            assistants.getChildren().get(3).setOnMouseExited(event -> {removeShowAssistant();});
-            assistants.getChildren().get(4).setOnMouseExited(event -> {removeShowAssistant();});
-            assistants.getChildren().get(5).setOnMouseExited(event -> {removeShowAssistant();});
-            assistants.getChildren().get(6).setOnMouseExited(event -> {removeShowAssistant();});
-            assistants.getChildren().get(7).setOnMouseExited(event -> {removeShowAssistant();});
-            assistants.getChildren().get(8).setOnMouseExited(event -> {removeShowAssistant();});
-            assistants.getChildren().get(9).setOnMouseExited(event -> {removeShowAssistant();});
-
 
             //setting students on clouds
             for(int c=0; c<clouds.getChildren().size(); c++){
@@ -196,10 +170,21 @@ public class GameSceneController extends SceneController {
                 }
             }
 
-            //setting played characters
+            //initializing assistants
+            for(int i=0;i<assistants.getChildren().size(); i++){
+                int finalI = i;
 
+                assistants.getChildren().get(finalI).setOnMouseEntered(event -> {showAssistant(finalI+1);});
+                assistants.getChildren().get(finalI).setOnMouseExited(event -> {removeShowAssistant();});
+            }
+
+
+            //setting played characters
             for(int i=0; i<characters.getChildren().size(); i++) {
 
+                int finalId = gameBoard.getPlayedCharacters()[i].getId();
+                characters.getChildren().get(i).setOnMouseEntered(mouseEvent -> {characterDescription.setText(getCharacterDescription(finalId));});
+                characters.getChildren().get(i).setOnMouseExited(mouseEvent -> {characterDescription.setText("");});
 
                 ((Pane) characters.getChildren().get(i)).getChildren()
                         .add(loadImage(getCharacterPath(gameBoard.getPlayedCharacters()[i].getId()), 80, 120));
@@ -208,6 +193,7 @@ public class GameSceneController extends SceneController {
 
 
                 fillCharacter(gameBoard, i);
+
             }
         });
 
@@ -285,20 +271,12 @@ public class GameSceneController extends SceneController {
 
 
         //professors
-        if (gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(GREEN) == 1) {
-            professorsList.get(s).add(loadImage(GREEN.professor, 25, 25), 0, 0);
-        }
-        if (gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(RED) == 1) {
-            professorsList.get(s).add(loadImage(RED.professor, 25, 25), 0, 1);
-        }
-        if (gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(YELLOW) == 1) {
-            professorsList.get(s).add(loadImage(YELLOW.professor, 25, 25), 0, 2);
-        }
-        if (gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(YELLOW) == 1) {
-            professorsList.get(s).add(loadImage(YELLOW.professor, 25, 25), 0, 3);
-        }
-        if (gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(YELLOW) == 1) {
-            professorsList.get(s).add(loadImage(YELLOW.professor, 25, 25), 0, 4);
+        int row=0;
+        for(Color color : gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().keySet()){
+            if(gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(color)==1){
+                professorsList.get(s).add(loadImage(color.professor, 25, 25), 0, row);
+            }
+            row++;
         }
 
         //towers
@@ -336,11 +314,30 @@ public class GameSceneController extends SceneController {
 
     /*METHODS ASSIGNED TO ASSISTANTS DURING INITIALIZATION*/
     public void showAssistant(int rank){
-        zoomedAssistant.getChildren().add(loadImage(getAssistantPath(rank),100,150));
+        zoomedAssistant.getChildren()
+                .add(loadImage(getAssistantPath(rank),(int)zoomedAssistant.getWidth(),(int)zoomedAssistant.getHeight()));
     }
 
     public void removeShowAssistant(){
         zoomedAssistant.getChildren().remove(0);
+    }
+
+    public String getCharacterDescription(int id) {
+        String[] description = {
+                "Take 1 Student from this card and place it on an Island of your choice",
+                "You get 2 more influence points",
+                "When calculating influence, Towers won't count",
+                "When calculating influence, student's color of your choice won't count",
+                "Place a No Entry tile on an island of your choice. The first time \nMother Nature ends her movement there, influence will not be calculated.",
+                "You can get the professor even if you have the same number \nof students as the player who currently controls that professor",
+                "You can swap up to 2 students between your entrance \nand your dining room",
+                "You can move Mother Nature up to 2 steps more than \nwhat's indicated by the Assistant card you played",
+                "Take up to 3 students from this card and replace them \nwith the same number of students from your entrance",
+                "Take 1 student from this card and place it in your dining room",
+                "Every player (including yourself) must return 3 students \nof a color of your choice from their dining room to the bag",
+                "Choose an Island and resolve it as if Mother Nature \nhad ended her movement there"};
+
+        return description[id - 1];
     }
 
     private String getAssistantPath(int rank){
@@ -558,13 +555,20 @@ public class GameSceneController extends SceneController {
     public static void main(String args[]){
 
 
+        /*
         GameSceneController gameSceneController = new GameSceneController();
-
 
         for(int i =0; i<12; i++){
             int[] coordinate = gameSceneController.calculateIslandPosition(12,i,60);
             System.out.println(coordinate[0] +", "+ coordinate[1]);
         }
+
+         */
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenHeight = screenSize.height;
+        int screenWidth = screenSize.width;
+        System.out.println(screenHeight + " " + screenWidth);
 
     }
 
