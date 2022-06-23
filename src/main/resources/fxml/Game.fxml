@@ -1041,10 +1041,13 @@
                            </font></Text>
                      </children></TextFlow>
 
-                  <TextFlow layoutX="1034.0" layoutY="488.0" prefHeight="200.0" prefWidth="199.0">
+                  <TextFlow layoutX="1036.0" layoutY="520.0" prefHeight="200.0" prefWidth="200.0" style=" -fx-background-image: url('/images/misc/parchment.png'); -fx-background-position: center; -fx-background-size:100% 100% " textAlignment="CENTER">
                      <children>
-                        <Text fx:id="dialogText" strokeType="OUTSIDE" strokeWidth="0.0" />
+                        <Text fx:id="dialogText" strokeType="OUTSIDE" strokeWidth="0.0" text="" />
                      </children>
+                     <padding>
+                        <Insets bottom="50.0" left="30.0" right="30.0" top="50.0" />
+                     </padding>
                   </TextFlow>
       
                </children>

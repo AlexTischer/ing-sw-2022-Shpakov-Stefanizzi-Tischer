@@ -6,6 +6,7 @@ public class Assistant implements Serializable {
     private int rank;
     private int movements;
     private AssistantType type;
+    private String path;
 
     public Assistant(int rank, int movements, AssistantType type) {
         if(rank <= 0 || rank > 10)

@@ -376,7 +376,6 @@ public class Cli extends View {
         }
     }
 
-    @Override
     public boolean askBoolean(String message) {
         String answer;
         boolean booleanAnswer;
@@ -393,5 +392,9 @@ public class Cli extends View {
                 System.out.println("Incorrect response. Please try again");
         }
         return booleanAnswer;
+    }
+
+    public void printEndGameMessage(String message) {
+        printMessage(message);
     }
 }

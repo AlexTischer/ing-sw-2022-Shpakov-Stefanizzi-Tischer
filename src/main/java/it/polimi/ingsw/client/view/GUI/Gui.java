@@ -401,4 +401,9 @@ public class Gui extends View {
         return gameSceneController.getChoice();
     }
 
+    @Override
+    public void printEndGameMessage(String message) {
+        printMessage(message);
+        //TODO: show popup to alert user of EndGame and allow closing window
+    }
 }

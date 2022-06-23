@@ -44,7 +44,7 @@ public class ClientController {
         catch (EndOfGameException e){
             //stamp gameBoard because endOfGameException may arrive instead of endOfChangesException
             gameBoard.showOnView();
-            view.printMessage(e.getMessage());
+            view.printEndGameMessage(e.getMessage());
             connection.close();
             throw new EndOfChangesException();
         }

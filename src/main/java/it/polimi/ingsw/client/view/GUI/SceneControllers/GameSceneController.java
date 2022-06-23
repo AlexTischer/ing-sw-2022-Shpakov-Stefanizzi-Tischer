@@ -748,6 +748,7 @@ public class GameSceneController extends SceneController {
         return paths[rank-1];
     }
 
+
     private String getCharacterPath(int id){
         String[] paths = {
                 "/images/characters/Character1.jpg",
@@ -766,11 +767,6 @@ public class GameSceneController extends SceneController {
         return paths[id-1];
     }
 
-
-
-
-
-
     public synchronized void selectStudent(Color studentColor){
         askingDone=true;
         chosenAction = 1;
@@ -783,16 +779,15 @@ public class GameSceneController extends SceneController {
         askingDone=true;
         chosenAction = 2;
         this.characterNumber = index;
-        /*TODO: disable students*/
+        /*TODO: disable Characters*/
         notifyAll();
     }
 
     public synchronized void selectAssistant(int assistantRank){
         askingDone=true;
         this.assistantRank= assistantRank;
-        /*TODO: disable assistant cards*/
-        Platform.runLater(()->{
 
+        Platform.runLater(()->{
 
             //disabling the selected assistant to avoid clicks on next selections
             assistants.getChildren().get(assistantRank-1).setVisible(false);
@@ -808,7 +803,11 @@ public class GameSceneController extends SceneController {
             for(int i=0; i<assistants.getChildren().size(); i++){
                 assistants.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
             }
+
+            dialogText.setText("");
+
         });
+
         notifyAll();
     }
 
@@ -841,8 +840,6 @@ public class GameSceneController extends SceneController {
 
     public synchronized void askAssistant(){
         askingDone=false;
-        /*TODO: print: Select an assistant from your Deck*/
-        /*TODO: enable Assistants and set onMouseClickAction to selectAssistant(index+1)*/
         Platform.runLater(()->{
             dialogText.setText("Select an assistant from your Deck");
 
@@ -900,6 +897,14 @@ public class GameSceneController extends SceneController {
         /*TODO: print: Select a student from your entrance to move it, or select a Character to buy and use it*/
         /*TODO: enable Entrance students and set onMouseClickAction to selectStudent(color)*/
         /*TODO: enable Characters and set onMouseClickAction to selectCharacter(index+1)*/
+        /*Platform.runLater(()->{
+            dialogText.setText("Select a student from your entrance to move it, or select a Character to buy and use it");
+
+            for(Color color : st){
+                int finalI = i;
+                assistants.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectAssistant(finalI+1);});
+            }
+        });*/
     }
 
     public void chooseActionMotherNature() {
@@ -961,8 +966,8 @@ public class GameSceneController extends SceneController {
         int b=150;
         int x;
         int y;
-        int h = 720; //TODO: =islandsPane.getHeight
-        int w = 1280; //TODO: =islandsPane.getWidth
+        int h = 720;
+        int w = 1080;
 
         y= (int) (b*Math.sin(2*Math.PI*islandIndex/n)+h/2-dim/2 - 30);
         x= (int) (a*Math.cos(2*Math.PI*islandIndex/n)+w/2-dim/2);
