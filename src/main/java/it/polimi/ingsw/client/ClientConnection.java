@@ -222,12 +222,6 @@ public class  ClientConnection {
                     while (waitingModelChange) {
                         try {
                             modelChange = socketIn.readObject();
-                            try {
-                                System.out.println(modelChange);
-                            }
-                            catch (Exception ee){
-                                ee.printStackTrace();
-                            }
                             //can receive lobbychange, endofgamechange or GameBoardChange ( reconnection ) or ping or start or error
                             clientController.changeModel((LobbyChange) modelChange);
                             inputCorrect = true;

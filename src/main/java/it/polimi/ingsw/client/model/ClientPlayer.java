@@ -86,7 +86,6 @@ public class ClientPlayer implements Serializable {
 
     public void setConnectionStatus(boolean connectionStatus) {
         this.connectionStatus = connectionStatus;
-        System.out.println("Player " + name + " changed its status to " + connectionStatus);
     }
 
     public boolean getConnectionStatus(){

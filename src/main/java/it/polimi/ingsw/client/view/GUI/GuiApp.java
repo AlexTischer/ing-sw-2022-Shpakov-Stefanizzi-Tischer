@@ -28,7 +28,7 @@ public class GuiApp extends Application {
             stage.setScene(scene);
 
             stage.setMaximized(true);
-            stage.setFullScreen(false);
+            stage.setFullScreen(true);
 
             stage.show();
 
@@ -57,7 +57,7 @@ public class GuiApp extends Application {
         return currentController;
     }
 
-    public void logout(Stage stage){
+    private void logout(Stage stage){
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Quit");
