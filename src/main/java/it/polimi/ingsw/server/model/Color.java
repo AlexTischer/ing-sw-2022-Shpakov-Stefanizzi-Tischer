@@ -12,11 +12,11 @@ public enum Color {
     BLUE("blue");
     */
 
-    GREEN("\u001b[32m", "green", "/images/students/student_green.png", "/images/professors/professor_green"),
-    RED("\u001b[31m", "red", "/images/students/student_red.png", "/images/professors/professor_red"),
-    YELLOW("\u001b[33m", "yellow", "/images/students/student_yellow.png", "/images/professors/professor_yellow"),
-    PINK("\u001b[35m", "pink", "/images/students/student_pink.png", "/images/professors/professor_pink"),
-    BLUE("\u001b[34m", "blue", "/images/students/student_blue.png", "/images/professors/professor_blue");
+    GREEN("\u001b[32m", "green", "/images/students/student_green.png", "/images/professors/professor_green.png"),
+    RED("\u001b[31m", "red", "/images/students/student_red.png", "/images/professors/professor_red.png"),
+    YELLOW("\u001b[33m", "yellow", "/images/students/student_yellow.png", "/images/professors/professor_yellow.png"),
+    PINK("\u001b[35m", "pink", "/images/students/student_pink.png", "/images/professors/professor_pink.png"),
+    BLUE("\u001b[34m", "blue", "/images/students/student_blue.png", "/images/professors/professor_blue.png");
 
     public final String ansi;
     public final String label;

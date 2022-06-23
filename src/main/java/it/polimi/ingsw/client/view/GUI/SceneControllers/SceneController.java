@@ -19,13 +19,19 @@ public class SceneController {
         group.setScaleY(scale);
     }
 
-    public ImageView loadImage(String path, int width, int height){
+    public ImageView loadImageView(String path, int width, int height){
         Image image = new Image(getClass().getResourceAsStream(path));
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(width);
         imageView.setFitHeight(height);
 
         return imageView;
+    }
+
+    public Image loadImage(String path){
+        Image image = new Image(getClass().getResourceAsStream(path));
+
+        return image;
     }
 
 }

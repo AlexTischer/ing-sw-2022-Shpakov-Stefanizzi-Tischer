@@ -18,32 +18,32 @@
 <?import java.util.ArrayList?>
 <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-alignment: center;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Group fx:id="group">
+      <Group fx:id="root">
          <children>
             <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0">
                <children>
                   <Group fx:id="player1" layoutX="550.0" layoutY="527.0">
                      <children>
-                        <ImageView fx:id="schoolBoard1" fitHeight="179.0" fitWidth="420.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="179.0" fitWidth="420.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/schoolboard/Schoolboard2.png" />
                            </image>
                         </ImageView>
                         <Group layoutX="13.0" layoutY="21.0">
                            <children>
-                              <Pane fx:id="entrance11" layoutX="24.0" prefHeight="20.0" prefWidth="20.0" />
-                              <Pane fx:id="entrance12" layoutY="30.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance13" layoutX="24.0" layoutY="30.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance14" layoutY="59.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance15" layoutX="24.0" layoutY="59.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance16" layoutY="89.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance17" layoutX="24.0" layoutY="89.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance18" layoutY="118.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance19" layoutX="24.0" layoutY="118.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="24.0" prefHeight="20.0" prefWidth="20.0" />
+                              <Pane layoutY="30.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="24.0" layoutY="30.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutY="59.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="24.0" layoutY="59.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutY="89.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="24.0" layoutY="89.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutY="118.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="24.0" layoutY="118.0" prefHeight="19.0" prefWidth="19.0" />
                            </children>
                         </Group>
       
-                        <GridPane fx:id="diningRoom1" hgap="1.0" layoutX="75.0" layoutY="17.0" prefHeight="145.0" prefWidth="199.0" vgap="5.0">
+                        <GridPane hgap="1.0" layoutX="75.0" layoutY="17.0" prefHeight="145.0" prefWidth="199.0" vgap="5.0">
                           <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -67,7 +67,7 @@
                               <Insets bottom="3.0" left="3.0" right="3.0" top="2.0" />
                            </padding>
                         </GridPane>
-                        <GridPane fx:id="professors1" layoutX="292.0" layoutY="19.0" prefHeight="141.0" prefWidth="19.0" vgap="5.0">
+                        <GridPane layoutX="292.0" layoutY="19.0" prefHeight="141.0" prefWidth="19.0" vgap="5.0">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                           </columnConstraints>
@@ -81,44 +81,21 @@
                         </GridPane>
                         <Group layoutX="335.0" layoutY="33.0">
                            <children>
-                              <Pane fx:id="tower11" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower12" layoutX="31.0" layoutY="1.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower13" layoutY="30.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower14" layoutX="31.0" layoutY="31.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower15" layoutY="59.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower16" layoutX="31.0" layoutY="60.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower17" layoutY="90.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower18" layoutX="31.0" layoutY="90.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutX="31.0" layoutY="1.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutY="30.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutX="31.0" layoutY="31.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutY="59.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutX="31.0" layoutY="60.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutY="90.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutX="31.0" layoutY="90.0" prefHeight="23.0" prefWidth="23.0" />
                            </children>
                         </Group>
-                        <Pane layoutX="-115.0" layoutY="18.0" prefHeight="144.0" prefWidth="98.0" />
-      
-                         <fx:define>
-                             <ArrayList fx:id="entrance1Panes">
-                                 <fx:reference source="entrance11" />
-                                 <fx:reference source="entrance12" />
-                                 <fx:reference source="entrance13" />
-                                 <fx:reference source="entrance14" />
-                                 <fx:reference source="entrance15" />
-                                 <fx:reference source="entrance16" />
-                                 <fx:reference source="entrance17" />
-                                 <fx:reference source="entrance18" />
-                                 <fx:reference source="entrance19" />
-                             </ArrayList>
-                         </fx:define>
-      
-                         <fx:define>
-                             <ArrayList fx:id="towerTable1Panes">
-                                 <fx:reference source="tower11" />
-                                 <fx:reference source="tower12" />
-                                 <fx:reference source="tower13" />
-                                 <fx:reference source="tower14" />
-                                 <fx:reference source="tower15" />
-                                 <fx:reference source="tower16" />
-                                 <fx:reference source="tower17" />
-                                 <fx:reference source="tower18" />
-                             </ArrayList>
-                         </fx:define>
+                        <Pane layoutX="-115.0" layoutY="18.0" prefHeight="144.0" prefWidth="98.0">
+                           <children>
+                              <ImageView fitHeight="144.0" fitWidth="98.0" pickOnBounds="true" preserveRatio="true" />
+                           </children></Pane>
+
                         <Label layoutX="150.0" layoutY="-20.0" prefHeight="17.0" prefWidth="175.0" text="Name" />
                         <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="350.0" layoutY="-35.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -132,25 +109,25 @@
                   </Group>
                   <Group fx:id="player2" layoutX="-110.0" layoutY="238.0" rotate="90.0" scaleX="0.7" scaleY="0.7">
                      <children>
-                        <ImageView fx:id="schoolBoard2" fitHeight="179.0" fitWidth="420.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="179.0" fitWidth="420.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/schoolboard/Schoolboard2.png" />
                            </image>
                         </ImageView>
                         <Group layoutX="11.0" layoutY="21.0">
                            <children>
-                              <Pane fx:id="entrance21" layoutX="26.0" prefHeight="20.0" prefWidth="20.0" />
-                              <Pane fx:id="entrance22" layoutX="2.0" layoutY="30.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance23" layoutX="27.0" layoutY="30.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance24" layoutX="2.0" layoutY="59.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance25" layoutX="26.0" layoutY="59.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance26" layoutX="2.0" layoutY="89.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance27" layoutX="26.0" layoutY="89.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance28" layoutX="2.0" layoutY="118.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance29" layoutX="26.0" layoutY="118.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="26.0" prefHeight="20.0" prefWidth="20.0" />
+                              <Pane layoutX="2.0" layoutY="30.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="27.0" layoutY="30.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="2.0" layoutY="59.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="26.0" layoutY="59.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="2.0" layoutY="89.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="26.0" layoutY="89.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="2.0" layoutY="118.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="26.0" layoutY="118.0" prefHeight="19.0" prefWidth="19.0" />
                            </children>
                         </Group>
-                        <GridPane fx:id="diningRoom2" hgap="1.0" layoutX="75.0" layoutY="17.0" prefHeight="145.0" prefWidth="199.0" vgap="5.0">
+                        <GridPane hgap="1.0" layoutX="75.0" layoutY="17.0" prefHeight="145.0" prefWidth="199.0" vgap="5.0">
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -174,7 +151,7 @@
                               <Insets bottom="3.0" left="3.0" right="3.0" top="2.0" />
                            </padding>
                         </GridPane>
-                        <GridPane fx:id="professors2" layoutX="292.0" layoutY="19.0" prefHeight="141.0" prefWidth="19.0" vgap="5.0">
+                        <GridPane layoutX="292.0" layoutY="19.0" prefHeight="141.0" prefWidth="19.0" vgap="5.0">
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                            </columnConstraints>
@@ -188,17 +165,20 @@
                         </GridPane>
                         <Group layoutX="335.0" layoutY="33.0">
                            <children>
-                              <Pane fx:id="tower21" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower22" layoutX="31.0" layoutY="1.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower23" layoutY="30.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower24" layoutX="31.0" layoutY="30.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower25" layoutY="59.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower26" layoutX="31.0" layoutY="60.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower27" layoutY="89.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower28" layoutX="31.0" layoutY="89.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutX="31.0" layoutY="1.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutY="30.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutX="31.0" layoutY="30.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutY="59.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutX="31.0" layoutY="60.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutY="89.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutX="31.0" layoutY="89.0" prefHeight="23.0" prefWidth="23.0" />
                            </children>
                         </Group>
-                        <Pane layoutX="-106.0" layoutY="14.0" prefHeight="150.0" prefWidth="100.0" />
+                        <Pane layoutX="-106.0" layoutY="14.0" prefHeight="150.0" prefWidth="100.0">
+                           <children>
+                              <ImageView fitHeight="150.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
+                           </children></Pane>
                         <Label layoutX="340.0" layoutY="80.0" prefHeight="17.0" prefWidth="173.0" rotate="270.0" text="Name" />
                         <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="440.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true" rotate="270.0">
                            <image>
@@ -208,56 +188,31 @@
                         <Label layoutX="438.0" layoutY="120.0" prefHeight="17.0" prefWidth="30.0" rotate="270.0" text="0" />
                      </children>
       
-                      <fx:define>
-                          <ArrayList fx:id="entrance2Panes">
-                              <fx:reference source="entrance21" />
-                              <fx:reference source="entrance22" />
-                              <fx:reference source="entrance23" />
-                              <fx:reference source="entrance24" />
-                              <fx:reference source="entrance25" />
-                              <fx:reference source="entrance26" />
-                              <fx:reference source="entrance27" />
-                              <fx:reference source="entrance28" />
-                              <fx:reference source="entrance29" />
-                          </ArrayList>
-                      </fx:define>
-      
-                      <fx:define>
-                          <ArrayList fx:id="towerTable2Panes">
-                              <fx:reference source="tower21" />
-                              <fx:reference source="tower22" />
-                              <fx:reference source="tower23" />
-                              <fx:reference source="tower24" />
-                              <fx:reference source="tower25" />
-                              <fx:reference source="tower26" />
-                              <fx:reference source="tower27" />
-                              <fx:reference source="tower28" />
-                          </ArrayList>
-                      </fx:define>
+
       
       
                   </Group>
                   <Group fx:id="player3" layoutX="400.0" layoutY="-15.0" rotate="180.0" scaleX="0.7" scaleY="0.7">
                      <children>
-                        <ImageView fx:id="schoolBoard3" fitHeight="179.0" fitWidth="420.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="179.0" fitWidth="420.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/schoolboard/Schoolboard2.png" />
                            </image>
                         </ImageView>
                         <Group layoutX="10.0" layoutY="21.0">
                            <children>
-                              <Pane fx:id="entrance31" layoutX="27.0" prefHeight="20.0" prefWidth="20.0" />
-                              <Pane fx:id="entrance32" layoutX="3.0" layoutY="30.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance33" layoutX="27.0" layoutY="30.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance34" layoutX="3.0" layoutY="59.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance35" layoutX="27.0" layoutY="59.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance36" layoutX="3.0" layoutY="89.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance37" layoutX="27.0" layoutY="89.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance38" layoutX="3.0" layoutY="118.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance39" layoutX="27.0" layoutY="118.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="27.0" prefHeight="20.0" prefWidth="20.0" />
+                              <Pane layoutX="3.0" layoutY="30.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="27.0" layoutY="30.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="3.0" layoutY="59.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="27.0" layoutY="59.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="3.0" layoutY="89.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="27.0" layoutY="89.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="3.0" layoutY="118.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="27.0" layoutY="118.0" prefHeight="19.0" prefWidth="19.0" />
                            </children>
                         </Group>
-                        <GridPane fx:id="diningRoom3" hgap="1.0" layoutX="75.0" layoutY="17.0" prefHeight="145.0" prefWidth="199.0" vgap="5.0">
+                        <GridPane hgap="1.0" layoutX="75.0" layoutY="17.0" prefHeight="145.0" prefWidth="199.0" vgap="5.0">
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -281,7 +236,7 @@
                               <Insets bottom="3.0" left="3.0" right="3.0" top="2.0" />
                            </padding>
                         </GridPane>
-                        <GridPane fx:id="professors3" layoutX="292.0" layoutY="19.0" prefHeight="141.0" prefWidth="19.0" vgap="5.0">
+                        <GridPane layoutX="292.0" layoutY="19.0" prefHeight="141.0" prefWidth="19.0" vgap="5.0">
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                            </columnConstraints>
@@ -295,17 +250,20 @@
                         </GridPane>
                         <Group layoutX="335.0" layoutY="34.0">
                            <children>
-                              <Pane fx:id="tower31" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower32" layoutX="31.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower33" layoutY="29.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower34" layoutX="31.0" layoutY="29.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower35" layoutY="59.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower36" layoutX="31.0" layoutY="59.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower37" layoutY="88.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower38" layoutX="31.0" layoutY="88.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutX="31.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutY="29.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutX="31.0" layoutY="29.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutY="59.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutX="31.0" layoutY="59.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutY="88.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutX="31.0" layoutY="88.0" prefHeight="23.0" prefWidth="23.0" />
                            </children>
                         </Group>
-                        <Pane layoutX="-110.0" layoutY="20.0" prefHeight="150.0" prefWidth="100.0" />
+                        <Pane layoutX="-110.0" layoutY="20.0" prefHeight="150.0" prefWidth="100.0">
+                           <children>
+                              <ImageView fitHeight="150.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
+                           </children></Pane>
                         <Label alignment="CENTER_RIGHT" layoutX="420.0" layoutY="157.0" prefHeight="17.0" prefWidth="144.0" rotate="180.0" text="Name" textAlignment="RIGHT" />
                         <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="445.0" layoutY="130.0" pickOnBounds="true" preserveRatio="true" rotate="180.0">
                            <image>
@@ -315,56 +273,31 @@
                         <Label layoutX="415.0" layoutY="135.0" prefHeight="17.0" prefWidth="24.0" rotate="180.0" text="0" />
                      </children>
       
-                      <fx:define>
-                          <ArrayList fx:id="entrance3Panes">
-                              <fx:reference source="entrance31" />
-                              <fx:reference source="entrance32" />
-                              <fx:reference source="entrance33" />
-                              <fx:reference source="entrance34" />
-                              <fx:reference source="entrance35" />
-                              <fx:reference source="entrance36" />
-                              <fx:reference source="entrance37" />
-                              <fx:reference source="entrance38" />
-                              <fx:reference source="entrance39" />
-                          </ArrayList>
-                      </fx:define>
-      
-                      <fx:define>
-                          <ArrayList fx:id="towerTable3Panes">
-                              <fx:reference source="tower31" />
-                              <fx:reference source="tower32" />
-                              <fx:reference source="tower33" />
-                              <fx:reference source="tower34" />
-                              <fx:reference source="tower35" />
-                              <fx:reference source="tower36" />
-                              <fx:reference source="tower37" />
-                              <fx:reference source="tower38" />
-                          </ArrayList>
-                      </fx:define>
+
       
       
                   </Group>
                   <Group fx:id="player4" layoutX="1146.0" layoutY="130.0">
                      <children>
-                        <ImageView fx:id="schoolBoard4" fitHeight="294.0" fitWidth="179.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="294.0" fitWidth="179.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/schoolboard/Schoolboard2_270.png" />
                            </image>
                         </ImageView>
                         <Group layoutX="41.0" layoutY="201.0" rotate="270.0" scaleX="0.7" scaleY="0.7">
                            <children>
-                              <Pane fx:id="entrance41" layoutX="24.0" layoutY="-2.0" prefHeight="20.0" prefWidth="20.0" />
-                              <Pane fx:id="entrance42" layoutY="29.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance43" layoutX="24.0" layoutY="28.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance44" layoutY="59.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance45" layoutX="24.0" layoutY="58.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance46" layoutY="88.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance47" layoutX="24.0" layoutY="88.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance48" layoutY="118.0" prefHeight="19.0" prefWidth="19.0" />
-                              <Pane fx:id="entrance49" layoutX="24.0" layoutY="118.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="24.0" layoutY="-2.0" prefHeight="20.0" prefWidth="20.0" />
+                              <Pane layoutY="29.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="24.0" layoutY="28.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutY="59.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="24.0" layoutY="58.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutY="88.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="24.0" layoutY="88.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutY="118.0" prefHeight="19.0" prefWidth="19.0" />
+                              <Pane layoutX="24.0" layoutY="118.0" prefHeight="19.0" prefWidth="19.0" />
                            </children>
                         </Group>
-                        <GridPane fx:id="diningRoom4" hgap="1.0" layoutX="-37.0" layoutY="98.0" prefHeight="145.0" prefWidth="199.0" rotate="270.0" scaleX="0.7" scaleY="0.7" vgap="5.0">
+                        <GridPane hgap="1.0" layoutX="-37.0" layoutY="98.0" prefHeight="145.0" prefWidth="199.0" rotate="270.0" scaleX="0.7" scaleY="0.7" vgap="5.0">
                           <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -388,7 +321,7 @@
                               <Insets bottom="2.0" />
                            </padding>
                         </GridPane>
-                        <GridPane fx:id="professors4" layoutX="54.0" layoutY="7.0" prefHeight="145.0" prefWidth="19.0" rotate="270.0" scaleX="0.7" scaleY="0.7" vgap="5.0">
+                        <GridPane layoutX="54.0" layoutY="7.0" prefHeight="145.0" prefWidth="19.0" rotate="270.0" scaleX="0.7" scaleY="0.7" vgap="5.0">
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                            </columnConstraints>
@@ -402,17 +335,20 @@
                         </GridPane>
                         <Group layoutX="36.0" layoutY="-20.0" rotate="270.0" scaleX="0.7" scaleY="0.7">
                            <children>
-                              <Pane fx:id="tower41" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower42" layoutX="31.0" layoutY="1.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower43" layoutY="30.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower44" layoutX="31.0" layoutY="31.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower45" layoutY="59.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower46" layoutX="31.0" layoutY="60.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower47" layoutY="90.0" prefHeight="23.0" prefWidth="23.0" />
-                              <Pane fx:id="tower48" layoutX="31.0" layoutY="90.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutX="31.0" layoutY="1.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutY="30.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutX="31.0" layoutY="31.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutY="59.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutX="31.0" layoutY="60.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutY="90.0" prefHeight="23.0" prefWidth="23.0" />
+                              <Pane layoutX="31.0" layoutY="90.0" prefHeight="23.0" prefWidth="23.0" />
                            </children>
                         </Group>
-                        <Pane layoutX="28.0" layoutY="290.0" prefHeight="105.0" prefWidth="70.0" rotate="270.0" />
+                        <Pane layoutX="28.0" layoutY="290.0" prefHeight="105.0" prefWidth="70.0" rotate="270.0">
+                           <children>
+                              <ImageView fitHeight="105.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true" />
+                           </children></Pane>
                         <Label layoutX="-20.0" layoutY="-15.0" prefHeight="17.0" prefWidth="126.0" scaleX="0.7" scaleY="0.7" text="Name" />
                         <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="-5.0" layoutY="-35.0" pickOnBounds="true" preserveRatio="true" scaleX="0.7" scaleY="0.7">
                            <image>
@@ -422,37 +358,12 @@
                         <Label layoutX="16.0" layoutY="-31.0" prefHeight="17.0" prefWidth="24.0" scaleX="0.7" scaleY="0.7" text="0" />
                      </children>
       
-                      <fx:define>
-                          <ArrayList fx:id="entrance4Panes">
-                              <fx:reference source="entrance41" />
-                              <fx:reference source="entrance42" />
-                              <fx:reference source="entrance43" />
-                              <fx:reference source="entrance44" />
-                              <fx:reference source="entrance45" />
-                              <fx:reference source="entrance46" />
-                              <fx:reference source="entrance47" />
-                              <fx:reference source="entrance48" />
-                              <fx:reference source="entrance49" />
-                          </ArrayList>
-                      </fx:define>
-      
-                      <fx:define>
-                          <ArrayList fx:id="towerTable4Panes">
-                              <fx:reference source="tower41" />
-                              <fx:reference source="tower42" />
-                              <fx:reference source="tower43" />
-                              <fx:reference source="tower44" />
-                              <fx:reference source="tower45" />
-                              <fx:reference source="tower46" />
-                              <fx:reference source="tower47" />
-                              <fx:reference source="tower48" />
-                          </ArrayList>
-                      </fx:define>
+
       
                   </Group>
                   <Group fx:id="islands">
                      <children>
-                        <Pane fx:id="island1" layoutX="1010.0" layoutY="300.0" prefHeight="60.0" prefWidth="60.0">
+                        <Pane layoutX="1010.0" layoutY="300.0" prefHeight="60.0" prefWidth="60.0">
                            <children>
                               <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="-20.0" layoutY="-20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -488,7 +399,7 @@
                               </GridPane>
                            </children>
                         </Pane>
-                        <Pane fx:id="island2" layoutX="956.0" layoutY="375.0" prefHeight="60.0" prefWidth="60.0">
+                        <Pane layoutX="956.0" layoutY="375.0" prefHeight="60.0" prefWidth="60.0">
                            <children>
                               <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="-20.0" layoutY="-20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -524,7 +435,7 @@
                               </GridPane>
                            </children>
                         </Pane>
-                        <Pane fx:id="island3" layoutX="810.0" layoutY="429.0" prefHeight="60.0" prefWidth="60.0">
+                        <Pane layoutX="810.0" layoutY="429.0" prefHeight="60.0" prefWidth="60.0">
                            <children>
                               <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="-20.0" layoutY="-20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -560,7 +471,7 @@
                               </GridPane>
                            </children>
                         </Pane>
-                        <Pane fx:id="island4" layoutX="610.0" layoutY="450.0" prefHeight="60.0" prefWidth="60.0">
+                        <Pane layoutX="610.0" layoutY="450.0" prefHeight="60.0" prefWidth="60.0">
                            <children>
                               <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="-20.0" layoutY="-20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -596,7 +507,7 @@
                                </GridPane>
                            </children>
                         </Pane>
-                        <Pane fx:id="island5" layoutX="410.0" layoutY="429.0" prefHeight="60.0" prefWidth="60.0">
+                        <Pane layoutX="410.0" layoutY="429.0" prefHeight="60.0" prefWidth="60.0">
                            <children>
                               <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="-20.0" layoutY="-20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -632,7 +543,7 @@
                                </GridPane>
                            </children>
                         </Pane>
-                        <Pane fx:id="island6" layoutX="263.0" layoutY="375.0" prefHeight="60.0" prefWidth="60.0">
+                        <Pane layoutX="263.0" layoutY="375.0" prefHeight="60.0" prefWidth="60.0">
                            <children>
                               <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="-20.0" layoutY="-20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -668,7 +579,7 @@
                                </GridPane>
                            </children>
                         </Pane>
-                        <Pane fx:id="island7" layoutX="210.0" layoutY="300.0" prefHeight="60.0" prefWidth="60.0">
+                        <Pane layoutX="210.0" layoutY="300.0" prefHeight="60.0" prefWidth="60.0">
                            <children>
                               <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="-20.0" layoutY="-20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -704,7 +615,7 @@
                                </GridPane>
                            </children>
                         </Pane>
-                        <Pane fx:id="island8" layoutX="263.0" layoutY="225.0" prefHeight="60.0" prefWidth="60.0">
+                        <Pane layoutX="263.0" layoutY="225.0" prefHeight="60.0" prefWidth="60.0">
                            <children>
                               <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="-20.0" layoutY="-20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -740,7 +651,7 @@
                                </GridPane>
                            </children>
                         </Pane>
-                        <Pane fx:id="island9" layoutX="409.0" layoutY="170.0" prefHeight="60.0" prefWidth="60.0">
+                        <Pane layoutX="409.0" layoutY="170.0" prefHeight="60.0" prefWidth="60.0">
                            <children>
                               <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="-20.0" layoutY="-20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -776,7 +687,7 @@
                                </GridPane>
                            </children>
                         </Pane>
-                        <Pane fx:id="island10" layoutX="609.0" layoutY="150.0" prefHeight="60.0" prefWidth="60.0">
+                        <Pane layoutX="609.0" layoutY="150.0" prefHeight="60.0" prefWidth="60.0">
                            <children>
                               <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="-20.0" layoutY="-20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -812,7 +723,7 @@
                                </GridPane>
                            </children>
                         </Pane>
-                        <Pane fx:id="island11" layoutX="810.0" layoutY="170.0" prefHeight="60.0" prefWidth="60.0">
+                        <Pane layoutX="810.0" layoutY="170.0" prefHeight="60.0" prefWidth="60.0">
                            <children>
                               <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="-20.0" layoutY="-20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -848,7 +759,7 @@
                                </GridPane>
                            </children>
                         </Pane>
-                        <Pane fx:id="island12" layoutX="956.0" layoutY="224.0" prefHeight="60.0" prefWidth="60.0">
+                        <Pane layoutX="956.0" layoutY="224.0" prefHeight="60.0" prefWidth="60.0">
                            <children>
                               <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="-20.0" layoutY="-20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -1121,15 +1032,7 @@
                        </ArrayList>
                    </fx:define>
       
-                   <fx:define>
-                       <ArrayList fx:id="entrancesList">
-                           <fx:reference source="entrance1Panes" />
-                           <fx:reference source="entrance2Panes" />
-                           <fx:reference source="entrance3Panes" />
-                           <fx:reference source="entrance4Panes" />
-      
-                       </ArrayList>
-                   </fx:define>
+
                   <TextFlow layoutX="585.0" layoutY="240.0" prefHeight="40.0" prefWidth="250.0" textAlignment="CENTER">
                      <children>
                         <Text fx:id="characterDescription" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" textOrigin="CENTER" x="125.0">
@@ -1137,51 +1040,8 @@
                               <Font size="10.0" />
                            </font></Text>
                      </children></TextFlow>
-      
-                   <fx:define>
-                       <ArrayList fx:id="diningRoomsList">
-                           <fx:reference source="diningRoom1" />
-                           <fx:reference source="diningRoom2" />
-                           <fx:reference source="diningRoom3" />
-                           <fx:reference source="diningRoom4" />
-                       </ArrayList>
-                   </fx:define>
-      
-                   <fx:define>
-                       <ArrayList fx:id="professorsList">
-                           <fx:reference source="professors1" />
-                           <fx:reference source="professors2" />
-                           <fx:reference source="professors3" />
-                           <fx:reference source="professors4" />
-                       </ArrayList>
-                   </fx:define>
-      
-                   <fx:define>
-                       <ArrayList fx:id="towerTablesList">
-                           <fx:reference source="towerTable1Panes" />
-                           <fx:reference source="towerTable2Panes" />
-                           <fx:reference source="towerTable3Panes" />
-                           <fx:reference source="towerTable4Panes" />
-                       </ArrayList>
-                   </fx:define>
-      
-                   <fx:define>
-                       <ArrayList fx:id="islandsList">
-                           <fx:reference source="island1" />
-                           <fx:reference source="island2" />
-                           <fx:reference source="island3" />
-                           <fx:reference source="island4" />
-                           <fx:reference source="island5" />
-                           <fx:reference source="island6" />
-                           <fx:reference source="island7" />
-                           <fx:reference source="island8" />
-                           <fx:reference source="island9" />
-                           <fx:reference source="island10" />
-                           <fx:reference source="island11" />
-                           <fx:reference source="island12" />
-                       </ArrayList>
-                   </fx:define>
-                  <TextFlow fx:id="dialog" layoutX="1034.0" layoutY="488.0" prefHeight="200.0" prefWidth="199.0">
+
+                  <TextFlow layoutX="1034.0" layoutY="488.0" prefHeight="200.0" prefWidth="199.0">
                      <children>
                         <Text fx:id="dialogText" strokeType="OUTSIDE" strokeWidth="0.0" />
                      </children>
