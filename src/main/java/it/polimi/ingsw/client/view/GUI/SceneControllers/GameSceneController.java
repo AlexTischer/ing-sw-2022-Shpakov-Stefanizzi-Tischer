@@ -2,6 +2,8 @@ package it.polimi.ingsw.client.view.GUI.SceneControllers;
 
 import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.server.model.Color;
+import it.polimi.ingsw.server.model.SchoolBoard;
+import it.polimi.ingsw.server.model.TowerColor;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
@@ -14,6 +16,8 @@ import javafx.scene.text.Text;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static it.polimi.ingsw.server.model.Color.*;
 
@@ -76,9 +80,7 @@ public class GameSceneController extends SceneController {
     }
 
     private void showFirstModel(ClientGameBoard gameBoard) {
-
-        this.positionOfMotherNature=gameBoard.getPositionOfMotherNature();
-
+        
         Platform.runLater(()-> {
 
             resizeScreen(root);
@@ -89,7 +91,7 @@ public class GameSceneController extends SceneController {
             for(int i=4; i>gameBoard.getPlayers().size(); i--){
 
                 //removing unnecessary schoolboards
-                playersList.get(i-1).getChildren().remove(i-1);
+                playersList.get(i-1).getChildren().remove(0,playersList.get(i-1).getChildren().size());
 
                 //removing unnecessary clouds
                 clouds.getChildren().remove(i-1);
@@ -178,7 +180,7 @@ public class GameSceneController extends SceneController {
                 }
 
                 //mother nature
-                if(i==positionOfMotherNature){
+                if(i==gameBoard.getPositionOfMotherNature()){
                     ((GridPane) ((Pane)islands.getChildren().get(i)).getChildren().get(1))
                             .add(loadImageView("/images/misc/mother_nature.png",
                                     25,25),2,1);
@@ -264,6 +266,10 @@ public class GameSceneController extends SceneController {
                         ((ImageView)((Pane)playersList.get(playerIndex).getChildren().get(children_assistantPlayed)).getChildren().get(0))
                                 .setImage(loadImage(getAssistantPath(gameBoard.getPlayers().get(p).getPlayedAssistant().getRank())));
                     }
+                    else{
+                        ((ImageView)((Pane)playersList.get(playerIndex).getChildren().get(children_assistantPlayed)).getChildren().get(0))
+                                .setImage(null);
+                    }
 
                     //updating coins
                     ((Label)playersList.get(p).getChildren().get(children_numOfCoins))
@@ -286,6 +292,10 @@ public class GameSceneController extends SceneController {
                         ((ImageView)((Pane)playersList.get(0).getChildren().get(children_assistantPlayed)).getChildren().get(0))
                                 .setImage(loadImage(getAssistantPath(gameBoard.getPlayers().get(p).getPlayedAssistant().getRank())));
                     }
+                    else{
+                        ((ImageView)((Pane)playersList.get(0).getChildren().get(children_assistantPlayed)).getChildren().get(0))
+                                .setImage(null);
+                    }
 
                     //updating coins
                     ((Label)playersList.get(p).getChildren().get(children_numOfCoins))
@@ -296,13 +306,20 @@ public class GameSceneController extends SceneController {
 
             //updating position of islands
             if(numOfIslands!=gameBoard.getIslands().size()){
-                numOfIslands = gameBoard.getIslands().size();
-                int islandDim;
+                int islandsToRemove = numOfIslands - gameBoard.getIslands().size();
 
+                //removing merged islands
+                for(int i=0; i<islandsToRemove; i++){
+                    islands.getChildren().remove(islands.getChildren().size()-1);
+                }
+
+                numOfIslands = gameBoard.getIslands().size();
+
+                int islandDim;
                 for(int i=0; i<numOfIslands; i++){
 
                     if(gameBoard.getIslands().get(i).getNumOfIslands()>1){
-                        islandDim=150;
+                        islandDim=100;
                     }
                     else{
                         islandDim=60;
@@ -319,8 +336,14 @@ public class GameSceneController extends SceneController {
             for(int i=0; i<gameBoard.getIslands().size(); i++){
 
                 //removing previous images
-                ((GridPane) ((Pane)islands.getChildren().get(i)).getChildren().get(1)).getChildren().removeAll();
-                ((GridPane) ((Pane)islands.getChildren().get(i)).getChildren().get(2)).getChildren().removeAll();
+                if(!(((GridPane) ((Pane)islands.getChildren().get(i)).getChildren().get(1)).getChildren()).isEmpty()) {
+                    ((GridPane) ((Pane) islands.getChildren().get(i)).getChildren().get(1)).getChildren()
+                            .remove(0, ((GridPane) ((Pane) islands.getChildren().get(i)).getChildren().get(1)).getChildren().size());
+                }
+                if(!(((GridPane) ((Pane)islands.getChildren().get(i)).getChildren().get(2)).getChildren()).isEmpty()) {
+                    ((GridPane) ((Pane) islands.getChildren().get(i)).getChildren().get(2)).getChildren()
+                            .remove(0, ((GridPane) ((Pane) islands.getChildren().get(i)).getChildren().get(2)).getChildren().size());
+                }
 
 
                 //students
@@ -340,7 +363,7 @@ public class GameSceneController extends SceneController {
                 }
 
                 //mother nature
-                if(i==positionOfMotherNature){
+                if(i==gameBoard.getPositionOfMotherNature()){
                     ((GridPane) ((Pane)islands.getChildren().get(i)).getChildren().get(1))
                             .add(loadImageView("/images/misc/mother_nature.png",
                                     25,25),2,1);
@@ -355,7 +378,10 @@ public class GameSceneController extends SceneController {
                 int student = 0;
 
                 //removing previous images
-                ((GridPane)((Pane) clouds.getChildren().get(c)).getChildren().get(1)).getChildren().removeAll();
+                if(!(((GridPane)((Pane) clouds.getChildren().get(c)).getChildren().get(1)).getChildren().isEmpty())) {
+                    ((GridPane) ((Pane) clouds.getChildren().get(c)).getChildren().get(1)).getChildren()
+                            .remove(0, ((GridPane) ((Pane) clouds.getChildren().get(c)).getChildren().get(1)).getChildren().size());
+                }
 
                 for(int i=0; i<2 && student<students.size(); i++){
                     for(int j=0; j<2 && student<students.size(); j++){
@@ -413,8 +439,13 @@ public class GameSceneController extends SceneController {
 
     private void refillCharacter(ClientGameBoard gameBoard, int index){
 
+        //removing previous images
         for(int i=0; i<characters.getChildren().size(); i++){
-            ((GridPane)((Pane) characters.getChildren().get(index)).getChildren().get(1)).getChildren().removeAll();
+
+            if(!(((GridPane)((Pane) characters.getChildren().get(index)).getChildren().get(1)).getChildren().isEmpty())) {
+                ((GridPane) ((Pane) characters.getChildren().get(index)).getChildren().get(1)).getChildren()
+                        .remove(0, ((GridPane) ((Pane) characters.getChildren().get(index)).getChildren().get(1)).getChildren().size() - 1);
+            }
         }
 
         if(gameBoard.getPlayedCharacters()[index].getNoEntryTiles()!=0){
@@ -449,17 +480,18 @@ public class GameSceneController extends SceneController {
     /* SHOWS PLAYER SCHOOLBOARD
        p = player index in array of players
        s = schoolBoard index in schoolBoardsList */
-    private void fillSchoolBoard(ClientGameBoard gameBoard, int p, int s){
+    private void fillSchoolBoard(ClientGameBoard gameBoard, int p, int s) {
 
         //entrance
         ArrayList<Color> entrance = gameBoard.getPlayers().get(p).getSchoolBoard().getEntrance();
         for (int student = 0; student < entrance.size(); student++) {
-            ((Pane)((Group) playersList.get(s).getChildren().get(children_entrance)).getChildren().get(student)).getChildren()
+            ((Pane) ((Group) playersList.get(s).getChildren().get(children_entrance)).getChildren().get(student)).getChildren()
                     .add(loadImageView(entrance.get(student).student, 20, 20));
         }
 
 
         //diningRoom
+        /*
         int diningRow =0;
         for(Color c : gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().keySet()){
             for(int student = 0; student<gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(c);student++){
@@ -468,6 +500,7 @@ public class GameSceneController extends SceneController {
             }
             diningRow++;
         }
+
 
 
         //professors
@@ -479,14 +512,62 @@ public class GameSceneController extends SceneController {
             }
             professorsRow++;
         }
+         */
+
+
+        //diningRoom
+        for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(GREEN); student++) {
+            ((GridPane) playersList.get(s).getChildren().get(children_diningRoom))
+                    .add(loadImageView(GREEN.student, 15, 15), student, 0);
+        }
+        for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(RED); student++) {
+            ((GridPane) playersList.get(s).getChildren().get(children_diningRoom))
+                    .add(loadImageView(RED.student, 15, 15), student, 1);
+        }
+        for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(YELLOW); student++) {
+            ((GridPane) playersList.get(s).getChildren().get(children_diningRoom))
+                    .add(loadImageView(YELLOW.student, 15, 15), student, 2);
+        }
+        for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(PINK); student++) {
+            ((GridPane) playersList.get(s).getChildren().get(children_diningRoom))
+                    .add(loadImageView(PINK.student, 15, 15), student, 3);
+        }
+        for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(BLUE); student++) {
+            ((GridPane) playersList.get(s).getChildren().get(children_diningRoom))
+                    .add(loadImageView(BLUE.student, 15, 15), student, 4);
+        }
+
+
+
+        //professors
+        if (gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(GREEN) == 1) {
+            ((GridPane) playersList.get(s).getChildren().get(children_professors))
+                    .add(loadImageView(GREEN.professor, 25, 25), 0, 0);
+        }
+        if (gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(RED) == 1) {
+            ((GridPane) playersList.get(s).getChildren().get(children_professors))
+                    .add(loadImageView(RED.professor, 25, 25), 0, 1);
+        }
+
+        if (gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(YELLOW) == 1) {
+            ((GridPane) playersList.get(s).getChildren().get(children_professors))
+                    .add(loadImageView(YELLOW.professor, 25, 25), 0, 2);
+        }
+        if (gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(PINK) == 1) {
+            ((GridPane) playersList.get(s).getChildren().get(children_professors))
+                    .add(loadImageView(PINK.professor, 25, 25), 0, 3);
+        }
+        if (gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(BLUE) == 1) {
+            ((GridPane) playersList.get(s).getChildren().get(children_professors))
+                    .add(loadImageView(BLUE.professor, 25, 25), 0, 4);
+        }
 
         //towers
         for (int tower = 0; tower < gameBoard.getPlayers().get(p).getSchoolBoard().getNumOfTowers(); tower++) {
 
-            ((Pane)((Group)playersList.get(s).getChildren().get(children_towerTable)).getChildren().get(tower)).getChildren()
-                            .add(loadImageView(gameBoard.getPlayers().get(p).getTowerColor().tower, 30, 30));
+            ((Pane) ((Group) playersList.get(s).getChildren().get(children_towerTable)).getChildren().get(tower)).getChildren()
+                    .add(loadImageView(gameBoard.getPlayers().get(p).getTowerColor().tower, 30, 30));
         }
-
     }
 
     private void refillSchoolBoard(ClientGameBoard gameBoard, int p, int s){
@@ -494,19 +575,22 @@ public class GameSceneController extends SceneController {
         //entrance
         ArrayList<Color> entrance = gameBoard.getPlayers().get(p).getSchoolBoard().getEntrance();
 
-        //removing previous images
-        for(int i=0; i<((Group)playersList.get(s).getChildren().get(children_entrance)).getChildren().size(); i++){
-            if(((Pane)((Group) playersList.get(s).getChildren().get(children_entrance)).getChildren().get(i)).getChildren().isEmpty()){
-                ((Pane)((Group) playersList.get(s).getChildren().get(children_entrance)).getChildren().get(i)).getChildren().removeAll();
-            }
-        }
 
+        int entrancePane =0;
         for (int student = 0; student < entrance.size(); student++) {
             ((ImageView)((Pane)((Group) playersList.get(s).getChildren().get(children_entrance)).getChildren().get(student)).getChildren().get(0))
                     .setImage(loadImage(entrance.get(student).student));
+            entrancePane++;
+        }
+        for(int i = entrancePane; i<((Group)playersList.get(s).getChildren().get(children_entrance)).getChildren().size(); i++){
+            if(!(((Pane)((Group) playersList.get(s).getChildren().get(children_entrance)).getChildren().get(i)).getChildren().isEmpty())) {
+                ((ImageView) ((Pane) ((Group) playersList.get(s).getChildren().get(children_entrance)).getChildren().get(i)).getChildren().get(0))
+                        .setImage(null);
+            }
         }
 
 
+        /*
         //diningRoom
         //removing previous images
         ((GridPane)playersList.get(s).getChildren().get(children_diningRoom)).getChildren().removeAll();
@@ -518,6 +602,7 @@ public class GameSceneController extends SceneController {
             }
             diningRow++;
         }
+
 
 
         //professors
@@ -532,19 +617,82 @@ public class GameSceneController extends SceneController {
             professorsRow++;
         }
 
-        //towers
+         */
+
+        //diningRoom
         //removing previous images
-        for(int i=0; i<((Group)playersList.get(s).getChildren().get(children_towerTable)).getChildren().size(); i++){
-            if(((Pane)((Group) playersList.get(s).getChildren().get(children_towerTable)).getChildren().get(i)).getChildren().isEmpty()){
-                ((Pane)((Group) playersList.get(s).getChildren().get(children_towerTable)).getChildren().get(i)).getChildren().removeAll();
-            }
-        }
-        //adding new images
-        for (int tower = 0; tower < gameBoard.getPlayers().get(p).getSchoolBoard().getNumOfTowers(); tower++) {
-            ((Pane)((Group)playersList.get(s).getChildren().get(children_towerTable)).getChildren().get(tower)).getChildren()
-                    .add(loadImageView(gameBoard.getPlayers().get(p).getTowerColor().tower, 30, 30));
+        if(!(((GridPane) playersList.get(s).getChildren().get(children_diningRoom)).getChildren().isEmpty())) {
+            ((GridPane) playersList.get(s).getChildren().get(children_diningRoom)).getChildren()
+                    .remove(0, ((GridPane) playersList.get(s).getChildren().get(children_diningRoom)).getChildren().size());
         }
 
+        for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(GREEN); student++) {
+            ((GridPane) playersList.get(s).getChildren().get(children_diningRoom))
+                    .add(loadImageView(GREEN.student, 15, 15), student, 0);
+        }
+        for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(RED); student++) {
+            ((GridPane) playersList.get(s).getChildren().get(children_diningRoom))
+                    .add(loadImageView(RED.student, 15, 15), student, 1);
+        }
+        for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(YELLOW); student++) {
+            ((GridPane) playersList.get(s).getChildren().get(children_diningRoom))
+                    .add(loadImageView(YELLOW.student, 15, 15), student, 2);
+        }
+        for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(PINK); student++) {
+            ((GridPane) playersList.get(s).getChildren().get(children_diningRoom))
+                    .add(loadImageView(PINK.student, 15, 15), student, 3);
+        }
+        for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(BLUE); student++) {
+            ((GridPane) playersList.get(s).getChildren().get(children_diningRoom))
+                    .add(loadImageView(BLUE.student, 15, 15), student, 4);
+        }
+
+
+        //professors
+        //removing previous images
+        if(!(((GridPane) playersList.get(s).getChildren().get(children_professors)).getChildren()).isEmpty()) {
+            ((GridPane) playersList.get(s).getChildren().get(children_professors)).getChildren()
+                    .remove(((GridPane) playersList.get(s).getChildren().get(children_professors)).getChildren().size() - 1);
+        }
+
+        if (gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(GREEN) == 1) {
+            ((GridPane) playersList.get(s).getChildren().get(children_professors))
+                    .add(loadImageView(GREEN.professor, 25, 25), 0, 0);
+        }
+        if (gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(RED) == 1) {
+            ((GridPane) playersList.get(s).getChildren().get(children_professors))
+                    .add(loadImageView(RED.professor, 25, 25), 0, 1);
+        }
+
+        if (gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(YELLOW) == 1) {
+            ((GridPane) playersList.get(s).getChildren().get(children_professors))
+                    .add(loadImageView(YELLOW.professor, 25, 25), 0, 2);
+        }
+        if (gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(PINK) == 1) {
+            ((GridPane) playersList.get(s).getChildren().get(children_professors))
+                    .add(loadImageView(PINK.professor, 25, 25), 0, 3);
+        }
+        if (gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(BLUE) == 1) {
+            ((GridPane) playersList.get(s).getChildren().get(children_professors))
+                    .add(loadImageView(BLUE.professor, 25, 25), 0, 4);
+        }
+
+
+        //towers
+        int towerPane =0;
+        for (int tower = 0; tower < gameBoard.getPlayers().get(p).getSchoolBoard().getNumOfTowers(); tower++) {
+            ((ImageView)((Pane)((Group) playersList.get(s).getChildren().get(children_towerTable)).getChildren().get(tower)).getChildren().get(0))
+                    .setImage(loadImage(gameBoard.getPlayers().get(p).getTowerColor().tower));
+            towerPane++;
+        }
+
+        //removing previous images
+        for(int i = towerPane; i<((Group)playersList.get(p).getChildren().get(children_towerTable)).getChildren().size(); i++){
+            if(!(((Pane)((Group) playersList.get(s).getChildren().get(children_towerTable)).getChildren().get(i)).getChildren().isEmpty())) {
+                ((ImageView) ((Pane) ((Group) playersList.get(s).getChildren().get(children_towerTable)).getChildren().get(i)).getChildren().get(0))
+                        .setImage(null);
+            }
+        }
     }
 
 
@@ -647,14 +795,14 @@ public class GameSceneController extends SceneController {
 
 
             //disabling the selected assistant to avoid clicks on next selections
-            assistants.getChildren().get(assistantRank-1).setDisable(true);
+            assistants.getChildren().get(assistantRank-1).setVisible(false);
 
             //removing its image
-            ((ImageView)((Pane)assistants.getChildren().get(assistantRank-1)).getChildren().get(0)).setImage(null);
+            //((ImageView)((Pane)assistants.getChildren().get(assistantRank-1)).getChildren().get(0)).setImage(null);
 
             //adding its image to playedAssistant Pane
-            ((ImageView)((Pane)playersList.get(0).getChildren().get(children_assistantPlayed)).getChildren().get(0))
-                    .setImage(loadImage(getAssistantPath(assistantRank)));
+            //((ImageView)((Pane)playersList.get(0).getChildren().get(children_assistantPlayed)).getChildren().get(0))
+            //        .setImage(loadImage(getAssistantPath(assistantRank)));
 
             //removing event on MouseClick
             for(int i=0; i<assistants.getChildren().size(); i++){
@@ -835,10 +983,27 @@ public class GameSceneController extends SceneController {
 
          */
 
+
+        /*
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenHeight = screenSize.height;
         int screenWidth = screenSize.width;
         System.out.println(screenHeight + " " + screenWidth);
+
+         */
+
+
+        Map<String, Integer> map = new HashMap<>();
+        map.put("GREEN", 0);
+        map.put("RED", 0);
+        map.put("BLUE", 0);
+        map.put("YELLOW", 0);
+        map.put("PINKKKKKKKKKK", 0);
+
+        for(int i=0; i<10; i++){
+            System.out.println(map.keySet());
+        }
+
 
     }
 
