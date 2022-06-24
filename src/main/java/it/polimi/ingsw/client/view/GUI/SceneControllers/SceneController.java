@@ -20,7 +20,10 @@ public class SceneController {
     }
 
     public ImageView loadImageView(String path, int width, int height){
-        Image image = new Image(getClass().getResourceAsStream(path));
+        //Image image = new Image(getClass().getResourceAsStream(path));
+
+        Image image = new Image(path);
+
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(width);
         imageView.setFitHeight(height);
@@ -29,7 +32,10 @@ public class SceneController {
     }
 
     public Image loadImage(String path){
-        Image image = new Image(getClass().getResourceAsStream(path));
+
+        //Image image = new Image(getClass().getResourceAsStream(path));
+
+        Image image = new Image(path);
 
         return image;
     }

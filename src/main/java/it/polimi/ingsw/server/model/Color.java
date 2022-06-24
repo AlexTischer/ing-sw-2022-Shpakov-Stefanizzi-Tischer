@@ -38,6 +38,12 @@ public enum Color {
                 .findFirst();
     }
 
+    public static Optional<Color> getColorByStudentPath(String value) {
+        return Arrays.stream(Color.values())
+                .filter(color -> value.contains(color.student))
+                .findFirst();
+    }
+
     private static final List<Color> VALUES =
             Collections.unmodifiableList(Arrays.asList(values()));
     private static final int SIZE = VALUES.size();

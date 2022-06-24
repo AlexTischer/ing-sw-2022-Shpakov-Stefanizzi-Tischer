@@ -195,6 +195,9 @@ public class ClientController {
                             while (isGameOn() && !correctDestination) {
                                 int destination = view.askStudentDestination();
 
+                                //TEST
+                                System.out.println("client controller: ho ricevuto la destinazione "+ destination);
+
                                 //if destination == 0, move the student to dining room
                                 if (destination == 0) {
                                     try {

@@ -130,6 +130,8 @@ public class Gui extends View {
                 }
             }
         }
+
+        gameSceneController.setAskingDone(false);
         return gameSceneController.getAssistantRank();
     }
 
@@ -138,15 +140,19 @@ public class Gui extends View {
         if (!characterActivated) {
             gameSceneController.chooseActionStudent();
 
-            while (!gameSceneController.isAskingDone()) {
-                try {
-                    System.out.println("waiting studentAction");
-                    gameSceneController.wait();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+            synchronized (gameSceneController) {
+                while (!gameSceneController.isAskingDone()) {
+                    try {
+                        System.out.println("chooseActionStudent: waiting studentAction");
+                        gameSceneController.wait();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
 
+            //TEST
+            System.out.println("chooseActionStudent: ho ritornato la scelta");
             return gameSceneController.getChosenAction();
         }
         else {
@@ -170,24 +176,37 @@ public class Gui extends View {
             }
         }
 
+        gameSceneController.setAskingDone(false);
+        //TEST
+        System.out.println("askStudentColor ritorna il colore " + gameSceneController.getStudentColor());
+
         return gameSceneController.getStudentColor();
     }
 
     @Override
-    public int askStudentDestination() {
+    public synchronized int askStudentDestination() {  //non era synchronized
         if(!gameSceneController.isAskingDone()) {
             gameSceneController.askStudentDestination();
+
+            //TEST
+            System.out.println("gui ha invocato il metodo askStudentdestination");
         }
 
-        while(!gameSceneController.isAskingDone()){
-            try {
-                System.out.println("waiting StudentDestination");
-                gameSceneController.wait();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+        synchronized (gameSceneController) { //aggiunto
+            while (!gameSceneController.isAskingDone()) {
+                try {
+                    System.out.println("waiting studentDestination");
+                    gameSceneController.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
 
+        //TEST
+        System.out.println("sono uscito da ask student destination");
+
+        gameSceneController.setAskingDone(false); //aggiunta
         return gameSceneController.getStudentDestination();
     }
 

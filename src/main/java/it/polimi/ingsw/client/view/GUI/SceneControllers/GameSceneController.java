@@ -1,14 +1,22 @@
 package it.polimi.ingsw.client.view.GUI.SceneControllers;
 
+import com.sun.javafx.logging.PlatformLogger;
 import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.server.model.Color;
 import it.polimi.ingsw.server.model.SchoolBoard;
 import it.polimi.ingsw.server.model.TowerColor;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.beans.value.WeakChangeListener;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
@@ -64,8 +72,12 @@ public class GameSceneController extends SceneController {
     private Color studentColor;
     private int positionOfMotherNature;
     private boolean choice;
+
+    private int actionChoice;
     private int numOfIslands = 12;
     private boolean firstModelShown = false;
+
+
 
 
 
@@ -407,76 +419,6 @@ public class GameSceneController extends SceneController {
     }
 
 
-    private void fillCharacter(ClientGameBoard gameBoard, int index){
-
-        if(gameBoard.getPlayedCharacters()[index].getNoEntryTiles()!=0){
-            int tile=0;
-            for(int i=0; i<2 && tile<gameBoard.getPlayedCharacters()[index].getNoEntryTiles(); i++){
-                for(int j=0; j<3 && tile<gameBoard.getPlayedCharacters()[index].getNoEntryTiles(); j++){
-
-                    ((GridPane)((Pane) characters.getChildren().get(index)).getChildren().get(1))
-                            .add(loadImageView("/images/misc/deny_island.png",15,15),j,i);
-
-                    tile++;
-                }
-            }
-        }
-
-        if(gameBoard.getPlayedCharacters()[index].getStudents()!=null){
-            Color[] students = gameBoard.getPlayedCharacters()[index].getStudents();
-            int student=0;
-            for(int i=0; i<2 && student<students.length; i++){
-                for(int j=0; j<3 && student<students.length; j++){
-
-                    ((GridPane)((Pane) characters.getChildren().get(index)).getChildren().get(1))
-                            .add(loadImageView(students[student].student,15,15),j,i);
-
-                    student++;
-                }
-            }
-        }
-    }
-
-    private void refillCharacter(ClientGameBoard gameBoard, int index){
-
-        //removing previous images
-        for(int i=0; i<characters.getChildren().size(); i++){
-
-            if(!(((GridPane)((Pane) characters.getChildren().get(index)).getChildren().get(1)).getChildren().isEmpty())) {
-                ((GridPane) ((Pane) characters.getChildren().get(index)).getChildren().get(1)).getChildren()
-                        .remove(0, ((GridPane) ((Pane) characters.getChildren().get(index)).getChildren().get(1)).getChildren().size() - 1);
-            }
-        }
-
-        if(gameBoard.getPlayedCharacters()[index].getNoEntryTiles()!=0){
-            int tile=0;
-            for(int i=0; i<2 && tile<gameBoard.getPlayedCharacters()[index].getNoEntryTiles(); i++){
-                for(int j=0; j<3 && tile<gameBoard.getPlayedCharacters()[index].getNoEntryTiles(); j++){
-
-                    ((GridPane)((Pane) characters.getChildren().get(index)).getChildren().get(1))
-                            .add(loadImageView("/images/misc/deny_island.png",15,15),j,i);
-
-                    tile++;
-                }
-            }
-        }
-
-        if(gameBoard.getPlayedCharacters()[index].getStudents()!=null){
-            Color[] students = gameBoard.getPlayedCharacters()[index].getStudents();
-            int student=0;
-            for(int i=0; i<2 && student<students.length; i++){
-                for(int j=0; j<3 && student<students.length; j++){
-
-                    ((GridPane)((Pane) characters.getChildren().get(index)).getChildren().get(1))
-                            .add(loadImageView(students[student].student,15,15),j,i);
-
-                    student++;
-                }
-            }
-        }
-    }
-
-
     /* SHOWS PLAYER SCHOOLBOARD
        p = player index in array of players
        s = schoolBoard index in schoolBoardsList */
@@ -575,12 +517,14 @@ public class GameSceneController extends SceneController {
         //entrance
         ArrayList<Color> entrance = gameBoard.getPlayers().get(p).getSchoolBoard().getEntrance();
 
-
         int entrancePane =0;
         for (int student = 0; student < entrance.size(); student++) {
             ((ImageView)((Pane)((Group) playersList.get(s).getChildren().get(children_entrance)).getChildren().get(student)).getChildren().get(0))
                     .setImage(loadImage(entrance.get(student).student));
+
             entrancePane++;
+
+
         }
         for(int i = entrancePane; i<((Group)playersList.get(s).getChildren().get(children_entrance)).getChildren().size(); i++){
             if(!(((Pane)((Group) playersList.get(s).getChildren().get(children_entrance)).getChildren().get(i)).getChildren().isEmpty())) {
@@ -652,7 +596,7 @@ public class GameSceneController extends SceneController {
         //removing previous images
         if(!(((GridPane) playersList.get(s).getChildren().get(children_professors)).getChildren()).isEmpty()) {
             ((GridPane) playersList.get(s).getChildren().get(children_professors)).getChildren()
-                    .remove(((GridPane) playersList.get(s).getChildren().get(children_professors)).getChildren().size() - 1);
+                    .remove(0,((GridPane) playersList.get(s).getChildren().get(children_professors)).getChildren().size());
         }
 
         if (gameBoard.getPlayers().get(p).getSchoolBoard().getProfessors().get(GREEN) == 1) {
@@ -694,6 +638,322 @@ public class GameSceneController extends SceneController {
             }
         }
     }
+
+    private void fillCharacter(ClientGameBoard gameBoard, int index){
+
+        if(gameBoard.getPlayedCharacters()[index].getNoEntryTiles()!=0){
+            int tile=0;
+            for(int i=0; i<2 && tile<gameBoard.getPlayedCharacters()[index].getNoEntryTiles(); i++){
+                for(int j=0; j<3 && tile<gameBoard.getPlayedCharacters()[index].getNoEntryTiles(); j++){
+
+                    ((GridPane)((Pane) characters.getChildren().get(index)).getChildren().get(1))
+                            .add(loadImageView("/images/misc/deny_island.png",15,15),j,i);
+
+                    tile++;
+                }
+            }
+        }
+
+        if(gameBoard.getPlayedCharacters()[index].getStudents()!=null){
+            Color[] students = gameBoard.getPlayedCharacters()[index].getStudents();
+            int student=0;
+            for(int i=0; i<2 && student<students.length; i++){
+                for(int j=0; j<3 && student<students.length; j++){
+
+                    ((GridPane)((Pane) characters.getChildren().get(index)).getChildren().get(1))
+                            .add(loadImageView(students[student].student,15,15),j,i);
+
+                    student++;
+                }
+            }
+        }
+    }
+
+    private void refillCharacter(ClientGameBoard gameBoard, int index){
+
+        //removing previous images
+        for(int i=0; i<characters.getChildren().size(); i++){
+
+            if(!(((GridPane)((Pane) characters.getChildren().get(index)).getChildren().get(1)).getChildren().isEmpty())) {
+                ((GridPane) ((Pane) characters.getChildren().get(index)).getChildren().get(1)).getChildren()
+                        .remove(0, ((GridPane) ((Pane) characters.getChildren().get(index)).getChildren().get(1)).getChildren().size() - 1);
+            }
+        }
+
+        if(gameBoard.getPlayedCharacters()[index].getNoEntryTiles()!=0){
+            int tile=0;
+            for(int i=0; i<2 && tile<gameBoard.getPlayedCharacters()[index].getNoEntryTiles(); i++){
+                for(int j=0; j<3 && tile<gameBoard.getPlayedCharacters()[index].getNoEntryTiles(); j++){
+
+                    ((GridPane)((Pane) characters.getChildren().get(index)).getChildren().get(1))
+                            .add(loadImageView("/images/misc/deny_island.png",15,15),j,i);
+
+                    tile++;
+                }
+            }
+        }
+
+        if(gameBoard.getPlayedCharacters()[index].getStudents()!=null){
+            Color[] students = gameBoard.getPlayedCharacters()[index].getStudents();
+            int student=0;
+            for(int i=0; i<2 && student<students.length; i++){
+                for(int j=0; j<3 && student<students.length; j++){
+
+                    ((GridPane)((Pane) characters.getChildren().get(index)).getChildren().get(1))
+                            .add(loadImageView(students[student].student,15,15),j,i);
+
+                    student++;
+                }
+            }
+        }
+    }
+
+
+
+    public synchronized void selectStudent(Color studentColor){
+        askingDone=true;
+        chosenAction = 1;
+        this.studentColor = studentColor;
+
+        dialogText.setText("");
+
+        for(int i=0; i<((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().size(); i++){
+            int finalI = i;
+            ((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)
+                    .setOnMouseClicked(mouseEvent -> {});
+            }
+
+        notifyAll();
+    }
+
+    public synchronized void selectCharacter(int index){
+        askingDone=true;
+        chosenAction = 2;
+        this.characterNumber = index;
+        /*TODO: disable Characters*/
+        notifyAll();
+    }
+
+    public synchronized void selectAssistant(int assistantRank){
+        askingDone=true;
+        this.assistantRank= assistantRank;
+
+        Platform.runLater(()->{
+
+            //disabling the selected assistant to avoid clicks on next selections
+            assistants.getChildren().get(assistantRank-1).setVisible(false);
+
+            //removing its image
+            //((ImageView)((Pane)assistants.getChildren().get(assistantRank-1)).getChildren().get(0)).setImage(null);
+
+            //adding its image to playedAssistant Pane
+            //((ImageView)((Pane)playersList.get(0).getChildren().get(children_assistantPlayed)).getChildren().get(0))
+            //        .setImage(loadImage(getAssistantPath(assistantRank)));
+
+            //removing event on MouseClick
+            for(int i=0; i<assistants.getChildren().size(); i++){
+                assistants.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
+            }
+
+            dialogText.setText("");
+
+        });
+
+        notifyAll();
+    }
+
+    public synchronized void selectDestination(int index){
+
+        askingDone=true;
+        // TODO: this.destination = index;
+        this.destination = index;
+
+        /*TODO: disable islands and dining room*/
+        for(int i=0; i<islands.getChildren().size(); i++){
+            islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
+        }
+        playersList.get(0).getChildren().get(children_diningRoom).setOnMouseClicked(mouseEvent -> {});
+
+
+        //TEST
+        System.out.println("ho selezionato la destinazione");
+        notifyAll();
+    }
+
+    public synchronized void selectCloud(int index){
+        askingDone=true;
+        // TODO: this.cloudNumber = index;
+        /*TODO: disable clouds*/
+        notifyAll();
+    }
+
+    public synchronized void selectMotherNature(int selectedIsland){
+        askingDone=true;
+        // TODO: this.motherNatureSteps = selectedIsland-currentIsland;
+        /*TODO: disable assistant cards*/
+        notifyAll();
+    }
+
+    public synchronized void selectBoolean(boolean choice){
+        askingDone=true;
+        this.choice=choice;
+        notifyAll();
+    }
+
+    public synchronized void askAssistant(){
+
+        Platform.runLater(()->{
+            dialogText.setText("Select an assistant from your Deck");
+
+            for(int i=0; i<assistants.getChildren().size(); i++){
+                int finalI = i;
+                assistants.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectAssistant(finalI+1);});
+            }
+        });
+
+    }
+
+    public void askStudentColor() {
+
+        /*TODO: print: Select a student*/
+        Platform.runLater(()->{
+
+            dialogText.setText("Select a student in your entrance to move" + studentColor);
+
+
+        });
+        /*TODO: enable students and set onMouseClickAction to selectStudent(color)*/
+    }
+
+
+    public void askIslandNumber() {
+
+        /*TODO: print: Select an island*/
+        /*TODO: enable islands and set onMouseClickAction to selectDestination(index+1)*/
+    }
+
+    public void askStudentDestination() {
+
+        //TEST
+        System.out.println("GameSceneController: sono in askStudentDestination");
+
+        /*TODO: print: Select an island*/
+        dialogText.setText("select an island or your dining room to move your student into");
+
+        /*TODO: enable islands and set onMouseClickAction to selectDestination(index+1)*/
+        for(int i=0; i<islands.getChildren().size(); i++){
+            int finalI = i;
+            islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectDestination(finalI+1);});
+        }
+
+        /*TODO: enable diningRoom and set onMouseClickAction to selectDestination(0)*/
+        playersList.get(0).getChildren().get(children_diningRoom).setOnMouseClicked(mouseEvent -> {selectDestination(0);});
+
+    }
+
+    public void askMotherNatureSteps() {
+
+        /*TODO: print: Select the island you want to move MotherNature to*/
+        /*TODO: enable assistantSteps islands after currentIsland and set onMouseClickAction to selectMotherNature(index)*/
+    }
+
+    public void askCloudNumber() {
+
+        /*TODO: print: Select a cloud*/
+        /*TODO: enable clouds and set onMouseClickAction to selectCloud(index+1)*/
+    }
+
+    public void askCharacterNumber() {
+
+        /*TODO: print: Select a Character*/
+        /*TODO: enable characters and cancelButton and set onMouseClickAction to selectCharacter(index+1) for characters, selectCharacter(-1) for cancelButton*/
+    }
+
+    public void askBoolean() {
+
+        /*TODO: enable tickButton and cancelButton and set onMouseClickAction to selectBoolean(true) for tickButton and to selectBoolean(false) for cancelButton*/
+    }
+
+    public void chooseActionStudent() {
+        /*TODO: print: Select a student from your entrance to move it, or select a Character to buy and use it*/
+        /*TODO: enable Entrance students and set onMouseClickAction to selectStudent(color)*/
+        /*TODO: enable Characters and set onMouseClickAction to selectCharacter(index+1)*/
+        Platform.runLater(()->{
+
+            dialogText.setText("Select a student from your entrance to move it, or select a Character to buy and use it");
+
+            for(int i=0; i<((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().size(); i++){
+                int finalI = i;
+                if(!(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)).getChildren().isEmpty())){
+
+                    ((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i))
+                            .setOnMouseClicked(mouseEvent ->
+                            {selectStudent(Color.getColorByStudentPath(((ImageView)((Pane)((Group)playersList.get(0).getChildren()
+                                    .get(children_entrance)).getChildren().get(finalI)).getChildren().get(0)).getImage().getUrl()).get());});
+                }
+            }
+
+        });
+
+    }
+
+    public void chooseActionMotherNature() {
+        /*TODO: print: Select a student from your entrance to move it, or select a Character to buy and use it*/
+        /*TODO: enable Entrance students and set onMouseClickAction to selectStudent(color)*/
+        /*TODO: enable Characters and set onMouseClickAction to selectCharacter(index+1)*/
+    }
+
+    public void chooseActionCloud() {
+        /*TODO: print: Select a cloud to use it, or select a Character to buy and use it*/
+        /*TODO: enable clouds and set onMouseClickAction to selectCloud(index+1)*/
+        /*TODO: enable Characters and set onMouseClickAction to selectCharacter(index+1)*/
+    }
+
+    public boolean isAskingDone(){
+        return askingDone;
+    }
+
+    public void setAskingDone(boolean askingDone){
+        this.askingDone = askingDone;
+    }
+
+    public int getAssistantRank(){
+        return assistantRank;
+    }
+
+    public int getChosenAction() {
+        return chosenAction;
+    }
+
+    public Color getStudentColor() {
+        return studentColor;
+    }
+
+    public int getIslandNumber() {
+        return destination;
+    }
+
+    public int getMotherNatureSteps() {
+        return motherNatureSteps;
+    }
+
+    public int getCloudNumber(){
+        return cloudNumber;
+    }
+
+    public int getCharacterNumber() {
+        return characterNumber;
+    }
+
+    public int getStudentDestination() {
+        return destination;
+    }
+
+    public boolean getChoice() {
+        return choice;
+    }
+
+
 
 
 
@@ -767,198 +1027,6 @@ public class GameSceneController extends SceneController {
         return paths[id-1];
     }
 
-    public synchronized void selectStudent(Color studentColor){
-        askingDone=true;
-        chosenAction = 1;
-        this.studentColor = studentColor;
-        /*TODO: disable students*/
-        notifyAll();
-    }
-
-    public synchronized void selectCharacter(int index){
-        askingDone=true;
-        chosenAction = 2;
-        this.characterNumber = index;
-        /*TODO: disable Characters*/
-        notifyAll();
-    }
-
-    public synchronized void selectAssistant(int assistantRank){
-        askingDone=true;
-        this.assistantRank= assistantRank;
-
-        Platform.runLater(()->{
-
-            //disabling the selected assistant to avoid clicks on next selections
-            assistants.getChildren().get(assistantRank-1).setVisible(false);
-
-            //removing its image
-            //((ImageView)((Pane)assistants.getChildren().get(assistantRank-1)).getChildren().get(0)).setImage(null);
-
-            //adding its image to playedAssistant Pane
-            //((ImageView)((Pane)playersList.get(0).getChildren().get(children_assistantPlayed)).getChildren().get(0))
-            //        .setImage(loadImage(getAssistantPath(assistantRank)));
-
-            //removing event on MouseClick
-            for(int i=0; i<assistants.getChildren().size(); i++){
-                assistants.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
-            }
-
-            dialogText.setText("");
-
-        });
-
-        notifyAll();
-    }
-
-    public synchronized void selectDestination(int index){
-        askingDone=true;
-        // TODO: this.destination = index;
-        /*TODO: disable islands and dining room*/
-        notifyAll();
-    }
-
-    public synchronized void selectCloud(int index){
-        askingDone=true;
-        // TODO: this.cloudNumber = index;
-        /*TODO: disable clouds*/
-        notifyAll();
-    }
-
-    public synchronized void selectMotherNature(int selectedIsland){
-        askingDone=true;
-        // TODO: this.motherNatureSteps = selectedIsland-currentIsland;
-        /*TODO: disable assistant cards*/
-        notifyAll();
-    }
-
-    public synchronized void selectBoolean(boolean choice){
-        askingDone=true;
-        this.choice=choice;
-        notifyAll();
-    }
-
-    public synchronized void askAssistant(){
-        askingDone=false;
-        Platform.runLater(()->{
-            dialogText.setText("Select an assistant from your Deck");
-
-            for(int i=0; i<assistants.getChildren().size(); i++){
-                int finalI = i;
-                assistants.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectAssistant(finalI+1);});
-            }
-        });
-
-    }
-
-    public void askStudentColor() {
-        askingDone=false;
-        /*TODO: print: Select a student*/
-        /*TODO: enable students and set onMouseClickAction to selectStudent(color)*/
-    }
-
-    public void askIslandNumber() {
-        askingDone=false;
-        /*TODO: print: Select an island*/
-        /*TODO: enable islands and set onMouseClickAction to selectDestination(index+1)*/
-    }
-
-    public void askStudentDestination() {
-        askingDone=false;
-        /*TODO: print: Select an island*/
-        /*TODO: enable islands and set onMouseClickAction to selectDestination(index+1)*/
-        /*TODO: enable diningRoom and set onMouseClickAction to selectDestination(0)*/
-    }
-
-    public void askMotherNatureSteps() {
-        askingDone=false;
-        /*TODO: print: Select the island you want to move MotherNature to*/
-        /*TODO: enable assistantSteps islands after currentIsland and set onMouseClickAction to selectMotherNature(index)*/
-    }
-
-    public void askCloudNumber() {
-        askingDone=false;
-        /*TODO: print: Select a cloud*/
-        /*TODO: enable clouds and set onMouseClickAction to selectCloud(index+1)*/
-    }
-
-    public void askCharacterNumber() {
-        askingDone=false;
-        /*TODO: print: Select a Character*/
-        /*TODO: enable characters and cancelButton and set onMouseClickAction to selectCharacter(index+1) for characters, selectCharacter(-1) for cancelButton*/
-    }
-
-    public void askBoolean() {
-        askingDone=false;
-        /*TODO: enable tickButton and cancelButton and set onMouseClickAction to selectBoolean(true) for tickButton and to selectBoolean(false) for cancelButton*/
-    }
-
-    public void chooseActionStudent() {
-        /*TODO: print: Select a student from your entrance to move it, or select a Character to buy and use it*/
-        /*TODO: enable Entrance students and set onMouseClickAction to selectStudent(color)*/
-        /*TODO: enable Characters and set onMouseClickAction to selectCharacter(index+1)*/
-        /*Platform.runLater(()->{
-            dialogText.setText("Select a student from your entrance to move it, or select a Character to buy and use it");
-
-            for(Color color : st){
-                int finalI = i;
-                assistants.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectAssistant(finalI+1);});
-            }
-        });*/
-    }
-
-    public void chooseActionMotherNature() {
-        /*TODO: print: Select a student from your entrance to move it, or select a Character to buy and use it*/
-        /*TODO: enable Entrance students and set onMouseClickAction to selectStudent(color)*/
-        /*TODO: enable Characters and set onMouseClickAction to selectCharacter(index+1)*/
-    }
-
-    public void chooseActionCloud() {
-        /*TODO: print: Select a cloud to use it, or select a Character to buy and use it*/
-        /*TODO: enable clouds and set onMouseClickAction to selectCloud(index+1)*/
-        /*TODO: enable Characters and set onMouseClickAction to selectCharacter(index+1)*/
-    }
-
-    public boolean isAskingDone(){
-        return askingDone;
-    }
-
-    public int getAssistantRank(){
-        return assistantRank;
-    }
-
-    public int getChosenAction() {
-        return chosenAction;
-    }
-
-    public Color getStudentColor() {
-        return RED;
-    }
-
-    public int getIslandNumber() {
-        return destination;
-    }
-
-    public int getMotherNatureSteps() {
-        return motherNatureSteps;
-    }
-
-    public int getCloudNumber(){
-        return cloudNumber;
-    }
-
-    public int getCharacterNumber() {
-        return characterNumber;
-    }
-
-    public int getStudentDestination() {
-        return destination;
-    }
-
-    public boolean getChoice() {
-        return choice;
-    }
-
 
     public int[] calculateIslandPosition(int n, int islandIndex, int dim){
 
@@ -975,9 +1043,12 @@ public class GameSceneController extends SceneController {
         return new int[]{x, y};
     }
 
+
+
+
+
+
     public static void main(String args[]){
-
-
         /*
         GameSceneController gameSceneController = new GameSceneController();
 
@@ -987,29 +1058,6 @@ public class GameSceneController extends SceneController {
         }
 
          */
-
-
-        /*
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int screenHeight = screenSize.height;
-        int screenWidth = screenSize.width;
-        System.out.println(screenHeight + " " + screenWidth);
-
-         */
-
-
-        Map<String, Integer> map = new HashMap<>();
-        map.put("GREEN", 0);
-        map.put("RED", 0);
-        map.put("BLUE", 0);
-        map.put("YELLOW", 0);
-        map.put("PINKKKKKKKKKK", 0);
-
-        for(int i=0; i<10; i++){
-            System.out.println(map.keySet());
-        }
-
-
     }
 
 }
