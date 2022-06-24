@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.view.CLI;
 
 import it.polimi.ingsw.client.model.ClientGameBoard;
+import it.polimi.ingsw.client.view.CLI.utils.AnsiKeys;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.server.model.Color;
 
@@ -79,6 +80,12 @@ public class Cli extends View {
 
     public void printMessage(String message){
         System.out.println(message);
+    }
+
+    public void printErrorMessage(String message){
+        System.out.print(AnsiKeys.COLOR_BRIGHT_RED);
+        System.out.println(message);
+        System.out.print(AnsiKeys.COLOR_RESET);
     }
 
     public int askAssistant() {

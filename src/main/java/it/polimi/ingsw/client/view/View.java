@@ -56,4 +56,7 @@ public abstract class View {
     public abstract boolean askBoolean(String message);
 
     public abstract void printEndGameMessage(String message);
+
+    public void printErrorMessage(String message) {
+    }
 }

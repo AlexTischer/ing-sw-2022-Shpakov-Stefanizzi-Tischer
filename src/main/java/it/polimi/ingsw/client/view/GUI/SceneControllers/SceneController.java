@@ -11,6 +11,10 @@ public class SceneController {
     public void printErrorMessage(String message){
     }
 
+    public void printMessage(String message){
+
+    }
+
     public void resizeScreen(Group group){
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenHeight = screenSize.height;

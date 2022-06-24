@@ -343,7 +343,7 @@ public class ClientController {
         int numOfPlayers;
         numOfPlayers = view.askNumOfPlayers();
         while (!( numOfPlayers >= 2 && numOfPlayers <= 4)){
-            view.printMessage("Incorrect number of players value. Please try again");
+            view.printErrorMessage("Incorrect number of players value. Please try again");
             numOfPlayers = view.askNumOfPlayers();
         }
         return numOfPlayers;
@@ -359,6 +359,10 @@ public class ClientController {
 
     public void printMessage(String message){
         view.printMessage(message);
+    }
+
+    public void printErrorMessage(String message){
+        view.printErrorMessage(message);
     }
 
     public boolean isGameOn(){
