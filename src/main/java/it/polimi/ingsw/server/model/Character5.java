@@ -67,7 +67,7 @@ public class Character5 extends Character {
         character.setId(id);
         character.setCost(cost);
         character.setDescription(description);
-
+        character.setFirstUse(firstUse);
         character.setNoEntryTiles(noEntryTiles);;
 
         return character;

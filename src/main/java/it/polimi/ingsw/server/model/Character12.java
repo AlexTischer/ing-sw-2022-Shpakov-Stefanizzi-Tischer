@@ -49,6 +49,7 @@ public class Character12 extends Character {
         character.setId(id);
         character.setCost(cost);
         character.setDescription(description);
+        character.setFirstUse(firstUse);
 
         return character;
     }

@@ -14,14 +14,16 @@ public class ClientCharacter1 extends ClientCharacter{
     @Override
     public ActivateCharacterPacket createPacket(View view){
 
+
         view.printMessage(getDescription());
         Color student = null;
         boolean correctStudent = false;
         while(!correctStudent) {
             view.printMessage("From this card, select the student you want to move");
             student = view.askStudentColor();
-            if(Arrays.stream(students).toList().contains(student))
-            {correctStudent=true;}
+            if(Arrays.stream(students).toList().contains(student)) {
+                correctStudent=true;
+            }
             else{
                 view.printMessage("No such student on this card. Try again");
             }

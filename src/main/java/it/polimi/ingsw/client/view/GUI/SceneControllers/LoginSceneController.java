@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.VBox;
 
 
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ public class LoginSceneController extends SceneController {
     @FXML Label errorMessage;
     @FXML
     private ArrayList<Label> labelList;
+    @FXML
+    private ArrayList<VBox> vBOXList;
     @FXML
     private Button button1;
 
@@ -58,6 +61,7 @@ public class LoginSceneController extends SceneController {
         Platform.runLater(()-> {
             for(int i=0; i< userNames.size(); i++){
                 labelList.get(i).setText(userNames.get(i));
+                vBOXList.get(i).setVisible(true);
             }
         });
 

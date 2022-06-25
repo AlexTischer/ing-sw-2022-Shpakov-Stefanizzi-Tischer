@@ -13,6 +13,16 @@ public class ClientCharacter implements Serializable {
     private String description;
     private int id;
 
+    private boolean firstUse = true;
+
+    public boolean isFirstUse() {
+        return firstUse;
+    }
+
+    public void setFirstUse(boolean firstUse) {
+        this.firstUse = firstUse;
+    }
+
     public int getCost() {
         return cost;
     }
