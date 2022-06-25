@@ -40,7 +40,7 @@ public class ClientCharacter implements Serializable {
     }
 
     public ActivateCharacterPacket createPacket(View view){
-        throw new UnsupportedOperationException("This character doesn't need activation");
+        throw new UnsupportedOperationException("This character doesn't need other actions");
     }
 
     public void setDescription(String description) {

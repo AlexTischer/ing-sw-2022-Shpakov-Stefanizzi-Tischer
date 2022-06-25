@@ -14,7 +14,7 @@ public class ClientCharacter7 extends ClientCharacter{
         ArrayList<Color> selectedStudents = new ArrayList<Color>();
         ArrayList<Color> toBeSwappedStudents = new ArrayList<Color>();
 
-        view.printMessage(getDescription());
+        //view.printMessage(getDescription());
 
         for (int i = 0; i < 2; i++) {
             Color student = null;

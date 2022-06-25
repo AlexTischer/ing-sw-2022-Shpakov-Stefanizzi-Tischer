@@ -181,7 +181,12 @@ public class ClientController {
             correctDestination = false;
             try {
                 //client has chosen to move a student
+                //TEST
+                System.out.println("Client controller: ho invocato chooseActionStudent");
                 if (view.chooseActionStudent(characterActivated) == 1) {
+
+                    //TEST
+                    System.out.println("sono entrato qui anche se non dovevo entrarci");
 
                     while (isGameOn() && !correctStudent) {
 
@@ -196,8 +201,7 @@ public class ClientController {
                             while (isGameOn() && !correctDestination) {
                                 int destination = view.askStudentDestination();
 
-                                //TEST
-                                System.out.println("client controller: ho ricevuto la destinazione "+ destination);
+
 
                                 //if destination == 0, move the student to dining room
                                 if (destination == 0) {
@@ -265,6 +269,7 @@ public class ClientController {
         if(correctCharacter && isGameOn()){
             try {
                 connection.send(new BuyCharacterPacket(i-1));
+                characterActivated=true;
             } catch (IOException e) {
                 connection.close();
                 gameBoard.setGameOn(false);
@@ -272,8 +277,13 @@ public class ClientController {
         }
         if(correctCharacter && isGameOn()){
             try {
+                //TEST
+                System.out.println("ClientController: sto creando ActivateCharacterPacket");
                 ActivateCharacterPacket packet = gameBoard.getPlayedCharacters()[i-1].createPacket(view);
                 connection.send(packet);
+                //TEST
+                System.out.println("ClientController: ho inviato ActivateCharacterPacket");
+                characterActivated=true;
             } catch (IOException e) {
                 connection.close();
                 gameBoard.setGameOn(false);

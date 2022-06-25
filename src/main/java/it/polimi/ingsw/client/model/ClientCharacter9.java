@@ -19,7 +19,7 @@ public class ClientCharacter9 extends ClientCharacter{
         ArrayList<Color> selectedStudents = new ArrayList<Color>();
         ArrayList<Color> toBeSwappedStudents = new ArrayList<Color>();
 
-        view.printMessage(getDescription());
+        //view.printMessage(getDescription());
 
         for (int i = 0; i < 3; i++) {
             boolean correctStudent = false;

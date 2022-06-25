@@ -1049,15 +1049,6 @@
                         <Insets bottom="50.0" left="30.0" right="30.0" top="50.0" />
                      </padding>
                   </TextFlow>
-                  <TextFlow layoutX="215.0" layoutY="240.0" prefHeight="59.0" prefWidth="854.0" textAlignment="CENTER">
-                     <children>
-                        <Text fx:id="errorText" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Text>
-                     </children>
-                  </TextFlow>
       
                </children>
             </AnchorPane>

@@ -59,4 +59,6 @@ public abstract class View {
 
     public void printErrorMessage(String message) {
     }
+
+    public abstract Color askStudentColorFromCharacter();
 }

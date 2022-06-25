@@ -48,10 +48,14 @@ public class GameSceneController extends SceneController {
     int children_professors = 3;
     int children_towerTable = 4;
 
+    //characters
+    int getChildren_characterCardImageView = 0;
+    int children_characterGridPane = 1;
+
 
     private boolean askingDone = false; //Boolean used to say to the controller thread that all the questions to the user have been answered TODO: change this description
     private int assistantRank;
-    private int chosenAction = 1;
+    private int chosenAction;
     private int characterNumber;
     private int destination;
     private int cloudNumber;
@@ -712,13 +716,15 @@ public class GameSceneController extends SceneController {
         chosenAction = 1;
         this.studentColor = studentColor;
 
-        dialogText.setText("");
+        Platform.runLater(()->{
+            dialogText.setText("");
 
-        for(int i=0; i<((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().size(); i++){
-            int finalI = i;
-            ((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)
-                    .setOnMouseClicked(mouseEvent -> {});
-            }
+            //disabling students from selection
+            for(int i=0; i<((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().size(); i++){
+                int finalI = i;
+                ((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)
+                        .setOnMouseClicked(mouseEvent -> {});
+            }});
 
         notifyAll();
     }
@@ -727,10 +733,16 @@ public class GameSceneController extends SceneController {
         askingDone=true;
         chosenAction = 2;
         this.characterNumber = index;
-        /*TODO: disable Characters*/
-        for(int i=0; i<characters.getChildren().size(); i++){
-            characters.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
-        }
+
+        Platform.runLater(()->{
+            //disabling Characters from click
+            for(int i=0; i<characters.getChildren().size(); i++){
+                characters.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
+            }
+
+            dialogText.setText("");
+        });
+
         notifyAll();
     }
 
@@ -761,11 +773,16 @@ public class GameSceneController extends SceneController {
 
         this.destination = index;
 
-        //disabling islands and dining room from mouse click
-        for(int i=0; i<islands.getChildren().size(); i++){
-            islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
-        }
-        playersList.get(0).getChildren().get(children_diningRoom).setOnMouseClicked(mouseEvent -> {});
+        Platform.runLater(()->{
+            //disabling islands and dining room from mouse click
+            for(int i=0; i<islands.getChildren().size(); i++){
+                islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
+            }
+            playersList.get(0).getChildren().get(children_diningRoom).setOnMouseClicked(mouseEvent -> {});
+
+            dialogText.setText("");
+        });
+
 
         notifyAll();
     }
@@ -776,13 +793,18 @@ public class GameSceneController extends SceneController {
 
         this.cloudNumber = index+1;
 
-        //disabling clouds for selection
-        for(int i=0; i<clouds.getChildren().size(); i++){
-            int finalI = i;
-            clouds.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
-        }
+        Platform.runLater(()->{
+            //disabling clouds for selection
+            for(int i=0; i<clouds.getChildren().size(); i++){
+                int finalI = i;
+                clouds.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
+            }
 
-        dialogText.setText("");
+            dialogText.setText("");
+        });
+
+        //re-initializing game variables?
+
         notifyAll();
     }
 
@@ -799,14 +821,21 @@ public class GameSceneController extends SceneController {
         }
 
 
-        /*TODO: disable character cards and islands*/
+        /*TODO: disable character cards from selection*/
 
-        //disabling islands from selection
-        for(int i=0; i<islands.getChildren().size(); i++) {
-            islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
-        }
+        Platform.runLater(()->{
+            //disabling islands from selection
+            for(int i=0; i<islands.getChildren().size(); i++) {
+                islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
+            }
 
-        dialogText.setText("");
+            for(int i=0; i<characters.getChildren().size(); i++){
+                characters.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
+            }
+
+            dialogText.setText("");
+        });
+
         notifyAll();
     }
 
@@ -829,49 +858,102 @@ public class GameSceneController extends SceneController {
 
     }
 
-    public void askStudentColor() {
+    public void askStudentColorFromCharacter() {
 
-        /*TODO: print: Select a student*/
         Platform.runLater(()->{
+            dialogText.setText("Select a student from the card");
 
-            dialogText.setText("Select a student in your entrance to move");
 
+        for(int i=0; i<((GridPane)((Pane)characters.getChildren().get(characterNumber-1)).getChildren().get(1)).getChildren().size(); i++) {
+            int finalI = i;
+            ((GridPane)((Pane)characters.getChildren().get(this.characterNumber-1)).getChildren().get(1)).getChildren().get(i)
+                    .setOnMouseClicked(mouseEvent -> {selectStudent(Color.getColorByStudentPath(((ImageView)((GridPane)((Pane)characters.getChildren().get(characterNumber-1)).getChildren().get(1)).getChildren()
+                            .get(finalI)).getImage().getUrl()).get());});
+        }
+        });
+    }
+
+    public void askStudentColor(){
+
+        Platform.runLater(()->{
+            dialogText.setText("Select a student to move");
+
+            for(int i=0; i<((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().size(); i++){
+                int finalI = i;
+                if(!(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)).getChildren().isEmpty())){
+
+                    ((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i))
+                            .setOnMouseClicked(mouseEvent ->
+                            {
+                                selectStudent(Color.getColorByStudentPath(((ImageView)((Pane)((Group)playersList.get(0).getChildren()
+                                        .get(children_entrance)).getChildren().get(finalI)).getChildren().get(0)).getImage().getUrl()).get());
+                                highlightPane(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)), true);
+                            });
+                    ((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i))
+                            .setOnMouseEntered(event -> {highlightPane(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)), true);});
+                    ((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i))
+                            .setOnMouseExited(event -> {highlightPane(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)), false);});
+                }
+            }
 
         });
-        /*TODO: enable students and set onMouseClickAction to selectStudent(color)*/
-
     }
 
 
     public void askIslandNumber() {
 
-        /*TODO: print: Select an island*/
-        /*TODO: enable islands and set onMouseClickAction to selectDestination(index+1)*/
+        Platform.runLater(()->{
+            /*TODO: print: Select an island*/
+            dialogText.setText("Select the island you want to move the student");
+            /*TODO: enable islands and set onMouseClickAction to selectDestination(index+1)*/
+            for(int i=0; i<islands.getChildren().size(); i++){
+                int finalI = i;
+                islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectDestination(finalI+1);});
+            }
+        });
+
     }
 
     public void askStudentDestination() {
 
-        dialogText.setText("Select an island or your dining room to move your student into");
+        Platform.runLater(()->{
+            dialogText.setText("Select an island or your dining room to move your student into");
 
-        //enabling islands and set onMouseClickAction to selectDestination(index+1)*/
-        for(int i=0; i<islands.getChildren().size(); i++){
-            int finalI = i;
-            islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectDestination(finalI+1);});
-        }
+            //enabling islands and set onMouseClickAction to selectDestination(index+1)*/
+            for(int i=0; i<islands.getChildren().size(); i++){
+                int finalI = i;
+                islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectDestination(finalI+1);});
+            }
 
-        //enabling diningRoom and set onMouseClickAction to selectDestination(0)*/
-        playersList.get(0).getChildren().get(children_diningRoom).setOnMouseClicked(mouseEvent -> {selectDestination(0);});
+            //enabling diningRoom and set onMouseClickAction to selectDestination(0)*/
+            playersList.get(0).getChildren().get(children_diningRoom).setOnMouseClicked(mouseEvent -> {selectDestination(0);});
+        });
+
 
     }
 
     public void askMotherNatureSteps() {
-        /*TODO: print: Select the island you want to move MotherNature to*/
-        /*TODO: enable assistantSteps islands after currentIsland and set onMouseClickAction to selectMotherNature(index)*/
+        Platform.runLater(()->{
+            dialogText.setText("Select the island you want to move MotherNature to");
+
+            //enabling islands to be selected
+            for(int i=0; i<islands.getChildren().size(); i++) {
+                int finalI = i;
+                islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectMotherNature(finalI);});
+            }
+        });
     }
 
     public void askCloudNumber() {
-        /*TODO: print: Select a cloud*/
-        /*TODO: enable clouds and set onMouseClickAction to selectCloud(index+1)*/
+        Platform.runLater(()->{
+            dialogText.setText("Select a cloud to refill your entrance");
+
+            //enabling clouds for selection
+            for(int i=0; i<clouds.getChildren().size(); i++){
+                int finalI = i;
+                clouds.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectCloud(finalI);});
+            }
+        });
     }
 
     public void askCharacterNumber() {
@@ -884,7 +966,6 @@ public class GameSceneController extends SceneController {
     }
 
     public void chooseActionStudent() {
-
 
         Platform.runLater(()->{
 
@@ -908,7 +989,7 @@ public class GameSceneController extends SceneController {
                 }
             }
 
-            /*TODO: enable Characters and set onMouseClickAction to selectCharacter(index+1)*/
+            //enabling characters for mouse clicking
             for(int i=0; i<characters.getChildren().size(); i++){
                 int finalI = i;
                 characters.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectCharacter(finalI+1);});
@@ -924,7 +1005,6 @@ public class GameSceneController extends SceneController {
 
             dialogText.setText("Select the island you want to move mother nature or select a Character to activate it");
 
-            //TODO: enable only allowed islands
             //enabling islands to be selected
             for(int i=0; i<islands.getChildren().size(); i++) {
                 int finalI = i;
@@ -932,7 +1012,11 @@ public class GameSceneController extends SceneController {
             }
 
             /*TODO: enable Characters and set onMouseClickAction to selectCharacter(index+1)*/});
-
+            //enabling characters for mouse clicking
+            for(int i=0; i<characters.getChildren().size(); i++){
+                int finalI = i;
+                characters.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectCharacter(finalI+1);});
+            }
 
     }
 
@@ -940,7 +1024,7 @@ public class GameSceneController extends SceneController {
 
         Platform.runLater(()->{
 
-            dialogText.setText("Select a cloud to use it, or select a Character to buy and use it");
+            dialogText.setText("Select a cloud to refill your entrance, or select a Character to buy and use it");
 
             //enabling clouds for selection
             for(int i=0; i<clouds.getChildren().size(); i++){
@@ -948,6 +1032,11 @@ public class GameSceneController extends SceneController {
                 clouds.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectCloud(finalI);});
             }
             /*TODO: enable Characters and set onMouseClickAction to selectCharacter(index+1)*/
+            //enabling characters for mouse clicking
+            for(int i=0; i<characters.getChildren().size(); i++){
+                int finalI = i;
+                characters.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectCharacter(finalI+1);});
+            }
         });
 
     }
@@ -1091,13 +1180,13 @@ public class GameSceneController extends SceneController {
     @Override
     public void printErrorMessage(String message){
         Platform.runLater(()->{
-            //TODO: errorText.setText(message);
+            //dialogText.setText(message);
         });
     }
     @Override
     public void printMessage(String message){
         Platform.runLater(()->{
-            //TODO: dialogText.setText(message);
+            //dialogText.setText(dialogText.getText() + "\n" + message);
         });
     }
 

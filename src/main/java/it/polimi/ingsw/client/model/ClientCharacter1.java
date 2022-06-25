@@ -14,19 +14,27 @@ public class ClientCharacter1 extends ClientCharacter{
     @Override
     public ActivateCharacterPacket createPacket(View view){
 
-        view.printMessage(getDescription());
+        //view.printMessage(getDescription());
         Color student = null;
         boolean correctStudent = false;
         while(!correctStudent) {
             view.printMessage("From this card, select the student you want to move");
-            student = view.askStudentColor();
+
+            //TEST
+            System.out.println("ClientCharacter1: sto chiedendo di prendere lo studente sulla carta");
+            student = view.askStudentColorFromCharacter();
+            //TEST
+            System.out.println("ho selezionato lo studente di colore " + student);
             if(Arrays.stream(students).toList().contains(student))
             {correctStudent=true;}
             else{
-                view.printMessage("No such student on this card. Try again");
+                view.printErrorMessage("No such student on this card. Try again");
             }
         }
         view.printMessage("Choose the island you want to move the student to");
+
+        //TEST
+        System.out.println("ora chiedo la destinazione isola");
         int islandNumber = view.askIslandNumber();
 
         ActivateCharacter2Packet packet = new ActivateCharacter2Packet(student, islandNumber-1);

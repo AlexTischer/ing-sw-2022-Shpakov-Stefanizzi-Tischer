@@ -149,12 +149,14 @@ public class Gui extends View {
             gameSceneController.askStudentColor();
         }
 
-        while(!gameSceneController.isAskingDone()){
-            try {
-                System.out.println("waiting studentColor");
-                gameSceneController.wait();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+        synchronized (gameSceneController) {
+            while (!gameSceneController.isAskingDone()) {
+                try {
+                    System.out.println("waiting studentColor");
+                    gameSceneController.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
 
@@ -163,13 +165,42 @@ public class Gui extends View {
     }
 
     @Override
-    public synchronized int askStudentDestination() {  //non era synchronized
+    public synchronized Color askStudentColorFromCharacter() {
+        //TEST
+        System.out.println("GUI: sono in askStudentColorFromCharacter");
+        System.out.println("Asking Done è " + gameSceneController.isAskingDone());
+
+        if(!gameSceneController.isAskingDone()) {
+            gameSceneController.askStudentColorFromCharacter();
+        }
+
+        synchronized (gameSceneController) {
+            //TEST
+            System.out.println("GUI: askStudentColorFromCharacter: sono dentro synchronized ");
+            while (!gameSceneController.isAskingDone()) {
+                try {
+                    System.out.println("waiting studentColor from character");
+                    gameSceneController.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        //TEST
+        System.out.println("GUI: sto uscendo da askStudentColorFromCharacter");
+        gameSceneController.setAskingDone(false);
+        return gameSceneController.getStudentColor();
+    }
+
+    @Override
+    public synchronized int askStudentDestination() {
         if(!gameSceneController.isAskingDone()) {
             gameSceneController.askStudentDestination();
 
         }
 
-        synchronized (gameSceneController) { //aggiunto
+        synchronized (gameSceneController) {
             while (!gameSceneController.isAskingDone()) {
                 try {
                     System.out.println("waiting studentDestination");
@@ -181,7 +212,7 @@ public class Gui extends View {
         }
 
 
-        gameSceneController.setAskingDone(false); //aggiunta
+        gameSceneController.setAskingDone(false);
         return gameSceneController.getStudentDestination();
     }
 
@@ -231,23 +262,29 @@ public class Gui extends View {
 
     @Override
     public synchronized int chooseActionStudent(boolean characterActivated) {
-        if (!characterActivated) {
+            if (!characterActivated) {
             gameSceneController.chooseActionStudent();
 
             synchronized (gameSceneController) {
                 while (!gameSceneController.isAskingDone()) {
                     try {
-                        System.out.println("chooseActionStudent: waiting studentAction");
+                        System.out.println("GUI: chooseActionStudent: waiting studentAction");
                         gameSceneController.wait();
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                 }
+                //TEST
+                System.out.println("GUI: chooseActionStudent: exiting");
             }
 
+            //TEST
+                System.out.println("GUI: chooseActionStudent: sto ritornando scelta " + gameSceneController.getChosenAction());
             return gameSceneController.getChosenAction();
         }
         else {
+                //TEST
+                System.out.println("sono entrato nell'else return 1");
             return 1;
         }
     }
@@ -293,12 +330,13 @@ public class Gui extends View {
             }
         }
 
+        gameSceneController.setAskingDone(false);
         return gameSceneController.getMotherNatureSteps();
     }
 
     @Override
     public synchronized int chooseActionClouds(boolean characterActivated) {
-        gameSceneController.setAskingDone(false);
+
         if (!characterActivated) {
             gameSceneController.chooseActionCloud();
 
@@ -314,6 +352,7 @@ public class Gui extends View {
                 }
             }
 
+
             return gameSceneController.getChosenAction();
         }
         else {
@@ -328,12 +367,14 @@ public class Gui extends View {
             gameSceneController.askCloudNumber();
         }
 
-        while(!gameSceneController.isAskingDone()){
-            try {
-                System.out.println("waiting Cloud Number");
-                gameSceneController.wait();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+        synchronized (gameSceneController) {
+            while (!gameSceneController.isAskingDone()) {
+                try {
+                    System.out.println("waiting Cloud Number");
+                    gameSceneController.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
 
@@ -342,20 +383,23 @@ public class Gui extends View {
 
     @Override
     public int askCharacterNumber() {
+
         if(!gameSceneController.isAskingDone()) {
             gameSceneController.askCharacterNumber();
         }
 
-        while(!gameSceneController.isAskingDone()){
-            try {
-                System.out.println("waiting Character Number");
-                gameSceneController.wait();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
 
-        gameSceneController.setAskingDone(false); //aggiunta
+            while (!gameSceneController.isAskingDone()) {
+                try {
+                    System.out.println("waiting Character Number");
+                    gameSceneController.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+
+        gameSceneController.setAskingDone(false);
         return gameSceneController.getCharacterNumber();
     }
 
@@ -365,15 +409,18 @@ public class Gui extends View {
             gameSceneController.askIslandNumber();
         }
 
-        while(!gameSceneController.isAskingDone()){
-            try {
-                System.out.println("waiting StudentDestination");
-                gameSceneController.wait();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+        synchronized (gameSceneController) {
+            while (!gameSceneController.isAskingDone()) {
+                try {
+                    System.out.println("waiting StudentDestination");
+                    gameSceneController.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
 
+        gameSceneController.setAskingDone(false);
         return gameSceneController.getIslandNumber();
     }
 

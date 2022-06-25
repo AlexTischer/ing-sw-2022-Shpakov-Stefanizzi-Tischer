@@ -8,7 +8,7 @@ public class ClientCharacter12 extends ClientCharacter{
     @Override
     public ActivateCharacterPacket createPacket(View view){
 
-        view.printMessage(getDescription());
+        //view.printMessage(getDescription());
         view.printMessage("Insert island number you want to calculate influence in");
         int islandNumber = view.askIslandNumber();
 

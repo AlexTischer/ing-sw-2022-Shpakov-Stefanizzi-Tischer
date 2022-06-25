@@ -13,7 +13,7 @@ public class ClientCharacter10 extends ClientCharacter{
     @Override
     public ActivateCharacterPacket createPacket(View view){
 
-        view.printMessage(getDescription());
+        //view.printMessage(getDescription());
         Color student = null;
         boolean correctStudent = false;
         while(!correctStudent) {
