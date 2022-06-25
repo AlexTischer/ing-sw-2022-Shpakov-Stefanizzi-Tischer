@@ -790,15 +790,14 @@ public class GameSceneController extends SceneController {
         askingDone=true;
         chosenAction = 1;
 
-
         //calculating MN steps
-        //TODO: calculate MN steps and if are allowed
-        if(selectedIsland-positionOfMotherNature<0){
-            this.motherNatureSteps = Math.abs(((selectedIsland-positionOfMotherNature))%islands.getChildren().size());
+        if(positionOfMotherNature<selectedIsland){
+            this.motherNatureSteps=selectedIsland-positionOfMotherNature;
         }
-        else{
-            this.motherNatureSteps = selectedIsland - positionOfMotherNature;
+        else {
+            this.motherNatureSteps=selectedIsland+islands.getChildren().size()-positionOfMotherNature;
         }
+
 
         /*TODO: disable character cards and islands*/
 
@@ -897,8 +896,15 @@ public class GameSceneController extends SceneController {
 
                     ((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i))
                             .setOnMouseClicked(mouseEvent ->
-                            {selectStudent(Color.getColorByStudentPath(((ImageView)((Pane)((Group)playersList.get(0).getChildren()
-                                    .get(children_entrance)).getChildren().get(finalI)).getChildren().get(0)).getImage().getUrl()).get());});
+                            {
+                                selectStudent(Color.getColorByStudentPath(((ImageView)((Pane)((Group)playersList.get(0).getChildren()
+                                    .get(children_entrance)).getChildren().get(finalI)).getChildren().get(0)).getImage().getUrl()).get());
+                                highlightPane(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)), true);
+                            });
+                    ((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i))
+                            .setOnMouseEntered(event -> {highlightPane(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)), true);});
+                    ((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i))
+                            .setOnMouseExited(event -> {highlightPane(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)), false);});
                 }
             }
 
@@ -996,9 +1002,6 @@ public class GameSceneController extends SceneController {
     }
 
 
-
-
-
     /*METHODS FOR POSITIONING STUDENTS*/
     private int studentOnIslandRow(int num){
         Integer[] positions = {1,2,0,1,0,2,2,0,0,1,1};
@@ -1070,7 +1073,7 @@ public class GameSceneController extends SceneController {
     }
 
 
-    public int[] calculateIslandPosition(int n, int islandIndex, int dim){
+    private int[] calculateIslandPosition(int n, int islandIndex, int dim){
 
         int a=400;
         int b=150;
@@ -1088,17 +1091,25 @@ public class GameSceneController extends SceneController {
     @Override
     public void printErrorMessage(String message){
         Platform.runLater(()->{
-            //errorText.setText(message);
+            //TODO: errorText.setText(message);
         });
     }
     @Override
     public void printMessage(String message){
         Platform.runLater(()->{
-            //dialogText.setText(message);
+            //TODO: dialogText.setText(message);
         });
     }
 
 
+    private void highlightPane(Pane pane, boolean bool){
+        if(bool){
+            pane.setStyle("-fx-border-color: #efff00; -fx-border-width: 6; -fx-border-radius: 30");
+        }
+        else{
+            pane.setStyle("-fx-border-color: rgba(255,255,255,0); -fx-border-width: 4");;
+        }
+    }
 
 
 

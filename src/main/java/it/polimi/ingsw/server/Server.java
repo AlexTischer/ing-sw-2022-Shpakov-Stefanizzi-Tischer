@@ -51,7 +51,7 @@ public class Server {
                     v.update(new GameBoardChange(game.getGameBoard(), game.getPlayers()));
 
                     //notify other clients that this player has been reconnected
-                    // p.s. there is no problem if the same client receives connectionStatusChange containing it himself
+                    // TODO: there is no problem if the same client receives connectionStatusChange containing it himself
                     changeConnectionStatus(new ConnectionStatusChange(v.getClientName(), true));
 
                     System.out.println("Client " + name + " has been reconnected!");
@@ -196,7 +196,7 @@ public class Server {
                 ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
 
                 //if server doesn't receive any message from client in 10 sec, then socket gets closed
-                //socket.setSoTimeout(10*1000);
+                socket.setSoTimeout(10*1000);
 
                 System.out.println("Connection number: " + (numOfConnections +1));
 

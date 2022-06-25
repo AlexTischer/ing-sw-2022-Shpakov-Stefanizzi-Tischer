@@ -90,6 +90,7 @@ public class ClientController {
                     connection.waitModelChange();
                 } catch (IOException e) {
                     System.out.println("ClientController says: closing connection due IOException");
+                    e.printStackTrace();
                     connection.close();
                 } catch (EndOfChangesException e) {
                 }
