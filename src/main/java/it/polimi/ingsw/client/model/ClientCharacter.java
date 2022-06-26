@@ -13,6 +13,16 @@ public class ClientCharacter implements Serializable {
     private String description;
     private int id;
 
+    private boolean firstUse = true;
+
+    public boolean isFirstUse() {
+        return firstUse;
+    }
+
+    public void setFirstUse(boolean firstUse) {
+        this.firstUse = firstUse;
+    }
+
     public int getCost() {
         return cost;
     }
@@ -40,7 +50,7 @@ public class ClientCharacter implements Serializable {
     }
 
     public ActivateCharacterPacket createPacket(View view){
-        throw new UnsupportedOperationException("This character doesn't need activation");
+        throw new UnsupportedOperationException("This character doesn't need other actions");
     }
 
     public void setDescription(String description) {

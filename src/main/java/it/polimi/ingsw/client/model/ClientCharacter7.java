@@ -13,8 +13,18 @@ public class ClientCharacter7 extends ClientCharacter{
 
         ArrayList<Color> selectedStudents = new ArrayList<Color>();
         ArrayList<Color> toBeSwappedStudents = new ArrayList<Color>();
+        ArrayList<Color> testStudentsFromDining = new ArrayList<>();
+        ArrayList<Color> testStudentsFromEntrance = new ArrayList<>();
+        for(Color s : Color.values()){
+            for(int i=0; i<view.getController().getGameBoard().getPlayer(view.getController().getGameBoard().getClientName()).getSchoolBoard().getDiningRoom().get(s); i++){
+                testStudentsFromDining.add(s);
+            }
+        }
+        for (Color s : view.getController().getGameBoard().getPlayer(view.getController().getGameBoard().getClientName()).getSchoolBoard().getEntrance()){
+            testStudentsFromEntrance.add(s);
+        }
 
-        view.printMessage(getDescription());
+        //view.printMessage(getDescription());
 
         for (int i = 0; i < 2; i++) {
             Color student = null;
@@ -22,9 +32,10 @@ public class ClientCharacter7 extends ClientCharacter{
             while (!correctStudent) {
                 view.printMessage("Select the student from your dining room you want to swap");
                 student = view.askStudentColor();
-                if (view.getController().getGameBoard().getPlayer(view.getController().getGameBoard().getClientName()).getSchoolBoard().getDiningRoom().get(student)>0) {
+                if (testStudentsFromDining.contains(student)) {
                     correctStudent = true;
-                } else {
+                    testStudentsFromDining.remove(student);
+                }else {
                     view.printMessage("No such student on this card. Try again");
                 }
             }
@@ -34,8 +45,9 @@ public class ClientCharacter7 extends ClientCharacter{
             while (!correctStudent) {
                 view.printMessage("Select the student from your entrance you want to swap");
                 student = view.askStudentColor();
-                if (view.getController().getGameBoard().getPlayer(view.getController().getGameBoard().getClientName()).getSchoolBoard().getEntrance().contains(student)) {
+                if (testStudentsFromEntrance.contains(student)) {
                     correctStudent = true;
+                    testStudentsFromEntrance.remove(student);
                 } else {
                     view.printMessage("No such student on this card. Try again");
                 }

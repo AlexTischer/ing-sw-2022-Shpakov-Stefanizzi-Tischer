@@ -77,7 +77,7 @@ public class Character10 extends Character {
         character.setId(id);
         character.setCost(cost);
         character.setDescription(description);
-
+        character.setFirstUse(firstUse);
         character.setStudents(getStudentsSlot());
 
         return character;

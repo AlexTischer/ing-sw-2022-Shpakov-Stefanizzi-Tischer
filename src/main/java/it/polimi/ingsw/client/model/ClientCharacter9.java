@@ -18,8 +18,15 @@ public class ClientCharacter9 extends ClientCharacter{
         ActivateCharacter4Packet packet = null;
         ArrayList<Color> selectedStudents = new ArrayList<Color>();
         ArrayList<Color> toBeSwappedStudents = new ArrayList<Color>();
-
-        view.printMessage(getDescription());
+        ArrayList<Color> testStudentsFromCard = new ArrayList<>();
+        ArrayList<Color> testStudentsFromEntrance = new ArrayList<>();
+        for(Color s : students){
+            testStudentsFromCard.add(s);
+        }
+        for (Color s : view.getController().getGameBoard().getPlayer(view.getController().getGameBoard().getClientName()).getSchoolBoard().getEntrance()){
+            testStudentsFromEntrance.add(s);
+        }
+        //view.printMessage(getDescription());
 
         for (int i = 0; i < 3; i++) {
             boolean correctStudent = false;
@@ -27,8 +34,9 @@ public class ClientCharacter9 extends ClientCharacter{
             while (!correctStudent) {
                 view.printMessage("Select the student from this card you want to swap");
                 student = view.askStudentColor();
-                if (Arrays.stream(students).toList().contains(student)) {
+                if (testStudentsFromCard.contains(student)) {
                     correctStudent = true;
+                    testStudentsFromCard.remove(student);
                 } else {
                     view.printMessage("No such student on this card. Try again");
                 }
@@ -38,10 +46,11 @@ public class ClientCharacter9 extends ClientCharacter{
             while (!correctStudent) {
                 view.printMessage("Select the student from your entrance you want to swap");
                 student = view.askStudentColor();
-                if (view.getController().getGameBoard().getPlayer(view.getController().getGameBoard().getClientName()).getSchoolBoard().getEntrance().contains(student)) {
+                if (testStudentsFromEntrance.contains(student)) {
                     correctStudent = true;
+                    testStudentsFromEntrance.remove(student);
                 } else {
-                    view.printMessage("No such student on this card. Try again");
+                    view.printMessage("No such student in your entrance. Try again");
                 }
             }
 

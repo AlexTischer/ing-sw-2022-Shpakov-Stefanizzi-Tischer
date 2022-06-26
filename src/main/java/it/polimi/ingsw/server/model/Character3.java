@@ -48,10 +48,12 @@ public class Character3 extends Character {
 
     @Override
     public ClientCharacter createClientCharacter() {
-        ClientCharacter clientCharacter = new ClientCharacter();
-        clientCharacter.setId(id);
-        clientCharacter.setCost(cost);
-        clientCharacter.setDescription(description);
-        return clientCharacter;
+        ClientCharacter character = new ClientCharacter();
+        character.setId(id);
+        character.setCost(cost);
+        character.setDescription(description);
+        character.setFirstUse(firstUse);
+
+        return character;
     }
 }

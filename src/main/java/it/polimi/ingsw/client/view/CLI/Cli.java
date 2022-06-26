@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.view.CLI;
 
 import it.polimi.ingsw.client.model.ClientGameBoard;
+import it.polimi.ingsw.client.view.CLI.utils.AnsiKeys;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.server.model.Color;
 
@@ -81,6 +82,17 @@ public class Cli extends View {
         System.out.println(message);
     }
 
+    public void printErrorMessage(String message){
+        System.out.print(AnsiKeys.COLOR_BRIGHT_RED);
+        System.out.println(message);
+        System.out.print(AnsiKeys.COLOR_RESET);
+    }
+
+    @Override
+    public Color askStudentColorFromCharacter() {
+        return askStudentColor();
+    }
+
     public int askAssistant() {
         System.out.println("Choose an Assistant to play (insert the rank)");
         int input;
@@ -102,7 +114,7 @@ public class Cli extends View {
 
     @Override
     public int chooseActionStudent(boolean characterActivated) {
-        if(characterActivated==false){
+        if(!characterActivated){
             System.out.println("Choose an action:");
             System.out.println("1. Move student     2. Activate character");
             int input;
@@ -393,6 +405,8 @@ public class Cli extends View {
         }
         return booleanAnswer;
     }
+
+
 
     public void printEndGameMessage(String message) {
         printMessage(message);
