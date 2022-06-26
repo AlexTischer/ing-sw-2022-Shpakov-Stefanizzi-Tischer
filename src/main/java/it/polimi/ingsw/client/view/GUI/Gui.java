@@ -194,6 +194,66 @@ public class Gui extends View {
     }
 
     @Override
+    public synchronized Color askStudentColorFromBox() {
+        //TEST
+        System.out.println("GUI: sono in askStudentColorFromBox");
+        System.out.println("Asking Done è " + gameSceneController.isAskingDone());
+
+        if(!gameSceneController.isAskingDone()) {
+            gameSceneController.askStudentColorFromBox();
+        }
+
+        synchronized (gameSceneController) {
+            //TEST
+            System.out.println("GUI: askStudentColorFromBox: sono dentro synchronized ");
+            while (!gameSceneController.isAskingDone()) {
+                try {
+                    System.out.println("waiting studentColor from box");
+                    gameSceneController.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        gameSceneController.hideAskColorBox();
+
+        //TEST
+        System.out.println("GUI: sto uscendo da askStudentColorFromBox");
+        gameSceneController.setAskingDone(false);
+        return gameSceneController.getStudentColor();
+    }
+
+    @Override
+    public synchronized Color askStudentColorFromDiningRoom() {
+        //TEST
+        System.out.println("GUI: sono in askStudentColorFromDiningRoom");
+        System.out.println("Asking Done è " + gameSceneController.isAskingDone());
+
+        if(!gameSceneController.isAskingDone()) {
+            gameSceneController.askStudentColorFromDiningRoom();
+        }
+
+        synchronized (gameSceneController) {
+            //TEST
+            System.out.println("GUI: askStudentColorFromDiningRoom: sono dentro synchronized ");
+            while (!gameSceneController.isAskingDone()) {
+                try {
+                    System.out.println("waiting studentColor from diningRoom");
+                    gameSceneController.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        //TEST
+        System.out.println("GUI: sto uscendo da askStudentColorFromDiningRoom");
+        gameSceneController.setAskingDone(false);
+        return gameSceneController.getStudentColor();
+    }
+
+    @Override
     public synchronized int askStudentDestination() {
         if(!gameSceneController.isAskingDone()) {
             gameSceneController.askStudentDestination();
@@ -405,6 +465,8 @@ public class Gui extends View {
 
     @Override
     public int askIslandNumber() {
+        //TEST
+        System.out.println("GUI: sono in askIslandNumber, isAskingDone vale " + gameSceneController.isAskingDone());
         if(!gameSceneController.isAskingDone()) {
             gameSceneController.askIslandNumber();
         }
@@ -463,15 +525,18 @@ public class Gui extends View {
             gameSceneController.askBoolean();
         }
 
-        while(!gameSceneController.isAskingDone()){
-            try {
-                System.out.println("waiting StudentDestination");
-                gameSceneController.wait();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+        synchronized (gameSceneController) {
+            while (!gameSceneController.isAskingDone()) {
+                try {
+                    System.out.println("waiting Boolean");
+                    gameSceneController.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
 
+        gameSceneController.hideYesNoButtons();
         return gameSceneController.getChoice();
     }
 

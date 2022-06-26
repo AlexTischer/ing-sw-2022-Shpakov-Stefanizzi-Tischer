@@ -2,12 +2,14 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
@@ -397,6 +399,7 @@
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                               </GridPane>
+                              <Pane layoutX="10.0" layoutY="10.0" prefHeight="40.0" prefWidth="40.0" />
                            </children>
                         </Pane>
                         <Pane layoutX="956.0" layoutY="375.0" prefHeight="60.0" prefWidth="60.0">
@@ -433,6 +436,7 @@
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                               </GridPane>
+                               <Pane layoutX="10.0" layoutY="10.0" prefHeight="40.0" prefWidth="40.0" />
                            </children>
                         </Pane>
                         <Pane layoutX="810.0" layoutY="429.0" prefHeight="60.0" prefWidth="60.0">
@@ -469,6 +473,7 @@
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                               </GridPane>
+                               <Pane layoutX="10.0" layoutY="10.0" prefHeight="40.0" prefWidth="40.0" />
                            </children>
                         </Pane>
                         <Pane layoutX="610.0" layoutY="450.0" prefHeight="60.0" prefWidth="60.0">
@@ -505,6 +510,7 @@
                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                    </rowConstraints>
                                </GridPane>
+                               <Pane layoutX="10.0" layoutY="10.0" prefHeight="40.0" prefWidth="40.0" />
                            </children>
                         </Pane>
                         <Pane layoutX="410.0" layoutY="429.0" prefHeight="60.0" prefWidth="60.0">
@@ -541,6 +547,7 @@
                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                    </rowConstraints>
                                </GridPane>
+                               <Pane layoutX="10.0" layoutY="10.0" prefHeight="40.0" prefWidth="40.0" />
                            </children>
                         </Pane>
                         <Pane layoutX="263.0" layoutY="375.0" prefHeight="60.0" prefWidth="60.0">
@@ -577,6 +584,7 @@
                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                    </rowConstraints>
                                </GridPane>
+                               <Pane layoutX="10.0" layoutY="10.0" prefHeight="40.0" prefWidth="40.0" />
                            </children>
                         </Pane>
                         <Pane layoutX="210.0" layoutY="300.0" prefHeight="60.0" prefWidth="60.0">
@@ -613,6 +621,7 @@
                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                    </rowConstraints>
                                </GridPane>
+                               <Pane layoutX="10.0" layoutY="10.0" prefHeight="40.0" prefWidth="40.0" />
                            </children>
                         </Pane>
                         <Pane layoutX="263.0" layoutY="225.0" prefHeight="60.0" prefWidth="60.0">
@@ -649,6 +658,7 @@
                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                    </rowConstraints>
                                </GridPane>
+                               <Pane layoutX="10.0" layoutY="10.0" prefHeight="40.0" prefWidth="40.0" />
                            </children>
                         </Pane>
                         <Pane layoutX="409.0" layoutY="170.0" prefHeight="60.0" prefWidth="60.0">
@@ -685,6 +695,7 @@
                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                    </rowConstraints>
                                </GridPane>
+                               <Pane layoutX="10.0" layoutY="10.0" prefHeight="40.0" prefWidth="40.0" />
                            </children>
                         </Pane>
                         <Pane layoutX="609.0" layoutY="150.0" prefHeight="60.0" prefWidth="60.0">
@@ -721,6 +732,7 @@
                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                    </rowConstraints>
                                </GridPane>
+                               <Pane layoutX="10.0" layoutY="10.0" prefHeight="40.0" prefWidth="40.0" />
                            </children>
                         </Pane>
                         <Pane layoutX="810.0" layoutY="170.0" prefHeight="60.0" prefWidth="60.0">
@@ -757,6 +769,7 @@
                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                    </rowConstraints>
                                </GridPane>
+                               <Pane layoutX="10.0" layoutY="10.0" prefHeight="40.0" prefWidth="40.0" />
                            </children>
                         </Pane>
                         <Pane layoutX="956.0" layoutY="224.0" prefHeight="60.0" prefWidth="60.0">
@@ -794,6 +807,7 @@
                                    </rowConstraints>
                                </GridPane>
                            </children>
+                            <Pane layoutX="10.0" layoutY="10.0" prefHeight="40.0" prefWidth="40.0" />
                         </Pane>
                      </children>
                   </Group>
@@ -987,6 +1001,11 @@
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                               </GridPane>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="25.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                                 <image>
+                                    <Image url="@../images/misc/coin2.png" />
+                                 </image>
+                              </ImageView>
                            </children>
                         </Pane>
                         <Pane layoutX="90.0" prefHeight="120.0" prefWidth="80.0">
@@ -1002,6 +1021,11 @@
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                               </GridPane>
+                               <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="25.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                                   <image>
+                                       <Image url="@../images/misc/coin2.png" />
+                                   </image>
+                               </ImageView>
                            </children>
                         </Pane>
                         <Pane layoutX="180.0" prefHeight="120.0" prefWidth="80.0">
@@ -1017,6 +1041,11 @@
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                               </GridPane>
+                               <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="25.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                                   <image>
+                                       <Image url="@../images/misc/coin2.png" />
+                                   </image>
+                               </ImageView>
                            </children>
                         </Pane>
                      </children>
@@ -1049,6 +1078,44 @@
                         <Insets bottom="50.0" left="30.0" right="30.0" top="50.0" />
                      </padding>
                   </TextFlow>
+                  <HBox fx:id="askColorBox" layoutX="1080.0" layoutY="660.0" prefHeight="20.0" prefWidth="108.0" spacing="2.0" visible="false">
+                     <children>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/students/student_green.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/students/student_red.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/students/student_yellow.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/students/student_pink.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/students/student_blue.png" />
+                           </image>
+                        </ImageView>
+                     </children></HBox>
+                  <Button fx:id="yesButton" layoutX="1080.0" layoutY="660.0" mnemonicParsing="false" prefHeight="8.0" prefWidth="30.0" text="Yes" visible="false">
+                     <font>
+                        <Font size="10.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="noButton" layoutX="1170.0" layoutY="660.0" mnemonicParsing="false" prefHeight="8.0" prefWidth="30.0" text="No" visible="false">
+                     <font>
+                        <Font size="10.0" />
+                     </font>
+                  </Button>
       
                </children>
             </AnchorPane>

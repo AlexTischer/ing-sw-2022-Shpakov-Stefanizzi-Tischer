@@ -93,6 +93,15 @@ public class Cli extends View {
         return askStudentColor();
     }
 
+    @Override
+    public Color askStudentColorFromBox(){
+        return askStudentColor();
+    }
+
+    public Color askStudentColorFromDiningRoom(){
+        return askStudentColor();
+    }
+
     public int askAssistant() {
         System.out.println("Choose an Assistant to play (insert the rank)");
         int input;

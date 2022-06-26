@@ -15,7 +15,7 @@ public class ClientCharacter4 extends ClientCharacter {
 
         //view.printMessage(getDescription());
         view.printMessage("Select a student color you want not to count during influence calculation");
-        Color color = view.askStudentColor();
+        Color color = view.askStudentColorFromBox();
 
         ActivateCharacter1Packet packet = new ActivateCharacter1Packet(color);
 
