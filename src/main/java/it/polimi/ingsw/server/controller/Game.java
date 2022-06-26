@@ -434,7 +434,7 @@ public class Game implements GameForClient{
         //control if there are not-active players that still need to be assigned a cloud randomly
         List<Cloud> unusedClouds;
         for (Player p: players){
-            if ( p.getPlayedAssistant()==null ){
+            if ( p.getPlayedAssistant()==null && p.getNumOfStudentsInEntrance()<gameBoard.getMaxNumOfStudentsInEntrance()){
                 unusedClouds = gameBoard.getClouds().stream().filter(cloud -> cloud.getStudentsColors().size() > 0).collect(Collectors.toList());
                 //chose random cloud from those unused
                 int cloudNumber = new Random().nextInt(unusedClouds.size());
