@@ -34,7 +34,7 @@ public class GuiApp extends Application {
             stage.setFullScreen(true);
             stage.setResizable(false);
             stage.setFullScreenExitHint("");
-            stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+            //stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 
             stage.show();
 

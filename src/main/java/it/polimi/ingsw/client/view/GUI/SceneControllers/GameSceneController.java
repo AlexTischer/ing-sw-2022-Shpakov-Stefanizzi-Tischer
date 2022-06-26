@@ -278,6 +278,7 @@ public class GameSceneController extends SceneController {
                                 .setImage(null);
                     }
 
+                    playerIndex++;
 
                 }
                 else{
@@ -724,6 +725,10 @@ public class GameSceneController extends SceneController {
                 int finalI = i;
                 ((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)
                         .setOnMouseClicked(mouseEvent -> {});
+                ((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)
+                        .setOnMouseEntered(mouseEvent -> {});
+                ((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)
+                        .setOnMouseExited(mouseEvent -> {});
             }});
 
         notifyAll();
@@ -777,6 +782,10 @@ public class GameSceneController extends SceneController {
             //disabling islands and dining room from mouse click
             for(int i=0; i<islands.getChildren().size(); i++){
                 islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
+            }
+            for(int i=0; i<((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().size(); i++){
+                int finalI = i;
+                highlightPane(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)),false);
             }
             playersList.get(0).getChildren().get(children_diningRoom).setOnMouseClicked(mouseEvent -> {});
 
@@ -876,7 +885,7 @@ public class GameSceneController extends SceneController {
     public void askStudentColor(){
 
         Platform.runLater(()->{
-            dialogText.setText("Select a student to move");
+            /*dialogText.setText("Select a student to move");*/
 
             for(int i=0; i<((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().size(); i++){
                 int finalI = i;
@@ -903,8 +912,6 @@ public class GameSceneController extends SceneController {
     public void askIslandNumber() {
 
         Platform.runLater(()->{
-            /*TODO: print: Select an island*/
-            dialogText.setText("Select the island you want to move the student");
             /*TODO: enable islands and set onMouseClickAction to selectDestination(index+1)*/
             for(int i=0; i<islands.getChildren().size(); i++){
                 int finalI = i;
@@ -1164,8 +1171,8 @@ public class GameSceneController extends SceneController {
 
     private int[] calculateIslandPosition(int n, int islandIndex, int dim){
 
-        int a=400;
-        int b=150;
+        int a=400+10-5*(12-n);
+        int b=150-5*(12-n);
         int x;
         int y;
         int h = 720;
@@ -1186,7 +1193,7 @@ public class GameSceneController extends SceneController {
     @Override
     public void printMessage(String message){
         Platform.runLater(()->{
-            //dialogText.setText(dialogText.getText() + "\n" + message);
+            dialogText.setText(dialogText.getText() + "\n" + message);
         });
     }
 

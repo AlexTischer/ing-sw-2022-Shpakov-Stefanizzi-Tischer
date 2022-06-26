@@ -101,7 +101,7 @@ public class Gui extends View {
 
     public void printMessage(String message){
         Platform.runLater(()->{
-            GuiApp.getCurrentController().printMessage(message);
+            //GuiApp.getCurrentController().printMessage(message);
         });
     }
 
