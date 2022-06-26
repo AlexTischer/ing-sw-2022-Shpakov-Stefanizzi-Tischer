@@ -42,7 +42,6 @@ public class GameBoardChange extends ModelChange{
                 for (ClientPlayer q : clientPlayers) {
                     if (p.getName().equals(q.getName())) {
                         tempPlayers.add(q);
-                        break;
                     }
                 }
             }
@@ -153,7 +152,7 @@ public class GameBoardChange extends ModelChange{
             clientSchoolBoard.setNumOfTowers(p.getSchoolBoard().getNumOfTowers());
 
             //towersColor
-            clientSchoolBoard.setTowersColor(p.getSchoolBoard().getTowersColor());
+            clientSchoolBoard.setTowersColor(p.getSchoolBoard().getTowerColor());
 
 
             /*setting other player attributes*/

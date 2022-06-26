@@ -85,7 +85,7 @@ public class SchoolBoardTest extends TestCase {
     @Test
     void getTowersColorTest(){
         SchoolBoard testschoolboard = new SchoolBoard(TowerColor.BLACK, 8);
-        assertEquals(TowerColor.BLACK, testschoolboard.getTowersColor());
+        assertEquals(TowerColor.BLACK, testschoolboard.getTowerColor());
     }
 
     @Test

@@ -507,7 +507,7 @@ public class GameBoard extends Observable<ModelChange> {
     }
 
     public void setPlayedAssistantRank(int assistantRank, Player player){
-        player.setPlayedAssistantRank(assistantRank);
+        player.setPlayedAssistant(assistantRank);
         AssistantChange assistantChange = new AssistantChange(player);
         notify(assistantChange);
     }
@@ -566,6 +566,10 @@ public class GameBoard extends Observable<ModelChange> {
             throw new IllegalArgumentException();
 
         return islands.get(numOfIsland).getNumOfStudents(studentColor);
+    }
+
+    public int getMaxNumOfStudentsInEntrance() {
+        return maxNumOfStudentsInEntrance;
     }
 
     public boolean getNoEntryOnIsland(int numOfIsland){

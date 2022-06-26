@@ -53,6 +53,9 @@ public class ClientController {
             gameBoard.showOnView();
             throw new EndOfChangesException();
         }
+        catch (GameSuspendedException e){
+            printMessage(e.getMessage());
+        }
     }
 
     public void setClientName(String clientName){
@@ -89,8 +92,8 @@ public class ClientController {
                 try {
                     connection.waitModelChange();
                 } catch (IOException e) {
-                    System.out.println("ClientController says: closing connection due IOException");
-                    connection.close();
+                    System.out.println("ClientController.startTurn says: closing connection due IOException");
+                    gameBoard.setGameOn(false);
                 } catch (EndOfChangesException e) {
                 }
             }
@@ -128,7 +131,7 @@ public class ClientController {
                     try {
                         this.connection.send(packet);
                     } catch (IOException e) {
-                        this.connection.close();
+                        System.out.println("ClientController.useAssistant says: closing connection due IOException");
                         gameBoard.setGameOn(false);
                     }
                 } else {
@@ -205,7 +208,7 @@ public class ClientController {
                                         correctDestination = true;
                                         studentMoves++;
                                     } catch (IOException e) {
-                                        connection.close();
+                                        System.out.println("ClientController.moveStudents says: closing connection due IOException");
                                         gameBoard.setGameOn(false);
                                     }
                                 }
@@ -219,7 +222,7 @@ public class ClientController {
                                             correctDestination = true;
                                             studentMoves++;
                                         } catch (IOException e) {
-                                            connection.close();
+                                            System.out.println("ClientController.moveStudents else says: closing connection due IOException");
                                             gameBoard.setGameOn(false);
                                         }
                                     }
@@ -265,7 +268,7 @@ public class ClientController {
             try {
                 connection.send(new BuyCharacterPacket(i-1));
             } catch (IOException e) {
-                connection.close();
+                System.out.println("ClientController.buyCharacter says: closing connection due IOException");
                 gameBoard.setGameOn(false);
             }
         }
@@ -274,7 +277,7 @@ public class ClientController {
                 ActivateCharacterPacket packet = gameBoard.getPlayedCharacters()[i-1].createPacket(view);
                 connection.send(packet);
             } catch (IOException e) {
-                connection.close();
+                System.out.println("ClientController.buyCharacter says: closing connection due IOException");
                 gameBoard.setGameOn(false);
             }
         }
@@ -292,7 +295,7 @@ public class ClientController {
                         connection.send(new MoveMotherNaturePacket(steps));
                         movedMN = true;
                     } catch (IOException e) {
-                        connection.close();
+                        System.out.println("ClientController.moveMN says: closing connection due IOException");
                         gameBoard.setGameOn(false);
                     }
                 } else {
@@ -321,7 +324,7 @@ public class ClientController {
                                 correctCloud = true;
                                 usedCloud = true;
                             } catch (IOException e) {
-                                connection.close();
+                                System.out.println("ClientController.useCloud says: closing connection due IOException");
                                 gameBoard.setGameOn(false);
                             }
                         } else {

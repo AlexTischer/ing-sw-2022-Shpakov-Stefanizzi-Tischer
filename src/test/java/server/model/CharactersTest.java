@@ -30,7 +30,7 @@ public class CharactersTest extends TestCase {
         GameBoard testGameBoard = gametest.getGameBoard();
         testGameBoard.setCurrentPlayer(testPlayer);
         testGameBoard.refillAssistants(testPlayer);
-        testPlayer.setPlayedAssistantRank(2);
+        testPlayer.setPlayedAssistant(2);
 
         it.polimi.ingsw.server.model.Character characterTest = new Character();
         characterTest.initialFill(gametest);
@@ -379,7 +379,7 @@ public class CharactersTest extends TestCase {
         testGameBoard.setCurrentPlayer(testPlayer);
         testPlayer.addCoins(5);
         testGameBoard.refillAssistants(testPlayer);
-        testPlayer.setPlayedAssistantRank(2);
+        testPlayer.setPlayedAssistant(2);
 
         Character8 character8test = new Character8();
         character8test.initialFill(gametest);

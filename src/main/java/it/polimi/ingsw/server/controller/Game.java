@@ -11,6 +11,16 @@ import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**<p>This class represents the game controller.</p>
+ * <p>The game controller executes any valid action requested by client or throws an exception in case of errors in client request</p>
+ * Also game controller responds for game flow and order of client actions
+ * <ul>
+ *     Contains
+ *     <li>game board</li>
+ *     <li>players list</li>
+ *     <li>counters of client actions</li>
+ * </ul>
+ * */
 public class Game implements GameForClient{
     private static Game instanceOfGame;
     private GameBoard gameBoard;
@@ -21,9 +31,13 @@ public class Game implements GameForClient{
     private int studentMove;
     private boolean motherNatureMove;
     private boolean useCloudMove;
-
     private boolean characterUsed;
 
+    private boolean suspended;
+
+    /**Returns or creates, if not already, the instance of Game
+     * @return instanceOfGame the instance of Game
+     * */
     public static Game getInstanceOfGame() {
         if(instanceOfGame==null){
             instanceOfGame = new Game();
@@ -31,6 +45,20 @@ public class Game implements GameForClient{
         return instanceOfGame;
     }
 
+    /**Initializes the game:
+     * <ul>
+     *     <li>Creates {@link Player} instances, refills {@link Game#players} list, shuffles it and assigns random player as a current</li>
+     *     <li>Creates and initializes {@link GameBoard} instance</li>
+     *     <li>If {@link Game#advancedSettings} is equal to true, pops 3 characters from characterDeck,
+     *     calls {@link Character#initialFill} and sets characters in GameBoard using {@link GameBoard#setPlayedCharacters}</li>
+     *     <li>Sets default character {@link Character} as a current character</li>
+     *     <li>Refills assistants hand and {@link SchoolBoard} entrance of each player and adds 1 coin to each player in case of expert mode</li>
+     * </ul>
+     * @param playersNames  names of players that want to play
+     * @param advancedSettings  true if players decided to play in expert mode, false otherwise
+     * @param characterDeck  instance of {@link CharacterDeck}
+     * @throws InvalidParameterException  if playerNames.size() is not equal to 2 or 3 or 4
+     */
     public void init(List<String> playersNames, boolean advancedSettings, CharacterDeck characterDeck){
         players = new ArrayList<Player>();
         switch (playersNames.size()) {
@@ -98,12 +126,161 @@ public class Game implements GameForClient{
         }).start();
     }
 
+    private synchronized void playGame() throws InterruptedException {
+        //let the game start
+        gameBoard.setGameOn(true);
+
+        //unsuspend the game
+        this.proceed();
+
+        //wake up server thread that waits for refill clouds and set currentPlayer to happen
+        //only after that server thread will attach virtual views to gameBoard and send gameBoard change
+        //this will happen after current thread enters in wait
+        this.notifyAll();
+
+        while(gameBoard.isGameOn()){
+            newRound();
+        }
+
+        System.out.println("Game says: The game was finished !");
+        System.exit(0);
+    }
+
+
+    /**Starts a new round. New round is a sequence of actions consisting of
+     * refillClouds(), useAssistant() for each active player, sorting of players based on assistants played,
+     * newTurn() for each active player, eventually assigning unused clouds for not active players and reset of playedAssistant for all players*/
+    private void newRound() throws InterruptedException {
+        //if player is not active then skip him until next planning phase
+        //in planning phase check isActive variable , in action phase it is enough to check playedAssistant variable
+
+        //checkEndGame() is called inside refillClouds() since this is the action that might finish the game
+        gameBoard.refillClouds();
+
+        /*planning phase*/
+        //players are sorted in order in which they should play assistant card
+        if (gameBoard.isGameOn()) {
+            for (Player p : players) {
+                //set the next player to chose assistant card
+                //do this operation for all players except the last one,
+                //because the next current player must be defined based on assistants ranks played
+                //sends model change that executes newTurn on a client side
+                if(p.isActive())
+                    gameBoard.setCurrentPlayer(p);
+
+                while (gameBoard.isGameOn() && p.getPlayedAssistant() == null && p.isActive()) {
+                    //waits until client doesn't insert assistant card only if it is active client
+                    this.wait();
+                    //check if game was ended
+                    gameBoard.setGameOn(!checkEndGame());
+                }
+            }
+        }
+
+        /*sorts players based on rank, from lowest to highest so that the next turn
+        is started by player that played the card with the lowest rank
+        p.s: not active players come last*/
+        Collections.sort(players);
+
+        /*action phase*/
+        for (Player p : players) {
+            //give the turn only if this is not the end of the Game and only to
+            //the player that has playedAssistant which implies that it is active
+            if (gameBoard.isGameOn() && p.getPlayedAssistant()!=null) {
+                newTurn(p);
+            }
+        }
+
+        //control if there are not-active players that still need to be assigned a cloud randomly
+        List<Cloud> unusedClouds;
+        for (Player p: players){
+            //refill only those players that are disconnected and haven't yet used any cloud
+            if ( p.getPlayedAssistant()==null && p.getNumOfStudentsInEntrance() < gameBoard.getMaxNumOfStudentsInEntrance() ){
+                unusedClouds = gameBoard.getClouds().stream().filter(cloud -> cloud.getStudentsColors().size() > 0).collect(Collectors.toList());
+                //chose random cloud from those unused
+                int cloudNumber = new Random().nextInt(unusedClouds.size());
+                //use the cloud that server chosen for inactive player
+                try {
+                    gameBoard.useCloud(gameBoard.getClouds().indexOf(unusedClouds.get(cloudNumber)), p);
+                }
+                catch (NumOfStudentsExceeded e){
+
+                }
+            }
+        }
+
+
+        for (Player p : players) {
+            gameBoard.setPlayedAssistantRank(0, p);
+        }
+    }
+
+    /**Starts a new turn for a player which consists of
+     * Setting this player as a current
+     * Accepting actions related to studentMove, motherNatureMove, useCloudMove and eventually characterUsed*/
+    private void newTurn(Player p) throws InterruptedException {
+        /*virtual view controls current player before forwarding any method to controller*/
+        gameBoard.setCurrentPlayer(p);
+
+        //need to wait until all 3 conditions are satisfied unless player gets deactivated and unless game is finished
+        //thread gets waked up by other threads that invoke moveStudent(), moveMN(), useCloud() and buy/activateCharacter()
+        //or if player gets disconnected or reconnected inside changePlayerStatus() of VirtualView
+        while ( gameBoard.isGameOn() && (studentMove != (players.size() == 3? 4: 3) || !motherNatureMove || !useCloudMove) && p.getPlayedAssistant()!=null ) {
+            this.wait();
+            //endOfGame is sent inside checkEndGame only if game was active previously
+            gameBoard.setGameOn(!checkEndGame());
+        }
+
+        studentMove = 0;
+        motherNatureMove = false;
+        useCloudMove = false;
+        characterUsed = false;
+    }
+
     public Player getCurrentPlayer(){
         return gameBoard.getCurrentPlayer();
     }
 
     public ArrayList<Player> getPlayers() {
         return players;
+    }
+
+    public synchronized void useAssistant(int assistantRank){
+        if (assistantRank < 1 || assistantRank > 10){
+            throw new IllegalArgumentException("Assistant rank value is wrong");
+        }
+        //checks if player can use this assistant
+        if (checkAssistant(assistantRank, gameBoard.getCurrentPlayer())) {
+            //sends 1 model change
+            gameBoard.setPlayedAssistantRank(assistantRank, gameBoard.getCurrentPlayer());
+        }
+        else
+            throw new RepeatedAssistantRankException();
+
+        //notifies a waiting thread in newRound
+        this.notifyAll();
+    }
+
+    /*check whether a player can play an assistant with a certain rank*/
+    private boolean checkAssistant(int assistantRank, Player player){
+        Set<Integer> playedAssistantsRanks = players.stream().filter(p -> p!=player && p.getPlayedAssistant()!=null).
+                map(p -> p.getPlayedAssistant().getRank()).collect(Collectors.toSet());
+
+        /*if a player wants to play rank not contained in his hand, then return false*/
+        if (!player.getAssistantsRanks().contains(assistantRank))
+            return false;
+
+        /*if a player decides to play an assistant with rank already played by someone,
+        it is allowable only when player has no other options*/
+        if (playedAssistantsRanks.contains(assistantRank)){
+            for (int rank: player.getAssistantsRanks()) {
+                /*if player has an assistant with rank not yet played*/
+                if (!playedAssistantsRanks.contains(rank))
+                    return false;
+            }
+        }
+
+        return true;
     }
 
     public synchronized void moveStudentToIsland(Color studentColor, int islandNumber){
@@ -148,7 +325,6 @@ public class Game implements GameForClient{
     public void removeStudentFromDining(Player player, Color studentColor){
         gameBoard.removeStudentFromDining(player, studentColor);
     }
-
     public Color getStudent(){
         return gameBoard.getStudentFromBag();
     }
@@ -239,6 +415,7 @@ public class Game implements GameForClient{
     }
 
     /*calculates influence score on specified Island*/
+
     public int calculateInfluence(int islandNumber, Player player){
         int influence = -1; //return -1 when NoEntry Tile is on selected island
         try {
@@ -281,6 +458,17 @@ public class Game implements GameForClient{
             gameBoard.notify(exceptionChange);
         }
         motherNatureMove = true;
+        this.notifyAll();
+    }
+
+    public synchronized void useCloud(int cloudNumber){
+        if (studentMove != (players.size() == 3? 4: 3) || !motherNatureMove || useCloudMove) {
+            //client can't make this action if students weren't moved
+            //or if mother nature wasn't already moved or cloud was already used
+            throw new WrongActionException("You cannot use cloud right now!");
+        }
+        gameBoard.useCloud(cloudNumber);
+        useCloudMove = true;
         this.notifyAll();
     }
 
@@ -330,7 +518,6 @@ public class Game implements GameForClient{
         //check end game will be done in newTurn()
         this.notifyAll();
     }
-
     public synchronized void activateCharacter(Color color){
         if (!advancedSettings)
             throw new WrongActionException("You can't use characters. Advanced settings were set to false");
@@ -342,176 +529,19 @@ public class Game implements GameForClient{
         this.notifyAll();
     }
 
-    public synchronized void useCloud(int cloudNumber){
-        if (studentMove != (players.size() == 3? 4: 3) || !motherNatureMove || useCloudMove) {
-            //client can't make this action if students weren't moved
-            //or if mother nature wasn't already moved or cloud was already used
-            throw new WrongActionException("You cannot use cloud right now!");
-        }
-        gameBoard.useCloud(cloudNumber);
-        useCloudMove = true;
-        this.notifyAll();
-    }
-
-    //sets assistant of current player and makes the next player current to let him call use assistant from VirtualView
-    public synchronized void useAssistant(int assistantRank){
-        if (assistantRank < 1 || assistantRank > 10){
-            throw new IllegalArgumentException("Assistant rank value is wrong");
-        }
-        //checks if player can use this assistant
-        if (checkAssistant(assistantRank, gameBoard.getCurrentPlayer())) {
-            //sends 1 model change
-            gameBoard.setPlayedAssistantRank(assistantRank, gameBoard.getCurrentPlayer());
-        }
-        else
-            throw new RepeatedAssistantRankException();
-
-        //notifies a waiting thread in newRound
-        this.notifyAll();
-    }
-
-    private synchronized void playGame() throws InterruptedException {
-        //let the game start
-        gameBoard.setGameOn(true);
-
-        //wake up server thread that waits for refill clouds and set currentPlayer to happen
-        //only after that server thread will attach virtual views to gameBoard and send gameBoard change
-        //this will happen after current thread enters in wait
-        this.notifyAll();
-
-        while(gameBoard.isGameOn()){
-            newRound();
-        }
-
-        System.out.println("Game says: The game was finished !");
-    }
-
-
-    /**Starts a new round. New round is a sequence of actions consisting of
-     * refillClouds(), useAssistant() for each active player, sorting of players based on assistants played,
-     * newTurn() for each active player, eventually assigning unused clouds for not active players and reset of playedAssistant for all players*/
-    private void newRound() throws InterruptedException {
-        //if player is not active then skip him until next planning phase
-        //in planning phase check isActive variable , in action phase it is enough to check playedAssistant variable
-
-        //checkEndGame() is called inside refillClouds() since this is the action that might finish the game
-        gameBoard.refillClouds();
-
-        /*planning phase*/
-        //players are sorted in order in which they should play assistant card
-        if (gameBoard.isGameOn()) {
-            for (Player p : players) {
-                //set the next player to chose assistant card
-                //do this operation for all players except the last one,
-                //because the next current player must be defined based on assistants ranks played
-                //sends model change that executes newTurn on a client side
-                if(p.isActive())
-                    gameBoard.setCurrentPlayer(p);
-
-                while (gameBoard.isGameOn() && p.getPlayedAssistant() == null && p.isActive()) {
-                    //waits until client doesn't insert assistant card only if it is active client
-                    this.wait();
-                    //check if game was ended
-                    gameBoard.setGameOn(!checkEndGame());
-                }
-            }
-        }
-
-        /*sorts players based on rank, from lowest to highest so that the next turn
-        is started by player that played the card with the lowest rank
-        p.s: not active players come last*/
-        Collections.sort(players);
-
-        /*action phase*/
-        for (Player p : players) {
-            //give the turn only if this is not the end of the Game and only to
-            //the player that has playedAssistant which implies that it is active
-            if (gameBoard.isGameOn() && p.getPlayedAssistant()!=null) {
-                newTurn(p);
-            }
-        }
-
-        //control if there are not-active players that still need to be assigned a cloud randomly
-        List<Cloud> unusedClouds;
-        for (Player p: players){
-            if ( p.getPlayedAssistant()==null ){
-                unusedClouds = gameBoard.getClouds().stream().filter(cloud -> cloud.getStudentsColors().size() > 0).collect(Collectors.toList());
-                //chose random cloud from those unused
-                int cloudNumber = new Random().nextInt(unusedClouds.size());
-                //use the cloud that server chosen for inactive player
-                try {
-                    gameBoard.useCloud(gameBoard.getClouds().indexOf(unusedClouds.get(cloudNumber)), p);
-                }
-                catch (NumOfStudentsExceeded e){
-
-                }
-            }
-        }
-
-
-        for (Player p : players) {
-            gameBoard.setPlayedAssistantRank(0, p);
-        }
-    }
-
-    /**Starts a new turn for a player which consists of
-     * Setting this player as a current
-     * Accepting actions related to studentMove, motherNatureMove, useCloudMove and eventually characterUsed*/
-    private void newTurn(Player p) throws InterruptedException {
-        /*virtual view controls current player before forwarding any method to controller*/
-        gameBoard.setCurrentPlayer(p);
-
-        //need to wait until all 3 conditions are satisfied unless player gets deactivated and unless game is finished
-        //thread gets waked up by other threads that invoke moveStudent(), moveMN(), useCloud() and buy/activateCharacter()
-        //or if player gets disconnected inside changePlayerStatus() of VirtualView
-        while ( gameBoard.isGameOn() && (studentMove != (players.size() == 3? 4: 3) || !motherNatureMove || !useCloudMove) && p.getPlayedAssistant()!=null ) {
-            this.wait();
-            //endOfGame is sent inside checkEndGame only if game was active previously
-            gameBoard.setGameOn(!checkEndGame());
-        }
-
-        studentMove = 0;
-        motherNatureMove = false;
-        useCloudMove = false;
-        characterUsed = false;
-    }
-
-    /*check whether a player can play an assistant with a certain rank*/
-    private boolean checkAssistant(int assistantRank, Player player){
-        Set<Integer> playedAssistantsRanks = players.stream().filter(p -> p!=player && p.getPlayedAssistant()!=null).
-                map(p -> p.getPlayedAssistant().getRank()).collect(Collectors.toSet());
-
-        /*if a player wants to play rank not contained in his hand, then return false*/
-        if (!player.getAssistantsRanks().contains(assistantRank))
-            return false;
-
-        /*if a player decides to play an assistant with rank already played by someone,
-        it is allowable only when player has no other options*/
-        if (playedAssistantsRanks.contains(assistantRank)){
-            for (int rank: player.getAssistantsRanks()) {
-                /*if player has an assistant with rank not yet played*/
-                if (!playedAssistantsRanks.contains(rank))
-                    return false;
-            }
-        }
-
-        return true;
-    }
-
-    /*the game is finished when there is a player that has no assistants or
-    has no towers or there is a team that has no towers (in case of 4 players) or
-    the bag is empty or the number of islands is less than 3*/
-    /**Checks whether the game is finished and in affermative case sends EndOfGameChange to all active clients
-     * and returns true, otherwise just returns false and doesn't send EndOfGameChange.
-     * The game is finished when one of the following conditions verifies:
-     * 1.A player puts his last tower on an island ( that particular player becomes the winner )
-     * 2.A player has no assistants ( player that has fewer towers becomes the winner )
-     * 3.The bag is empty ( player that has fewer towers becomes the winner )
-     * 4.Number of islands is less or equal than 3 ( player that has fewer towers becomes the winner )
-     * 5.Only one active player or active team has remained connected ( that player or team becomes the winner )*/
+    /**Checks whether the game is finished and in affermative case sends {@link EndOfGameChange} to all active clients
+     * and returns true, otherwise just returns false.
+     * <ul>The game is finished when one of the following conditions verifies:
+     *      <li>A player puts his last tower on an island ( that particular player becomes the winner )</li>
+     *      <li>A player has no assistants ( the player that has fewer towers becomes the winner )</li>
+     *      <li>The bag is empty ( the player that has fewer towers becomes the winner )</li>
+     *      <li>Number of islands is less or equal than 3 ( the player that has fewer towers becomes the winner )</li>
+     *      <li>Only one active player or active team has remained connected
+     *      ( The timer for reconnection gets started. If time expires then that player or team becomes the winner )</li>
+     * </ul>
+     * */
     public boolean checkEndGame(){
 
-        //TODO check 4 players end game
         //the game finishes immediately when a player puts his last tower on an island
         for (Player p : players){
             if(p.checkEmptyTowers()){
@@ -537,16 +567,23 @@ public class Game implements GameForClient{
         }
 
         //search for the player that has fewer towers on SchoolBoard since this is the one that has conquered more islands
-        List<Player> towersPlayers = players.stream().filter((p)->p.getNumOfTowers() > 0).sorted((p1, p2) -> {
+        /*List<Player> towersPlayers = players.stream().filter((p)->p.getNumOfTowers() > 0).sorted((p1, p2) -> {
             if (p1.getNumOfTowers() == p2.getNumOfTowers()){
                 return p2.getProfessorsColor().size() - p1.getProfessorsColor().size();
             }
             else{
                 return p1.getNumOfTowers() - p2.getNumOfTowers();
             }
-        }).collect(Collectors.toList());
+        }).collect(Collectors.toList());*/
 
-        Player leader = towersPlayers.get(0);
+        Player leader = players.stream().filter((p)->p.getNumOfTowers() > 0).sorted((p1, p2) -> {
+            if (p1.getNumOfTowers() == p2.getNumOfTowers()){
+                return p2.getProfessorsColor().size() - p1.getProfessorsColor().size();
+            }
+            else{
+                return p1.getNumOfTowers() - p2.getNumOfTowers();
+            }
+        }).findFirst().get();
 
 
         boolean foundPlayerNoAssistants = false;
@@ -565,36 +602,126 @@ public class Game implements GameForClient{
             return true;
         }
 
-        //if there is only 1 active player in case of 2-3 players then the game is finished and the remained player is the winner
+        //if there is only 1 active player in case of 2-3 players then the game gets suspended for 60 sec
         List<Player> activePlayers = players.stream().filter(p -> p.isActive()).collect(Collectors.toList());
-        if (activePlayers.size() == 1) {
+        while (activePlayers.size() == 1) {
             if (gameBoard.isGameOn()) {
-                gameBoard.notify(new EndOfGameChange(activePlayers.get(0).getName()));
+                Timer timer = new Timer();
+                try {
+                    suspended = true;
+                    final int[] secondsToWait = {10};
+                    //TODO send GameSuspendedException each second
+                    timer.scheduleAtFixedRate(new TimerTask() {
+                        @Override
+                        public void run() {
+                            if(secondsToWait[0]>=0) {
+                                gameBoard.notify(new ExceptionChange(
+                                        new GameSuspendedException("Wait for other players reconnection.\n" + secondsToWait[0] + "seconds remained")
+                                ));
+                                System.out.println("I have sent GameSuspendedException. Seconds to wait " + secondsToWait[0]);
+                                secondsToWait[0]--;
+                            }
+                        }
+                    }, 0, 1000);
+
+                    this.wait(10*1000);
+                } catch (InterruptedException e) {
+                    //if something went wrong then finish the game
+                    System.out.println("I am in checkEndGame() of Game in active players control. The thread was interrupted");
+                    e.printStackTrace();
+                    return true;
+                }
+                //if no client has been reconnected in 60 sec, then the game is finished
+                if (suspended) {
+                    timer.cancel();
+                    timer.purge();
+                    gameBoard.notify(new EndOfGameChange(activePlayers.get(0).getName()));
+                    return true;
+                }
+                else{
+                    timer.cancel();
+                    timer.purge();
+                    System.out.println("A player was reconnected");
+                }
             }
-            return true;
+            activePlayers = players.stream().filter(p -> p.isActive()).collect(Collectors.toList());
         }
-        //if there are 2 active players from the same team then the game is finished and the remained team is the winner
-        else if (activePlayers.size() == 2 && players.size() == 4) {
+
+        //if there are 2 active players from the same team then the game gets suspended for 60 sec
+        while (activePlayers.size() == 2 && players.size() == 4) {
             if (activePlayers.get(0).getTowerColor().equals(activePlayers.get(1).getTowerColor())){
                 if (gameBoard.isGameOn()) {
-                    gameBoard.notify(new EndOfGameChange(activePlayers.get(0).getName()));
-                }
-                return true;
-            }
+                    Timer timer = new Timer();
+                    try {
+                        suspended = true;
+                        final int[] secondsToWait = {10};
+                        //TODO send GameSuspendedException each second
+                        //schedule a thread to send GameSuspendedException each second
+                        timer.scheduleAtFixedRate(new TimerTask() {
+                            @Override
+                            public void run() {
+                                if(secondsToWait[0]>=0) {
+                                    gameBoard.notify(new ExceptionChange(
+                                            new GameSuspendedException("Wait for other players reconnection.\n" + secondsToWait[0] + "seconds remained")
+                                    ));
+                                    secondsToWait[0]--;
+                                    System.out.println("I have sent GameSuspendedException. Seconds to wait " + secondsToWait[0]);
+                                }
+                            }
+                        }, 0, 1000);
 
+                        this.wait(10*1000);
+                    } catch (InterruptedException e) {
+                        //if something went wrong then finish the game
+                        System.out.println("I am in checkEndGame() of Game in active players control. The thread was interrupted");
+                        e.printStackTrace();
+                        return true;
+                    }
+                    //if no client has been reconnected in 60 sec, then the game is finished
+                    if (suspended) {
+                        timer.cancel();
+                        timer.purge();
+                        gameBoard.notify(new EndOfGameChange(activePlayers.get(0).getName()));
+                        return true;
+                    }
+                    else {
+                        timer.cancel();
+                        timer.purge();
+                        System.out.println("A player was reconnected");
+                    }
+                }
+            }
+            else{
+                break;
+            }
+            activePlayers = players.stream().filter(p -> p.isActive()).collect(Collectors.toList());
         }
 
         //if nothing from above is true then this is not yet the end of the game
         return false;
     }
 
-    /*the packet received executes certain methods on Game*/
+    /**Executes an action requested from particular client*/
     public void usePacket(Packet packet){
         packet.execute(this);
     }
 
     public boolean getAdvancedSettings() {
         return advancedSettings;
+    }
+
+    public boolean isSuspended(){
+        return suspended;
+    }
+
+    /**Sets {@link #suspended} attribute equal to false*/
+    public void proceed(){
+        this.suspended = false;
+    }
+
+    /**Sets {@link #suspended} attribute equal to true*/
+    public void suspend(){
+        this.suspended = true;
     }
 
     /*TEST METHODS*/
