@@ -310,7 +310,7 @@ public class Server {
 
                 numOfConnections++;
                 new Thread(new Connection(socket, socketIn, socketOut, this)).start();
-                System.out.println("Server created");
+                System.out.println("Connection created");
 
             } catch (IOException e){
                 System.err.println("Connection error!" + e);

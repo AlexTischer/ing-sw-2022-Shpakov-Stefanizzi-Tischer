@@ -12,11 +12,7 @@ public class ConnectionStatusChange extends ModelChange{
 
     @Override
     public void execute(ClientGameBoard gameBoard){
-        for (ClientPlayer p: gameBoard.getPlayers()){
-            if (p.getName().equals(name)) {
-                p.setConnectionStatus(status);
-            }
-        }
+        gameBoard.setPlayerStatus(name, status);
     }
 
     public ConnectionStatusChange(String name, boolean status) {

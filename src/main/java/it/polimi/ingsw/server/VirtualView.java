@@ -31,11 +31,12 @@ public class VirtualView implements Observer<ModelChange> {
             //if client tries to act while it's not his turn, then it is the wrong action
             clientConnection.send(new ExceptionChange(new WrongActionException("You are not current player!")));
         }
-        else if(game.getGameBoard().isGameOn()){
-            try{
+        //Send packet only if the game is on and not suspended
+        //TODO how player can reactivate
+        else if(game.getGameBoard().isGameOn() && !game.isSuspended()) {
+            try {
                 game.usePacket(packet);
-            }
-            catch (RuntimeException e){
+            } catch (RuntimeException e) {
                 //any exception related to incorrect user action, sends an exception back to client
                 clientConnection.send(new ExceptionChange(e));
                 //exception must not be followed by endOfChanges because user still needs to make the correct move
@@ -74,11 +75,18 @@ public class VirtualView implements Observer<ModelChange> {
     public void changePlayerStatus(boolean status) {
         //player can change status after the lock on game is released
         //which means that game waits for some player's action
-        //commutation between player active and not active happens in pauses between player's actions
+        //commutation between player active and not active happens in pauses between player's actions or when game is suspended
         synchronized (game) {
             this.player.changeStatus(status);
 
+            //if the game was suspended and the player is trying to reconnect then the game may unsuspend and continue
+            if(status && game.isSuspended()){
+                game.proceed();
+                System.out.println("Virtual View says: status is true and game was suspended, now it is active");
+            }
+
             //notify eventual thread that is waiting for client's action meanwhile he was disconnected
+            //also notifies suspended game thread because this client gets reconnected
             game.notifyAll();
         }
     }

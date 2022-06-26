@@ -98,8 +98,6 @@ public class Connection implements Runnable{
                 try {
                     fromClient = socketIn.readObject();
                     System.out.println("Connection says: I am ready to receive the name!");
-                    System.out.println(fromClient);
-                    System.out.println(fromClient.getClass());
                     //if client sent ping message, then i need to respond and wait for the next input
                     if (fromClient.equals("ping")){
                         socketOut.writeObject("pong");

@@ -7,9 +7,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**This class represents a deck of characters
+ * <p>Characters are used only when advancedSettings attribute of {@link Game#init} method is set to true</p>
+ * */
 public class CharacterDeck {
     private List<Character> characters;
 
+    /**Creates a deck of characters by creating each one and adding it to the list
+     * <p>Shuffles the list so that {@link #popCharacter()} returns random character</p>
+     */
     public CharacterDeck() {
 
         this.characters = new ArrayList<Character>(12);
@@ -28,7 +34,9 @@ public class CharacterDeck {
         Collections.shuffle(characters);
     }
 
-    //returns a random model.Character from characters
+    /**
+     * @return random character from deck
+     */
     public Character popCharacter(){
         return characters.remove(0);
     }

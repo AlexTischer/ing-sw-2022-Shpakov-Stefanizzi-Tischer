@@ -214,7 +214,7 @@ public class  ClientConnection {
                     }
 
                     //set socket timeout only after sending the name
-                    //socket.setSoTimeout(10*1000);
+                    socket.setSoTimeout(10*1000);
 
                     //Server added me to Lobby  if my name is ok
 

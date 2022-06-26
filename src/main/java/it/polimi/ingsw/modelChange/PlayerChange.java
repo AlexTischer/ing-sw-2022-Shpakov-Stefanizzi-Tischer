@@ -39,7 +39,7 @@ public class PlayerChange extends ModelChange{
 
         clientSchoolBoard.setEntrance(player.getSchoolBoard().getStudentsInEntrance());
         clientSchoolBoard.setNumOfTowers(player.getSchoolBoard().getNumOfTowers());
-        clientSchoolBoard.setTowersColor(player.getSchoolBoard().getTowersColor());
+        clientSchoolBoard.setTowersColor(player.getSchoolBoard().getTowerColor());
 
         Map<Color, Integer> diningRoom = new HashMap<>();
         for(Color c : Color.values()){

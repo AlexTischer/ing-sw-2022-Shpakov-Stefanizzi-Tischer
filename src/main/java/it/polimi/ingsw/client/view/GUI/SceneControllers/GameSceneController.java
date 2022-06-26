@@ -1,13 +1,17 @@
 package it.polimi.ingsw.client.view.GUI.SceneControllers;
 
 
+import com.sun.scenario.effect.AbstractShadow;
 import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.server.model.Color;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -17,6 +21,7 @@ import java.util.ArrayList;
 
 
 import static it.polimi.ingsw.server.model.Color.*;
+import static javafx.scene.effect.BlurType.ONE_PASS_BOX;
 
 public class GameSceneController extends SceneController {
 
@@ -772,6 +777,18 @@ public class GameSceneController extends SceneController {
         Platform.runLater(()->{
             dialogText.setText("");
 
+            //disabling students from selection
+            for(int i=0; i<((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().size(); i++){
+                int finalI = i;
+                ((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)
+                        .setOnMouseClicked(mouseEvent -> {});
+                ((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)
+                        .setOnMouseEntered(mouseEvent -> {});
+                ((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)
+                        .setOnMouseExited(mouseEvent -> {});
+                ((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)
+                        .setCursor(Cursor.DEFAULT);
+            }
             //disabling students on entrance from selection
             if(!(((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().isEmpty())) {
                 for (int i = 0; i < ((Group) playersList.get(0).getChildren().get(children_entrance)).getChildren().size(); i++) {
@@ -889,6 +906,7 @@ public class GameSceneController extends SceneController {
             //disabling islands and dining room from mouse click
             for(int i=0; i<islands.getChildren().size(); i++){
                 islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
+                islands.getChildren().get(i).setOnMouseEntered(mouseEvent -> {});
             }
             for(int i=0; i<((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().size(); i++){
                 int finalI = i;
@@ -1075,6 +1093,13 @@ public class GameSceneController extends SceneController {
             for(int i=0; i<islands.getChildren().size(); i++){
                 int finalI = i;
                 islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectDestination(finalI+1);});
+                ((Pane)(islands.getChildren().get(i)))
+                        .setOnMouseEntered(event -> {
+                            highlightPane((Pane)(islands.getChildren().get(finalI)), true);
+                            ((Pane)(islands.getChildren().get(finalI))).setCursor(Cursor.HAND);
+                        });
+                ((Pane)(islands.getChildren().get(i)))
+                        .setOnMouseExited(event -> {highlightPane((Pane)(islands.getChildren().get(finalI)), false);});
             }
 
             //enabling diningRoom and set onMouseClickAction to selectDestination(0)*/
@@ -1140,13 +1165,18 @@ public class GameSceneController extends SceneController {
                             .setOnMouseClicked(mouseEvent ->
                             {
                                 selectStudent(Color.getColorByStudentPath(((ImageView)((Pane)((Group)playersList.get(0).getChildren()
-                                    .get(children_entrance)).getChildren().get(finalI)).getChildren().get(0)).getImage().getUrl()).get());
+                                        .get(children_entrance)).getChildren().get(finalI)).getChildren().get(0)).getImage().getUrl()).get());
                                 highlightPane(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)), true);
                             });
                     ((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i))
-                            .setOnMouseEntered(event -> {highlightPane(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)), true);});
+                            .setOnMouseEntered(event -> {
+                                highlightPane(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)), true);
+                                ((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)).setCursor(Cursor.HAND);
+                            });
                     ((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i))
-                            .setOnMouseExited(event -> {highlightPane(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)), false);});
+                            .setOnMouseExited(event -> {
+                                highlightPane(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)), false);
+                            });
                 }
             }
 
@@ -1353,11 +1383,15 @@ public class GameSceneController extends SceneController {
 
 
     private void highlightPane(Pane pane, boolean bool){
+        DropShadow ds = new DropShadow( 10, javafx.scene.paint.Color.CHOCOLATE);
+        ds.setBlurType( ONE_PASS_BOX);
         if(bool){
-            pane.setStyle("-fx-border-color: #efff00; -fx-border-width: 15; -fx-border-radius: 8");
+            ((ImageView)(pane.getChildren().get(0))).setEffect(ds);
+            //setStyle("fx-border-color: #efff00; -fx-border-width: 20; -fx-border-radius: 0");
         }
         else{
-            pane.setStyle("-fx-border-color: rgba(255,255,255,0); -fx-border-width: 4");;
+            ds.setColor(javafx.scene.paint.Color.TRANSPARENT);
+            ((ImageView)(pane.getChildren().get(0))).setEffect(ds);
         }
     }
 

@@ -53,6 +53,9 @@ public class ClientController {
             gameBoard.showOnView();
             throw new EndOfChangesException();
         }
+        catch (GameSuspendedException e){
+            printMessage(e.getMessage());
+        }
     }
 
     public void setClientName(String clientName){
@@ -89,9 +92,8 @@ public class ClientController {
                 try {
                     connection.waitModelChange();
                 } catch (IOException e) {
-                    System.out.println("ClientController says: closing connection due IOException");
-                    e.printStackTrace();
-                    connection.close();
+                    System.out.println("ClientController.startTurn says: closing connection due IOException");
+                    gameBoard.setGameOn(false);
                 } catch (EndOfChangesException e) {
                 }
             }
@@ -129,7 +131,7 @@ public class ClientController {
                     try {
                         this.connection.send(packet);
                     } catch (IOException e) {
-                        this.connection.close();
+                        System.out.println("ClientController.useAssistant says: closing connection due IOException");
                         gameBoard.setGameOn(false);
                     }
                 } else {
@@ -181,12 +183,7 @@ public class ClientController {
             correctDestination = false;
             try {
                 //client has chosen to move a student
-                //TEST
-                System.out.println("Client controller: ho invocato chooseActionStudent");
                 if (view.chooseActionStudent(characterActivated) == 1) {
-
-                    //TEST
-                    System.out.println("sono entrato qui anche se non dovevo entrarci");
 
                     while (isGameOn() && !correctStudent) {
 
@@ -201,7 +198,8 @@ public class ClientController {
                             while (isGameOn() && !correctDestination) {
                                 int destination = view.askStudentDestination();
 
-
+                                //TEST
+                                System.out.println("client controller: ho ricevuto la destinazione "+ destination);
 
                                 //if destination == 0, move the student to dining room
                                 if (destination == 0) {
@@ -210,7 +208,7 @@ public class ClientController {
                                         correctDestination = true;
                                         studentMoves++;
                                     } catch (IOException e) {
-                                        connection.close();
+                                        System.out.println("ClientController.moveStudents says: closing connection due IOException");
                                         gameBoard.setGameOn(false);
                                     }
                                 }
@@ -224,7 +222,7 @@ public class ClientController {
                                             correctDestination = true;
                                             studentMoves++;
                                         } catch (IOException e) {
-                                            connection.close();
+                                            System.out.println("ClientController.moveStudents else says: closing connection due IOException");
                                             gameBoard.setGameOn(false);
                                         }
                                     }
@@ -269,23 +267,17 @@ public class ClientController {
         if(correctCharacter && isGameOn()){
             try {
                 connection.send(new BuyCharacterPacket(i-1));
-                characterActivated=true;
             } catch (IOException e) {
-                connection.close();
+                System.out.println("ClientController.buyCharacter says: closing connection due IOException");
                 gameBoard.setGameOn(false);
             }
         }
         if(correctCharacter && isGameOn()){
             try {
-                //TEST
-                System.out.println("ClientController: sto creando ActivateCharacterPacket");
                 ActivateCharacterPacket packet = gameBoard.getPlayedCharacters()[i-1].createPacket(view);
                 connection.send(packet);
-                //TEST
-                System.out.println("ClientController: ho inviato ActivateCharacterPacket");
-                characterActivated=true;
             } catch (IOException e) {
-                connection.close();
+                System.out.println("ClientController.buyCharacter says: closing connection due IOException");
                 gameBoard.setGameOn(false);
             }
         }
@@ -303,7 +295,7 @@ public class ClientController {
                         connection.send(new MoveMotherNaturePacket(steps));
                         movedMN = true;
                     } catch (IOException e) {
-                        connection.close();
+                        System.out.println("ClientController.moveMN says: closing connection due IOException");
                         gameBoard.setGameOn(false);
                     }
                 } else {
@@ -332,7 +324,7 @@ public class ClientController {
                                 correctCloud = true;
                                 usedCloud = true;
                             } catch (IOException e) {
-                                connection.close();
+                                System.out.println("ClientController.useCloud says: closing connection due IOException");
                                 gameBoard.setGameOn(false);
                             }
                         } else {
@@ -354,7 +346,7 @@ public class ClientController {
         int numOfPlayers;
         numOfPlayers = view.askNumOfPlayers();
         while (!( numOfPlayers >= 2 && numOfPlayers <= 4)){
-            view.printErrorMessage("Incorrect number of players value. Please try again");
+            view.printMessage("Incorrect number of players value. Please try again");
             numOfPlayers = view.askNumOfPlayers();
         }
         return numOfPlayers;
@@ -370,10 +362,6 @@ public class ClientController {
 
     public void printMessage(String message){
         view.printMessage(message);
-    }
-
-    public void printErrorMessage(String message){
-        view.printErrorMessage(message);
     }
 
     public boolean isGameOn(){

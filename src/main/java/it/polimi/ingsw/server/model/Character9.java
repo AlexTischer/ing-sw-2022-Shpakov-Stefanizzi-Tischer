@@ -32,7 +32,7 @@ public class Character9 extends Character {
 
     public void setSelectedStudents(ArrayList<Color> selectedStudents){
         if(selectedStudents.size() > 3)
-            throw new IllegalArgumentException("You can select at most 3 students");
+            throw new IllegalArgumentException("You can select at most 3 students on card");
 
         List<Color> testStudents = new LinkedList<Color>(students);
         for (Color studentColor: selectedStudents) {
@@ -62,7 +62,7 @@ public class Character9 extends Character {
 
     public void execute(){
         if (selectedStudents.size() != toBeSwappedStudents.size())
-            throw new IllegalArgumentException("2 lists don`t have the same size");
+            throw new IllegalArgumentException("The students selected on card and students selected in entrance don't have the same size");
 
         /*create temporary list to remove students easily*/
         List<Color> tempStudents = new ArrayList<Color>(students);

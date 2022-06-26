@@ -222,7 +222,7 @@ public class GameTest extends TestCase {
 
         testGameBoard.refillAssistants(testplayer);
         //character with rank 8 has 4 steps
-        testplayer.setPlayedAssistantRank(8);
+        testplayer.setPlayedAssistant(8);
         testGameBoard.placeMotherNatureTEST(2);
 
         testGameBoard.addStudentToEntrance(testplayer, Color.GREEN);

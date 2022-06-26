@@ -64,7 +64,7 @@ public class PlayersChange extends ModelChange{
             clientSchoolBoard.setNumOfTowers(p.getSchoolBoard().getNumOfTowers());
 
             //towersColor
-            clientSchoolBoard.setTowersColor(p.getSchoolBoard().getTowersColor());
+            clientSchoolBoard.setTowersColor(p.getSchoolBoard().getTowerColor());
 
 
             /*setting other player attributes*/

@@ -2,6 +2,9 @@ package it.polimi.ingsw.server.model;
 
 import java.util.*;
 
+/**Enumeration of Tower colors.
+ * <p>Has three constants WHITE, BLACK AND GREY.</p>
+ * <p>Each constant contains ansi code, label and path to the image of tower on client machine</p>*/
 public enum TowerColor {
 
     WHITE("\u001b[37m", "white", "/images/towers/white_tower.png"),
@@ -18,12 +21,6 @@ public enum TowerColor {
         this.ansi = ansi;
         this.label = label;
         this.tower = tower;
-    }
-
-    public static Optional<Color> getTowerColorByLabel(String value) {
-        return Arrays.stream(Color.values())
-                .filter(towerColor -> towerColor.label.equals(value))
-                .findFirst();
     }
 
 }

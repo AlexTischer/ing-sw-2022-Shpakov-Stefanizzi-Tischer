@@ -24,12 +24,12 @@ public class GameBoard extends Observable<ModelChange> {
     private int maxNumOfStudentsInEntrance;
     private Player currentPlayer;
     private AtomicBoolean isGameOn = new AtomicBoolean(false);
-
     /*creates 12 islands and puts MotherNature on a random island*/
-    private GameBoard(){}
 
+    private GameBoard(){}
     /*Initializes instanceOfBag and clouds. Takes number of players and
     number of students to be in the bag( by default 130 ) */
+
     public void init(Game game, int numOfPlayers) {
         this.game = game;
 
@@ -58,12 +58,15 @@ public class GameBoard extends Observable<ModelChange> {
 
 
     }
-
     public static GameBoard getInstanceOfGameBoard() {
         if (instanceOfGameBoard == null)
             instanceOfGameBoard = new GameBoard();
 
         return instanceOfGameBoard;
+    }
+
+    public int getMaxNumOfStudentsInEntrance() {
+        return maxNumOfStudentsInEntrance;
     }
 
     public boolean isGameOn() {
@@ -507,7 +510,7 @@ public class GameBoard extends Observable<ModelChange> {
     }
 
     public void setPlayedAssistantRank(int assistantRank, Player player){
-        player.setPlayedAssistantRank(assistantRank);
+        player.setPlayedAssistant(assistantRank);
         AssistantChange assistantChange = new AssistantChange(player);
         notify(assistantChange);
     }
@@ -566,6 +569,10 @@ public class GameBoard extends Observable<ModelChange> {
             throw new IllegalArgumentException();
 
         return islands.get(numOfIsland).getNumOfStudents(studentColor);
+    }
+
+    public int getMaxNumOfStudentsInEntrance() {
+        return maxNumOfStudentsInEntrance;
     }
 
     public boolean getNoEntryOnIsland(int numOfIsland){
