@@ -229,9 +229,10 @@ public class  ClientConnection {
                         catch (ClassCastException e) {
                             try {
                                 clientController.changeModel((EndOfGameChange) modelChange);
+                            }
+                            catch (EndOfChangesException e3){
                                 inputCorrect = true;
                                 waitingModelChange = false;
-
                                 //set fromServer to stop current thread
                                 fromServer = "stop";
                             }

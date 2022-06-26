@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import java.io.IOException;
 
@@ -27,6 +28,7 @@ public class GuiApp extends Application {
             scene = new Scene(root);
             stage.setTitle("Eriantys");
             stage.setScene(scene);
+            stage.getIcons().add(new Image("images/misc/Icon.jpg"));
 
             stage.setMaximized(true);
             stage.setFullScreen(true);

@@ -1193,7 +1193,7 @@ public class GameSceneController extends SceneController {
 
     private void highlightPane(Pane pane, boolean bool){
         if(bool){
-            pane.setStyle("-fx-border-color: #efff00; -fx-border-width: 6; -fx-border-radius: 30");
+            pane.setStyle("-fx-border-color: #efff00; -fx-border-width: 15; -fx-border-radius: 8");
         }
         else{
             pane.setStyle("-fx-border-color: rgba(255,255,255,0); -fx-border-width: 4");;
