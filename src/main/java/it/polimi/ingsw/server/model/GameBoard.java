@@ -571,9 +571,6 @@ public class GameBoard extends Observable<ModelChange> {
         return islands.get(numOfIsland).getNumOfStudents(studentColor);
     }
 
-    public int getMaxNumOfStudentsInEntrance() {
-        return maxNumOfStudentsInEntrance;
-    }
 
     public boolean getNoEntryOnIsland(int numOfIsland){
         if (numOfIsland < 0 || numOfIsland > islands.size()-1)

@@ -536,6 +536,7 @@ public class Gui extends View {
             }
         }
 
+        gameSceneController.setAskingDone(false);
         gameSceneController.hideYesNoButtons();
         return gameSceneController.getChoice();
     }

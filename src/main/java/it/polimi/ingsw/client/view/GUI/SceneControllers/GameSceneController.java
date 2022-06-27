@@ -1,7 +1,6 @@
 package it.polimi.ingsw.client.view.GUI.SceneControllers;
 
 
-import com.sun.scenario.effect.AbstractShadow;
 import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.server.model.Color;
 import javafx.application.Platform;
@@ -11,7 +10,6 @@ import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -768,113 +766,6 @@ public class GameSceneController extends SceneController {
 
 
 
-
-    public synchronized void selectStudent(Color studentColor){
-        askingDone=true;
-        chosenAction = 1;
-        this.studentColor = studentColor;
-
-        Platform.runLater(()->{
-            dialogText.setText("");
-
-            //disabling students from selection
-            for(int i=0; i<((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().size(); i++){
-                int finalI = i;
-                ((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)
-                        .setOnMouseClicked(mouseEvent -> {});
-                ((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)
-                        .setOnMouseEntered(mouseEvent -> {});
-                ((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)
-                        .setOnMouseExited(mouseEvent -> {});
-                ((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)
-                        .setCursor(Cursor.DEFAULT);
-            }
-            //disabling students on entrance from selection
-            if(!(((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().isEmpty())) {
-                for (int i = 0; i < ((Group) playersList.get(0).getChildren().get(children_entrance)).getChildren().size(); i++) {
-                    int finalI = i;
-                    ((Group) playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)
-                            .setOnMouseClicked(mouseEvent -> {});
-                    ((Group) playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)
-                            .setOnMouseEntered(mouseEvent -> {});
-                    ((Group) playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)
-                            .setOnMouseExited(mouseEvent -> {});
-                }
-            }
-
-            //disabling students on diningroom from selection
-            if(!(((GridPane) playersList.get(0).getChildren().get(children_diningRoom)).getChildren().isEmpty())) {
-                for (int i = 0; i < ((Group) playersList.get(0).getChildren().get(children_diningRoom)).getChildren().size(); i++) {
-                    int finalI = i;
-                    ((GridPane) playersList.get(0).getChildren().get(children_diningRoom)).getChildren().get(i)
-                            .setOnMouseClicked(mouseEvent -> {});
-                    ((GridPane) playersList.get(0).getChildren().get(children_diningRoom)).getChildren().get(i)
-                            .setOnMouseEntered(mouseEvent -> {});
-                    ((GridPane) playersList.get(0).getChildren().get(children_diningRoom)).getChildren().get(i)
-                            .setOnMouseExited(mouseEvent -> {});
-                }
-            }
-
-            //disabling students on islands from selection
-            //for each islands
-            for(int island=0; island<islands.getChildren().size(); island++) {
-
-                //checking if it has students
-                if(!(((GridPane)((Pane) islands.getChildren().get(island)).getChildren().get(children_studentsOnIsland)).getChildren().isEmpty())) {
-
-                    //for each student
-                    for (int i = 0; i < ((GridPane) ((Pane) islands.getChildren().get(island)).getChildren().get(children_studentsOnIsland)).getChildren().size(); i++) {
-                        int finalI = i;
-                        ((GridPane) ((Pane) islands.getChildren().get(island)).getChildren().get(children_studentsOnIsland)).getChildren().get(finalI)
-                                .setOnMouseClicked(mouseEvent -> {});
-                        ((GridPane) ((Pane) islands.getChildren().get(island)).getChildren().get(children_studentsOnIsland)).getChildren().get(finalI)
-                                .setOnMouseEntered(mouseEvent -> {});
-                        ((GridPane) ((Pane) islands.getChildren().get(island)).getChildren().get(children_studentsOnIsland)).getChildren().get(finalI)
-                                .setOnMouseExited(mouseEvent -> {});
-                    }
-                }
-            }
-
-            //disabling students on characters
-            //for each character
-            for(int c = 0; c<characters.getChildren().size(); c++){
-
-                //checking if it has students
-                if(!(((GridPane)((Pane)characters.getChildren().get(c)).getChildren().get(children_characterGridPane)).getChildren().isEmpty())) {
-
-                    //for each student
-                    for(int i=0; i<((GridPane)((Pane)characters.getChildren().get(c)).getChildren().get(children_characterGridPane)).getChildren().size();i++) {
-                        ((GridPane) ((Pane) characters.getChildren().get(c)).getChildren().get(children_characterGridPane)).getChildren().get(i)
-                                .setOnMouseClicked(mouseEvent -> {});
-                        ((GridPane) ((Pane) characters.getChildren().get(c)).getChildren().get(children_characterGridPane)).getChildren().get(i)
-                                .setOnMouseEntered(mouseEvent -> {});
-                        ((GridPane) ((Pane) characters.getChildren().get(c)).getChildren().get(children_characterGridPane)).getChildren().get(i)
-                                .setOnMouseExited(mouseEvent -> {});
-                    }
-                }
-            }
-        });
-
-        notifyAll();
-    }
-
-    public synchronized void selectCharacter(int index){
-        askingDone=true;
-        chosenAction = 2;
-        this.characterNumber = index;
-
-        Platform.runLater(()->{
-            //disabling Characters from click
-            for(int i=0; i<characters.getChildren().size(); i++){
-                characters.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
-            }
-
-            dialogText.setText("");
-        });
-
-        notifyAll();
-    }
-
     public synchronized void selectAssistant(int assistantRank){
         askingDone=true;
         this.assistantRank= assistantRank;
@@ -896,6 +787,37 @@ public class GameSceneController extends SceneController {
         notifyAll();
     }
 
+    public synchronized void selectStudent(Color studentColor){
+        askingDone=true;
+        chosenAction = 1;
+        this.studentColor = studentColor;
+
+        Platform.runLater(()->{
+
+            disableAllFromSelectionAndHighLight();
+
+            dialogText.setText("");
+        });
+
+        notifyAll();
+    }
+
+    public synchronized void selectCharacter(int index){
+        askingDone=true;
+        chosenAction = 2;
+        this.characterNumber = index;
+
+        Platform.runLater(()->{
+
+            disableAllFromSelectionAndHighLight();
+
+            dialogText.setText("");
+        });
+
+        notifyAll();
+    }
+
+
     public synchronized void selectDestination(int index){
 
         askingDone=true;
@@ -903,16 +825,8 @@ public class GameSceneController extends SceneController {
         this.destination = index;
 
         Platform.runLater(()->{
-            //disabling islands and dining room from mouse click
-            for(int i=0; i<islands.getChildren().size(); i++){
-                islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
-                islands.getChildren().get(i).setOnMouseEntered(mouseEvent -> {});
-            }
-            for(int i=0; i<((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().size(); i++){
-                int finalI = i;
-                highlightPane(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)),false);
-            }
-            playersList.get(0).getChildren().get(children_diningRoom).setOnMouseClicked(mouseEvent -> {});
+
+            disableAllFromSelectionAndHighLight();
 
             dialogText.setText("");
         });
@@ -928,16 +842,11 @@ public class GameSceneController extends SceneController {
         this.cloudNumber = index+1;
 
         Platform.runLater(()->{
-            //disabling clouds for selection
-            for(int i=0; i<clouds.getChildren().size(); i++){
-                int finalI = i;
-                clouds.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
-            }
+
+            disableAllFromSelectionAndHighLight();
 
             dialogText.setText("");
         });
-
-        //re-initializing game variables?
 
         notifyAll();
     }
@@ -958,14 +867,8 @@ public class GameSceneController extends SceneController {
         /*TODO: disable character cards from selection*/
 
         Platform.runLater(()->{
-            //disabling islands from selection
-            for(int i=0; i<islands.getChildren().size(); i++) {
-                islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
-            }
 
-            for(int i=0; i<characters.getChildren().size(); i++){
-                characters.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
-            }
+            disableAllFromSelectionAndHighLight();
 
             dialogText.setText("");
         });
@@ -1000,13 +903,9 @@ public class GameSceneController extends SceneController {
         Platform.runLater(()->{
             dialogText.setText("Select a student from the card");
 
+            //enabling students on characters
+            enableCharactersStudents();
 
-        for(int i=0; i<((GridPane)((Pane)characters.getChildren().get(characterNumber-1)).getChildren().get(1)).getChildren().size(); i++) {
-            int finalI = i;
-            ((GridPane)((Pane)characters.getChildren().get(this.characterNumber-1)).getChildren().get(1)).getChildren().get(i)
-                    .setOnMouseClicked(mouseEvent -> {selectStudent(Color.getColorByStudentPath(((ImageView)((GridPane)((Pane)characters.getChildren().get(characterNumber-1)).getChildren().get(1)).getChildren()
-                            .get(finalI)).getImage().getUrl()).get());});
-        }
         });
     }
 
@@ -1017,14 +916,7 @@ public class GameSceneController extends SceneController {
             dialogText.setText("Select the color you want to not count for influence");
 
             //enabling askColorBox and students for mouse clicking
-            askColorBox.setVisible(true);
-
-            for(int i=0; i<askColorBox.getChildren().size(); i++){
-                int finalI = i;
-                askColorBox.getChildren().get(i).setOnMouseClicked(mouseEvent -> {
-                    selectStudent(Color.getColorByStudentPath(((ImageView)askColorBox.getChildren().get(finalI)).getImage().getUrl()).get());
-                });
-            }
+            enableAskColorBox();
 
         });
     }
@@ -1034,12 +926,8 @@ public class GameSceneController extends SceneController {
         Platform.runLater(()->{
             dialogText.setText("Select the student in your dining room you want to swap");
 
-            for(int i=0; i<((GridPane)playersList.get(0).getChildren().get(children_diningRoom)).getChildren().size();i++){
-                int finalI = i;
-                ((GridPane)playersList.get(0).getChildren().get(children_diningRoom)).getChildren().get(i)
-                        .setOnMouseClicked(mouseEvent -> {selectStudent(Color.getColorByStudentPath(((ImageView)((GridPane)playersList.get(0).getChildren().get(children_diningRoom)).getChildren()
-                                .get(finalI)).getImage().getUrl()).get());});
-            }
+            //enabling students in dining room
+            enableDiningRoomStudents();
         });
     }
 
@@ -1048,23 +936,7 @@ public class GameSceneController extends SceneController {
         Platform.runLater(()->{
             dialogText.setText("Select a student to move");
 
-            for(int i=0; i<((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().size(); i++){
-                int finalI = i;
-                if(!(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)).getChildren().isEmpty())){
-
-                    ((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i))
-                            .setOnMouseClicked(mouseEvent ->
-                            {
-                                selectStudent(Color.getColorByStudentPath(((ImageView)((Pane)((Group)playersList.get(0).getChildren()
-                                        .get(children_entrance)).getChildren().get(finalI)).getChildren().get(0)).getImage().getUrl()).get());
-                                highlightPane(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)), true);
-                            });
-                    ((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i))
-                            .setOnMouseEntered(event -> {highlightPane(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)), true);});
-                    ((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i))
-                            .setOnMouseExited(event -> {highlightPane(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)), false);});
-                }
-            }
+            enableEntranceStudents();
 
         });
     }
@@ -1074,12 +946,9 @@ public class GameSceneController extends SceneController {
 
         Platform.runLater(()->{
 
+            //called by character cards for positioning a student or an entry tile
             dialogText.setText("Select an island as the destination");
-
-            for(int i=0; i<islands.getChildren().size(); i++){
-                int finalI = i;
-                islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectDestination(finalI+1);});
-            }
+            enableIslandsForDestination();
         });
 
     }
@@ -1090,20 +959,10 @@ public class GameSceneController extends SceneController {
             dialogText.setText("Select an island or your dining room to move your student into");
 
             //enabling islands and set onMouseClickAction to selectDestination(index+1)*/
-            for(int i=0; i<islands.getChildren().size(); i++){
-                int finalI = i;
-                islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectDestination(finalI+1);});
-                ((Pane)(islands.getChildren().get(i)))
-                        .setOnMouseEntered(event -> {
-                            highlightPane((Pane)(islands.getChildren().get(finalI)), true);
-                            ((Pane)(islands.getChildren().get(finalI))).setCursor(Cursor.HAND);
-                        });
-                ((Pane)(islands.getChildren().get(i)))
-                        .setOnMouseExited(event -> {highlightPane((Pane)(islands.getChildren().get(finalI)), false);});
-            }
+            enableIslandsForDestination();
 
             //enabling diningRoom and set onMouseClickAction to selectDestination(0)*/
-            playersList.get(0).getChildren().get(children_diningRoom).setOnMouseClicked(mouseEvent -> {selectDestination(0);});
+            enableDiningRoom();
         });
 
 
@@ -1114,10 +973,7 @@ public class GameSceneController extends SceneController {
             dialogText.setText("Select the island you want to move MotherNature to");
 
             //enabling islands to be selected
-            for(int i=0; i<islands.getChildren().size(); i++) {
-                int finalI = i;
-                islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectMotherNature(finalI);});
-            }
+            enableIslandsForMN();
         });
     }
 
@@ -1126,10 +982,7 @@ public class GameSceneController extends SceneController {
             dialogText.setText("Select a cloud to refill your entrance");
 
             //enabling clouds for selection
-            for(int i=0; i<clouds.getChildren().size(); i++){
-                int finalI = i;
-                clouds.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectCloud(finalI);});
-            }
+            enableClouds();
         });
     }
 
@@ -1139,7 +992,6 @@ public class GameSceneController extends SceneController {
     }
 
     public void askBoolean() {
-        /*TODO: enable tickButton and cancelButton and set onMouseClickAction to selectBoolean(true) for tickButton and to selectBoolean(false) for cancelButton*/
         Platform.runLater(()->{
             dialogText.setText("Do you want to proceed with character effect?");
 
@@ -1157,34 +1009,11 @@ public class GameSceneController extends SceneController {
 
             dialogText.setText("Select a student from your entrance to move it, or select a Character to buy and use it");
 
-            for(int i=0; i<((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().size(); i++){
-                int finalI = i;
-                if(!(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)).getChildren().isEmpty())){
-
-                    ((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i))
-                            .setOnMouseClicked(mouseEvent ->
-                            {
-                                selectStudent(Color.getColorByStudentPath(((ImageView)((Pane)((Group)playersList.get(0).getChildren()
-                                        .get(children_entrance)).getChildren().get(finalI)).getChildren().get(0)).getImage().getUrl()).get());
-                                highlightPane(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)), true);
-                            });
-                    ((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i))
-                            .setOnMouseEntered(event -> {
-                                highlightPane(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)), true);
-                                ((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)).setCursor(Cursor.HAND);
-                            });
-                    ((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i))
-                            .setOnMouseExited(event -> {
-                                highlightPane(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)), false);
-                            });
-                }
-            }
+            //enabling entrance students for mouse clicking
+            enableEntranceStudents();
 
             //enabling characters for mouse clicking
-            for(int i=0; i<characters.getChildren().size(); i++){
-                int finalI = i;
-                characters.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectCharacter(finalI+1);});
-            }
+            enableCharacters();
 
         });
 
@@ -1197,18 +1026,11 @@ public class GameSceneController extends SceneController {
             dialogText.setText("Select the island you want to move mother nature or select a Character to activate it");
 
             //enabling islands to be selected
-            for(int i=0; i<islands.getChildren().size(); i++) {
-                int finalI = i;
-                islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectMotherNature(finalI);});
-            }
+            enableIslandsForMN();
 
-            /*TODO: enable Characters and set onMouseClickAction to selectCharacter(index+1)*/});
             //enabling characters for mouse clicking
-            for(int i=0; i<characters.getChildren().size(); i++){
-                int finalI = i;
-                characters.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectCharacter(finalI+1);});
-            }
-
+            enableCharacters();
+        });
     }
 
     public void chooseActionCloud() {
@@ -1218,16 +1040,10 @@ public class GameSceneController extends SceneController {
             dialogText.setText("Select a cloud to refill your entrance, or select a Character to buy and use it");
 
             //enabling clouds for selection
-            for(int i=0; i<clouds.getChildren().size(); i++){
-                int finalI = i;
-                clouds.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectCloud(finalI);});
-            }
-            /*TODO: enable Characters and set onMouseClickAction to selectCharacter(index+1)*/
+            enableClouds();
+
             //enabling characters for mouse clicking
-            for(int i=0; i<characters.getChildren().size(); i++){
-                int finalI = i;
-                characters.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectCharacter(finalI+1);});
-            }
+            enableCharacters();
         });
 
     }
@@ -1381,48 +1197,226 @@ public class GameSceneController extends SceneController {
         });
     }
 
-
-    private void highlightPane(Pane pane, boolean bool){
+    private void highlightImageView(ImageView imageView, boolean bool){
         DropShadow ds = new DropShadow( 10, javafx.scene.paint.Color.CHOCOLATE);
         ds.setBlurType( ONE_PASS_BOX);
-        if(bool){
-            ((ImageView)(pane.getChildren().get(0))).setEffect(ds);
+        if (bool) {
+            imageView.setEffect(ds);
             //setStyle("fx-border-color: #efff00; -fx-border-width: 20; -fx-border-radius: 0");
-        }
-        else{
+
+        } else {
             ds.setColor(javafx.scene.paint.Color.TRANSPARENT);
-            ((ImageView)(pane.getChildren().get(0))).setEffect(ds);
+            imageView.setEffect(ds);
         }
     }
 
 
 
+    public void disableAllFromSelectionAndHighLight(){
 
-    public static void main(String args[]){
-        /*
-        GameSceneController gameSceneController = new GameSceneController();
+            //disabling students on entrance from selection
+            if(!(((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().isEmpty())) {
+                for (int i = 0; i < ((Group) playersList.get(0).getChildren().get(children_entrance)).getChildren().size(); i++) {
+                    int finalI = i;
+                    ((Group) playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)
+                            .setOnMouseClicked(mouseEvent -> {});
+                    ((Group) playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)
+                            .setOnMouseEntered(mouseEvent -> {});
+                    ((Group) playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)
+                            .setOnMouseExited(mouseEvent -> {});
+                    ((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)
+                            .setCursor(Cursor.DEFAULT);
 
-        for(int i =0; i<12; i++){
-            int[] coordinate = gameSceneController.calculateIslandPosition(12,i,60);
-            System.out.println(coordinate[0] +", "+ coordinate[1]);
+                    if(!(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)).getChildren().isEmpty())) {
+                        highlightImageView(((ImageView) ((Pane) ((Group) playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)).getChildren().get(0)), false);
+                    }
+                }
+            }
+
+            //disabling students on diningroom from selection and highlight
+            if(!(((GridPane) playersList.get(0).getChildren().get(children_diningRoom)).getChildren().isEmpty())) {
+                for (int i = 0; i < ((GridPane) playersList.get(0).getChildren().get(children_diningRoom)).getChildren().size(); i++) {
+                    int finalI = i;
+                    ((GridPane) playersList.get(0).getChildren().get(children_diningRoom)).getChildren().get(i)
+                            .setOnMouseClicked(mouseEvent -> {});
+                    ((GridPane) playersList.get(0).getChildren().get(children_diningRoom)).getChildren().get(i)
+                            .setOnMouseEntered(mouseEvent -> {});
+                    ((GridPane) playersList.get(0).getChildren().get(children_diningRoom)).getChildren().get(i)
+                            .setOnMouseExited(mouseEvent -> {});
+                    ((GridPane) playersList.get(0).getChildren().get(children_diningRoom)).getChildren().get(i)
+                            .setCursor(Cursor.DEFAULT);
+
+
+                }
+
+            }
+
+            //disabling islands from mouse click and from highlight
+            for(int i=0; i<islands.getChildren().size(); i++){
+                islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {});
+                islands.getChildren().get(i).setOnMouseEntered(mouseEvent -> {});
+                islands.getChildren().get(i).setCursor(Cursor.DEFAULT);
+            }
+
+            //disabling students on islands from selection
+            //for each islands
+            for(int island=0; island<islands.getChildren().size(); island++) {
+
+                //checking if it has students
+                if(!(((GridPane)((Pane) islands.getChildren().get(island)).getChildren().get(children_studentsOnIsland)).getChildren().isEmpty())) {
+
+                    //for each student
+                    for (int i = 0; i < ((GridPane) ((Pane) islands.getChildren().get(island)).getChildren().get(children_studentsOnIsland)).getChildren().size(); i++) {
+                        int finalI = i;
+                        ((GridPane) ((Pane) islands.getChildren().get(island)).getChildren().get(children_studentsOnIsland)).getChildren().get(finalI)
+                                .setOnMouseClicked(mouseEvent -> {});
+                        ((GridPane) ((Pane) islands.getChildren().get(island)).getChildren().get(children_studentsOnIsland)).getChildren().get(finalI)
+                                .setOnMouseEntered(mouseEvent -> {});
+                        ((GridPane) ((Pane) islands.getChildren().get(island)).getChildren().get(children_studentsOnIsland)).getChildren().get(finalI)
+                                .setOnMouseExited(mouseEvent -> {});
+                        ((GridPane) ((Pane) islands.getChildren().get(island)).getChildren().get(children_studentsOnIsland)).getChildren().get(finalI)
+                                .setCursor(Cursor.DEFAULT);
+                    }
+                }
+            }
+
+            //disabling students on characters
+
+            //for each character
+            for(int c = 0; c<characters.getChildren().size(); c++){
+
+                //checking if it has students
+                if(!(((GridPane)((Pane)characters.getChildren().get(c)).getChildren().get(children_characterGridPane)).getChildren().isEmpty())) {
+
+                    //for each student
+                    for(int i=0; i<((GridPane)((Pane)characters.getChildren().get(c)).getChildren().get(children_characterGridPane)).getChildren().size();i++) {
+                        ((GridPane) ((Pane) characters.getChildren().get(c)).getChildren().get(children_characterGridPane)).getChildren().get(i)
+                                .setOnMouseClicked(mouseEvent -> {});
+                        ((GridPane) ((Pane) characters.getChildren().get(c)).getChildren().get(children_characterGridPane)).getChildren().get(i)
+                                .setOnMouseEntered(mouseEvent -> {});
+                        ((GridPane) ((Pane) characters.getChildren().get(c)).getChildren().get(children_characterGridPane)).getChildren().get(i)
+                                .setOnMouseExited(mouseEvent -> {});
+                        ((GridPane) ((Pane) characters.getChildren().get(c)).getChildren().get(children_characterGridPane)).getChildren().get(i)
+                                .setCursor(Cursor.DEFAULT);
+                    }
+                }
+            }
+
+    }
+
+    public void enableEntranceStudents(){
+
+
+            for(int i=0; i<((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().size(); i++){
+                int finalI = i;
+                if(!(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)).getChildren().isEmpty())){
+
+                    ((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i))
+                            .setOnMouseClicked(mouseEvent ->
+                            {
+                                selectStudent(Color.getColorByStudentPath(((ImageView)((Pane)((Group)playersList.get(0).getChildren()
+                                        .get(children_entrance)).getChildren().get(finalI)).getChildren().get(0)).getImage().getUrl()).get());
+                                highlightImageView(((ImageView)((Pane) ((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)).getChildren().get(0)), true);
+                            });
+
+                    ((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i))
+                            .setOnMouseEntered(event -> {
+                                highlightImageView(((ImageView)((Pane) ((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)).getChildren().get(0)), true);
+                                ((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)).setCursor(Cursor.HAND);
+                            });
+
+                    ((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i))
+                            .setOnMouseExited(event -> {
+                                highlightImageView(((ImageView)((Pane) ((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(finalI)).getChildren().get(0)), false);
+                            });
+                }
+            }
+
+    }
+
+    public void enableClouds(){
+
+        for(int i=0; i<clouds.getChildren().size(); i++){
+            int finalI = i;
+            clouds.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectCloud(finalI);});
+
+            clouds.getChildren().get(i).setOnMouseEntered(mouseEvent -> {
+                highlightImageView(((ImageView)((Pane)clouds.getChildren().get(finalI)).getChildren().get(0)),true);});
+            clouds.getChildren().get(i).setOnMouseExited(mouseEvent -> {
+                highlightImageView(((ImageView)((Pane)clouds.getChildren().get(finalI)).getChildren().get(0)),false);});
+
         }
+    }
 
-         */
+    public void enableIslandsForMN(){
+        for(int i=0; i<islands.getChildren().size(); i++) {
+            int finalI = i;
+            islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectMotherNature(finalI);});
 
-        GameSceneController gameSceneController = new GameSceneController();
+            islands.getChildren().get(i).setOnMouseEntered(mouseEvent -> {
+                highlightImageView(((ImageView)((Pane)islands.getChildren().get(finalI)).getChildren().get(0)),true);});
+            islands.getChildren().get(i).setOnMouseExited(mouseEvent -> {
+                highlightImageView(((ImageView)((Pane)islands.getChildren().get(finalI)).getChildren().get(0)),false);});
+        }
+    }
 
-        for(int i=0; i<12; i++){
-            System.out.print(gameSceneController.calculateIslandPosition(12, i,60)[0]);
-            System.out.print(" ");
-            System.out.print(gameSceneController.calculateIslandPosition(12, i ,60)[1]);
-            System.out.println();
+    public void enableIslandsForDestination(){
+        for(int i=0; i<islands.getChildren().size(); i++) {
+            int finalI = i;
+            islands.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectDestination(finalI+1);});
+
+            islands.getChildren().get(i).setOnMouseEntered(mouseEvent -> {
+                highlightImageView(((ImageView)((Pane)islands.getChildren().get(finalI)).getChildren().get(0)),true);});
+            islands.getChildren().get(i).setOnMouseExited(mouseEvent -> {
+                highlightImageView(((ImageView)((Pane)islands.getChildren().get(finalI)).getChildren().get(0)),false);});
+        }
+    }
+
+    public void enableDiningRoom(){
+        playersList.get(0).getChildren().get(children_diningRoom).setOnMouseClicked(mouseEvent -> {selectDestination(0);});
+    }
+
+    public void enableDiningRoomStudents(){
+        for(int i=0; i<((GridPane)playersList.get(0).getChildren().get(children_diningRoom)).getChildren().size();i++){
+            int finalI = i;
+            ((GridPane)playersList.get(0).getChildren().get(children_diningRoom)).getChildren().get(i)
+                    .setOnMouseClicked(mouseEvent -> {selectStudent(Color.getColorByStudentPath(((ImageView)((GridPane)playersList.get(0).getChildren().get(children_diningRoom)).getChildren()
+                            .get(finalI)).getImage().getUrl()).get());});
+        }
+    }
+
+    public void enableCharacters(){
+        for(int i=0; i<characters.getChildren().size(); i++){
+            int finalI = i;
+            characters.getChildren().get(i).setOnMouseClicked(mouseEvent -> {selectCharacter(finalI+1);});
+        }
+    }
+
+    public void enableCharactersStudents(){
+        for(int i=0; i<((GridPane)((Pane)characters.getChildren().get(characterNumber-1)).getChildren().get(1)).getChildren().size(); i++) {
+            int finalI = i;
+            ((GridPane)((Pane)characters.getChildren().get(this.characterNumber-1)).getChildren().get(1)).getChildren().get(i)
+                    .setOnMouseClicked(mouseEvent -> {selectStudent(Color.getColorByStudentPath(((ImageView)((GridPane)((Pane)characters.getChildren().get(characterNumber-1)).getChildren().get(1)).getChildren()
+                            .get(finalI)).getImage().getUrl()).get());});
+        }
+    }
+
+
+
+    public void enableAskColorBox(){
+        askColorBox.setVisible(true);
+
+        for(int i=0; i<askColorBox.getChildren().size(); i++){
+            int finalI = i;
+            askColorBox.getChildren().get(i).setOnMouseClicked(mouseEvent -> {
+                selectStudent(Color.getColorByStudentPath(((ImageView)askColorBox.getChildren().get(finalI)).getImage().getUrl()).get());
+            });
         }
     }
 
     public void hideAskColorBox() {
         askColorBox.setVisible(false);
     }
-
     public void hideYesNoButtons() {
         yesButton.setVisible(false);
         noButton.setVisible(false);

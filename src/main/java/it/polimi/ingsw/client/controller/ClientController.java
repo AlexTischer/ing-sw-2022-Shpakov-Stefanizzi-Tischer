@@ -267,6 +267,7 @@ public class ClientController {
         if(correctCharacter && isGameOn()){
             try {
                 connection.send(new BuyCharacterPacket(i-1));
+                characterActivated=true;
             } catch (IOException e) {
                 System.out.println("ClientController.buyCharacter says: closing connection due IOException");
                 gameBoard.setGameOn(false);
@@ -276,6 +277,7 @@ public class ClientController {
             try {
                 ActivateCharacterPacket packet = gameBoard.getPlayedCharacters()[i-1].createPacket(view);
                 connection.send(packet);
+                characterActivated=true;
             } catch (IOException e) {
                 System.out.println("ClientController.buyCharacter says: closing connection due IOException");
                 gameBoard.setGameOn(false);

@@ -33,7 +33,7 @@ public class ClientCharacter9 extends ClientCharacter{
             Color student = null;
             while (!correctStudent) {
                 view.printMessage("Select the student from this card you want to swap");
-                student = view.askStudentColor();
+                student = view.askStudentColorFromCharacter();
                 if (testStudentsFromCard.contains(student)) {
                     correctStudent = true;
                     testStudentsFromCard.remove(student);
