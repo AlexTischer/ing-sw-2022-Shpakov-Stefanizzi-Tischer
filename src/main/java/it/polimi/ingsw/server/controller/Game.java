@@ -159,13 +159,14 @@ public class Game implements GameForClient{
 
         /*planning phase*/
         //players are sorted in order in which they should play assistant card
-        if (gameBoard.isGameOn()) {
+        boolean foundPlayerWOAssistant = true;
+        while(gameBoard.isGameOn() && foundPlayerWOAssistant) {
             for (Player p : players) {
                 //set the next player to chose assistant card
                 //do this operation for all players except the last one,
                 //because the next current player must be defined based on assistants ranks played
                 //sends model change that executes newTurn on a client side
-                if(p.isActive())
+                if(p.isActive() && p.getPlayedAssistant()==null)
                     gameBoard.setCurrentPlayer(p);
 
                 while (gameBoard.isGameOn() && p.getPlayedAssistant() == null && p.isActive()) {
@@ -173,6 +174,12 @@ public class Game implements GameForClient{
                     this.wait();
                     //check if game was ended
                     gameBoard.setGameOn(!checkEndGame());
+                }
+            }
+            foundPlayerWOAssistant=false;
+            for(Player p : players){
+                if(p.getPlayedAssistant()==null && p.isActive()){
+                    foundPlayerWOAssistant=true;
                 }
             }
         }
@@ -235,6 +242,7 @@ public class Game implements GameForClient{
         motherNatureMove = false;
         useCloudMove = false;
         characterUsed = false;
+        gameBoard.setCurrentCharacterToDefault(new Character());
     }
 
     public Player getCurrentPlayer(){
@@ -609,7 +617,7 @@ public class Game implements GameForClient{
                 Timer timer = new Timer();
                 try {
                     suspended = true;
-                    final int[] secondsToWait = {10};
+                    final int[] secondsToWait = {1000};
                     //TODO send GameSuspendedException each second
                     timer.scheduleAtFixedRate(new TimerTask() {
                         @Override
@@ -624,7 +632,7 @@ public class Game implements GameForClient{
                         }
                     }, 0, 1000);
 
-                    this.wait(10*1000);
+                    this.wait(1000*1000);
                 } catch (InterruptedException e) {
                     //if something went wrong then finish the game
                     System.out.println("I am in checkEndGame() of Game in active players control. The thread was interrupted");
@@ -654,7 +662,7 @@ public class Game implements GameForClient{
                     Timer timer = new Timer();
                     try {
                         suspended = true;
-                        final int[] secondsToWait = {10};
+                        final int[] secondsToWait = {1000};
                         //TODO send GameSuspendedException each second
                         //schedule a thread to send GameSuspendedException each second
                         timer.scheduleAtFixedRate(new TimerTask() {
@@ -670,7 +678,7 @@ public class Game implements GameForClient{
                             }
                         }, 0, 1000);
 
-                        this.wait(10*1000);
+                        this.wait(1000*1000);
                     } catch (InterruptedException e) {
                         //if something went wrong then finish the game
                         System.out.println("I am in checkEndGame() of Game in active players control. The thread was interrupted");
