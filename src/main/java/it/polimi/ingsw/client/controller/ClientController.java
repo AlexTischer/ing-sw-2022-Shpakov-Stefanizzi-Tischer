@@ -281,6 +281,8 @@ public class ClientController {
             } catch (IOException e) {
                 System.out.println("ClientController.buyCharacter says: closing connection due IOException");
                 gameBoard.setGameOn(false);
+            }catch (UnsupportedOperationException e){
+                printMessage(e.getMessage());
             }
         }
     }

@@ -1098,11 +1098,6 @@ public class GameSceneController extends SceneController {
 
     }
 
-
-
-
-
-
     public boolean isAskingDone(){
         return askingDone;
     }
@@ -1253,8 +1248,8 @@ public class GameSceneController extends SceneController {
         if (bool) {
             imageView.setEffect(ds);
             //setStyle("fx-border-color: #efff00; -fx-border-width: 20; -fx-border-radius: 0");
-
-        } else {
+        }
+        else{
             ds.setColor(javafx.scene.paint.Color.TRANSPARENT);
             imageView.setEffect(ds);
         }
@@ -1272,8 +1267,6 @@ public class GameSceneController extends SceneController {
             imageView.setEffect(ds);
         }
     }
-
-
 
     public void disableAllFromSelectionAndHighLight(){
 
@@ -1368,8 +1361,6 @@ public class GameSceneController extends SceneController {
     }
 
     public void enableEntranceStudents(){
-
-
             for(int i=0; i<((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().size(); i++){
                 int finalI = i;
                 if(!(((Pane)((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().get(i)).getChildren().isEmpty())){
@@ -1529,8 +1520,6 @@ public class GameSceneController extends SceneController {
         }
     }
 
-
-
     public void enableAskColorBox(){
         askColorBox.setVisible(true);
 
@@ -1552,6 +1541,7 @@ public class GameSceneController extends SceneController {
     public void hideAskColorBox() {
         askColorBox.setVisible(false);
     }
+
     public void hideYesNoButtons() {
         yesButton.setVisible(false);
         noButton.setVisible(false);
