@@ -6,6 +6,7 @@ import it.polimi.ingsw.client.view.GUI.SceneControllers.GameSceneController;
 import it.polimi.ingsw.client.view.GUI.SceneControllers.LoginSceneController;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.server.model.Color;
+import it.polimi.ingsw.server.model.Player;
 import javafx.application.Platform;
 
 import java.io.IOException;
@@ -544,6 +545,6 @@ public class Gui extends View {
     @Override
     public void printEndGameMessage(String message) {
         printMessage(message);
-        //TODO: show popup to alert user of EndGame and allow closing window
+        Platform.runLater(()-> GuiApp.endGame(message));
     }
 }

@@ -1072,7 +1072,8 @@
                            <font>
                               <Font size="10.0" />
                            </font></Text>
-                     </children></TextFlow>
+                     </children>
+                  </TextFlow>
 
                   <TextFlow layoutX="1036.0" layoutY="520.0" prefHeight="200.0" prefWidth="200.0" style=" -fx-background-image: url('/images/misc/parchment.png'); -fx-background-position: center; -fx-background-size:100% 100% " textAlignment="CENTER">
                      <children>

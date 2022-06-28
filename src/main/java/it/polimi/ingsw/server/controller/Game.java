@@ -617,7 +617,7 @@ public class Game implements GameForClient{
                 Timer timer = new Timer();
                 try {
                     suspended = true;
-                    final int[] secondsToWait = {1000};
+                    final int[] secondsToWait = {10};
                     //TODO send GameSuspendedException each second
                     timer.scheduleAtFixedRate(new TimerTask() {
                         @Override
@@ -632,7 +632,7 @@ public class Game implements GameForClient{
                         }
                     }, 0, 1000);
 
-                    this.wait(1000*1000);
+                    this.wait(10*1000);
                 } catch (InterruptedException e) {
                     //if something went wrong then finish the game
                     System.out.println("I am in checkEndGame() of Game in active players control. The thread was interrupted");
@@ -662,7 +662,7 @@ public class Game implements GameForClient{
                     Timer timer = new Timer();
                     try {
                         suspended = true;
-                        final int[] secondsToWait = {1000};
+                        final int[] secondsToWait = {10};
                         //TODO send GameSuspendedException each second
                         //schedule a thread to send GameSuspendedException each second
                         timer.scheduleAtFixedRate(new TimerTask() {
@@ -678,7 +678,7 @@ public class Game implements GameForClient{
                             }
                         }, 0, 1000);
 
-                        this.wait(1000*1000);
+                        this.wait(10*1000);
                     } catch (InterruptedException e) {
                         //if something went wrong then finish the game
                         System.out.println("I am in checkEndGame() of Game in active players control. The thread was interrupted");

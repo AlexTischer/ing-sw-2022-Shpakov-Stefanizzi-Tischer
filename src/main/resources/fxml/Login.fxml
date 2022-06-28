@@ -66,13 +66,13 @@
                      </ArrayList>
                   </fx:define>
 
-                  <Label fx:id="errorMessage" alignment="CENTER" layoutX="368.0" layoutY="257.0" prefHeight="76.0" prefWidth="600.0" textAlignment="CENTER" />
+                  <Label fx:id="errorMessage" alignment="CENTER" layoutX="340.0" layoutY="280.0" prefHeight="53.0" prefWidth="600.0" textAlignment="CENTER" />
 
-                  <TextField fx:id="textField" alignment="CENTER" layoutX="594.0" layoutY="348.0" onMouseClicked="#cancelMessage" promptText="Your name here" />
+                  <TextField fx:id="textField" alignment="CENTER" layoutX="566.0" layoutY="348.0" onMouseClicked="#cancelMessage" promptText="Your name here" />
 
-                  <Button fx:id="button1" layoutX="607.0" layoutY="395.0" mnemonicParsing="false" onAction="#sendName" style="-fx-background-image: url('/images/misc/parchment_button.png'); -fx-background-color: transparent; -fx-background-size: 100% 100%; -fx-background-position: center; -fx-background-repeat: no-repeat" text="Join the match!">
+                  <Button fx:id="button1" layoutX="575.0" layoutY="396.0" mnemonicParsing="false" onAction="#sendName" style="-fx-background-image: url('/images/misc/parchment_button.png'); -fx-background-color: transparent; -fx-background-size: 100% 100%; -fx-background-position: center; -fx-background-repeat: no-repeat" text="Join the match!">
                      <padding>
-                        <Insets left="25.0" right="25.0" bottom="10" top="10" />
+                        <Insets bottom="10" left="25.0" right="25.0" top="10" />
                      </padding></Button>
                </children>
             

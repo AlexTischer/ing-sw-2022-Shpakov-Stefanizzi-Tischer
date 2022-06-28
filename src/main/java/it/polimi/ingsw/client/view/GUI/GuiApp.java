@@ -19,10 +19,12 @@ public class GuiApp extends Application {
 
     private static Scene scene;
     private static SceneController currentController;
+    private static Stage stage;
 
     @Override
     public void start(Stage stage) throws Exception {
         synchronized (GuiApp.class) {
+            this.stage=stage;
             FXMLLoader fxmlLoader = new FXMLLoader(GuiApp.class.getResource(WaitingForConfigurationScene.getPath()));
             Parent root = fxmlLoader.load();
             scene = new Scene(root);
@@ -68,6 +70,18 @@ public class GuiApp extends Application {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Quit");
         alert.setHeaderText("Are you sure to quit?");
+
+        if(alert.showAndWait().get() == ButtonType.OK) {
+            stage.close();
+            System.exit(0);
+        }
+    }
+
+    public static void endGame(String message){
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("The match is over");
+        alert.setHeaderText(message + "\n Do you want to quit?");
 
         if(alert.showAndWait().get() == ButtonType.OK) {
             stage.close();
