@@ -242,7 +242,7 @@ public class ClientController {
                 }
             }
             catch (RuntimeException e){
-                printMessage(e.getMessage());
+                e.printStackTrace();
             }
         }
     }

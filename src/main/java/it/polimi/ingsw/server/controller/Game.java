@@ -25,15 +25,14 @@ public class Game implements GameForClient{
     private static Game instanceOfGame;
     private GameBoard gameBoard;
     private ArrayList<Player> players;
-
     private boolean advancedSettings;
     private Game(){}
     private int studentMove;
     private boolean motherNatureMove;
     private boolean useCloudMove;
     private boolean characterUsed;
-
     private boolean suspended;
+    private Character defaultCharacter;
 
     /**Returns or creates, if not already, the instance of Game
      * @return instanceOfGame the instance of Game
@@ -94,8 +93,11 @@ public class Game implements GameForClient{
             }
         }
 
-        gameBoard.setCurrentCharacterToDefault(new Character());
-        gameBoard.getCurrentCharacter().initialFill(this);
+        defaultCharacter=new Character();
+        defaultCharacter.initialFill(this);
+
+        gameBoard.setCurrentCharacterToDefault(defaultCharacter);
+
 
         /*refill assistants of players and distribute 1 coin in case of adv settings*/
         for (Player p : players) {
@@ -194,6 +196,7 @@ public class Game implements GameForClient{
             //give the turn only if this is not the end of the Game and only to
             //the player that has playedAssistant which implies that it is active
             if (gameBoard.isGameOn() && p.getPlayedAssistant()!=null) {
+                gameBoard.setCurrentCharacterToDefault(defaultCharacter);
                 newTurn(p);
             }
         }
@@ -228,7 +231,6 @@ public class Game implements GameForClient{
     private void newTurn(Player p) throws InterruptedException {
         /*virtual view controls current player before forwarding any method to controller*/
         gameBoard.setCurrentPlayer(p);
-
         //need to wait until all 3 conditions are satisfied unless player gets deactivated and unless game is finished
         //thread gets waked up by other threads that invoke moveStudent(), moveMN(), useCloud() and buy/activateCharacter()
         //or if player gets disconnected or reconnected inside changePlayerStatus() of VirtualView
@@ -242,7 +244,6 @@ public class Game implements GameForClient{
         motherNatureMove = false;
         useCloudMove = false;
         characterUsed = false;
-        gameBoard.setCurrentCharacterToDefault(new Character());
     }
 
     public Player getCurrentPlayer(){

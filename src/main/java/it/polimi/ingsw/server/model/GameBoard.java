@@ -492,8 +492,8 @@ public class GameBoard extends Observable<ModelChange> {
         currentCharacter=character;
         DefaultCharacterChange characterChange = new DefaultCharacterChange();
         notify(characterChange);
-        ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        notify(exceptionChange);
+        /*ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
+        notify(exceptionChange);*/
     }
 
     public void addNoEntryTile() {
