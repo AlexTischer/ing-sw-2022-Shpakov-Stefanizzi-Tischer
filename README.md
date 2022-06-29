@@ -37,7 +37,7 @@ This repo contains a **Java** version of the game [*Eriantys*](https://www.crani
 🟨Implementing&nbsp;&nbsp;&nbsp;&nbsp; 
 🟩Implemented
 
-## Installation <a name="installationENG"></a>
+## Installation <a name="installation"></a>
 To start the game you need to download [JavaSE 15](https://www.oracle.com/it/java/technologies/javase-downloads.html) (or updated versions).
 
 Download the repo as it follow
@@ -47,7 +47,7 @@ git clone https://github.com/AlexTischer/ing-sw-2022-Shpakov-Stefanizzi-Tischer.
 on linux. For Windows should be necessary download the repo in zip format and then unzip it.
 The executable files are stored in the `/shade` directory.
 
-## How to start the server <a name="serverENG"></a>
+## How to start the server <a name="server"></a>
 Open the **ngrok** directory with the terminal (linux or windows) and open a TCP connection at port `12345`, as it follow
 ```bash
 ./ngrok tcp 12345
@@ -60,7 +60,7 @@ java -jar SERVERG_C39.jar
 ```
 Now the server has started and can be leaved powered on even a match ends.
 
-## How to start the client <a name="clientENG"></a>
+## How to start the client <a name="client"></a>
 To connect the client will be necessary open the terminal at the `\shade` dir and copy
 ```bash
 java -jar CLIENT_C39.jar ADDRESS PORT
@@ -81,14 +81,14 @@ On default the client will open the GUI, but if you add the parameter `cli` at t
 java -jar CLIENT_C39.jar ADDRESS PORT cli
 ```
 
-## How to play<a name="howtoplayENG"></a>
+## How to play<a name="howtoplay"></a>
 A game can be started in three different ways: I can create a room where my friends can join me (a room can be joined through its name); I can join an online public multiplayer filling the infos with my personal nickname and with how many players I want play with; I can play alone offline.
 
-You can find the english rules [here](https://github.com/GiorgioSeguini/ing-sw-2021-Seguini-Villa-Zeni/blob/master/Documentation/Masters-of-Renaissance_small.pdf)
+You can find the english rules [here](https://github.com/AlexTischer/ing-sw-2022-Shpakov-Stefanizzi-Tischer/blob/master/Documentation/eriantys_rules.pdf)
 
 Ps. It is alway possible rejoin an alredy started match if I have my `nickname` and the `room` name.
 
-## Tools <a name="toolsENG"></a>
+## Tools <a name="tools"></a>
 In this project were used the following tools:
 * [LucidChart](https://lucid.app/) - UML Diagram
 * [Maven](https://maven.apache.org/) - Dependency Management
@@ -96,8 +96,8 @@ In this project were used the following tools:
 * [JavaFX](https://openjfx.io) - Graphical Framework
 
 
-## Test and Documentation <a name="testENG"></a>
-You can find the documentation [here](https://github.com/AlexTischer/ing-sw-2022-Shpakov-Stefanizzi-Tischer/Documentation).
+## Test and Documentation <a name="test"></a>
+You can find the documentation [here](https://github.com/AlexTischer/ing-sw-2022-Shpakov-Stefanizzi-Tischer/tree/master/Documentation).
 
 The tests have reached the following coverage.
 
