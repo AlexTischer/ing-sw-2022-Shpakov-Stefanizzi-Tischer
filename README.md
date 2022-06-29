@@ -97,12 +97,10 @@ In this project were used the following tools:
 
 
 ## Test and Documentation <a name="testENG"></a>
-You can find the documentation [here](https://github.com/GiorgioSeguini/ing-sw-2021-Seguini-Villa-Zeni/tree/master/Documentation).
+You can find the documentation [here](https://github.com/AlexTischer/ing-sw-2022-Shpakov-Stefanizzi-Tischer/Documentation).
 
 The tests have reached the following coverage.
 
 
-![Test result](https://github.com/GiorgioSeguini/ing-sw-2021-Seguini-Villa-Zeni/blob/master/Documentation/total.png)
-![Test result](https://github.com/GiorgioSeguini/ing-sw-2021-Seguini-Villa-Zeni/blob/master/Documentation/server.png)
-![Test result](https://github.com/GiorgioSeguini/ing-sw-2021-Seguini-Villa-Zeni/blob/master/Documentation/costant.png)
-![Test result](https://github.com/GiorgioSeguini/ing-sw-2021-Seguini-Villa-Zeni/blob/master/Documentation/client.png)
+![Test result](https://github.com/AlexTischer/ing-sw-2022-Shpakov-Stefanizzi-Tischer/blob/master/Documentation/total.png)
+![Test result](https://github.com/AlexTischer/ing-sw-2022-Shpakov-Stefanizzi-Tischer/blob/master/Documentation/server.png)
