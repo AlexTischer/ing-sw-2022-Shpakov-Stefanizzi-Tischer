@@ -20,7 +20,11 @@ public class Character2 extends Character {
 
     public int calculateInfluence(Island island, int islandNumber, Player player){
         if (!island.getNoEntry()) {
-            int score = 2;
+            int score = 0;
+
+            if (game.getCurrentPlayer().equals(player))
+                score = 2;
+
             for (Color color : player.getProfessorsColor()) {
                 score += island.getNumOfStudents(color);
             }

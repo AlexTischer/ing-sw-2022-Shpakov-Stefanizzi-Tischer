@@ -5,13 +5,17 @@ import it.polimi.ingsw.client.model.ClientPlayer;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.exceptions.*;
+import it.polimi.ingsw.modelChange.ExceptionChange;
 import it.polimi.ingsw.modelChange.ModelChange;
 import it.polimi.ingsw.packets.*;
+import it.polimi.ingsw.server.controller.Game;
 import it.polimi.ingsw.server.model.Color;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.stream.Collectors;
 
 public class ClientController {
@@ -53,9 +57,6 @@ public class ClientController {
             gameBoard.showOnView();
             throw new EndOfChangesException();
         }
-        catch (GameSuspendedException e){
-            printMessage(e.getMessage());
-        }
     }
 
     public void setClientName(String clientName){
@@ -93,8 +94,12 @@ public class ClientController {
                     connection.waitModelChange();
                 } catch (IOException e) {
                     System.out.println("ClientController.startTurn says: closing connection due IOException");
+                    e.printStackTrace();
                     gameBoard.setGameOn(false);
                 } catch (EndOfChangesException e) {
+                }
+                catch(GameReactivatedException | GameSuspendedException e){
+                   printMessage(e.getMessage());
                 }
             }
         }
@@ -130,8 +135,10 @@ public class ClientController {
                     Packet packet = new UseAssistantPacket(assistantRank);
                     try {
                         this.connection.send(packet);
-                    } catch (IOException e) {
+                    }
+                    catch (IOException e) {
                         System.out.println("ClientController.useAssistant says: closing connection due IOException");
+                        e.printStackTrace();
                         gameBoard.setGameOn(false);
                     }
                 } else {
@@ -241,7 +248,7 @@ public class ClientController {
                 }
             }
             catch (RuntimeException e){
-                e.printStackTrace();
+                printMessage(e.getMessage());
             }
         }
     }
@@ -267,21 +274,24 @@ public class ClientController {
         if(correctCharacter && isGameOn()){
             try {
                 connection.send(new BuyCharacterPacket(i-1));
-                characterActivated=true;
             } catch (IOException e) {
                 System.out.println("ClientController.buyCharacter says: closing connection due IOException");
                 gameBoard.setGameOn(false);
             }
         }
-        if(correctCharacter && isGameOn()){
+        characterActivated = false;
+        while(correctCharacter && !characterActivated && isGameOn()){
             try {
                 ActivateCharacterPacket packet = gameBoard.getPlayedCharacters()[i-1].createPacket(view);
                 connection.send(packet);
                 characterActivated=true;
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 System.out.println("ClientController.buyCharacter says: closing connection due IOException");
                 gameBoard.setGameOn(false);
-            }catch (UnsupportedOperationException e){
+            }
+            catch (UnsupportedOperationException e){
+                characterActivated = true;
                 printMessage(e.getMessage());
             }
         }
@@ -375,7 +385,6 @@ public class ClientController {
     public ClientGameBoard getGameBoard(){
         return gameBoard;
     }
-
 
 
 }

@@ -1,5 +1,7 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.exceptions.GameReactivatedException;
+import it.polimi.ingsw.exceptions.GameSuspendedException;
 import it.polimi.ingsw.modelChange.*;
 import it.polimi.ingsw.server.controller.CharacterDeck;
 import it.polimi.ingsw.server.controller.Game;
@@ -11,19 +13,24 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Server {
     private int port;
     private ServerSocket serverSocket;
     private Map<String, Connection> waitingConnection = new HashMap<>();
-    private List<VirtualView> virtualViews = new ArrayList<VirtualView>();
+    private static List<VirtualView> virtualViews = new ArrayList<VirtualView>();
+
+    private static Timer timer;
+
+    private static final int[] secondsToWait = {29};
+
+    private static boolean isTimerActive = false;
+
     private Game game;
     private int numOfPlayers = 0;
     private boolean advancedSettings;
     private int numOfConnections = 0;
     private boolean gameReady = false;
-
     public Server(int port) throws IOException{
         this.port=port;
         serverSocket = new ServerSocket(port);
@@ -31,6 +38,7 @@ public class Server {
 
 
     //synchronized because no clients can be added simultaneously
+
     public synchronized void addClient(Connection connection, String name) throws InterruptedException {
         if(!gameReady) {
             addToLobby(connection, name);
@@ -45,17 +53,17 @@ public class Server {
 
                     v.attachConnection(connection);
                     connection.attachView(v);
-                    v.changePlayerStatus(true);
+                    synchronized (game) {
+                        v.changePlayerStatus(true);
 
-                    //send GameBoardChange to the reconnected client
-                    v.update(new GameBoardChange(game.getGameBoard(), game.getPlayers()));
+                        //send GameBoardChange to the reconnected client
+                        v.update(new GameBoardChange(game.getGameBoard(), game.getPlayers()));
 
-                    //notify other clients that this player has been reconnected
-                    // TODO: there is no problem if the same client receives connectionStatusChange containing it himself
-                    changeConnectionStatus(new ConnectionStatusChange(v.getClientName(), true));
-
+                        //notify other clients that this player has been reconnected
+                        //there is no problem if the same client receives connectionStatusChange containing it himself
+                        changeConnectionStatus(new ConnectionStatusChange(v.getClientName(), true));
+                    }
                     System.out.println("Client " + name + " has been reconnected!");
-                    break;
                 }
             }
             //the game is already started and this player isn't the one that has been disconnected
@@ -69,7 +77,6 @@ public class Server {
             }
         }
     }
-
     public LobbyChange createLobbyChange(){
         return new LobbyChange(waitingConnection.keySet().stream().toList());
     }
@@ -147,6 +154,7 @@ public class Server {
     }
 
     /*only for addToLobby*/
+
     public void removeFromLobby(Connection connection) {
         /*remove connection from waiting virtualViews map*/
 
@@ -171,14 +179,67 @@ public class Server {
         System.out.println("Server: I deregistered connection");
 
     }
-
     /*receives ConnectionStatusChange of that particular client that became inactive or active*/
+
     public void changeConnectionStatus(ModelChange playerConnectionStatus){
-        for (VirtualView client: virtualViews){
+        for (VirtualView client : virtualViews) {
             //need to notify only active virtualViews
             if (client.isConnectionActive())
                 client.update(playerConnectionStatus);
         }
+    }
+    public static void startTimer(){
+        timer = new Timer();
+        isTimerActive = true;
+        secondsToWait[0] = 29;
+
+        //TODO send GameSuspendedException each second
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (secondsToWait[0] > 0) {
+                    for(VirtualView view: virtualViews){
+                        if (view.isConnectionActive()){
+                            System.out.println("Server says: " + secondsToWait[0] + " remained!");
+                            view.update(new ExceptionChange(
+                                    new GameSuspendedException("Waiting for other clients to reconnect! " + secondsToWait[0] + " remained!")
+                            ));
+                        }
+                    }
+                    secondsToWait[0]--;
+                }
+                else {
+                    isTimerActive = false;
+                    timer.cancel();
+                    timer.purge();
+                }
+            }
+        }, 0, 1000);
+    }
+
+    public static void resetTimer(){
+        if (isTimerActive){
+            System.out.println("Timer was reset");
+            for(VirtualView view: virtualViews){
+                if (view.isConnectionActive()){
+                    synchronized (view) {
+                        view.update(new ExceptionChange(new GameReactivatedException("The game was reactivated!")));
+                        view.notifyAll();
+                    }
+                }
+            }
+            timer.cancel();
+            timer.purge();
+            isTimerActive = false;
+        }
+    }
+
+    public static boolean isTimerActive() {
+        return isTimerActive;
+    }
+
+    public static int getRemainedTime(){
+        return secondsToWait[0];
     }
 
     public void run(){

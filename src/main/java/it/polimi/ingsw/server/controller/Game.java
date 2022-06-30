@@ -3,6 +3,7 @@ package it.polimi.ingsw.server.controller;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.modelChange.EndOfGameChange;
 import it.polimi.ingsw.modelChange.ExceptionChange;
+import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.model.*;
 import it.polimi.ingsw.packets.Packet;
 import it.polimi.ingsw.server.model.Character;
@@ -11,14 +12,26 @@ import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**<p>This class represents the game controller.</p>
+/**<p>This class represents the game which serves as a controller in MVC pattern</p>
  * <p>The game controller executes any valid action requested by client or throws an exception in case of errors in client request</p>
  * Also game controller responds for game flow and order of client actions
  * <ul>
  *     Contains
- *     <li>game board</li>
- *     <li>players list</li>
- *     <li>counters of client actions</li>
+ *     <li>{@link #gameBoard} - instance of game board that serves as a model in MVC pattern</li>
+ *     <li>{@link #players} - list of players that were in {@link Server#waitingConnection} lobby at the moment of gam creation</li>
+ *     <li>
+ *         <p>{@link #studentMove} - counter of how many students have been moved during current round</p>
+ *         <p>{@link #motherNatureMove} - flag that tells whether a mother nature has been moved during current round</p>
+ *         <p>{@link #useCloudMove} - flag that tells whether a cloud has been used during current round</p>
+ *         <p>{@link #characterUsed} - flag that tells whether a character has been used during current round</p>
+ *     </li>
+ *     <li>
+ *         {@link #suspended} attribute tells whether this Game is suspended
+ *         <p>Note: Game is suspended when only 1 player or 1 team remains connected to the server</p>
+ *     </li>
+ *     <li>
+ *         {@link #defaultCharacter} - instance of {@link Character} that executes operations in standard mode
+ *     </li>
  * </ul>
  * */
 public class Game implements GameForClient{
@@ -49,7 +62,8 @@ public class Game implements GameForClient{
      *     <li>Creates {@link Player} instances, refills {@link Game#players} list, shuffles it and assigns random player as a current</li>
      *     <li>Creates and initializes {@link GameBoard} instance</li>
      *     <li>If {@link Game#advancedSettings} is equal to true, pops 3 characters from characterDeck,
-     *     calls {@link Character#initialFill} and sets characters in GameBoard using {@link GameBoard#setPlayedCharacters}</li>
+     *     calls {@link Character#initialFill} and sets characters in GameBoard using {@link GameBoard#setPlayedCharacters}
+     *     </li>
      *     <li>Sets default character {@link Character} as a current character</li>
      *     <li>Refills assistants hand and {@link SchoolBoard} entrance of each player and adds 1 coin to each player in case of expert mode</li>
      * </ul>
@@ -111,6 +125,9 @@ public class Game implements GameForClient{
         gameBoard.setCurrentPlayer(players.get(0));
     }
 
+    /**
+     * Resets counters of player's actions
+     * Launches a separate thread that executes {@link #playGame()} method*/
     public void launchGame(){
         studentMove = 0;
         motherNatureMove = false;
@@ -128,6 +145,15 @@ public class Game implements GameForClient{
         }).start();
     }
 
+    /**<ul>
+     *      <li>Sets {@link GameBoard#isGameOn} to true and {@link #suspended} to false</li>
+     *      <li>Wakes up a thread in {@link Server#createGame()} that waits for {@link GameBoard#refillClouds()}
+     *      and {@link GameBoard#setCurrentPlayer(Player)} to happen before it can send
+     *      {@link it.polimi.ingsw.modelChange.GameBoardChange } to all clients</li>
+     *      <li>Invokes {@link #newRound()} as long as {@link GameBoard#isGameOn} is equal to true</li>
+     *      <li>Turns off virtual machine when game gets turned off</li>
+     * </ul>
+     * */
     private synchronized void playGame() throws InterruptedException {
         //let the game start
         gameBoard.setGameOn(true);
@@ -149,9 +175,15 @@ public class Game implements GameForClient{
     }
 
 
-    /**Starts a new round. New round is a sequence of actions consisting of
-     * refillClouds(), useAssistant() for each active player, sorting of players based on assistants played,
-     * newTurn() for each active player, eventually assigning unused clouds for not active players and reset of playedAssistant for all players*/
+    /**Starts a new round.
+     * <ul>New round is a sequence of actions consisting of
+     *      <li>{@link GameBoard#refillClouds()}</li>
+     *      <li>{@link #useAssistant(int)} for each active player</li>
+     *      <li>sorting of players based on assistants played</li>
+     *      <li>{@link #newTurn(Player)} for each active player</li>
+     *      <li>eventual assignment of unused clouds for not active players</li>
+     *      <li>reset of playedAssistant for all players</li>
+     * </ul>*/
     private void newRound() throws InterruptedException {
         //if player is not active then skip him until next planning phase
         //in planning phase check isActive variable , in action phase it is enough to check playedAssistant variable
@@ -575,15 +607,6 @@ public class Game implements GameForClient{
             }
         }
 
-        //search for the player that has fewer towers on SchoolBoard since this is the one that has conquered more islands
-        /*List<Player> towersPlayers = players.stream().filter((p)->p.getNumOfTowers() > 0).sorted((p1, p2) -> {
-            if (p1.getNumOfTowers() == p2.getNumOfTowers()){
-                return p2.getProfessorsColor().size() - p1.getProfessorsColor().size();
-            }
-            else{
-                return p1.getNumOfTowers() - p2.getNumOfTowers();
-            }
-        }).collect(Collectors.toList());*/
 
         Player leader = players.stream().filter((p)->p.getNumOfTowers() > 0).sorted((p1, p2) -> {
             if (p1.getNumOfTowers() == p2.getNumOfTowers()){
@@ -611,75 +634,22 @@ public class Game implements GameForClient{
             return true;
         }
 
-        //if there is only 1 active player in case of 2-3 players then the game gets suspended for 60 sec
-        List<Player> activePlayers = players.stream().filter(p -> p.isActive()).collect(Collectors.toList());
-        while (activePlayers.size() == 1) {
-            if (gameBoard.isGameOn()) {
-                Timer timer = new Timer();
-                try {
-                    suspended = true;
-                    final int[] secondsToWait = {60};
-                    //TODO send GameSuspendedException each second
-                    timer.scheduleAtFixedRate(new TimerTask() {
-                        @Override
-                        public void run() {
-                            if(secondsToWait[0]>=0) {
-                                gameBoard.notify(new ExceptionChange(
-                                        new GameSuspendedException("Wait for other players reconnection.\n" + secondsToWait[0] + "seconds remained")
-                                ));
-                                System.out.println("I have sent GameSuspendedException. Seconds to wait " + secondsToWait[0]);
-                                secondsToWait[0]--;
-                            }
-                        }
-                    }, 0, 1000);
-
-                    this.wait(60*1000);
-                } catch (InterruptedException e) {
-                    //if something went wrong then finish the game
-                    System.out.println("I am in checkEndGame() of Game in active players control. The thread was interrupted");
-                    e.printStackTrace();
-                    return true;
-                }
-                //if no client has been reconnected in 60 sec, then the game is finished
-                if (suspended) {
-                    timer.cancel();
-                    timer.purge();
-                    gameBoard.notify(new EndOfGameChange(activePlayers.get(0).getName()));
-                    return true;
-                }
-                else{
-                    timer.cancel();
-                    timer.purge();
-                    System.out.println("A player was reconnected");
-                }
-            }
-            activePlayers = players.stream().filter(p -> p.isActive()).collect(Collectors.toList());
-        }
-
-        //if there are 2 active players from the same team then the game gets suspended for 60 sec
-        while (activePlayers.size() == 2 && players.size() == 4) {
-            if (activePlayers.get(0).getTowerColor().equals(activePlayers.get(1).getTowerColor())){
+        while( players.stream().filter(p -> p.isActive()).map((p)->p.getTowerColor()).collect(Collectors.toSet()).size() == 1 ) {
+            //if there is only 1 active player in case of 2-3 players then the game gets suspended for 60 sec
+            List<Player> activePlayers = players.stream().filter(p -> p.isActive()).collect(Collectors.toList());
+            if (activePlayers.size() == 1) {
+                System.out.println("Only one player remained");
                 if (gameBoard.isGameOn()) {
-                    Timer timer = new Timer();
                     try {
                         suspended = true;
-                        final int[] secondsToWait = {60};
-                        //TODO send GameSuspendedException each second
-                        //schedule a thread to send GameSuspendedException each second
-                        timer.scheduleAtFixedRate(new TimerTask() {
-                            @Override
-                            public void run() {
-                                if(secondsToWait[0]>=0) {
-                                    gameBoard.notify(new ExceptionChange(
-                                            new GameSuspendedException("Wait for other players reconnection.\n" + secondsToWait[0] + "seconds remained")
-                                    ));
-                                    secondsToWait[0]--;
-                                    System.out.println("I have sent GameSuspendedException. Seconds to wait " + secondsToWait[0]);
-                                }
-                            }
-                        }, 0, 1000);
+                        System.out.println("I AM GOING IN WAIT STATE. ONLY 1 PLAYER REMAINED");
+                        //gameBoard.notify(new ExceptionChange(new GameSuspendedException("Wait for other players to reconnect. 30 seconds remained")));
+                        //start server timer that sends gameSuspendedException each second
+                        if (!Server.isTimerActive())
+                            Server.startTimer();
 
-                        this.wait(60*1000);
+                        this.wait((Server.getRemainedTime()+1) * 1000);
+                        System.out.println("I AM WAKEN UP");
                     } catch (InterruptedException e) {
                         //if something went wrong then finish the game
                         System.out.println("I am in checkEndGame() of Game in active players control. The thread was interrupted");
@@ -688,27 +658,59 @@ public class Game implements GameForClient{
                     }
                     //if no client has been reconnected in 60 sec, then the game is finished
                     if (suspended) {
-                        timer.cancel();
-                        timer.purge();
                         gameBoard.notify(new EndOfGameChange(activePlayers.get(0).getName()));
                         return true;
+                    } else {
+                        //gameBoard.notify(new ExceptionChange(new EndOfChangesException()));
+                        System.out.println("A player was reconnected or disconnected 1");
                     }
-                    else {
-                        timer.cancel();
-                        timer.purge();
-                        System.out.println("A player was reconnected");
+                }
+                activePlayers = players.stream().filter(p -> p.isActive()).collect(Collectors.toList());
+            }
+
+            //if there are 2 active players from the same team then the game gets suspended for 60 sec
+            if (activePlayers.size() == 2 && players.size() == 4) {
+                if (activePlayers.get(0).getTowerColor().equals(activePlayers.get(1).getTowerColor())) {
+                    System.out.println("Only one team remained");
+                    if (gameBoard.isGameOn()) {
+                        try {
+                            suspended = true;
+                            System.out.println("I AM GOING IN WAIT STATE. ONLY 2 PLAYERS REMAINED");
+                            //gameBoard.notify(new ExceptionChange(new GameSuspendedException("Wait for other players to reconnect. 30 seconds remained")));
+                            if (!Server.isTimerActive())
+                                Server.startTimer();
+
+                            this.wait((Server.getRemainedTime()+1) * 1000);
+                            System.out.println("I AM WAKEN UP!");
+
+                        } catch (InterruptedException e) {
+                            //if something went wrong then finish the game
+                            System.out.println("I am in checkEndGame() of Game in active players control. The thread was interrupted");
+                            e.printStackTrace();
+                            return true;
+                        }
+                        //if no client has been reconnected in 60 sec, then the game is finished
+                        if (suspended) {
+                            gameBoard.notify(new EndOfGameChange(activePlayers.get(0).getName()));
+                            return true;
+                        } else {
+                            //gameBoard.notify(new ExceptionChange(new EndOfChangesException()));
+                            System.out.println("A player was reconnected or disconnected 2");
+                        }
                     }
                 }
             }
-            else{
-                break;
-            }
-            activePlayers = players.stream().filter(p -> p.isActive()).collect(Collectors.toList());
         }
+        //the timer was started only if there were only 1 player or 1 team remained
+        //if thread exits from while and timer is still active then reset will send game activated
+        //if timer was expired then I have already executed return true and I will never arrive up to this command
+        Server.resetTimer();
 
         //if nothing from above is true then this is not yet the end of the game
         return false;
     }
+
+
 
     /**Executes an action requested from particular client*/
     public void usePacket(Packet packet){

@@ -3,6 +3,8 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.client.controller.ClientController;
 import it.polimi.ingsw.exceptions.EndOfChangesException;
 import it.polimi.ingsw.exceptions.EndOfGameException;
+import it.polimi.ingsw.exceptions.GameReactivatedException;
+import it.polimi.ingsw.exceptions.GameSuspendedException;
 import it.polimi.ingsw.modelChange.EndOfGameChange;
 import it.polimi.ingsw.modelChange.GameBoardChange;
 import it.polimi.ingsw.modelChange.LobbyChange;
@@ -36,10 +38,11 @@ public class  ClientConnection {
         return isActive;
     }
 
-    public void close(){
+    public synchronized void close(){
         if (isActive) {
             //stop connection tracker
             trackerThread.interrupt();
+            isActive = false;
 
             System.out.println("Closing connection");
             try {
@@ -47,7 +50,6 @@ public class  ClientConnection {
             } catch (IOException e) {
                 System.err.println(e.getMessage());
             }
-            isActive = false;
             System.out.println("Done!");
         }
     }
@@ -58,18 +60,26 @@ public class  ClientConnection {
 
     public void send(Packet packet) throws IOException{
         if (isActive) {
-            synchronized (this) {
-                socketOut.writeObject(packet);
-                socketOut.flush();
-                socketOut.reset();
+            try {
+                synchronized (this) {
+                    socketOut.writeObject(packet);
+                    socketOut.flush();
+                    socketOut.reset();
+                }
             }
+            catch (IOException e){
 
+            }
             /*each send of packet is followed by read of model change or pong message*/
             boolean waitEndOfChanges = true;
             while (waitEndOfChanges) {
                 try {
                     waitModelChange();
-                } catch (EndOfChangesException e) {
+                }
+                catch (GameSuspendedException | GameReactivatedException e){
+                    clientController.printMessage(e.getMessage());
+                }
+                catch (EndOfChangesException e) {
                     waitEndOfChanges = false;
                 }
             }
@@ -79,25 +89,33 @@ public class  ClientConnection {
     public void waitModelChange() throws IOException{
         if (isActive) {
             Object modelChange = new Object();
-
             try {
                 modelChange = socketIn.readObject();
                 clientController.changeModel((ModelChange) modelChange);
-            } catch (ClassCastException e) {
+            }
+            catch (ClassCastException e) {
                 try {
                     //after start, can receive only gameBoardChange or pong messages
                     String fromServer = (String) modelChange;
                     if (fromServer.equals("pong")) {
-                    } else {
+
+                    }
+                    else {
                         System.out.println("ClientConnection.waitModelChanges says: Error from server received: " + fromServer);
                         clientController.getGameBoard().setGameOn(false);
                     }
-                } catch (ClassCastException e2) {
+                }
+                catch (ClassCastException e2) {
                     System.out.println("ClientConnection says: Error from server side");
                     clientController.getGameBoard().setGameOn(false);
                 }
-            } catch (ClassNotFoundException e) {
+            }
+            catch (ClassNotFoundException e) {
                 System.out.println("ClientConnection says: error class not found ex");
+            }
+            catch (IOException e){
+                clientController.getGameBoard().setGameOn(false);
+                //throw new EndOfChangesException();
             }
         }
     }
@@ -187,21 +205,9 @@ public class  ClientConnection {
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
-                //can receive lobbyChange, endOfGameChange or GameBoardChange ( reconnection ) or ping or start or error
-                try{
-                    clientController.changeModel((LobbyChange) modelChange);
-                }
-                catch (ClassCastException e){
-                    try {
-                        fromServer = (String) modelChange;
-                        if (fromServer.equals("pong")) {
-                        }
-                    } catch (ClassCastException e2) {
-                        System.out.println("ClientConnection says: error class cast ex");
-                        inputCorrect = true;
-                        fromServer = "stop";
-                    }
-                }
+                //can receive lobbyChange
+                clientController.changeModel((LobbyChange) modelChange);
+
 
                 while (!inputCorrect) {
                     name = clientController.askName();

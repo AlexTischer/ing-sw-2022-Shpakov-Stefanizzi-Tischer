@@ -1,5 +1,7 @@
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.exceptions.EndOfChangesException;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -30,7 +32,7 @@ public class ConnectionTracker implements Runnable{
             } catch (IOException e) {
                 connection.close();
             } catch (InterruptedException e) {
-                //thread exception
+                connection.close();
             }
         }
     }

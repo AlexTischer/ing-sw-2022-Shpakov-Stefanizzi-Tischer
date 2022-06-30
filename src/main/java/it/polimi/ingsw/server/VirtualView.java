@@ -16,7 +16,7 @@ public class VirtualView implements Observer<ModelChange> {
 
     @Override
     public void update(ModelChange modelChange) {
-        if(player.isActive()){
+        if(player.isActive() && clientConnection!=null){
             clientConnection.send(modelChange);
         }
     }
@@ -42,10 +42,31 @@ public class VirtualView implements Observer<ModelChange> {
                 //exception must not be followed by endOfChanges because user still needs to make the correct move
             }
         }
+        else if (game.isSuspended()){
+            new Thread(()->{
+                synchronized (this) {
+                    while (game.isSuspended()) {
+                        try {
+                            this.wait();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    try {
+                        game.usePacket(packet);
+                    } catch (RuntimeException e) {
+                        //any exception related to incorrect user action, sends an exception back to client
+                        clientConnection.send(new ExceptionChange(e));
+                        //exception must not be followed by endOfChanges because user still needs to make the correct move
+                    }
+                }
+            }).start();
+        }
     }
 
     public void sendStart(){
-        clientConnection.sendStart();
+        if (isConnectionActive())
+            clientConnection.sendStart();
     }
 
     public void attachGame(Game game){
@@ -75,19 +96,20 @@ public class VirtualView implements Observer<ModelChange> {
     public void changePlayerStatus(boolean status) {
         //player can change status after the lock on game is released
         //which means that game waits for some player's action
-        //commutation between player active and not active happens in pauses between player's actions or when game is suspended
-        synchronized (game) {
-            this.player.changeStatus(status);
+        //commutation between player active and not active happens in pauses
+        //between player's actions or when game is suspended
 
-            //if the game was suspended and the player is trying to reconnect then the game may unsuspend and continue
-            if(status && game.isSuspended()){
-                game.proceed();
-                System.out.println("Virtual View says: status is true and game was suspended, now it is active");
-            }
+        this.player.changeStatus(status);
 
-            //notify eventual thread that is waiting for client's action meanwhile he was disconnected
-            //also notifies suspended game thread because this client gets reconnected
-            game.notifyAll();
+        //if the game was suspended and the player is trying to reconnect then the game may unsuspend and continue
+        if(game.isSuspended()){
+            game.proceed();
+            System.out.println("Virtual View says: game was suspended, now it is active");
         }
+
+        //notify eventual thread that is waiting for client's action meanwhile he was disconnected
+        //also notifies suspended game thread because this client gets reconnected
+        game.notifyAll();
+
     }
 }

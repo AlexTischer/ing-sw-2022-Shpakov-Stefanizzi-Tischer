@@ -42,9 +42,9 @@ public class EndOfGameChange extends ModelChange{
                         winner = winner + " and " + p.getName();
                     }
                 }
-                message = "Game Over! \n" + winner + " win!";
+                message = "Game Over! " + winner + " win!";
             } else {
-                message = "Game Over! \n" + winner + " wins!";
+                message = "Game Over! " + winner + " wins!";
             }
         }
         //turn off the game
