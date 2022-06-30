@@ -19,6 +19,7 @@ public class Client{
     private ClientGameBoard model;
     private ClientController controller;
     private View view;
+    private boolean firstConnection=false;
 
     public Client(String ip, int port){
         this.serverIp = ip;
@@ -56,6 +57,7 @@ public class Client{
 
     public void run() throws IOException {
         Socket socket = new Socket(serverIp, serverPort);
+        firstConnection=true;
         System.out.println("Connection established with server: " + socket.getRemoteSocketAddress());
         System.out.println("Waiting for configuration");
         ClientConnection connection = new ClientConnection(socket);
@@ -65,4 +67,9 @@ public class Client{
 
         System.out.println("Client finished execution");
     }
+
+    public boolean getFirstConnection(){
+        return firstConnection;
+    }
+
 }
