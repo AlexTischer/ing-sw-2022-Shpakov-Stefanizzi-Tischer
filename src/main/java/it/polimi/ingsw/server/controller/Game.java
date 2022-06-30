@@ -101,8 +101,7 @@ public class Game implements GameForClient{
         if (advancedSettings) {
             Character[] playedCharacters = new Character[3];
             for (int i = 0; i < 3; i++) {
-                //playedCharacters[i] = characterDeck.popCharacter();
-                playedCharacters[i] = new Character2();
+                playedCharacters[i] = characterDeck.popCharacter();
                 playedCharacters[i].initialFill(this);
                 gameBoard.setPlayedCharacters(playedCharacters);
             }

@@ -38,10 +38,11 @@ public class  ClientConnection {
         return isActive;
     }
 
-    public void close(){
+    public synchronized void close(){
         if (isActive) {
             //stop connection tracker
             trackerThread.interrupt();
+            isActive = false;
 
             System.out.println("Closing connection");
             try {
@@ -49,7 +50,6 @@ public class  ClientConnection {
             } catch (IOException e) {
                 System.err.println(e.getMessage());
             }
-            isActive = false;
             System.out.println("Done!");
         }
     }

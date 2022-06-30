@@ -32,7 +32,7 @@ public class ConnectionTracker implements Runnable{
             } catch (IOException e) {
                 connection.close();
             } catch (InterruptedException e) {
-                //thread exception
+                connection.close();
             }
         }
     }

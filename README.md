@@ -108,4 +108,5 @@ The tests have reached the following coverage.
 
 
 ![Test result](https://github.com/AlexTischer/ing-sw-2022-Shpakov-Stefanizzi-Tischer/blob/master/Documentation/total.png)
+
 ![Test result](https://github.com/AlexTischer/ing-sw-2022-Shpakov-Stefanizzi-Tischer/blob/master/Documentation/server.png)
