@@ -5,6 +5,7 @@ import it.polimi.ingsw.client.model.ClientPlayer;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.exceptions.*;
+import it.polimi.ingsw.modelChange.ExceptionChange;
 import it.polimi.ingsw.modelChange.ModelChange;
 import it.polimi.ingsw.packets.*;
 import it.polimi.ingsw.server.model.Color;
@@ -12,6 +13,8 @@ import it.polimi.ingsw.server.model.Color;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.stream.Collectors;
 
 public class ClientController {
@@ -19,6 +22,8 @@ public class ClientController {
     private ClientGameBoard gameBoard;
     private ClientConnection connection;
     private boolean characterActivated = false;
+
+    private Timer timer = new Timer();
 
     public void attachConnection(ClientConnection connection){
         this.connection = connection;
@@ -54,7 +59,41 @@ public class ClientController {
             throw new EndOfChangesException();
         }
         catch (GameSuspendedException e){
-            printMessage(e.getMessage());
+            try {
+                timer.cancel();
+                timer.purge();
+            }
+            catch (IllegalStateException e2){
+                //in case timer was not set before, do nothing
+            }
+
+            timer = new Timer();
+            final int[] secondsToWait = {30};
+            //TODO send GameSuspendedException each second
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    if (secondsToWait[0] > 0) {
+                        printMessage("Seconds to wait " + secondsToWait[0]);
+                        secondsToWait[0]--;
+                    }
+                    else {
+                        timer.cancel();
+                        timer.purge();
+                    }
+                }
+            }, 0, 1000);
+
+            try {
+                connection.waitModelChange();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            catch(EndOfChangesException e3){
+                timer.cancel();
+                timer.purge();
+                //throw new EndOfChangesException();
+            }
         }
     }
 
@@ -93,6 +132,7 @@ public class ClientController {
                     connection.waitModelChange();
                 } catch (IOException e) {
                     System.out.println("ClientController.startTurn says: closing connection due IOException");
+                    e.printStackTrace();
                     gameBoard.setGameOn(false);
                 } catch (EndOfChangesException e) {
                 }
@@ -132,6 +172,7 @@ public class ClientController {
                         this.connection.send(packet);
                     } catch (IOException e) {
                         System.out.println("ClientController.useAssistant says: closing connection due IOException");
+                        e.printStackTrace();
                         gameBoard.setGameOn(false);
                     }
                 } else {

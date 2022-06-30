@@ -4,6 +4,7 @@ package it.polimi.ingsw.server;
 import it.polimi.ingsw.modelChange.ConnectionStatusChange;
 import it.polimi.ingsw.modelChange.ModelChange;
 import it.polimi.ingsw.packets.Packet;
+import it.polimi.ingsw.server.controller.Game;
 
 import java.io.*;
 import java.net.Socket;
@@ -43,8 +44,10 @@ public class Connection implements Runnable{
             if (name != null) {
                 //deregistering is different based on whether game is already started
                 if (server.isGameReady()) {
-                    server.changeConnectionStatus(new ConnectionStatusChange(name, false));
-                    userVirtualView.changePlayerStatus(false);
+                    synchronized (Game.getInstanceOfGame()) {
+                        server.changeConnectionStatus(new ConnectionStatusChange(name, false));
+                        userVirtualView.changePlayerStatus(false);
+                    }
                 } else {
                     server.removeFromLobby(this);
                 }
@@ -96,8 +99,8 @@ public class Connection implements Runnable{
             while(!nameReady){
                 /*allows client to insert the name*/
                 try {
-                    fromClient = socketIn.readObject();
                     System.out.println("Connection says: I am ready to receive the name!");
+                    fromClient = socketIn.readObject();
                     //if client sent ping message, then i need to respond and wait for the next input
                     if (fromClient.equals("ping")){
                         socketOut.writeObject("pong");

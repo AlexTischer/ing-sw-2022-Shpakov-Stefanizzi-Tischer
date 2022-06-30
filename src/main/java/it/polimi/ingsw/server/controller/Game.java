@@ -575,15 +575,6 @@ public class Game implements GameForClient{
             }
         }
 
-        //search for the player that has fewer towers on SchoolBoard since this is the one that has conquered more islands
-        /*List<Player> towersPlayers = players.stream().filter((p)->p.getNumOfTowers() > 0).sorted((p1, p2) -> {
-            if (p1.getNumOfTowers() == p2.getNumOfTowers()){
-                return p2.getProfessorsColor().size() - p1.getProfessorsColor().size();
-            }
-            else{
-                return p1.getNumOfTowers() - p2.getNumOfTowers();
-            }
-        }).collect(Collectors.toList());*/
 
         Player leader = players.stream().filter((p)->p.getNumOfTowers() > 0).sorted((p1, p2) -> {
             if (p1.getNumOfTowers() == p2.getNumOfTowers()){
@@ -611,75 +602,18 @@ public class Game implements GameForClient{
             return true;
         }
 
-        //if there is only 1 active player in case of 2-3 players then the game gets suspended for 60 sec
-        List<Player> activePlayers = players.stream().filter(p -> p.isActive()).collect(Collectors.toList());
-        while (activePlayers.size() == 1) {
-            if (gameBoard.isGameOn()) {
-                Timer timer = new Timer();
-                try {
-                    suspended = true;
-                    final int[] secondsToWait = {60};
-                    //TODO send GameSuspendedException each second
-                    timer.scheduleAtFixedRate(new TimerTask() {
-                        @Override
-                        public void run() {
-                            if(secondsToWait[0]>=0) {
-                                gameBoard.notify(new ExceptionChange(
-                                        new GameSuspendedException("Wait for other players reconnection.\n" + secondsToWait[0] + "seconds remained")
-                                ));
-                                System.out.println("I have sent GameSuspendedException. Seconds to wait " + secondsToWait[0]);
-                                secondsToWait[0]--;
-                            }
-                        }
-                    }, 0, 1000);
-
-                    this.wait(60*1000);
-                } catch (InterruptedException e) {
-                    //if something went wrong then finish the game
-                    System.out.println("I am in checkEndGame() of Game in active players control. The thread was interrupted");
-                    e.printStackTrace();
-                    return true;
-                }
-                //if no client has been reconnected in 60 sec, then the game is finished
-                if (suspended) {
-                    timer.cancel();
-                    timer.purge();
-                    gameBoard.notify(new EndOfGameChange(activePlayers.get(0).getName()));
-                    return true;
-                }
-                else{
-                    timer.cancel();
-                    timer.purge();
-                    System.out.println("A player was reconnected");
-                }
-            }
-            activePlayers = players.stream().filter(p -> p.isActive()).collect(Collectors.toList());
-        }
-
-        //if there are 2 active players from the same team then the game gets suspended for 60 sec
-        while (activePlayers.size() == 2 && players.size() == 4) {
-            if (activePlayers.get(0).getTowerColor().equals(activePlayers.get(1).getTowerColor())){
+        while( players.stream().filter(p -> p.isActive()).map((p)->p.getTowerColor()).collect(Collectors.toSet()).size() == 1 ) {
+            //if there is only 1 active player in case of 2-3 players then the game gets suspended for 60 sec
+            List<Player> activePlayers = players.stream().filter(p -> p.isActive()).collect(Collectors.toList());
+            if (activePlayers.size() == 1) {
+                System.out.println("Only one player remained");
                 if (gameBoard.isGameOn()) {
-                    Timer timer = new Timer();
                     try {
                         suspended = true;
-                        final int[] secondsToWait = {60};
-                        //TODO send GameSuspendedException each second
-                        //schedule a thread to send GameSuspendedException each second
-                        timer.scheduleAtFixedRate(new TimerTask() {
-                            @Override
-                            public void run() {
-                                if(secondsToWait[0]>=0) {
-                                    gameBoard.notify(new ExceptionChange(
-                                            new GameSuspendedException("Wait for other players reconnection.\n" + secondsToWait[0] + "seconds remained")
-                                    ));
-                                    secondsToWait[0]--;
-                                    System.out.println("I have sent GameSuspendedException. Seconds to wait " + secondsToWait[0]);
-                                }
-                            }
-                        }, 0, 1000);
-
-                        this.wait(60*1000);
+                        System.out.println("I AM GOING IN WAIT STATE. ONLY 1 PLAYER REMAINED");
+                        gameBoard.notify(new ExceptionChange(new GameSuspendedException("Wait for other players to reconnect. 60 seconds remained")));
+                        this.wait(30 * 1000);
+                        System.out.println("I AM WAKEN UP");
                     } catch (InterruptedException e) {
                         //if something went wrong then finish the game
                         System.out.println("I am in checkEndGame() of Game in active players control. The thread was interrupted");
@@ -688,22 +622,45 @@ public class Game implements GameForClient{
                     }
                     //if no client has been reconnected in 60 sec, then the game is finished
                     if (suspended) {
-                        timer.cancel();
-                        timer.purge();
                         gameBoard.notify(new EndOfGameChange(activePlayers.get(0).getName()));
                         return true;
+                    } else {
+                        gameBoard.notify(new ExceptionChange(new EndOfChangesException()));
+                        System.out.println("A player was reconnected or disconnected 1");
                     }
-                    else {
-                        timer.cancel();
-                        timer.purge();
-                        System.out.println("A player was reconnected");
+                }
+                activePlayers = players.stream().filter(p -> p.isActive()).collect(Collectors.toList());
+            }
+
+            //if there are 2 active players from the same team then the game gets suspended for 60 sec
+            if (activePlayers.size() == 2 && players.size() == 4) {
+                if (activePlayers.get(0).getTowerColor().equals(activePlayers.get(1).getTowerColor())) {
+                    System.out.println("Only one team remained");
+                    if (gameBoard.isGameOn()) {
+                        try {
+                            suspended = true;
+                            System.out.println("I AM GOING IN WAIT STATE. ONLY 2 PLAYERS REMAINED");
+                            gameBoard.notify(new ExceptionChange(new GameSuspendedException("Wait for other players to reconnect. 60 seconds remained")));
+                            this.wait(30 * 1000);
+                            System.out.println("I AM WAKEN UP!");
+
+                        } catch (InterruptedException e) {
+                            //if something went wrong then finish the game
+                            System.out.println("I am in checkEndGame() of Game in active players control. The thread was interrupted");
+                            e.printStackTrace();
+                            return true;
+                        }
+                        //if no client has been reconnected in 60 sec, then the game is finished
+                        if (suspended) {
+                            gameBoard.notify(new EndOfGameChange(activePlayers.get(0).getName()));
+                            return true;
+                        } else {
+                            gameBoard.notify(new ExceptionChange(new EndOfChangesException()));
+                            System.out.println("A player was reconnected or disconnected 2");
+                        }
                     }
                 }
             }
-            else{
-                break;
-            }
-            activePlayers = players.stream().filter(p -> p.isActive()).collect(Collectors.toList());
         }
 
         //if nothing from above is true then this is not yet the end of the game

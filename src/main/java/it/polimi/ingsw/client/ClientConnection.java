@@ -58,12 +58,16 @@ public class  ClientConnection {
 
     public void send(Packet packet) throws IOException{
         if (isActive) {
-            synchronized (this) {
-                socketOut.writeObject(packet);
-                socketOut.flush();
-                socketOut.reset();
+            try {
+                synchronized (this) {
+                    socketOut.writeObject(packet);
+                    socketOut.flush();
+                    socketOut.reset();
+                }
             }
+            catch (IOException e){
 
+            }
             /*each send of packet is followed by read of model change or pong message*/
             boolean waitEndOfChanges = true;
             while (waitEndOfChanges) {
@@ -98,6 +102,10 @@ public class  ClientConnection {
                 }
             } catch (ClassNotFoundException e) {
                 System.out.println("ClientConnection says: error class not found ex");
+            }
+            catch (IOException e){
+                clientController.getGameBoard().setGameOn(false);
+                //throw new EndOfChangesException();
             }
         }
     }
@@ -187,21 +195,9 @@ public class  ClientConnection {
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
-                //can receive lobbyChange, endOfGameChange or GameBoardChange ( reconnection ) or ping or start or error
-                try{
-                    clientController.changeModel((LobbyChange) modelChange);
-                }
-                catch (ClassCastException e){
-                    try {
-                        fromServer = (String) modelChange;
-                        if (fromServer.equals("pong")) {
-                        }
-                    } catch (ClassCastException e2) {
-                        System.out.println("ClientConnection says: error class cast ex");
-                        inputCorrect = true;
-                        fromServer = "stop";
-                    }
-                }
+                //can receive lobbyChange
+                clientController.changeModel((LobbyChange) modelChange);
+
 
                 while (!inputCorrect) {
                     name = clientController.askName();
@@ -214,7 +210,7 @@ public class  ClientConnection {
                     }
 
                     //set socket timeout only after sending the name
-                    socket.setSoTimeout(10*1000);
+                    //socket.setSoTimeout(10*1000);
 
                     //Server added me to Lobby  if my name is ok
 
