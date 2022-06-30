@@ -13,7 +13,7 @@
 
 
 ## The Game <a name="game"></a>
-This repo contains a **Java** version of the game [*Eriantys*](https://www.craniocreations.it/prodotto/eriantys/). The project has been developed for the course **Software Engineering** at Politecnico di Milano as a final part of examination for the Bachelor in Computer Engineering. The contributors were:
+This repository contains a **Java** version of the game [*Eriantys*](https://www.craniocreations.it/prodotto/eriantys/). The project has been developed for the course **Software Engineering** at Politecnico di Milano as a final part of examination for the Bachelor in Computer Engineering. The contributors were:
 * [Mykhailo Shpakov](https://github.com/MykhailoShpakovPoliMi)
 * [Giacomo Stefanizzi](https://github.com/jackstefa)
 * [Alessandro Tischer](https://github.com/AlexTischer)
@@ -25,12 +25,12 @@ This repo contains a **Java** version of the game [*Eriantys*](https://www.crani
 | Complete Rules     |                        🟩                         |
 | Socket             |                        🟩                         |
 | CLI                |                        🟩                         |
-| GUI                |                        🟨                         |
+| GUI                |                        🟩                         |
 | Character Cards    |                        🟩                         |
 | Four Players Match |                        🟩                         |
 | Multiple Matches   |                        🟥                         |
 | Persistence        |                        🟥                         |
-| Resilience         |                        🟨                         |
+| Resilience         |                        🟩                         |
 
 #### Legend
 🟥Not Implemented &nbsp;&nbsp;&nbsp;&nbsp;
@@ -38,7 +38,7 @@ This repo contains a **Java** version of the game [*Eriantys*](https://www.crani
 🟩Implemented
 
 ## Installation <a name="installation"></a>
-To start the game you need to download [JavaSE 15](https://www.oracle.com/it/java/technologies/javase-downloads.html) (or updated versions).
+To start the game you need to download [JavaSE 17](https://www.oracle.com/it/java/technologies/javase-downloads.html) (or updated versions).
 
 Download the repo as it follow
 ```bash
@@ -48,45 +48,50 @@ on linux. For Windows should be necessary download the repo in zip format and th
 The executable files are stored in the `/shade` directory.
 
 ## How to start the server <a name="server"></a>
-Open the **ngrok** directory with the terminal (linux or windows) and open a TCP connection at port `12345`, as it follow
-```bash
-./ngrok tcp 12345
-```
-The port number has to be `12345`. If it should be necessary to modify the port, open the project class `Server` and edit the attribute, then rebuild the *.jar* file.
 
-Open the terminal at dir `\shade` and copy
+To start the server, open a terminal in the same directory of the Server.jar file and type:
+
 ```bash
-java -jar SERVERG_C39.jar
+java -jar Server.jar
 ```
-Now the server has started and can be leaved powered on even a match ends.
+This way the server will be listening to port 46582
+
+You can also choose a custom port typing:
+```bash
+java -jar Server.jar #port
+```
+Now the server has started.
 
 ## How to start the client <a name="client"></a>
-To connect the client will be necessary open the terminal at the `\shade` dir and copy
+To start the server, open a terminal in the same directory of the Client.jar file and type:
 ```bash
-java -jar CLIENT_C39.jar ADDRESS PORT
+java -jar Client.jar
 ```
-where `ADDRESS` and `PORT` are the server address and port. In our case, the **ngrok** app will print a text as it follow
-```bash
-Session Status: online
-Account: YOURACCOUNT (Plan: Free)
-Version: 2.3.40
-Region: United States (us)
-Web Interface: http://127.0.0.1:4040
-Forwarding:  tcp://4.tcp.ngrok.io:11387 -> localhost:12345                                              
-```
-**4.tcp.ngrok.io** will be the address and **11387** the port.
+This way the client will by default try to connect to `127.0.0.1 : 46582`
 
-On default the client will open the GUI, but if you add the parameter `cli` at the end of the command it will be possible start the game from command-line.
+You can also choose a custom ip and port (or only ip) typing: 
 ```bash
-java -jar CLIENT_C39.jar ADDRESS PORT cli
+java -jar Client.jar #ip #port
+```
+
+On startup, the client will _**first**_ ask you whether you want to play with GUI or with CLI _**and then**_ will try to connect to the (specified) `ip:port`
+
+```bash
+Do you want to use CLI or GUI?
+cli
+Connection established with server: /127.0.0.1:46582
 ```
 
 ## How to play<a name="howtoplay"></a>
-A game can be started in three different ways: I can create a room where my friends can join me (a room can be joined through its name); I can join an online public multiplayer filling the infos with my personal nickname and with how many players I want play with; I can play alone offline.
+
+Start the server and the clients (2, 3 or 4 of them): the first client that will connect to the server will configure the match, the others will only be asked to insert their name.
+The first turn's order of play will be randomly generated by the server, as well as teams in case of a four players match.
 
 You can find the english rules [here](https://github.com/AlexTischer/ing-sw-2022-Shpakov-Stefanizzi-Tischer/blob/master/Documentation/eriantys_rules.pdf)
 
-Ps. It is alway possible rejoin an alredy started match if I have my `nickname` and the `room` name.
+The game app is self-explainatory once you know the rules, and, anyway, you will be guided in every phase of your turn.
+
+It is always possible _**rejoin**_ an already started match using the same `nickname` as before.
 
 ## Tools <a name="tools"></a>
 In this project were used the following tools:
