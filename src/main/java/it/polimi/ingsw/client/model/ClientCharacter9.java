@@ -45,7 +45,7 @@ public class ClientCharacter9 extends ClientCharacter{
             correctStudent = false;
             while (!correctStudent) {
                 view.printMessage("Select the student from your entrance you want to swap");
-                student = view.askStudentColor();
+                student = view.askStudentColorFromEntrance();
                 if (testStudentsFromEntrance.contains(student)) {
                     correctStudent = true;
                     testStudentsFromEntrance.remove(student);

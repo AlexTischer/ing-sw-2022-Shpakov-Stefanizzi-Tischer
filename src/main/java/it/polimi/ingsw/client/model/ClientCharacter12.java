@@ -9,7 +9,7 @@ public class ClientCharacter12 extends ClientCharacter{
     public ActivateCharacterPacket createPacket(View view){
 
         //view.printMessage(getDescription());
-        view.printMessage("Insert island number you want to calculate influence in");
+        view.printMessage("Insert the island number you want to calculate influence in");
         int islandNumber = view.askIslandNumber();
 
         ActivateCharacter3Packet packet = new ActivateCharacter3Packet(islandNumber-1);

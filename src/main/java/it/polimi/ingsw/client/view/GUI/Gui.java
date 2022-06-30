@@ -102,7 +102,7 @@ public class Gui extends View {
 
     public void printMessage(String message){
         Platform.runLater(()->{
-            //GuiApp.getCurrentController().printMessage(message);
+            GuiApp.getCurrentController().printMessage(message);
         });
     }
 
@@ -167,17 +167,14 @@ public class Gui extends View {
 
     @Override
     public synchronized Color askStudentColorFromCharacter() {
-        //TEST
-        System.out.println("GUI: sono in askStudentColorFromCharacter");
-        System.out.println("Asking Done è " + gameSceneController.isAskingDone());
+
 
         if(!gameSceneController.isAskingDone()) {
             gameSceneController.askStudentColorFromCharacter();
         }
 
         synchronized (gameSceneController) {
-            //TEST
-            System.out.println("GUI: askStudentColorFromCharacter: sono dentro synchronized ");
+
             while (!gameSceneController.isAskingDone()) {
                 try {
                     System.out.println("waiting studentColor from character");
@@ -188,25 +185,43 @@ public class Gui extends View {
             }
         }
 
-        //TEST
-        System.out.println("GUI: sto uscendo da askStudentColorFromCharacter");
+
+        gameSceneController.setAskingDone(false);
+        return gameSceneController.getStudentColor();
+    }
+
+    public synchronized Color askStudentColorFromEntrance() {
+
+        if(!gameSceneController.isAskingDone()) {
+            gameSceneController.askStudentColorFromEntrance();
+        }
+
+        synchronized (gameSceneController) {
+
+            while (!gameSceneController.isAskingDone()) {
+                try {
+                    System.out.println("waiting studentColor from entrance");
+                    gameSceneController.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
         gameSceneController.setAskingDone(false);
         return gameSceneController.getStudentColor();
     }
 
     @Override
     public synchronized Color askStudentColorFromBox() {
-        //TEST
-        System.out.println("GUI: sono in askStudentColorFromBox");
-        System.out.println("Asking Done è " + gameSceneController.isAskingDone());
+
 
         if(!gameSceneController.isAskingDone()) {
             gameSceneController.askStudentColorFromBox();
         }
 
         synchronized (gameSceneController) {
-            //TEST
-            System.out.println("GUI: askStudentColorFromBox: sono dentro synchronized ");
+
             while (!gameSceneController.isAskingDone()) {
                 try {
                     System.out.println("waiting studentColor from box");
@@ -219,16 +234,14 @@ public class Gui extends View {
 
         gameSceneController.hideAskColorBox();
 
-        //TEST
-        System.out.println("GUI: sto uscendo da askStudentColorFromBox");
+
         gameSceneController.setAskingDone(false);
         return gameSceneController.getStudentColor();
     }
 
     @Override
     public synchronized Color askStudentColorFromDiningRoom() {
-        //TEST
-        System.out.println("GUI: sono in askStudentColorFromDiningRoom");
+
         System.out.println("Asking Done è " + gameSceneController.isAskingDone());
 
         if(!gameSceneController.isAskingDone()) {
@@ -236,8 +249,7 @@ public class Gui extends View {
         }
 
         synchronized (gameSceneController) {
-            //TEST
-            System.out.println("GUI: askStudentColorFromDiningRoom: sono dentro synchronized ");
+
             while (!gameSceneController.isAskingDone()) {
                 try {
                     System.out.println("waiting studentColor from diningRoom");
@@ -248,8 +260,7 @@ public class Gui extends View {
             }
         }
 
-        //TEST
-        System.out.println("GUI: sto uscendo da askStudentColorFromDiningRoom");
+
         gameSceneController.setAskingDone(false);
         return gameSceneController.getStudentColor();
     }
@@ -335,17 +346,14 @@ public class Gui extends View {
                         throw new RuntimeException(e);
                     }
                 }
-                //TEST
-                System.out.println("GUI: chooseActionStudent: exiting");
+
             }
 
-            //TEST
-                System.out.println("GUI: chooseActionStudent: sto ritornando scelta " + gameSceneController.getChosenAction());
+
             return gameSceneController.getChosenAction();
         }
         else {
-                //TEST
-                System.out.println("sono entrato nell'else return 1");
+
             return 1;
         }
     }
@@ -439,26 +447,30 @@ public class Gui extends View {
             }
         }
 
+        gameSceneController.setAskingDone(false);
         return gameSceneController.getCloudNumber();
     }
 
     @Override
     public int askCharacterNumber() {
 
+        /*
         if(!gameSceneController.isAskingDone()) {
             gameSceneController.askCharacterNumber();
         }
 
-
-            while (!gameSceneController.isAskingDone()) {
-                try {
-                    System.out.println("waiting Character Number");
-                    gameSceneController.wait();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+            synchronized (gameSceneController) {
+                while (!gameSceneController.isAskingDone()) {
+                    try {
+                        System.out.println("waiting Character Number");
+                        gameSceneController.wait();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
 
+         */
 
         gameSceneController.setAskingDone(false);
         return gameSceneController.getCharacterNumber();
@@ -466,8 +478,7 @@ public class Gui extends View {
 
     @Override
     public int askIslandNumber() {
-        //TEST
-        System.out.println("GUI: sono in askIslandNumber, isAskingDone vale " + gameSceneController.isAskingDone());
+
         if(!gameSceneController.isAskingDone()) {
             gameSceneController.askIslandNumber();
         }

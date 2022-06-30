@@ -50,7 +50,7 @@ public class ClientCharacter implements Serializable {
     }
 
     public ActivateCharacterPacket createPacket(View view){
-        throw new UnsupportedOperationException("This character doesn't need other actions");
+        throw new UnsupportedOperationException("Character activated!");
     }
 
     public void setDescription(String description) {

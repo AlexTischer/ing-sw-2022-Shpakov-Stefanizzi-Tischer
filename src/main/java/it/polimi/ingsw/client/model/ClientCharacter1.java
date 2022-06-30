@@ -20,21 +20,18 @@ public class ClientCharacter1 extends ClientCharacter{
         while(!correctStudent) {
             view.printMessage("From this card, select the student you want to move");
 
-            //TEST
-            System.out.println("ClientCharacter1: sto chiedendo di prendere lo studente sulla carta");
+
             student = view.askStudentColorFromCharacter();
-            //TEST
-            System.out.println("ho selezionato lo studente di colore " + student);
+
             if(Arrays.stream(students).toList().contains(student))
             {correctStudent=true;}
             else{
-                view.printErrorMessage("No such student on this card. Try again");
+                view.printMessage("No such student on this card. Try again");
             }
         }
         view.printMessage("Choose the island you want to move the student to");
 
-        //TEST
-        System.out.println("ora chiedo la destinazione isola");
+
         int islandNumber = view.askIslandNumber();
 
         ActivateCharacter2Packet packet = new ActivateCharacter2Packet(student, islandNumber-1);

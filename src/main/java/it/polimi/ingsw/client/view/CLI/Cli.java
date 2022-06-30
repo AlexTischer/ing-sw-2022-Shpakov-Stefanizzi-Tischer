@@ -102,6 +102,10 @@ public class Cli extends View {
         return askStudentColor();
     }
 
+    public Color askStudentColorFromEntrance(){
+        return askStudentColor();
+    }
+
     public int askAssistant() {
         System.out.println("Choose an Assistant to play (insert the rank)");
         int input;

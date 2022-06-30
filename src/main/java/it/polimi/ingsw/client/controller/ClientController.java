@@ -198,8 +198,7 @@ public class ClientController {
                             while (isGameOn() && !correctDestination) {
                                 int destination = view.askStudentDestination();
 
-                                //TEST
-                                System.out.println("client controller: ho ricevuto la destinazione "+ destination);
+
 
                                 //if destination == 0, move the student to dining room
                                 if (destination == 0) {
@@ -261,7 +260,8 @@ public class ClientController {
                 correctCharacter=true;
             }
             else{
-                printMessage("You don't have enough coins to buy this character, buy another one or cancel");
+                printMessage("You don't have enough coins to buy this character!");
+                break;
             }
         }
         if(correctCharacter && isGameOn()){
@@ -332,7 +332,7 @@ public class ClientController {
                                 gameBoard.setGameOn(false);
                             }
                         } else {
-                            printMessage("the cloud is empty, select another cloud");
+                            printMessage("This cloud is empty!");
                         }
 
                     }

@@ -183,7 +183,7 @@ public class GameBoard extends Observable<ModelChange> {
             throw new IllegalArgumentException("You have inserted invalid island number");
 
         if(clouds.get(cloudNumber).getStudentsColors().isEmpty())
-            throw new StudentNotFoundException("This cloud is empty! Choose another one");
+            throw new StudentNotFoundException("This cloud is empty!");
 
         for (Color color : clouds.get(cloudNumber).getStudentsColors()) {
             //add only as many students as needed

@@ -65,4 +65,6 @@ public abstract class View {
     public abstract Color askStudentColorFromBox();
 
     public abstract Color askStudentColorFromDiningRoom();
+
+    public abstract Color askStudentColorFromEntrance();
 }

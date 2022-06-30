@@ -33,7 +33,7 @@ public class GuiApp extends Application {
             stage.getIcons().add(new Image("images/misc/Icon.jpg"));
 
             stage.setMaximized(true);
-            stage.setFullScreen(true);
+            //stage.setFullScreen(true);
             stage.setResizable(false);
             stage.setFullScreenExitHint("");
             //stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
@@ -88,5 +88,9 @@ public class GuiApp extends Application {
             System.exit(0);
         }
     }
+
+
+
+
 
 }
