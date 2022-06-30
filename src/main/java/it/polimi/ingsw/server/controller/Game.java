@@ -12,14 +12,26 @@ import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**<p>This class represents the game controller.</p>
+/**<p>This class represents the game which serves as a controller in MVC pattern</p>
  * <p>The game controller executes any valid action requested by client or throws an exception in case of errors in client request</p>
  * Also game controller responds for game flow and order of client actions
  * <ul>
  *     Contains
- *     <li>game board</li>
- *     <li>players list</li>
- *     <li>counters of client actions</li>
+ *     <li>{@link #gameBoard} - instance of game board that serves as a model in MVC pattern</li>
+ *     <li>{@link #players} - list of players that were in {@link Server#waitingConnection} lobby at the moment of gam creation</li>
+ *     <li>
+ *         <p>{@link #studentMove} - counter of how many students have been moved during current round</p>
+ *         <p>{@link #motherNatureMove} - flag that tells whether a mother nature has been moved during current round</p>
+ *         <p>{@link #useCloudMove} - flag that tells whether a cloud has been used during current round</p>
+ *         <p>{@link #characterUsed} - flag that tells whether a character has been used during current round</p>
+ *     </li>
+ *     <li>
+ *         {@link #suspended} attribute tells whether this Game is suspended
+ *         <p>Note: Game is suspended when only 1 player or 1 team remains connected to the server</p>
+ *     </li>
+ *     <li>
+ *         {@link #defaultCharacter} - instance of {@link Character} that executes operations in standard mode
+ *     </li>
  * </ul>
  * */
 public class Game implements GameForClient{
@@ -50,7 +62,8 @@ public class Game implements GameForClient{
      *     <li>Creates {@link Player} instances, refills {@link Game#players} list, shuffles it and assigns random player as a current</li>
      *     <li>Creates and initializes {@link GameBoard} instance</li>
      *     <li>If {@link Game#advancedSettings} is equal to true, pops 3 characters from characterDeck,
-     *     calls {@link Character#initialFill} and sets characters in GameBoard using {@link GameBoard#setPlayedCharacters}</li>
+     *     calls {@link Character#initialFill} and sets characters in GameBoard using {@link GameBoard#setPlayedCharacters}
+     *     </li>
      *     <li>Sets default character {@link Character} as a current character</li>
      *     <li>Refills assistants hand and {@link SchoolBoard} entrance of each player and adds 1 coin to each player in case of expert mode</li>
      * </ul>
@@ -88,7 +101,8 @@ public class Game implements GameForClient{
         if (advancedSettings) {
             Character[] playedCharacters = new Character[3];
             for (int i = 0; i < 3; i++) {
-                playedCharacters[i] = characterDeck.popCharacter();
+                //playedCharacters[i] = characterDeck.popCharacter();
+                playedCharacters[i] = new Character2();
                 playedCharacters[i].initialFill(this);
                 gameBoard.setPlayedCharacters(playedCharacters);
             }
@@ -112,6 +126,9 @@ public class Game implements GameForClient{
         gameBoard.setCurrentPlayer(players.get(0));
     }
 
+    /**
+     * Resets counters of player's actions
+     * Launches a separate thread that executes {@link #playGame()} method*/
     public void launchGame(){
         studentMove = 0;
         motherNatureMove = false;
@@ -129,6 +146,15 @@ public class Game implements GameForClient{
         }).start();
     }
 
+    /**<ul>
+     *      <li>Sets {@link GameBoard#isGameOn} to true and {@link #suspended} to false</li>
+     *      <li>Wakes up a thread in {@link Server#createGame()} that waits for {@link GameBoard#refillClouds()}
+     *      and {@link GameBoard#setCurrentPlayer(Player)} to happen before it can send
+     *      {@link it.polimi.ingsw.modelChange.GameBoardChange } to all clients</li>
+     *      <li>Invokes {@link #newRound()} as long as {@link GameBoard#isGameOn} is equal to true</li>
+     *      <li>Turns off virtual machine when game gets turned off</li>
+     * </ul>
+     * */
     private synchronized void playGame() throws InterruptedException {
         //let the game start
         gameBoard.setGameOn(true);
@@ -150,9 +176,15 @@ public class Game implements GameForClient{
     }
 
 
-    /**Starts a new round. New round is a sequence of actions consisting of
-     * refillClouds(), useAssistant() for each active player, sorting of players based on assistants played,
-     * newTurn() for each active player, eventually assigning unused clouds for not active players and reset of playedAssistant for all players*/
+    /**Starts a new round.
+     * <ul>New round is a sequence of actions consisting of
+     *      <li>{@link GameBoard#refillClouds()}</li>
+     *      <li>{@link #useAssistant(int)} for each active player</li>
+     *      <li>sorting of players based on assistants played</li>
+     *      <li>{@link #newTurn(Player)} for each active player</li>
+     *      <li>eventual assignment of unused clouds for not active players</li>
+     *      <li>reset of playedAssistant for all players</li>
+     * </ul>*/
     private void newRound() throws InterruptedException {
         //if player is not active then skip him until next planning phase
         //in planning phase check isActive variable , in action phase it is enough to check playedAssistant variable

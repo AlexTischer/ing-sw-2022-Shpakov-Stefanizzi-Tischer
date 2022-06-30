@@ -222,7 +222,10 @@ public class Server {
             System.out.println("Timer was reset");
             for(VirtualView view: virtualViews){
                 if (view.isConnectionActive()){
-                    view.update(new ExceptionChange(new GameReactivatedException("The game was reactivated!")));
+                    synchronized (view) {
+                        view.update(new ExceptionChange(new GameReactivatedException("The game was reactivated!")));
+                        view.notifyAll();
+                    }
                 }
             }
             timer.cancel();
@@ -254,7 +257,7 @@ public class Server {
                 ObjectInputStream socketIn = new ObjectInputStream(socket.getInputStream());
 
                 //if server doesn't receive any message from client in 10 sec, then socket gets closed
-                //socket.setSoTimeout(10*1000);
+                socket.setSoTimeout(10*1000);
 
                 System.out.println("Connection number: " + (numOfConnections +1));
 

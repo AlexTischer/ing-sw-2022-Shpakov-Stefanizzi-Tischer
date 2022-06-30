@@ -42,6 +42,26 @@ public class VirtualView implements Observer<ModelChange> {
                 //exception must not be followed by endOfChanges because user still needs to make the correct move
             }
         }
+        else if (game.isSuspended()){
+            new Thread(()->{
+                synchronized (this) {
+                    while (game.isSuspended()) {
+                        try {
+                            this.wait();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    try {
+                        game.usePacket(packet);
+                    } catch (RuntimeException e) {
+                        //any exception related to incorrect user action, sends an exception back to client
+                        clientConnection.send(new ExceptionChange(e));
+                        //exception must not be followed by endOfChanges because user still needs to make the correct move
+                    }
+                }
+            }).start();
+        }
     }
 
     public void sendStart(){

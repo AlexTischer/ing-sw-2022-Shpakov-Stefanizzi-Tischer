@@ -21,12 +21,10 @@ public class GameBoard extends Observable<ModelChange> {
     private AssistantDeck assistantDeck;
     private int positionOfMotherNature;
     private int numOfCoins;
-
     private int maxNumOfStudentsInEntrance;
-
     private Player currentPlayer;
     private AtomicBoolean isGameOn = new AtomicBoolean(false);
-    /*creates 12 islands and puts MotherNature on a random island*/
+
     private GameBoard(){}
 
     /*Initializes instanceOfBag and clouds. Takes number of players and

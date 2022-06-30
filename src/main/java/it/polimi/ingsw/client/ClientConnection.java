@@ -3,6 +3,8 @@ package it.polimi.ingsw.client;
 import it.polimi.ingsw.client.controller.ClientController;
 import it.polimi.ingsw.exceptions.EndOfChangesException;
 import it.polimi.ingsw.exceptions.EndOfGameException;
+import it.polimi.ingsw.exceptions.GameReactivatedException;
+import it.polimi.ingsw.exceptions.GameSuspendedException;
 import it.polimi.ingsw.modelChange.EndOfGameChange;
 import it.polimi.ingsw.modelChange.GameBoardChange;
 import it.polimi.ingsw.modelChange.LobbyChange;
@@ -73,7 +75,11 @@ public class  ClientConnection {
             while (waitEndOfChanges) {
                 try {
                     waitModelChange();
-                } catch (EndOfChangesException e) {
+                }
+                catch (GameSuspendedException | GameReactivatedException e){
+                    clientController.printMessage(e.getMessage());
+                }
+                catch (EndOfChangesException e) {
                     waitEndOfChanges = false;
                 }
             }
@@ -214,7 +220,7 @@ public class  ClientConnection {
                     }
 
                     //set socket timeout only after sending the name
-                    //socket.setSoTimeout(10*1000);
+                    socket.setSoTimeout(10*1000);
 
                     //Server added me to Lobby  if my name is ok
 

@@ -24,10 +24,6 @@ public class ClientController {
     private ClientConnection connection;
     private boolean characterActivated = false;
 
-    private boolean isGameSuspended = false;
-
-    private Timer timer = new Timer();
-
     public void attachConnection(ClientConnection connection){
         this.connection = connection;
     }
@@ -60,45 +56,6 @@ public class ClientController {
             //Once all the changes for a client move have been received, it's possible to show them on the View.
             gameBoard.showOnView();
             throw new EndOfChangesException();
-        }
-        catch (GameSuspendedException e){
-            printMessage(e.getMessage());
-
-            /*try {
-                timer.cancel();
-                timer.purge();
-            }
-            catch (IllegalStateException e2){
-                //in case timer was not set before, do nothing
-            }
-
-            timer = new Timer();
-            final int[] secondsToWait = {30};
-            //TODO send GameSuspendedException each second
-            timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    if (secondsToWait[0] > 0) {
-                        printMessage("Seconds to wait " + secondsToWait[0]);
-                        secondsToWait[0]--;
-                    }
-                    else {
-                        timer.cancel();
-                        timer.purge();
-                    }
-                }
-            }, 0, 1000);
-
-            try {
-                connection.waitModelChange();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-            catch(EndOfChangesException e3){
-                timer.cancel();
-                timer.purge();
-                //throw new EndOfChangesException();
-            }*/
         }
     }
 
@@ -141,7 +98,7 @@ public class ClientController {
                     gameBoard.setGameOn(false);
                 } catch (EndOfChangesException e) {
                 }
-                catch(GameReactivatedException e){
+                catch(GameReactivatedException | GameSuspendedException e){
                    printMessage(e.getMessage());
                 }
             }
@@ -156,10 +113,6 @@ public class ClientController {
                 //client can make any move only if game is on
                 useAssistant();
                 correctAssistant = true;
-            }
-            catch(GameReactivatedException e){
-                printMessage(e.getMessage());
-                printMessage("Please repeat your action!");
             }
             catch (RuntimeException e){
                 //any exception sent from server
@@ -182,7 +135,8 @@ public class ClientController {
                     Packet packet = new UseAssistantPacket(assistantRank);
                     try {
                         this.connection.send(packet);
-                    } catch (IOException e) {
+                    }
+                    catch (IOException e) {
                         System.out.println("ClientController.useAssistant says: closing connection due IOException");
                         e.printStackTrace();
                         gameBoard.setGameOn(false);
@@ -223,11 +177,6 @@ public class ClientController {
         moveMotherNature();
         useCloud();
 
-        try {
-            connection.waitModelChange();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private void moveStudents(){
@@ -299,10 +248,6 @@ public class ClientController {
                     buyAndActivateCharacter();
                 }
             }
-            catch(GameReactivatedException e){
-                printMessage(e.getMessage());
-                printMessage("Please repeat your latest action");
-            }
             catch (RuntimeException e){
                 printMessage(e.getMessage());
             }
@@ -371,10 +316,6 @@ public class ClientController {
                     buyAndActivateCharacter();
                 }
             }
-            catch(GameReactivatedException e){
-                printMessage(e.getMessage());
-                printMessage("Please repeat your latest action");
-            }
             catch (RuntimeException e){
                 printMessage(e.getMessage());
             }
@@ -408,10 +349,6 @@ public class ClientController {
                 } else {
                     buyAndActivateCharacter();
                 }
-            }
-            catch(GameReactivatedException e){
-                printMessage(e.getMessage());
-                printMessage("Please repeat your latest action");
             }
             catch (RuntimeException e){
                 printMessage(e.getMessage());
@@ -448,7 +385,6 @@ public class ClientController {
     public ClientGameBoard getGameBoard(){
         return gameBoard;
     }
-
 
 
 }

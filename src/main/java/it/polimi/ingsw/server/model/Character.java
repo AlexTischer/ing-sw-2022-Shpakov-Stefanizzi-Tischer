@@ -39,7 +39,6 @@ public class Character {
     }
 
     public void reassignProfessor() {
-        //TODO what if the last student of a certain color is removed from dining room and no one else has any student of that color in the dining? Professor should be removed
 
         for (Color color: Color.values()) {
             Player leader = game.getPlayers().get(0);
