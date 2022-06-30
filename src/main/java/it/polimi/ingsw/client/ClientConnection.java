@@ -83,24 +83,28 @@ public class  ClientConnection {
     public void waitModelChange() throws IOException{
         if (isActive) {
             Object modelChange = new Object();
-
             try {
                 modelChange = socketIn.readObject();
                 clientController.changeModel((ModelChange) modelChange);
-            } catch (ClassCastException e) {
+            }
+            catch (ClassCastException e) {
                 try {
                     //after start, can receive only gameBoardChange or pong messages
                     String fromServer = (String) modelChange;
                     if (fromServer.equals("pong")) {
-                    } else {
+
+                    }
+                    else {
                         System.out.println("ClientConnection.waitModelChanges says: Error from server received: " + fromServer);
                         clientController.getGameBoard().setGameOn(false);
                     }
-                } catch (ClassCastException e2) {
+                }
+                catch (ClassCastException e2) {
                     System.out.println("ClientConnection says: Error from server side");
                     clientController.getGameBoard().setGameOn(false);
                 }
-            } catch (ClassNotFoundException e) {
+            }
+            catch (ClassNotFoundException e) {
                 System.out.println("ClientConnection says: error class not found ex");
             }
             catch (IOException e){

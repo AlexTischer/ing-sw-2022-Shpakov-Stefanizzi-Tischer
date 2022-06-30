@@ -3,6 +3,7 @@ package it.polimi.ingsw.server.controller;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.modelChange.EndOfGameChange;
 import it.polimi.ingsw.modelChange.ExceptionChange;
+import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.model.*;
 import it.polimi.ingsw.packets.Packet;
 import it.polimi.ingsw.server.model.Character;
@@ -611,8 +612,12 @@ public class Game implements GameForClient{
                     try {
                         suspended = true;
                         System.out.println("I AM GOING IN WAIT STATE. ONLY 1 PLAYER REMAINED");
-                        gameBoard.notify(new ExceptionChange(new GameSuspendedException("Wait for other players to reconnect. 60 seconds remained")));
-                        this.wait(30 * 1000);
+                        //gameBoard.notify(new ExceptionChange(new GameSuspendedException("Wait for other players to reconnect. 30 seconds remained")));
+                        //start server timer that sends gameSuspendedException each second
+                        if (!Server.isTimerActive())
+                            Server.startTimer();
+
+                        this.wait((Server.getRemainedTime()+1) * 1000);
                         System.out.println("I AM WAKEN UP");
                     } catch (InterruptedException e) {
                         //if something went wrong then finish the game
@@ -625,7 +630,7 @@ public class Game implements GameForClient{
                         gameBoard.notify(new EndOfGameChange(activePlayers.get(0).getName()));
                         return true;
                     } else {
-                        gameBoard.notify(new ExceptionChange(new EndOfChangesException()));
+                        //gameBoard.notify(new ExceptionChange(new EndOfChangesException()));
                         System.out.println("A player was reconnected or disconnected 1");
                     }
                 }
@@ -640,8 +645,11 @@ public class Game implements GameForClient{
                         try {
                             suspended = true;
                             System.out.println("I AM GOING IN WAIT STATE. ONLY 2 PLAYERS REMAINED");
-                            gameBoard.notify(new ExceptionChange(new GameSuspendedException("Wait for other players to reconnect. 60 seconds remained")));
-                            this.wait(30 * 1000);
+                            //gameBoard.notify(new ExceptionChange(new GameSuspendedException("Wait for other players to reconnect. 30 seconds remained")));
+                            if (!Server.isTimerActive())
+                                Server.startTimer();
+
+                            this.wait((Server.getRemainedTime()+1) * 1000);
                             System.out.println("I AM WAKEN UP!");
 
                         } catch (InterruptedException e) {
@@ -655,17 +663,23 @@ public class Game implements GameForClient{
                             gameBoard.notify(new EndOfGameChange(activePlayers.get(0).getName()));
                             return true;
                         } else {
-                            gameBoard.notify(new ExceptionChange(new EndOfChangesException()));
+                            //gameBoard.notify(new ExceptionChange(new EndOfChangesException()));
                             System.out.println("A player was reconnected or disconnected 2");
                         }
                     }
                 }
             }
         }
+        //the timer was started only if there were only 1 player or 1 team remained
+        //if thread exits from while and timer is still active then reset will send game activated
+        //if timer was expired then I have already executed return true and I will never arrive up to this command
+        Server.resetTimer();
 
         //if nothing from above is true then this is not yet the end of the game
         return false;
     }
+
+
 
     /**Executes an action requested from particular client*/
     public void usePacket(Packet packet){

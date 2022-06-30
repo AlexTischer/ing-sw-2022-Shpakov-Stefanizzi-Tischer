@@ -35,7 +35,7 @@ public class Connection implements Runnable{
     public void close(){
         if (isActive) {
             /*first I deregister client from server and then close socket*/
-            System.out.println("Deregistering client with ip: " + clientSocket.getRemoteSocketAddress());
+            System.out.println("Deregistering client" + name + "with ip: " + clientSocket.getRemoteSocketAddress());
 
             isActive = false;
 
@@ -59,11 +59,11 @@ public class Connection implements Runnable{
                     System.err.println(e.getMessage());
                 }
             }
-            System.out.println("Done!");
+            System.out.println("Deregistering "+name+" Done!");
         }
     }
 
-    public void send(ModelChange modelChange) {
+    public synchronized void send(ModelChange modelChange) {
         if (isActive) {
             try {
                 socketOut.writeObject(modelChange);
@@ -103,10 +103,12 @@ public class Connection implements Runnable{
                     fromClient = socketIn.readObject();
                     //if client sent ping message, then i need to respond and wait for the next input
                     if (fromClient.equals("ping")){
-                        socketOut.writeObject("pong");
-                        socketOut.flush();
-                        socketOut.reset();
-                        continue;
+                        synchronized(this) {
+                            socketOut.writeObject("pong");
+                            socketOut.flush();
+                            socketOut.reset();
+                            continue;
+                        }
                     }
 
                     System.out.println("Server received from client: " + fromClient);
@@ -122,22 +124,28 @@ public class Connection implements Runnable{
                             fromClient = socketIn.readObject();
                             //if client sent ping message, then I need to respond and wait for the next input
                             if (fromClient.equals("ping")){
-                                socketOut.writeObject("pong");
-                                socketOut.flush();
-                                socketOut.reset();
+                                synchronized (this) {
+                                    socketOut.writeObject("pong");
+                                    socketOut.flush();
+                                    socketOut.reset();
+                                }
                             }
                         }
                     }
                     catch (IllegalArgumentException e){
-                        socketOut.writeObject("This name \"" + fromClient + "\" is already used. Please chose another name");
-                        socketOut.flush();
-                        socketOut.reset();
+                        synchronized (this) {
+                            socketOut.writeObject("This name \"" + fromClient + "\" is already used. Please chose another name");
+                            socketOut.flush();
+                            socketOut.reset();
+                        }
                     }
                 }
                 catch (ClassNotFoundException | ClassCastException e) {
-                    socketOut.writeObject("The name value is incorrect. Try again");
-                    socketOut.flush();
-                    socketOut.reset();
+                    synchronized (this) {
+                        socketOut.writeObject("The name value is incorrect. Try again");
+                        socketOut.flush();
+                        socketOut.reset();
+                    }
                 }
             }
 
@@ -152,19 +160,22 @@ public class Connection implements Runnable{
                     } catch (ClassCastException | ClassNotFoundException e) {
                         try {
                             if (fromClient.equals("ping")) {
-                                //client sent ping message, server responds with pong
-                                socketOut.writeObject("pong");
-                                socketOut.flush();
-                                socketOut.reset();
+                                synchronized (this) {
+                                    //client sent ping message, server responds with pong
+                                    socketOut.writeObject("pong");
+                                    socketOut.flush();
+                                    socketOut.reset();
+                                }
                             } else {
                                 throw new IllegalArgumentException("Anomalous object received from client " + name);
                             }
                         } catch (ClassCastException | IllegalArgumentException e2) {
-                            //client sent neither packet, neither "ping" string
-                            socketOut.writeObject("The packet or ping message is incorrect.");
-                            socketOut.flush();
-                            socketOut.reset();
-                            //TODO manage exception raising if information sent from client is suspicious
+                            synchronized (this) {
+                                //client sent neither packet, neither "ping" string
+                                socketOut.writeObject("The packet or ping message is incorrect.");
+                                socketOut.flush();
+                                socketOut.reset();
+                            }
                         }
                     }
                 } else {
@@ -174,18 +185,22 @@ public class Connection implements Runnable{
                     } catch (ClassCastException | ClassNotFoundException e) {
                         try {
                             if (fromClient.equals("ping")) {
-                                //client sent ping message, server responds with pong
-                                socketOut.writeObject("pong");
-                                socketOut.flush();
-                                socketOut.reset();
+                                synchronized (this) {
+                                    //client sent ping message, server responds with pong
+                                    socketOut.writeObject("pong");
+                                    socketOut.flush();
+                                    socketOut.reset();
+                                }
                             } else {
                                 throw new IllegalArgumentException();
                             }
                         } catch (ClassCastException | IllegalArgumentException e2) {
-                            //client sent neither packet, neither "ping" string
-                            socketOut.writeObject("The ping message is incorrect. Try again");
-                            socketOut.flush();
-                            socketOut.reset();
+                            synchronized (this) {
+                                //client sent neither packet, neither "ping" string
+                                socketOut.writeObject("The ping message is incorrect. Try again");
+                                socketOut.flush();
+                                socketOut.reset();
+                            }
                         }
                     }
                 }
@@ -199,7 +214,7 @@ public class Connection implements Runnable{
         }
     }
 
-    public void sendStart() {
+    public synchronized void sendStart() {
         if (isActive) {
             try {
                 socketOut.writeObject("start");
