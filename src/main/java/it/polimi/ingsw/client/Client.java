@@ -10,8 +10,21 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
 
+/**
+ * Creates client's {@link Socket} {@link ClientGameBoard}, {@link View} (gui or cli, on user choice) and {@link ClientConnection}.
+ * Handles the first contact with the server.
+ * Contains:
+ * <ul>
+ *     <li>{@link #socket} is the socket used to communicate with the server</li>
+ *     <li>{@link #serverIp} is the ip given by the {@link it.polimi.ingsw.ClientApp} that's to be used to connect to the server</li>
+ *     <li>{@link #serverPort} is the port given by the {@link it.polimi.ingsw.ClientApp} that's to be used to connect to the server</li>
+ *     <li>{@link #model} is instance of {@link ClientGameBoard}</li>
+ *     <li>{@link #controller} is the {@link ClientController} that will handle the user moves during the match</li>
+ *     <li>{@link #view} is the instance of {@link Gui} or of {@link Cli} that the client will use to see and play the game</li>
+ *     <li>{@link #firstConnection} is a boolean used to check if the first connection with the server was made</li>
+ * </ul>
+ */
 public class Client{
-
     private Socket socket;
     private String serverIp;
     private int serverPort;
