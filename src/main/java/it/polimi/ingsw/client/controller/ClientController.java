@@ -1,21 +1,17 @@
 package it.polimi.ingsw.client.controller;
 
 import it.polimi.ingsw.client.ClientConnection;
+import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.client.model.ClientPlayer;
 import it.polimi.ingsw.client.view.View;
-import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.exceptions.*;
-import it.polimi.ingsw.modelChange.ExceptionChange;
 import it.polimi.ingsw.modelChange.ModelChange;
 import it.polimi.ingsw.packets.*;
-import it.polimi.ingsw.server.controller.Game;
 import it.polimi.ingsw.server.model.Color;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.stream.Collectors;
 
 public class ClientController {
@@ -77,7 +73,6 @@ public class ClientController {
         //can start the turn only if game is on
         if (isGameOn() && gameBoard.getCurrentPlayerName().equals(gameBoard.getClientName())) {
             //it is this client's turn
-            System.out.println("Client Controller says: this is my turn - " + connection.getName());
             if (gameBoard.getPlayer(gameBoard.getCurrentPlayerName()).getPlayedAssistant() == null) {
                 // if client's player does not have a played Assistant, it means it has to be set, and we are in planning phase.
                 planningPhase();
@@ -93,7 +88,6 @@ public class ClientController {
                 try {
                     connection.waitModelChange();
                 } catch (IOException e) {
-                    System.out.println("ClientController.startTurn says: closing connection due IOException");
                     e.printStackTrace();
                     gameBoard.setGameOn(false);
                 } catch (EndOfChangesException e) {
@@ -106,7 +100,6 @@ public class ClientController {
     }
 
     public void planningPhase() {
-        System.out.println("ClientController says: planning phase");
         boolean correctAssistant = false;
         while(!correctAssistant) {
             try {
@@ -137,7 +130,6 @@ public class ClientController {
                         this.connection.send(packet);
                     }
                     catch (IOException e) {
-                        System.out.println("ClientController.useAssistant says: closing connection due IOException");
                         e.printStackTrace();
                         gameBoard.setGameOn(false);
                     }
@@ -171,7 +163,6 @@ public class ClientController {
     }
 
     public void actionPhase() {
-        System.out.println("ClientController says: action phase");
 
         moveStudents();
         moveMotherNature();
@@ -214,7 +205,7 @@ public class ClientController {
                                         correctDestination = true;
                                         studentMoves++;
                                     } catch (IOException e) {
-                                        System.out.println("ClientController.moveStudents says: closing connection due IOException");
+                                        e.printStackTrace();
                                         gameBoard.setGameOn(false);
                                     }
                                 }
@@ -228,7 +219,7 @@ public class ClientController {
                                             correctDestination = true;
                                             studentMoves++;
                                         } catch (IOException e) {
-                                            System.out.println("ClientController.moveStudents else says: closing connection due IOException");
+                                            e.printStackTrace();
                                             gameBoard.setGameOn(false);
                                         }
                                     }
@@ -275,7 +266,7 @@ public class ClientController {
             try {
                 connection.send(new BuyCharacterPacket(i-1));
             } catch (IOException e) {
-                System.out.println("ClientController.buyCharacter says: closing connection due IOException");
+                e.printStackTrace();
                 gameBoard.setGameOn(false);
             }
         }
@@ -287,7 +278,7 @@ public class ClientController {
                 characterActivated=true;
             }
             catch (IOException e) {
-                System.out.println("ClientController.buyCharacter says: closing connection due IOException");
+                e.printStackTrace();
                 gameBoard.setGameOn(false);
             }
             catch (UnsupportedOperationException e){
@@ -309,7 +300,7 @@ public class ClientController {
                         connection.send(new MoveMotherNaturePacket(steps));
                         movedMN = true;
                     } catch (IOException e) {
-                        System.out.println("ClientController.moveMN says: closing connection due IOException");
+                        e.printStackTrace();
                         gameBoard.setGameOn(false);
                     }
                 } else {
@@ -338,7 +329,7 @@ public class ClientController {
                                 correctCloud = true;
                                 usedCloud = true;
                             } catch (IOException e) {
-                                System.out.println("ClientController.useCloud says: closing connection due IOException");
+                                e.printStackTrace();
                                 gameBoard.setGameOn(false);
                             }
                         } else {

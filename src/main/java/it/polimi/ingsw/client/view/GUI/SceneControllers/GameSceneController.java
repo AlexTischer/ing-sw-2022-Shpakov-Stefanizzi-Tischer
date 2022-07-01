@@ -15,8 +15,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import java.util.ArrayList;
 
+import java.util.ArrayList;
 
 import static it.polimi.ingsw.server.model.Color.*;
 import static javafx.scene.effect.BlurType.ONE_PASS_BOX;
@@ -1071,6 +1071,9 @@ public class GameSceneController extends SceneController {
 
             yesButton.setVisible(true);
             noButton.setVisible(true);
+
+            yesButton.setCursor(Cursor.HAND);
+            noButton.setCursor(Cursor.HAND);
 
             yesButton.setOnMouseClicked(mouseEvent -> {selectBoolean(true);});
             noButton.setOnMouseClicked(mouseEvent -> {selectBoolean(false);});

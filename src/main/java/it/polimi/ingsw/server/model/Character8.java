@@ -1,10 +1,8 @@
 package it.polimi.ingsw.server.model;
 
 import it.polimi.ingsw.client.model.ClientCharacter;
-import it.polimi.ingsw.server.controller.Game;
 import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
-
-import static java.lang.Math.abs;
+import it.polimi.ingsw.server.controller.Game;
 
 /** adds 2 to maximum number of steps */
 public class Character8 extends Character {

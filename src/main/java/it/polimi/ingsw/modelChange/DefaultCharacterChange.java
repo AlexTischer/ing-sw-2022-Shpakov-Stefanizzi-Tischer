@@ -1,7 +1,6 @@
 package it.polimi.ingsw.modelChange;
 
 import it.polimi.ingsw.client.model.ClientGameBoard;
-import it.polimi.ingsw.server.model.Character;
 import it.polimi.ingsw.server.model.Color;
 
 public class DefaultCharacterChange extends ModelChange{

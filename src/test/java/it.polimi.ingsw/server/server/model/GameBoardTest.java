@@ -1,19 +1,19 @@
 package it.polimi.ingsw.server.server.model;
 
-import it.polimi.ingsw.server.model.*;
-import it.polimi.ingsw.server.model.Character;
-import junit.framework.TestCase;
 import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 import it.polimi.ingsw.exceptions.NumOfCoinsExceeded;
 import it.polimi.ingsw.exceptions.NumOfStudentsExceeded;
 import it.polimi.ingsw.exceptions.StudentNotFoundException;
-import org.junit.jupiter.api.Test;
 import it.polimi.ingsw.server.controller.CharacterDeck;
 import it.polimi.ingsw.server.controller.Game;
+import it.polimi.ingsw.server.model.Character;
+import it.polimi.ingsw.server.model.*;
+import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class GameBoardTest extends TestCase {
 

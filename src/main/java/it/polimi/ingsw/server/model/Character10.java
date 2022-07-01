@@ -2,9 +2,9 @@ package it.polimi.ingsw.server.model;
 
 import it.polimi.ingsw.client.model.ClientCharacter;
 import it.polimi.ingsw.client.model.ClientCharacter10;
-import it.polimi.ingsw.server.controller.Game;
 import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 import it.polimi.ingsw.exceptions.NoEnoughStudentsException;
+import it.polimi.ingsw.server.controller.Game;
 
 import java.util.ArrayList;
 

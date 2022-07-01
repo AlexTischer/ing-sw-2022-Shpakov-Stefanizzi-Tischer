@@ -2,7 +2,6 @@ package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.client.controller.ClientController;
 import it.polimi.ingsw.exceptions.EndOfChangesException;
-import it.polimi.ingsw.exceptions.EndOfGameException;
 import it.polimi.ingsw.exceptions.GameReactivatedException;
 import it.polimi.ingsw.exceptions.GameSuspendedException;
 import it.polimi.ingsw.modelChange.EndOfGameChange;
@@ -10,9 +9,10 @@ import it.polimi.ingsw.modelChange.GameBoardChange;
 import it.polimi.ingsw.modelChange.LobbyChange;
 import it.polimi.ingsw.modelChange.ModelChange;
 import it.polimi.ingsw.packets.Packet;
-import it.polimi.ingsw.server.controller.Game;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class  ClientConnection {

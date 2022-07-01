@@ -2,9 +2,9 @@ package it.polimi.ingsw.server.model;
 
 import it.polimi.ingsw.client.model.ClientCharacter;
 import it.polimi.ingsw.client.model.ClientCharacter5;
-import it.polimi.ingsw.server.controller.Game;
 import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 import it.polimi.ingsw.exceptions.NoEnoughEntryTilesException;
+import it.polimi.ingsw.server.controller.Game;
 
 /**sets noEntry tiles on islands*/
 public class Character5 extends Character {

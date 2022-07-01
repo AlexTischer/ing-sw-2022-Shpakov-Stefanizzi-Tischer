@@ -3,7 +3,6 @@ package it.polimi.ingsw.modelChange;
 import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.client.model.ClientPlayer;
 import it.polimi.ingsw.exceptions.EndOfGameException;
-import it.polimi.ingsw.server.model.Player;
 
 public class EndOfGameChange extends ModelChange{
     private String winner;

@@ -1,7 +1,5 @@
 package it.polimi.ingsw.server.model;
 
-import java.util.*;
-
 /**Enumeration of Tower colors.
  * <p>Has three constants WHITE, BLACK AND GREY.</p>
  * <p>Each constant contains ansi code, label and path to the image of tower on client machine</p>*/

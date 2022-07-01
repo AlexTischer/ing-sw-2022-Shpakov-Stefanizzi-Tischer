@@ -2,10 +2,9 @@ package it.polimi.ingsw.client.view.CLI;
 
 import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.client.view.CLI.utils.AnsiKeys;
+import it.polimi.ingsw.client.view.CLI.utils.Printer;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.server.model.Color;
-
-import it.polimi.ingsw.client.view.CLI.utils.Printer;
 
 import java.io.IOException;
 import java.util.List;

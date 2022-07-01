@@ -4,6 +4,7 @@ import it.polimi.ingsw.client.model.ClientCloud;
 import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.server.model.Cloud;
 import it.polimi.ingsw.server.model.Color;
+
 import java.util.ArrayList;
 
 public class CloudChange extends ModelChange{

@@ -4,7 +4,7 @@ import it.polimi.ingsw.server.controller.CharacterDeck;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CharacterDeckTest extends TestCase {
 

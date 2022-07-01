@@ -1,10 +1,12 @@
 package it.polimi.ingsw.server.model;
 
-import java.util.*;
-
 import it.polimi.ingsw.exceptions.NoEnoughTowersException;
 import it.polimi.ingsw.exceptions.NumOfStudentsExceeded;
 import it.polimi.ingsw.exceptions.StudentNotFoundException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**This class represents a school board of the player
  * <ul>The school board has

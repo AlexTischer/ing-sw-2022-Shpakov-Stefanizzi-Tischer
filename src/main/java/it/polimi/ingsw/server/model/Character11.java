@@ -2,8 +2,8 @@ package it.polimi.ingsw.server.model;
 
 import it.polimi.ingsw.client.model.ClientCharacter;
 import it.polimi.ingsw.client.model.ClientCharacter11;
-import it.polimi.ingsw.server.controller.Game;
 import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
+import it.polimi.ingsw.server.controller.Game;
 
 public class Character11 extends Character {
     /*Removes 3 Students of studentColor from each player`s Dining*/

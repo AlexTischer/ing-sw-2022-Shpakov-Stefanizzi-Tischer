@@ -1,6 +1,5 @@
 package it.polimi.ingsw.client.view.GUI;
 
-import static it.polimi.ingsw.client.view.GUI.FXMLPaths.WaitingForConfigurationScene;
 import it.polimi.ingsw.client.view.GUI.SceneControllers.SceneController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -8,10 +7,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+
 import java.io.IOException;
+
+import static it.polimi.ingsw.client.view.GUI.FXMLPaths.WaitingForConfigurationScene;
 
 
 

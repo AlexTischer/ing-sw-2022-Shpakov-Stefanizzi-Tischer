@@ -4,7 +4,10 @@ import it.polimi.ingsw.client.model.ClientCharacter;
 import it.polimi.ingsw.client.model.ClientCharacter7;
 import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**Swaps selectedStudents from Dining with toBeSwappedStudents from Entrance in currentPlayer`s schoolBoard **/
 public class Character7 extends Character {

@@ -1,7 +1,6 @@
 package it.polimi.ingsw.packets;
 
 import it.polimi.ingsw.server.controller.GameForClient;
-import it.polimi.ingsw.server.model.Color;
 
 public class BuyCharacterPacket extends Packet{
 

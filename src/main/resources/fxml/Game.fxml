@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.Group?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
-<?import javafx.scene.text.TextFlow?>
-
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import java.util.ArrayList?>
 <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-alignment: center;  -fx-background-image: url('/images/misc/background.jpg'); -fx-background-position: center center; -fx-background-repeat: no-repeat; -fx-background-size: cover;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -1148,12 +1137,12 @@
                            </image>
                         </ImageView>
                      </children></HBox>
-                  <Button fx:id="yesButton" layoutX="1072.0" layoutY="650.0" mnemonicParsing="false" prefHeight="8.0" prefWidth="30.0" text="Yes" visible="false">
+                  <Button fx:id="yesButton" layoutX="1072.0" layoutY="650.0" mnemonicParsing="false" prefHeight="8.0" prefWidth="30.0" style="-fx-background-image: url('/images/misc/tick.png'); -fx-background-color: transparent; -fx-background-size: 100% 100%; -fx-background-position: center; -fx-background-repeat: no-repeat" visible="false">
                      <font>
                         <Font size="10.0" />
                      </font>
                   </Button>
-                  <Button fx:id="noButton" layoutX="1152.0" layoutY="650.0" mnemonicParsing="false" prefHeight="8.0" prefWidth="30.0" text="No" visible="false">
+                  <Button fx:id="noButton" layoutX="1152.0" layoutY="650.0" mnemonicParsing="false" prefHeight="8.0" prefWidth="30.0" style="-fx-background-image: url('/images/misc/cross.png'); -fx-background-color: transparent; -fx-background-size: 100% 100%; -fx-background-position: center; -fx-background-repeat: no-repeat" visible="false">
                      <font>
                         <Font size="10.0" />
                      </font>

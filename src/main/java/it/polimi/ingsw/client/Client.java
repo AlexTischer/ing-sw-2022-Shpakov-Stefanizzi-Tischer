@@ -5,7 +5,6 @@ import it.polimi.ingsw.client.model.ClientGameBoard;
 import it.polimi.ingsw.client.view.CLI.Cli;
 import it.polimi.ingsw.client.view.GUI.Gui;
 import it.polimi.ingsw.client.view.View;
-import javafx.application.Application;
 
 import java.io.IOException;
 import java.net.Socket;

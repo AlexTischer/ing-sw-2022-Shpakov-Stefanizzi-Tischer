@@ -6,7 +6,6 @@ import it.polimi.ingsw.packets.ActivateCharacterPacket;
 import it.polimi.ingsw.server.model.Color;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class ClientCharacter9 extends ClientCharacter{
 

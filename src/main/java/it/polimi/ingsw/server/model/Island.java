@@ -2,7 +2,8 @@ package it.polimi.ingsw.server.model;
 
 import it.polimi.ingsw.exceptions.NoEntryException;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**This class represents an island
  * <ul>

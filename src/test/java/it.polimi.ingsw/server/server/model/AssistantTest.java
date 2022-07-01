@@ -1,10 +1,11 @@
 package it.polimi.ingsw.server.server.model;
-import junit.framework.TestCase;
-import org.junit.jupiter.api.Test;
+
 import it.polimi.ingsw.server.model.Assistant;
 import it.polimi.ingsw.server.model.AssistantType;
+import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AssistantTest extends TestCase{
 

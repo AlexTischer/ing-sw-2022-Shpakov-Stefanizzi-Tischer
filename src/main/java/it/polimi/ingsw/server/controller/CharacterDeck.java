@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server.controller;
 
-import it.polimi.ingsw.server.model.*;
 import it.polimi.ingsw.server.model.Character;
+import it.polimi.ingsw.server.model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;

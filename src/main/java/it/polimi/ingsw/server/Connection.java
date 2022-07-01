@@ -6,9 +6,10 @@ import it.polimi.ingsw.modelChange.ModelChange;
 import it.polimi.ingsw.packets.Packet;
 import it.polimi.ingsw.server.controller.Game;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Locale;
 
 //This class is clientHandler that manages client on a separate thread
 public class Connection implements Runnable{

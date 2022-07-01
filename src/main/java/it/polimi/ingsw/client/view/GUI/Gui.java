@@ -6,7 +6,6 @@ import it.polimi.ingsw.client.view.GUI.SceneControllers.GameSceneController;
 import it.polimi.ingsw.client.view.GUI.SceneControllers.LoginSceneController;
 import it.polimi.ingsw.client.view.View;
 import it.polimi.ingsw.server.model.Color;
-import it.polimi.ingsw.server.model.Player;
 import javafx.application.Platform;
 
 import java.io.IOException;
@@ -40,7 +39,6 @@ public class Gui extends View {
         Platform.runLater(()->{
             synchronized (this) {
                 try {
-                    System.out.println("setting configuration page");
                     GuiApp.setRoot(ConfigurationScene.getPath());
                     notifyAll();
                 } catch (IOException e) {
@@ -58,21 +56,18 @@ public class Gui extends View {
         Platform.runLater(()-> {
             synchronized (this) {
                 configurationSceneController = (ConfigurationSceneController) GuiApp.getCurrentController();
-                System.out.println(configurationSceneController.toString());
                 this.notifyAll();
             }
         });
 
         while(configurationSceneController == null){
             try {
-                System.out.println("waiting configurationSceneController");
                 this.wait();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        System.out.println("configController received, notified");
 
 
         synchronized (configurationSceneController) {
@@ -130,7 +125,6 @@ public class Gui extends View {
         synchronized (gameSceneController) {
             while (!gameSceneController.isAskingDone()) {
                 try {
-                    System.out.println("waiting assistantRank");
                     gameSceneController.wait();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -153,7 +147,6 @@ public class Gui extends View {
         synchronized (gameSceneController) {
             while (!gameSceneController.isAskingDone()) {
                 try {
-                    System.out.println("waiting studentColor");
                     gameSceneController.wait();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -177,7 +170,6 @@ public class Gui extends View {
 
             while (!gameSceneController.isAskingDone()) {
                 try {
-                    System.out.println("waiting studentColor from character");
                     gameSceneController.wait();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -200,7 +192,6 @@ public class Gui extends View {
 
             while (!gameSceneController.isAskingDone()) {
                 try {
-                    System.out.println("waiting studentColor from entrance");
                     gameSceneController.wait();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -224,7 +215,6 @@ public class Gui extends View {
 
             while (!gameSceneController.isAskingDone()) {
                 try {
-                    System.out.println("waiting studentColor from box");
                     gameSceneController.wait();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -242,7 +232,6 @@ public class Gui extends View {
     @Override
     public synchronized Color askStudentColorFromDiningRoom() {
 
-        System.out.println("Asking Done è " + gameSceneController.isAskingDone());
 
         if(!gameSceneController.isAskingDone()) {
             gameSceneController.askStudentColorFromDiningRoom();
@@ -252,7 +241,6 @@ public class Gui extends View {
 
             while (!gameSceneController.isAskingDone()) {
                 try {
-                    System.out.println("waiting studentColor from diningRoom");
                     gameSceneController.wait();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -275,7 +263,6 @@ public class Gui extends View {
         synchronized (gameSceneController) {
             while (!gameSceneController.isAskingDone()) {
                 try {
-                    System.out.println("waiting studentDestination");
                     gameSceneController.wait();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -294,7 +281,6 @@ public class Gui extends View {
             Platform.runLater(() -> {
                 synchronized (this) {
                     try {
-                        System.out.println("setting game page");
                         GuiApp.setRoot(GameScene.getPath());
                         notifyAll();
                     } catch (IOException e) {
@@ -313,19 +299,16 @@ public class Gui extends View {
             Platform.runLater(() -> {
                 synchronized (this) {
                     gameSceneController = (GameSceneController) GuiApp.getCurrentController();
-                    System.out.println(gameSceneController.toString());
                     this.notifyAll();
                 }
             });
             while (gameSceneController == null) {
                 try {
-                    System.out.println("waiting gameSceneController");
                     this.wait();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
-            System.out.println("gameSceneController received, notified");
         }
 
         gameSceneController.showModel(gameBoard);
@@ -340,7 +323,6 @@ public class Gui extends View {
             synchronized (gameSceneController) {
                 while (!gameSceneController.isAskingDone()) {
                     try {
-                        System.out.println("GUI: chooseActionStudent: waiting studentAction");
                         gameSceneController.wait();
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
@@ -366,7 +348,6 @@ public class Gui extends View {
             synchronized (gameSceneController) {
                 while (!gameSceneController.isAskingDone()) {
                     try {
-                        System.out.println("waiting motherNatureAction");
                         gameSceneController.wait();
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
@@ -391,7 +372,6 @@ public class Gui extends View {
         synchronized (gameSceneController) {
             while (!gameSceneController.isAskingDone()) {
                 try {
-                    System.out.println("waiting MotherNatureSteps");
                     gameSceneController.wait();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -413,7 +393,6 @@ public class Gui extends View {
             synchronized (gameSceneController) {
                 while (!gameSceneController.isAskingDone()) {
                     try {
-                        System.out.println("waiting cloudAction");
                         gameSceneController.wait();
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
@@ -439,7 +418,6 @@ public class Gui extends View {
         synchronized (gameSceneController) {
             while (!gameSceneController.isAskingDone()) {
                 try {
-                    System.out.println("waiting Cloud Number");
                     gameSceneController.wait();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -486,7 +464,6 @@ public class Gui extends View {
         synchronized (gameSceneController) {
             while (!gameSceneController.isAskingDone()) {
                 try {
-                    System.out.println("waiting StudentDestination");
                     gameSceneController.wait();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -503,7 +480,6 @@ public class Gui extends View {
         if(loginSceneController ==null) {
             Platform.runLater(() -> {
                 try {
-                    System.out.println("setting login page");
                     GuiApp.setRoot(LoginScene.getPath());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -513,19 +489,16 @@ public class Gui extends View {
             Platform.runLater(() -> {
                 synchronized (this) {
                     loginSceneController = (LoginSceneController) GuiApp.getCurrentController();
-                    System.out.println(loginSceneController.toString());
                     this.notifyAll();
                 }
             });
             while (loginSceneController == null) {
                 try {
-                    System.out.println("waiting loginSceneController");
                     this.wait();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
-            System.out.println("loginSceneController received, notified");
         }
 
         loginSceneController.update(userNames);
@@ -540,7 +513,6 @@ public class Gui extends View {
         synchronized (gameSceneController) {
             while (!gameSceneController.isAskingDone()) {
                 try {
-                    System.out.println("waiting Boolean");
                     gameSceneController.wait();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);

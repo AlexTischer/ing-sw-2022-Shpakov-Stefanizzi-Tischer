@@ -3,12 +3,11 @@ package it.polimi.ingsw.client.view.GUI.SceneControllers;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
-
 
 import java.util.ArrayList;
 import java.util.List;

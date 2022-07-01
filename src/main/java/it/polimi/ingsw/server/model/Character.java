@@ -1,16 +1,12 @@
 package it.polimi.ingsw.server.model;
 
 import it.polimi.ingsw.client.model.ClientCharacter;
-import it.polimi.ingsw.exceptions.EndOfChangesException;
-import it.polimi.ingsw.modelChange.ExceptionChange;
-import it.polimi.ingsw.server.controller.Game;
 import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
 import it.polimi.ingsw.exceptions.NoEnoughStudentsException;
 import it.polimi.ingsw.exceptions.NoEntryException;
+import it.polimi.ingsw.server.controller.Game;
 
 import java.util.ArrayList;
-
-import static java.lang.Math.abs;
 
 public class Character {
     protected Game game;

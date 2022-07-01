@@ -1,12 +1,11 @@
 package it.polimi.ingsw.client.model;
 
 
+import it.polimi.ingsw.client.view.View;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import it.polimi.ingsw.client.view.View;
 public class ClientGameBoard {
     private View view;
     private List<ClientIsland> islands;
@@ -40,7 +39,6 @@ public class ClientGameBoard {
 
     public void setIslands(List<ClientIsland> islands) {
         this.islands = islands;
-        System.out.println("setting islands");
     }
 
     public List<ClientCloud> getClouds() {
@@ -51,7 +49,6 @@ public class ClientGameBoard {
 
     public void setClouds(List<ClientCloud> clouds) {
         this.clouds = clouds;
-        System.out.println("setting clouds");
     }
 
     public ClientCharacter getCurrentCharacter() {
@@ -60,8 +57,6 @@ public class ClientGameBoard {
 
     public void setCurrentCharacter(int currentCharacter) {
         this.currentCharacter = currentCharacter;
-
-        System.out.println("setting current Character");
     }
 
     public ClientCharacter[] getPlayedCharacters() {
@@ -70,8 +65,6 @@ public class ClientGameBoard {
 
     public void setPlayedCharacters(ClientCharacter[] playedCharacters) {
         this.playedCharacters = playedCharacters;
-
-        System.out.println("setting played character");
     }
 
     public int getPositionOfMotherNature() {
@@ -80,8 +73,6 @@ public class ClientGameBoard {
 
     public void setPositionOfMotherNature(int positionOfMotherNature) {
         this.positionOfMotherNature = positionOfMotherNature;
-
-        System.out.println("setting position of MN");
     }
 
     public void printMessage(String message){
@@ -93,8 +84,6 @@ public class ClientGameBoard {
 
     public void setNumOfCoins(int numOfCoins) {
         this.numOfCoins = numOfCoins;
-
-        System.out.println("setting numOfCoins");
     }
 
     public String getCurrentPlayerName() {
@@ -132,8 +121,6 @@ public class ClientGameBoard {
         if (statusChanged) {
             showOnView();
         }
-
-        System.out.println("setting players");
     }
 
     public void setPlayerStatus(String name, boolean connectionStatus) {
@@ -152,7 +139,6 @@ public class ClientGameBoard {
 
         view.showLobby(userNames);
 
-        System.out.println("setting userNames");
     }
 
     public void attachView(View view){
@@ -161,7 +147,6 @@ public class ClientGameBoard {
 
     public void setClientName(String clientName) {
         this.clientName = clientName;
-        System.out.println("setting client name");
     }
 
     public boolean isGameOn() {

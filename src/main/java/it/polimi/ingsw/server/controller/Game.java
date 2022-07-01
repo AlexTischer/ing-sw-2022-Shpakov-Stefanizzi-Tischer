@@ -3,10 +3,10 @@ package it.polimi.ingsw.server.controller;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.modelChange.EndOfGameChange;
 import it.polimi.ingsw.modelChange.ExceptionChange;
-import it.polimi.ingsw.server.Server;
-import it.polimi.ingsw.server.model.*;
 import it.polimi.ingsw.packets.Packet;
+import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.model.Character;
+import it.polimi.ingsw.server.model.*;
 
 import java.security.InvalidParameterException;
 import java.util.*;
