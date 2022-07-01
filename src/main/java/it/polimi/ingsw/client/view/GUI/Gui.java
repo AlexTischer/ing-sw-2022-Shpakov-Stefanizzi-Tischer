@@ -432,24 +432,6 @@ public class Gui extends View {
     @Override
     public int askCharacterNumber() {
 
-        /*
-        if(!gameSceneController.isAskingDone()) {
-            gameSceneController.askCharacterNumber();
-        }
-
-            synchronized (gameSceneController) {
-                while (!gameSceneController.isAskingDone()) {
-                    try {
-                        System.out.println("waiting Character Number");
-                        gameSceneController.wait();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-
-         */
-
         gameSceneController.setAskingDone(false);
         return gameSceneController.getCharacterNumber();
     }

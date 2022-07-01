@@ -968,7 +968,6 @@ public class GameSceneController extends SceneController {
     public void askStudentColorFromCharacter() {
 
         Platform.runLater(()->{
-            //dialogText.setText("Select a student from the card");
 
             //enabling students on characters
             enableCharactersStudents();
@@ -980,8 +979,6 @@ public class GameSceneController extends SceneController {
 
         Platform.runLater(()->{
 
-            //dialogText.setText("Select the color you want to not count for influence");
-
             //enabling askColorBox and students for mouse clicking
             enableAskColorBox();
 
@@ -991,7 +988,6 @@ public class GameSceneController extends SceneController {
     public void askStudentColorFromDiningRoom(){
 
         Platform.runLater(()->{
-            //dialogText.setText("Select the student in your dining room you want to swap");
 
             //enabling students in dining room
             enableDiningRoomStudents();
@@ -1020,7 +1016,6 @@ public class GameSceneController extends SceneController {
         Platform.runLater(()->{
 
             //called by character cards for positioning a student or an entry tile
-            //dialogText.setText("Select an island as the destination");
             enableIslandsForDestination();
         });
 
@@ -1274,7 +1269,6 @@ public class GameSceneController extends SceneController {
         ds.setBlurType( ONE_PASS_BOX);
         if (bool) {
             imageView.setEffect(ds);
-            //setStyle("fx-border-color: #efff00; -fx-border-width: 20; -fx-border-radius: 0");
         }
         else{
             ds.setColor(javafx.scene.paint.Color.TRANSPARENT);
@@ -1287,7 +1281,6 @@ public class GameSceneController extends SceneController {
         ds.setBlurType( ONE_PASS_BOX);
         if (lightOn) {
             imageView.setEffect(ds);
-            //setStyle("fx-border-color: #efff00; -fx-border-width: 20; -fx-border-radius: 0");
 
         } else {
             ds.setColor(javafx.scene.paint.Color.TRANSPARENT);

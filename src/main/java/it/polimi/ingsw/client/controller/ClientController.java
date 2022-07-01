@@ -32,11 +32,6 @@ public class ClientController {
         this.view = view;
     }
 
-    //gets executed when connection is lost
-    public void detachConnection(){
-        this.connection = null;
-    }
-
     public void changeModel(ModelChange change){
         try {
             change.execute(gameBoard);

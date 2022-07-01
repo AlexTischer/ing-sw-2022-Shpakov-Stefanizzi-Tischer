@@ -11,8 +11,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AssistantDeckTest extends TestCase {
-    //AssistantFactory assistantFactory = new AssistantFactory();
-    //AssistantDeck assistantDeck = assistantFactory.getAssistantDeck();
 
     AssistantDeck assistantDeck = new AssistantDeck();
 

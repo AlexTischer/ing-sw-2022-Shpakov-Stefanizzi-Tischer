@@ -51,12 +51,9 @@ public class GameBoard extends Observable<ModelChange> {
 
         maxNumOfStudentsInEntrance = numOfPlayers == 3 ? 9 : 7;
 
-        //assistantDeck = new AssistantFactory().getAssistantDeck();
         assistantDeck = new AssistantDeck();
 
         numOfCoins = 20-numOfPlayers;
-
-
     }
 
     public int getMaxNumOfStudentsInEntrance() {
@@ -119,8 +116,7 @@ public class GameBoard extends Observable<ModelChange> {
     public void sendGameBoardChange() {
         GameBoardChange gameBoardChange = new GameBoardChange(this, game.getPlayers());
         notify(gameBoardChange);
-        //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        //notify(exceptionChange);
+
     }
 
     public void moveMotherNature(int steps) {
@@ -131,8 +127,7 @@ public class GameBoard extends Observable<ModelChange> {
 
         MotherNatureChange motherNatureChange = new MotherNatureChange(positionOfMotherNature);
         notify(motherNatureChange);
-        //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        //notify(exceptionChange);
+
     }
 
     public Player getCurrentPlayer() {
@@ -170,8 +165,7 @@ public class GameBoard extends Observable<ModelChange> {
         islands.get(islandNumber).addStudent(studentColor);
         IslandChange islandChange = new IslandChange(islands.get(islandNumber), islandNumber);
         notify(islandChange);
-        //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        //notify(exceptionChange);
+
     }
 
     public void useCloud(int cloudNumber) {
@@ -201,8 +195,7 @@ public class GameBoard extends Observable<ModelChange> {
         notify(schoolBoardChange);
 
         //does not send endOfChanges because after useCloud current player should change
-        //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        //notify(exceptionChange);
+
     }
 
     public int getNumOfIslands() {
@@ -250,8 +243,7 @@ public class GameBoard extends Observable<ModelChange> {
         if(oldNumOfIslands != islands.size()) {
             IslandsChange islandsChange = new IslandsChange(islands);
             notify(islandsChange);
-            //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-            //notify(exceptionChange);
+
         }
     }
     /*returns the score of the player on particular island*/
@@ -264,16 +256,14 @@ public class GameBoard extends Observable<ModelChange> {
         player.addProfessor(color);
         SchoolBoardChange schoolBoardChange = new SchoolBoardChange(player);
         notify(schoolBoardChange);
-        //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        //notify(exceptionChange);
+
     }
 
     public void removeProfessor(Player player, Color color) {
         player.removeProfessor(color);
         SchoolBoardChange schoolBoardChange = new SchoolBoardChange(player);
         notify(schoolBoardChange);
-        //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        //notify(exceptionChange);
+
     }
 
     public void addStudentToEntrance(Player player, Color studentColor) {
@@ -282,8 +272,7 @@ public class GameBoard extends Observable<ModelChange> {
             player.addStudentToEntrance(studentColor);
             SchoolBoardChange schoolBoardChange = new SchoolBoardChange(player);
             notify(schoolBoardChange);
-            //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-            //notify(exceptionChange);
+
         }
         else
             throw new NumOfStudentsExceeded();
@@ -295,8 +284,7 @@ public class GameBoard extends Observable<ModelChange> {
             islands.get(islandNumber).setTowersColor(player.getTowerColor());
             IslandChange islandChange = new IslandChange(islands.get(islandNumber), islandNumber);
             notify(islandChange);
-            //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-            //notify(exceptionChange);
+
         }
         catch (UnsupportedOperationException e){
             /*there were no towers on island*/
@@ -310,24 +298,21 @@ public class GameBoard extends Observable<ModelChange> {
         player.removeStudentFromEntrance(studentColor);
         SchoolBoardChange schoolBoardChange = new SchoolBoardChange(player);
         notify(schoolBoardChange);
-        //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        //notify(exceptionChange);
+
     }
 
     public void addStudentToDining(Player player, Color studentColor) throws NumOfStudentsExceeded {
         player.addStudentToDining(studentColor);
         SchoolBoardChange schoolBoardChange = new SchoolBoardChange(player);
         notify(schoolBoardChange);
-        //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        //notify(exceptionChange);
+
     }
 
     public void removeStudentFromDining(Player player, Color studentColor) {
         player.removeStudentFromDining(studentColor);
         SchoolBoardChange schoolBoardChange = new SchoolBoardChange(player);
         notify(schoolBoardChange);
-        //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        //notify(exceptionChange);
+
     }
 
     public void getCoinFromBank() throws NoEnoughCoinsException {
@@ -336,8 +321,7 @@ public class GameBoard extends Observable<ModelChange> {
         numOfCoins--;
         CoinsOfGameBoardChange coinsOfGameBoardChange = new CoinsOfGameBoardChange(numOfCoins);
         notify(coinsOfGameBoardChange);
-        //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        //notify(exceptionChange);
+
     }
 
     public void addCoinsToBank(int numOfCoins) throws NumOfCoinsExceeded {
@@ -347,8 +331,7 @@ public class GameBoard extends Observable<ModelChange> {
         this.numOfCoins+=numOfCoins;
         CoinsOfGameBoardChange coinsOfGameBoardChange = new CoinsOfGameBoardChange(this.numOfCoins);
         notify(coinsOfGameBoardChange);
-        //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        //notify(exceptionChange);
+
     }
 
     public void setNoEntry(int islandNumber, boolean noEntry) throws NoEntryException, NoEnoughEntryTilesException {
@@ -358,8 +341,7 @@ public class GameBoard extends Observable<ModelChange> {
         islands.get(islandNumber).setNoEntry(noEntry);
         IslandChange islandChange = new IslandChange(islands.get(islandNumber), islandNumber);
         notify(islandChange);
-        //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        //notify(exceptionChange);
+
     }
 
     public Color getStudentFromBag() {
@@ -373,9 +355,6 @@ public class GameBoard extends Observable<ModelChange> {
         playedCharacters[characterNumber].buy();
 
         currentCharacter=playedCharacters[characterNumber];
-
-        /*CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
-        notify(characterChange);*/
 
         CharactersChange charactersChange = new CharactersChange(playedCharacters);
         notify(charactersChange);
@@ -401,8 +380,7 @@ public class GameBoard extends Observable<ModelChange> {
 
         CoinsOfPlayerChange coinsOfPlayerChange = new CoinsOfPlayerChange(player);
         notify(coinsOfPlayerChange);
-        //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        //notify(exceptionChange);
+
     }
 
     public void activateCharacter(int islandNumber) {
@@ -413,8 +391,6 @@ public class GameBoard extends Observable<ModelChange> {
         currentCharacter.execute();
         //execute generates necessary modelChanges
 
-        /*CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
-        notify(characterChange);*/
 
         CharactersChange charactersChange = new CharactersChange(playedCharacters);
         notify(charactersChange);
@@ -431,8 +407,6 @@ public class GameBoard extends Observable<ModelChange> {
         currentCharacter.setToBeSwappedStudents(toBeSwappedStudents);
         currentCharacter.execute();
 
-        /*CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
-        notify(characterChange);*/
 
         CharactersChange charactersChange = new CharactersChange(playedCharacters);
         notify(charactersChange);
@@ -451,8 +425,6 @@ public class GameBoard extends Observable<ModelChange> {
         currentCharacter.setSelectedIslandNumber(islandNumber);
         currentCharacter.execute();
 
-        /*CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
-        notify(characterChange);*/
 
         CharactersChange charactersChange = new CharactersChange(playedCharacters);
         notify(charactersChange);
@@ -466,9 +438,6 @@ public class GameBoard extends Observable<ModelChange> {
     public void activateCharacter(Color color) {
         currentCharacter.setSelectedStudent(color);
         currentCharacter.execute();
-
-        /*CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
-        notify(characterChange);*/
 
         CharactersChange charactersChange = new CharactersChange(playedCharacters);
         notify(charactersChange);
@@ -491,8 +460,7 @@ public class GameBoard extends Observable<ModelChange> {
         currentCharacter=character;
         DefaultCharacterChange characterChange = new DefaultCharacterChange();
         notify(characterChange);
-        /*ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        notify(exceptionChange);*/
+
     }
 
     public void addNoEntryTile() {
@@ -501,8 +469,7 @@ public class GameBoard extends Observable<ModelChange> {
         }
         CharactersChange charactersChange = new CharactersChange(playedCharacters);
         notify(charactersChange);
-        //ExceptionChange exceptionChange = new ExceptionChange(new EndOfChangesException());
-        //notify(exceptionChange);
+
     }
 
     public void addStudentToBag(Color studentColor){

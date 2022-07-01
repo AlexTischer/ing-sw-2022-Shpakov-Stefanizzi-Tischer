@@ -71,7 +71,6 @@ public class Connection implements Runnable{
                 socketOut.flush();
                 socketOut.reset();
             } catch (IOException e) {
-                //e.printStackTrace();
                 System.out.println("Caught IO Exception");
                 this.close();
             }

@@ -24,7 +24,6 @@ public class SceneController {
     }
 
     public ImageView loadImageView(String path, int width, int height){
-        //Image image = new Image(getClass().getResourceAsStream(path));
 
         Image image = new Image(path);
 
@@ -37,7 +36,6 @@ public class SceneController {
 
     public Image loadImage(String path){
 
-        //Image image = new Image(getClass().getResourceAsStream(path));
 
         Image image = new Image(path);
 
