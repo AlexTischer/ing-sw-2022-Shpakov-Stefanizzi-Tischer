@@ -258,8 +258,17 @@ public class Game implements GameForClient{
     }
 
     /**Starts a new turn for a player which consists of
-     * Setting this player as a current
-     * Accepting actions related to studentMove, motherNatureMove, useCloudMove and eventually characterUsed*/
+     * <ul>
+     *      <li>Setting this player as a current. See {@link GameBoard#setCurrentPlayer(Player)} method</li>
+     *      <li>
+     *          Accepting actions that modify studentMove, motherNatureMove, useCloudMove and eventually characterUsed
+     *          <p>Note: Game thread goes in wait before receiving an action from client. That action wakes up this thread</p>
+     *      </li>
+     *      <li>
+     *          Resets following counters and flags related to the current player's actions
+     *          {@link #studentMove}, {@link #motherNatureMove}, {@link #useCloudMove}, {@link #characterUsed}
+     *      </li>
+     * </ul>*/
     private void newTurn(Player p) throws InterruptedException {
         /*virtual view controls current player before forwarding any method to controller*/
         gameBoard.setCurrentPlayer(p);
@@ -278,14 +287,28 @@ public class Game implements GameForClient{
         characterUsed = false;
     }
 
+    /**
+     * Calls {@link GameBoard#getCurrentPlayer()} method
+     *
+     * @return current player*/
     public Player getCurrentPlayer(){
         return gameBoard.getCurrentPlayer();
     }
 
+    /**
+     * @return  {@link #players}*/
     public ArrayList<Player> getPlayers() {
         return players;
     }
 
+    /**
+     * This method can be executed only when game thread goes in wait for a player`s action
+     * <p>Calls {@link GameBoard#setPlayedAssistantRank(int, Player)} method and wakes up game thread
+     * so that it can wait assistant from the next player or pass to the action phase</p>
+     * @param assistantRank  rank of the assistant that player wants to play
+     * @throws IllegalArgumentException  if assistantRank is less than 1 or greater than 10
+     * @throws RepeatedAssistantRankException  if {@link #checkAssistant(int, Player)} returns <code>false</code>
+     * */
     public synchronized void useAssistant(int assistantRank){
         if (assistantRank < 1 || assistantRank > 10){
             throw new IllegalArgumentException("Assistant rank value is wrong");
@@ -302,7 +325,24 @@ public class Game implements GameForClient{
         this.notifyAll();
     }
 
-    /*check whether a player can play an assistant with a certain rank*/
+    /**
+     * <p>Check whether an input player can play an assistant with an assistantRank</p>
+     * <ul>
+     *     Player can play an assistant with a certain rank if the following conditions get satisfied
+     *     <li>
+     *         There is an assistant with such rank in his hand {@link Player#assistants}
+     *     </li>
+     *     <li>
+     *         The rank is different from ranks already played by other players in the {@link #newRound()}
+     *         or the player has no other option than playing an assistant already played by someone else
+     *         <p>Note: In this case however a player is put on the last position in {@link #players} after sorting
+     *         in {@link #newRound()}</p>
+     *     </li>
+     * </ul>
+     * @param  assistantRank rank of assistant that player wants to play
+     * @param  player  player that wants to play an assistant
+     * @return  <code>true </code>if player can play an assistant with assistantRank, <code>false</code> otherwise
+     * */
     private boolean checkAssistant(int assistantRank, Player player){
         Set<Integer> playedAssistantsRanks = players.stream().filter(p -> p!=player && p.getPlayedAssistant()!=null).
                 map(p -> p.getPlayedAssistant().getRank()).collect(Collectors.toSet());
@@ -324,6 +364,19 @@ public class Game implements GameForClient{
         return true;
     }
 
+    /**
+     * <ul>
+     * This method can be executed only when game thread goes in wait for a player`s action
+     * <li>Calls {@link GameBoard#addStudentToIsland(Player, Color, int)} method passing <code>currentPlayer</code> as a parameter</li>
+     * <li>Increments {@link #studentMove} counter</li>
+     * <li>Wakes up game thread so that it can pass to the next step of action phase</li>
+     * </ul>
+     * @param studentColor  color of the student that currentPlayer wants to move
+     * @param islandNumber  index of the island that that currentPlayer wants to move student on
+     * @throws WrongActionException  if player has already moved required number of students during his turn
+     * @throws IllegalArgumentException  if islandNumber is less than 0 or greater than number of available islands - 1
+     * @throws StudentNotFoundException  if there is no student of such color in entrance of player`s school board
+     * */
     public synchronized void moveStudentToIsland(Color studentColor, int islandNumber){
         if (studentMove > (players.size() == 3? 4: 3))
             throw new WrongActionException("You have already moved all students");
@@ -333,6 +386,20 @@ public class Game implements GameForClient{
         this.notifyAll();
     }
 
+    /**
+     * <ul>
+     * This method can be executed only when game thread goes in wait for a client action
+     * <li>Removes student of studentColor from dining of <code>currentPlayer</code> by calling {@link #removeStudentFromEntrance(Color)}</li>
+     * <li>Adds student of studentColor in dining of <code>currentPlayer</code> by calling {@link #addStudentToDining(Player, Color)}</li>
+     * <li>Increments {@link #studentMove} counter</li>
+     * <li>Wakes up game thread so that it can pass to the next step of action phase</li>
+     * </ul>
+     * @param studentColor  color of the student that currentPlayer wants to move in dining room
+     * @throws WrongActionException  if player has already moved required number of students during his turn
+     * @throws NumOfStudentsExceeded  if there is no free space in dining room for that studentColor
+     * @throws StudentNotFoundException  if there is no student of such color in entrance of player`s school board
+     * @throws NoEnoughCoinsException  if GameBoard bank has run out of coins
+     * */
     public synchronized void moveStudentToDining(Color studentColor){
         if (studentMove > (players.size() == 3? 4: 3))
             throw new WrongActionException("You have already moved all students");
@@ -343,6 +410,21 @@ public class Game implements GameForClient{
         this.notifyAll();
     }
 
+    /**
+     * <ul>
+     * <li>Adds student to dining room of input player`s school board by calling
+     * {@link GameBoard#addStudentToDining(Player, Color)}</li>
+     * <li>If {@link #advancedSettings} is equal to true, pays 1 coin if 3rd, 6th or 9th student
+     * of that color was put in dining room by calling {@link GameBoard#addCoinsToPlayer(Player, int)}</li>
+     * <li>Calls {@link #reassignProfessor()} to check whether professors` owners changed</li>
+     * <li>Generates {@link EndOfChangesException} and sends it to all active players by calling {@link it.polimi.ingsw.utils.Observable#notify(Object)}
+     * after any other <code>ModelChange</code> generated and sent from the methods above</li>
+     * </ul>
+     * @param player  player that wants to add a student to it`s dining room
+     * @param studentColor  color of the student that player wants to add in dining
+     * @throws NumOfStudentsExceeded  if there is no free space in dining room for that studentColor
+     * @throws NoEnoughCoinsException  if GameBoard bank has run out of coins
+     * */
     public void addStudentToDining(Player player, Color studentColor){
         gameBoard.addStudentToDining(player, studentColor);
 
@@ -355,22 +437,70 @@ public class Game implements GameForClient{
         gameBoard.notify(new ExceptionChange(new EndOfChangesException()));
     }
 
+    /**
+     * Adds student to an island by calling {@link GameBoard#addStudentToIsland(Color, int)}
+     * @param studentColor  color of the student to add to an island
+     * @param islandNumber  index of an island that student must be added to
+     * @throws IllegalArgumentException  if islandNumber is index that is out of bound in {@link GameBoard#islands} list
+     * */
     public void addStudentToIsland(Color studentColor, int islandNumber){
         gameBoard.addStudentToIsland(studentColor, islandNumber);
     }
 
+    /**
+     * Removes student of studentColor from current players`s {@link SchoolBoard} entrance
+     * by calling {@link GameBoard#removeStudentFromEntrance(Player, Color)} passing
+     * <code>currentPlayer</code> as a parameter
+     * <p>Note: see {@link GameBoard#getCurrentPlayer()}</p>
+     * @param studentColor  color of the student to remove from entrance
+     * @throws StudentNotFoundException  if there is no student of such color in entrance
+     * */
     public void removeStudentFromEntrance(Color studentColor){
         gameBoard.removeStudentFromEntrance(gameBoard.getCurrentPlayer(), studentColor);
     }
 
+    /**
+     * Removes student of studentColor from player`s schoolBoard dining room
+     * by calling {@link GameBoard#removeStudentFromDining(Player, Color)}
+     * @param player  player who`s {@link SchoolBoard} is to be taken student from
+     * @param studentColor  color of the student to remove from dining
+     * @throws StudentNotFoundException  if there is no student of such color in the dining room
+     * */
     public void removeStudentFromDining(Player player, Color studentColor){
         gameBoard.removeStudentFromDining(player, studentColor);
     }
+
+    /**
+     * Calls {@link GameBoard#getStudentFromBag()}
+     * @return  color of the student extracted from {@link Bag}
+     * @throws NoEnoughStudentsException  if the bag is empty
+     * */
     public Color getStudent(){
         return gameBoard.getStudentFromBag();
     }
 
-    //method that reassigns island and puts certain tower on it
+    /**
+     * <ul>
+     * <li>Finds a player that has most influence on an island.
+     * Such player becomes the owner of the island.
+     * <p>The influence is calculated by calling {@link #calculateInfluence(int, Player)}</p>
+     * </li>
+     * <li>If the island has no tower then the owner puts it`s tower on it.
+     * <p>This operation is called island conquer</p></li>
+     * <li>If the island has at least 1 tower and the new owner is different from the previous one, then
+     *      <ul>
+     *          <li>towers on island get substituted by towers of the new owner by calling
+     *          {@link GameBoard#addTowersToIsland(int, Player)} and {@link GameBoard#removeTowersFromPlayer(int, Player)}</li>
+     *          <li>previous towers return back to the schoolBoard of the previous owner by calling {@link GameBoard#addTowersToPlayer(int, Player)}</li>
+     *      </ul>
+     * This operation is called island reassignment</li>
+     * <li>If the island has at least 1 tower and the owner hasn`t changed, then nothing happens</li>
+     * <li>Calls {@link GameBoard#mergeIslands()} at the end to check if any adjacent islands can be merged</li>
+     * <li>Note: If there is <code>NoEntryTile</code> on the island then island doesn`t get reassigned</li>
+     * @param islandNumber  the index of the island that may be reassigned or conquered
+     * @throws NoEnoughTowersException  if there are no enough towers on the school board of
+     * the new owner of the island, that needs to substitute towers that were located on island previously
+     * */
     public void reassignIsland(int islandNumber){
         /*no players with 0 towers allowed except in case of 4 player game*/
         Player master = players.get(0);
@@ -455,8 +585,18 @@ public class Game implements GameForClient{
         }
     }
 
-    /*calculates influence score on specified Island*/
 
+    /**
+     * Calculates influence score of a player on the specified island by calling
+     * {@link GameBoard#calculateInfluence(int, Player)}
+     * <p>If there is a NoEntryTile on the island returns it to the {@link Character5}
+     * by calling {@link GameBoard#addNoEntryTile()}</p>
+     * @param islandNumber  index of the island to calculate influence on
+     * @param player  instance of the player to calculate influence for
+     * @return -1 if there is a NoEntryTile on the island,
+     * otherwise returns an influence score of the player on the island
+     *
+     * */
     public int calculateInfluence(int islandNumber, Player player){
         int influence = -1; //return -1 when NoEntry Tile is on selected island
         try {
@@ -469,14 +609,42 @@ public class Game implements GameForClient{
         return influence;
     }
 
+    /**
+     * Calls {@link Character#reassignProfessor()} implementation of currentCharacter played in this round.
+     * <p>If no character were played or {@link #advancedSettings} is equal to false,
+     * then <code>currentCharacter</code> is set to default character {@link Character}</p>
+     * */
     public void reassignProfessor(){
         gameBoard.getCurrentCharacter().reassignProfessor();
     }
 
+    /**
+     * Puts or removes noEntryTile on an island by calling {@link GameBoard#setNoEntry(int, boolean)}
+     * @param islandNumber  number of island to put or remove noEntryTile from
+     * @param noEntry  true if noEntryTile needs to be put, false if noEntryTile needs to be removed
+     * @throws IllegalArgumentException  if islandNumber index is out of bound in {@link GameBoard#islands} list
+     * @throws NoEntryException  if more than one <code>noEntryTile</code> is being placed on this island
+     * */
     public void setNoEntry(int islandNumber, boolean noEntry){
         gameBoard.setNoEntry(islandNumber, noEntry);
     }
 
+    /**
+     * <ul>
+     * This method can be executed only when game thread goes in wait for a player`s action
+     * <li>Calls {@link GameBoard#moveMotherNature(int)} method</li>
+     * <li>Calls {@link #reassignIsland(int)} to conquer or reassign an island corresponding to the new positionOfMotherNature</li>
+     * <li>Checks whether tha game was finished with {@link #checkEndGame()}</li>
+     * <li>In case game continues, generates {@link EndOfChangesException} and sends it to all active players by calling {@link it.polimi.ingsw.utils.Observable#notify(Object)}
+     * after any other <code>ModelChange</code> generated and sent from the methods above</li>
+     * <li>Sets {@link #motherNatureMove} flag to true</li>
+     * <li>Wakes up game thread so that it can pass to the next step of action phase</li>
+     * </ul>
+     * @param steps  number of steps to move mother nature
+     * @throws WrongActionException  if currentPlayer hasn`t already moved required number of students during his turn
+     * or currentPlayer has already moved motherNature
+     * @throws IllegalArgumentException if currentPlayer is not allowed to move motherNature for this number of steps
+     * */
     public synchronized void moveMotherNature(int steps){
         //client can't make this action if students weren't moved or if mother nature was already moved
         if (studentMove != (players.size() == 3? 4: 3) ) {
@@ -502,6 +670,21 @@ public class Game implements GameForClient{
         this.notifyAll();
     }
 
+    /**
+     * <ul>
+     * This method can be executed only when game thread goes in wait for a player`s action
+     * <li>Calls {@link GameBoard#useCloud(int)} method</li>
+     *
+     * <li>Sets {@link #useCloudMove} flag to true</li>
+     * <li>Wakes up game thread so that it can pass to the next step of action phase</li>
+     * </ul>
+     * @param cloudNumber  number of cloud that {@link GameBoard#currentPlayer} wants to use
+     * @throws WrongActionException  if currentPlayer hasn`t already moved required number of students during his turn
+     * or currentPlayer hasn`t already moved motherNature or currentPlayer has already used a cloud
+     * @throws IllegalArgumentException  if cloudNumber index is out of bound in {@link GameBoard#clouds} list
+     * @throws StudentNotFoundException  if this cloud is empty
+     * @throws NumOfStudentsExceeded  if the entrance of player is full
+     * */
     public synchronized void useCloud(int cloudNumber){
         if (studentMove != (players.size() == 3? 4: 3) || !motherNatureMove || useCloudMove) {
             //client can't make this action if students weren't moved
@@ -513,6 +696,9 @@ public class Game implements GameForClient{
         this.notifyAll();
     }
 
+    /**
+     *
+     * */
     public synchronized void buyCharacter(int characterNumber){
         if (characterUsed){
             throw new WrongActionException("You have already used character in this turn!");
@@ -634,9 +820,10 @@ public class Game implements GameForClient{
             return true;
         }
 
+        List<Player> activePlayers = players.stream().filter(p -> p.isActive()).collect(Collectors.toList());
         while( players.stream().filter(p -> p.isActive()).map((p)->p.getTowerColor()).collect(Collectors.toSet()).size() == 1 ) {
             //if there is only 1 active player in case of 2-3 players then the game gets suspended for 60 sec
-            List<Player> activePlayers = players.stream().filter(p -> p.isActive()).collect(Collectors.toList());
+            activePlayers = players.stream().filter(p -> p.isActive()).collect(Collectors.toList());
             if (activePlayers.size() == 1) {
                 System.out.println("Only one player remained");
                 if (gameBoard.isGameOn()) {
@@ -701,6 +888,10 @@ public class Game implements GameForClient{
                 }
             }
         }
+        //if there are no active players, then game finishes
+        if (activePlayers.size()==0)
+            return true;
+
         //the timer was started only if there were only 1 player or 1 team remained
         //if thread exits from while and timer is still active then reset will send game activated
         //if timer was expired then I have already executed return true and I will never arrive up to this command

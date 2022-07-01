@@ -29,6 +29,12 @@ public class Bag {
         }
     }
 
+    /**
+     * Extracts random student from bag
+     * @return color of the student extracted from bag
+     * Calls {@link LinkedList#removeFirst()} on {@link #students}
+     * @throws NoEnoughStudentsException  if the bag ( {@link #students} list ) is empty
+     * */
     public Color extractStudent() throws NoEnoughStudentsException {
 
         if(!(students.isEmpty())){

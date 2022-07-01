@@ -4,14 +4,36 @@ package it.polimi.ingsw.server;
 import it.polimi.ingsw.modelChange.ConnectionStatusChange;
 import it.polimi.ingsw.modelChange.ModelChange;
 import it.polimi.ingsw.packets.Packet;
+import it.polimi.ingsw.server.controller.CharacterDeck;
 import it.polimi.ingsw.server.controller.Game;
+import it.polimi.ingsw.server.model.Character;
+import it.polimi.ingsw.server.model.GameBoard;
+import it.polimi.ingsw.server.model.Player;
+import it.polimi.ingsw.server.model.SchoolBoard;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.security.InvalidParameterException;
 
-//This class is clientHandler that manages client on a separate thread
+
+/**
+ * <p>This class is the clientHandler and runs on a separate thread</p>
+ * <ul> Contains:
+ *     <li>{@link #clientSocket}  is the socket used to communicate with the client.</li>
+ *     <li>{@link #socketIn} is the {@link ObjectInputStream} used to receive client's Strings (including Pings) and {@link Packet}.</li>
+ *     <li>{@link #socketOut} is the {@link ObjectOutputStream} used to send Strings (including Pongs) and {@link ModelChange} to the client.</li>
+ *     <li>{@link #userVirtualView} instance of {@link VirtualView} linked to specific client.</li>
+ *     <li>{@link #server} instance of {@link Server}.</li>
+ *     <li>{@link #isActive} boolean used to check whether connection is active.
+ *     isActive is set to true during {@link #run()} and becomes false during {@link #close()}.</li>
+ *     <li>{@link #name} name of specific client, set during {@link #run()} using string from client.
+ *     It is always set to uppercase in {@link #run()}.</li>
+ * </ul>
+ */
+
+
 public class Connection implements Runnable{
     private Socket clientSocket;
     private ObjectInputStream socketIn;
@@ -33,6 +55,16 @@ public class Connection implements Runnable{
         return isActive;
     }
 
+    /**
+     * <p>Closes this connection</p>
+     * <ul>
+     *     <li>Sets {@link #isActive} to false</li>
+     *     <li>if {@link Server#isGameReady()} is false then removes this connection from lobby calling {@link Server#removeFromLobby(Connection)}
+     *     else if {@link Server#isGameReady()} is true calls {@link VirtualView#changePlayerStatus(boolean)}
+     *     in order to change the status of specific {@link it.polimi.ingsw.server.model.Player} and {@link Server#changeConnectionStatus(ModelChange)}
+     *     in order to notify other clients that specific {@link it.polimi.ingsw.server.model.Player} is inactive</li>
+     *</ul>
+     */
     public void close(){
         if (isActive) {
             /*first I deregister client from server and then close socket*/
@@ -64,6 +96,9 @@ public class Connection implements Runnable{
         }
     }
 
+    /**Sends modelChange to specific client
+     * @param modelChange is the {@link ModelChange} that needs to be sent to the client
+     */
     public synchronized void send(ModelChange modelChange) {
         if (isActive) {
             try {
@@ -77,6 +112,15 @@ public class Connection implements Runnable{
         }
     }
 
+    /**
+     * <p>Needs to be run on a new Thread. Once called, connection starts to get client's information in order to add it to the game and handle the incoming communication during the game:</p>
+     * <ul>
+     *     <li>Asks name and calls {@link Server#addClient(Connection, String)} to try to connect it</li>
+     *     <li>Loops in a while as long as it {@link #isActive} and {@link Server#isGameReady()} waiting for client's messages, replying to Pings and
+     *     forwarding to {@link VirtualView} each incoming {@link Packet} using {@link VirtualView#sendPacket(Packet)}</li>
+     *     <li>Calls {@link #close()} if an exception is caught </li>
+     * </ul>
+     */
     @Override
     public void run() {
         //receives client name, sends lobby change and receives client packets during the game

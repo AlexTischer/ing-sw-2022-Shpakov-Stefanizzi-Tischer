@@ -38,7 +38,7 @@ This repository contains a **Java** version of the game [*Eriantys*](https://www
 🟩Implemented
 
 ## Installation <a name="installation"></a>
-To start the game you need to download [JavaSE 17](https://www.oracle.com/it/java/technologies/javase-downloads.html) (or updated versions).
+To start the game you need to download [JavaSE 18](https://www.oracle.com/it/java/technologies/javase-downloads.html) (or updated versions).
 
 Download the repo as it follow
 ```bash

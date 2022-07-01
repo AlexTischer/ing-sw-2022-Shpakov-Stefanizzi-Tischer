@@ -8,6 +8,17 @@ import it.polimi.ingsw.server.controller.Game;
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.utils.Observer;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+/**
+ * <p>This class is a bridge between the {@link Connection} and the {@link Game} classes. Unlike the Connection, it's persistent even on client's disconnections and reconnections</p>
+ * <ul> Contains:
+ *     <li>{@link #game} </li>
+ *     <li>{@link #player} is the specific {@link Player} of this VirtualView</li>
+ *     <li>{@link #clientConnection} is the specific {@link Connection} of this VirtualView</li>
+ * </ul>
+ */
 public class VirtualView implements Observer<ModelChange> {
 
     private Game game;
@@ -21,6 +32,11 @@ public class VirtualView implements Observer<ModelChange> {
         }
     }
 
+    /**
+     * TODO sendPacket
+     *
+     * @param packet
+     */
     public void sendPacket(Packet packet) {
         /*send message to client*/
         System.out.println("VirtualView says: I am in sendPacket(). I have received " + packet.getClass() + " from " + player.getName());
@@ -32,7 +48,6 @@ public class VirtualView implements Observer<ModelChange> {
             clientConnection.send(new ExceptionChange(new WrongActionException("You are not current player!")));
         }
         //Send packet only if the game is on and not suspended
-        //TODO how player can reactivate
         else if(game.getGameBoard().isGameOn() && !game.isSuspended()) {
             try {
                 game.usePacket(packet);
@@ -93,6 +108,15 @@ public class VirtualView implements Observer<ModelChange> {
         return clientConnection.getClientName();
     }
 
+
+    /**
+     *Changes status to Player:
+     * <ul>
+     *     <li>Calls {@link Game#proceed()} if {@link Game#isSuspended()}</li>
+     *     <li>Calls {@link #notifyAll()} in order to wake a possible thread waiting on game</li>
+     * </ul>
+     * @param status is the boolean representing the status that is needed to be set to the {@link Player}
+     */
     public void changePlayerStatus(boolean status) {
         //player can change status after the lock on game is released
         //which means that game waits for some player's action
