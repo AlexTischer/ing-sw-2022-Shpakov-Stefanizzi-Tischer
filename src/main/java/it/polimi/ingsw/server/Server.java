@@ -151,7 +151,17 @@ public class Server {
     }
 
     /**
-     * TODO createGame
+     * <ul>
+     *     <li>Creates game controller {@link Game}</li>
+     *     <li>Creates virtual views for each connection and attaches them to each other</li>
+     *     <li>Attaches game to each virtual view</li>
+     *     <li>Initializes the game by calling {@link Game#init(List, boolean, CharacterDeck)}</li>
+     *     <li>Attaches corresponding player to each virtual view</li>
+     *     <li>Launches the game in {@link Game#launchGame()}, adds virtual views as Observers to
+     *     the GameBoard, </li>
+     *     <li>Sends the start command to each client</li>
+     *     <li>Sends {@link GameBoardChange} to each client</li>
+     * </ul>
      * @throws InterruptedException
      */
     private void createGame() throws InterruptedException{

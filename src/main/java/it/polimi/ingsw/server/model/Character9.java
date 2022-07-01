@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-/**Swaps selectedStudents in students on card with toBeSwappedStudents in currentPlayer Entrance **/
+
 public class Character9 extends Character {
 
     private int id=9;
@@ -29,6 +29,12 @@ public class Character9 extends Character {
 
     }
 
+    /**
+     * @param selectedStudents  students that need to be set as an attribute {@link #selectedStudents}
+     * @throws IllegalArgumentException  if selectedStudents size is greater than 3
+     * or if there is a student in selectedStudents that is not present on the
+     * card in {@link #students} attribute
+     * */
     public void setSelectedStudents(ArrayList<Color> selectedStudents){
         if(selectedStudents.size() > 3)
             throw new IllegalArgumentException("You can select at most 3 students on card");
@@ -44,6 +50,12 @@ public class Character9 extends Character {
         this.selectedStudents = selectedStudents;
     }
 
+    /**
+     * @param toBeSwappedStudents  students that need to be set as an attribute {@link #toBeSwappedStudents}
+     * @throws IllegalArgumentException  if selectedStudents size is greater than 3,
+     * or if there is a student in selectedStudents that is not present in the
+     * currentPlayer`s dining room
+     * */
     public void setToBeSwappedStudents(ArrayList<Color> toBeSwappedStudents){
         if (toBeSwappedStudents.size() > 3)
             throw new IllegalArgumentException("You can select at most 3 students");
@@ -59,6 +71,9 @@ public class Character9 extends Character {
         this.toBeSwappedStudents = toBeSwappedStudents;
     }
 
+    /**
+     * Swaps selectedStudents on card with toBeSwappedStudents in currentPlayer Entrance
+     * */
     public void execute(){
         if (selectedStudents.size() != toBeSwappedStudents.size())
             throw new IllegalArgumentException("The students selected on card and students selected in entrance don't have the same size");

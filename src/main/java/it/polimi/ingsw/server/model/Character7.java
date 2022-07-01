@@ -17,6 +17,14 @@ public class Character7 extends Character {
     private List<Color> toBeSwappedStudents;
     private int cost = 1;
     private String description = "You can swap up to 2 students between your entrance and your dining room";
+
+    @Override
+    /**
+     * Sets {@link #selectedStudents} attribute
+     * @throws IllegalArgumentException  if selectedStudents size is greater than 2,
+     * or if there is a student in selectedStudents that is not present in the
+     * currentPlayer`s dining room
+     * */
     public void setSelectedStudents(ArrayList<Color> selectedStudents){
         if(selectedStudents.size() > 2)
             throw new IllegalArgumentException("You can select at most 2 students");
@@ -35,6 +43,12 @@ public class Character7 extends Character {
         this.selectedStudents = selectedStudents;
     }
 
+    /**
+     * Sets {@link #toBeSwappedStudents} attribute
+     * @throws IllegalArgumentException  if selectedStudents size is greater than 2,
+     * or if there is a student in selectedStudents that is not present in the
+     * currentPlayer`s entrance
+     * */
     public void setToBeSwappedStudents(ArrayList<Color> toBeSwappedStudents){
         if(toBeSwappedStudents.size() > 2)
             throw new IllegalArgumentException("You can select at most 2 students");

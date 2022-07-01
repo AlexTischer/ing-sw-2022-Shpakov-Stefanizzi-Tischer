@@ -302,7 +302,7 @@ public class Game implements GameForClient{
     }
 
     /**
-     * This method can be executed only when game thread goes in wait for a player`s action
+     * This method can be executed only when game thread goes in wait for a player`s action  inside {@link #newRound()}
      * <p>Calls {@link GameBoard#setPlayedAssistantRank(int, Player)} method and wakes up game thread
      * so that it can wait assistant from the next player or pass to the action phase</p>
      * @param assistantRank  rank of the assistant that player wants to play
@@ -366,7 +366,7 @@ public class Game implements GameForClient{
 
     /**
      * <ul>
-     * This method can be executed only when game thread goes in wait for a player`s action
+     * This method can be executed only when game thread goes in wait for a player`s action  inside {@link #newTurn(Player)}
      * <li>Calls {@link GameBoard#addStudentToIsland(Player, Color, int)} method passing <code>currentPlayer</code> as a parameter</li>
      * <li>Increments {@link #studentMove} counter</li>
      * <li>Wakes up game thread so that it can pass to the next step of action phase</li>
@@ -388,7 +388,7 @@ public class Game implements GameForClient{
 
     /**
      * <ul>
-     * This method can be executed only when game thread goes in wait for a client action
+     * This method can be executed only when game thread goes in wait for a player`s action inside {@link #newTurn(Player)}
      * <li>Removes student of studentColor from dining of <code>currentPlayer</code> by calling {@link #removeStudentFromEntrance(Color)}</li>
      * <li>Adds student of studentColor in dining of <code>currentPlayer</code> by calling {@link #addStudentToDining(Player, Color)}</li>
      * <li>Increments {@link #studentMove} counter</li>
@@ -631,7 +631,7 @@ public class Game implements GameForClient{
 
     /**
      * <ul>
-     * This method can be executed only when game thread goes in wait for a player`s action
+     * This method can be executed only when game thread goes in wait for a player`s action inside {@link #newTurn(Player)}
      * <li>Calls {@link GameBoard#moveMotherNature(int)} method</li>
      * <li>Calls {@link #reassignIsland(int)} to conquer or reassign an island corresponding to the new positionOfMotherNature</li>
      * <li>Checks whether tha game was finished with {@link #checkEndGame()}</li>
@@ -672,7 +672,7 @@ public class Game implements GameForClient{
 
     /**
      * <ul>
-     * This method can be executed only when game thread goes in wait for a player`s action
+     * This method can be executed only when game thread goes in wait for a player`s action inside {@link #newTurn(Player)}
      * <li>Calls {@link GameBoard#useCloud(int)} method</li>
      *
      * <li>Sets {@link #useCloudMove} flag to true</li>
@@ -697,7 +697,13 @@ public class Game implements GameForClient{
     }
 
     /**
-     *
+     * <p>This method can be executed only when game thread goes in wait for a player`s action inside {@link #newTurn(Player)}</p>
+     * <p>Calls {@link GameBoard#buyCharacter(int)}</p>
+     * <p>Sets {@link #characterUsed} flag to <code>true</code></p>
+     * @param characterNumber  index of character that currentPlayer wants to buy
+     * @throws WrongActionException  if currentPlayer has already used an assistant during it`s turn
+     * or if {@link #advancedSettings} is set to false
+     * @throws IllegalArgumentException if index of character is out of bond in {@link GameBoard#playedCharacters}
      * */
     public synchronized void buyCharacter(int characterNumber){
         if (characterUsed){
@@ -713,6 +719,15 @@ public class Game implements GameForClient{
         //don't notify game thread since only the characters that need activation may end the game
     }
 
+    /**<ul>
+     * This method can be executed only when game thread goes in wait for a player`s action inside {@link #newTurn(Player)}
+     * <li>Calls {@link GameBoard#activateCharacter(int)} method</li>
+     * <li>Wakes up game thread so that it can pass to the next step of action phase</li>
+     * </ul>
+     * @param islandNumber  number of island needed for activation of {@link GameBoard#currentCharacter}
+     * @throws WrongActionException  if {@link #advancedSettings} is set to false
+     *
+     * */
     public synchronized void activateCharacter(int islandNumber){
         if (!advancedSettings)
             throw new WrongActionException("You can't use characters. Advanced settings were set to false");
@@ -724,6 +739,16 @@ public class Game implements GameForClient{
         this.notifyAll();
     }
 
+    /**<ul>
+     * This method can be executed only when game thread goes in wait for a player`s action inside {@link #newTurn(Player)}
+     * <li>Calls {@link GameBoard#activateCharacter(ArrayList, ArrayList)} method</li>
+     * <li>Wakes up game thread so that it can pass to the next step of action phase</li>
+     * </ul>
+     * @param toBeSwappedStudents  students needed for activation of {@link GameBoard#currentCharacter}
+     * @param selectedStudents  students needed for activation of {@link GameBoard#currentCharacter}
+     * @throws WrongActionException  if {@link #advancedSettings} is set to false
+     *
+     * */
     public synchronized void activateCharacter(ArrayList<Color> toBeSwappedStudents, ArrayList<Color> selectedStudents){
         if (!advancedSettings)
             throw new WrongActionException("You can't use characters. Advanced settings were set to false");
@@ -735,6 +760,15 @@ public class Game implements GameForClient{
         this.notifyAll();
     }
 
+    /**<ul>
+     * This method can be executed only when game thread goes in wait for a player`s action inside {@link #newTurn(Player)}
+     * <li>Calls {@link GameBoard#activateCharacter(Color, int)} method</li>
+     * <li>Wakes up game thread so that it can pass to the next step of action phase</li>
+     * </ul>
+     * @param color  student needed for activation of {@link GameBoard#currentCharacter}
+     * @param islandNumber island index in {@link GameBoard#islands} needed for activation of {@link GameBoard#currentCharacter}
+     * @throws WrongActionException  if {@link #advancedSettings} is set to false
+     * */
     public synchronized void activateCharacter(Color color, int islandNumber){
         if (!advancedSettings)
             throw new WrongActionException("You can't use characters. Advanced settings were set to false");
@@ -745,6 +779,15 @@ public class Game implements GameForClient{
         //check end game will be done in newTurn()
         this.notifyAll();
     }
+
+    /**<ul>
+     * This method can be executed only when game thread goes in wait for a player`s action inside {@link #newTurn(Player)}
+     * <li>Calls {@link GameBoard#activateCharacter(Color)} method</li>
+     * <li>Wakes up game thread so that it can pass to the next step of action phase</li>
+     * </ul>
+     * @param color  student needed for activation of {@link GameBoard#currentCharacter}
+     * @throws WrongActionException  if {@link #advancedSettings} is set to false
+     * */
     public synchronized void activateCharacter(Color color){
         if (!advancedSettings)
             throw new WrongActionException("You can't use characters. Advanced settings were set to false");
@@ -764,7 +807,8 @@ public class Game implements GameForClient{
      *      <li>The bag is empty ( the player that has fewer towers becomes the winner )</li>
      *      <li>Number of islands is less or equal than 3 ( the player that has fewer towers becomes the winner )</li>
      *      <li>Only one active player or active team has remained connected
-     *      ( The timer for reconnection gets started. If time expires then that player or team becomes the winner )</li>
+     *      ( The timer for reconnection gets started. If time expires then that player or team becomes the winner )
+     *      <p>See: {@link Server#startTimer()} and {@link Server#resetTimer()}</p></li>
      * </ul>
      * */
     public boolean checkEndGame(){
@@ -903,7 +947,10 @@ public class Game implements GameForClient{
 
 
 
-    /**Executes an action requested from particular client*/
+    /**Executes the packet arrived from {@link it.polimi.ingsw.server.VirtualView} associated with
+     * {@link GameBoard#currentPlayer}
+     * <p>The packet contains a call to the method that client want to execute</p>
+     * */
     public void usePacket(Packet packet){
         packet.execute(this);
     }

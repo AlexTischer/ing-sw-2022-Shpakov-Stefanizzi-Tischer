@@ -3,6 +3,7 @@ package it.polimi.ingsw.server.model;
 import it.polimi.ingsw.client.model.ClientCharacter;
 import it.polimi.ingsw.client.model.ClientCharacter1;
 import it.polimi.ingsw.exceptions.NoEnoughCoinsException;
+import it.polimi.ingsw.exceptions.NoEnoughStudentsException;
 import it.polimi.ingsw.server.controller.Game;
 
 import java.util.ArrayList;
@@ -26,6 +27,12 @@ public class Character1 extends Character {
         }
     }
 
+    /**
+     *
+     * @throws IllegalArgumentException  if islandNumber is index
+     * that is out of bound in {@link GameBoard#islands} list
+     * @throws NoEnoughStudentsException  if the {@link GameBoard#instanceOfBag} is empty
+     * */
     @Override
     public void execute(){
         students.remove(selectedStudent);

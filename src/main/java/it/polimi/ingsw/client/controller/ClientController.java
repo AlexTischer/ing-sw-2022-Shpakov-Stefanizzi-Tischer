@@ -55,6 +55,15 @@ public class ClientController {
         gameBoard.setClientName(clientName);
     }
 
+    /**
+     * After receiving start command, all clients start from else branch of this method
+     * <ul>
+     *     <li>Player that is current goes in if branch</li>
+     *     <li>Other players go in else branch</li>
+     *     <li>When {@link ClientGameBoard#isGameOn} becomes false, all clients will exit
+     *     recursively from all if and else branches</li>
+     * </ul>
+     * */
     public void startTurn(){
 
         //setting CharacterActivated=true here means it won't ever be used. This is in order to use not advanced settings correctly.

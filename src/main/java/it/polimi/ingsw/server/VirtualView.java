@@ -14,7 +14,7 @@ import java.io.ObjectOutputStream;
 /**
  * <p>This class is a bridge between the {@link Connection} and the {@link Game} classes. Unlike the Connection, it's persistent even on client's disconnections and reconnections</p>
  * <ul> Contains:
- *     <li>{@link #game} </li>
+ *     <li>{@link #game} instance of game controller</li>
  *     <li>{@link #player} is the specific {@link Player} of this VirtualView</li>
  *     <li>{@link #clientConnection} is the specific {@link Connection} of this VirtualView</li>
  * </ul>
@@ -33,9 +33,23 @@ public class VirtualView implements Observer<ModelChange> {
     }
 
     /**
-     * TODO sendPacket
+     * <ul>
+     *     <li>
+     *         If the player that wants to execute an action is not the current player then
+     *         the packet gets discarded and VirtualView send back to this client {@link ExceptionChange} with
+     *         {@link WrongActionException}
+     *     </li>
+     *     <li>
+     *         If the game is suspended, then the separate thread gets started. Such thread will hold
+     *         the packet sent from client and goes in wait until game doesn`t get unsuspended. This thread
+     *         will be waken up by game thread that will execute {@link Server#resetTimer()}
+     *     </li>
+     *     <li>If the game is active and not suspended, calls {@link Game#usePacket(Packet)}</li>
+     *     <li>If any action of the client causes RuntimeException, then such exception gets
+     *     sent back to the client in the form of {@link ExceptionChange}</li>
+     * </ul>
      *
-     * @param packet
+     * @param packet  arrived from client via {@link Connection} associated to this virtualView
      */
     public void sendPacket(Packet packet) {
         /*send message to client*/
@@ -110,7 +124,7 @@ public class VirtualView implements Observer<ModelChange> {
 
 
     /**
-     *Changes status to Player:
+     *Changes {@link Player#isActive} status of the Player:
      * <ul>
      *     <li>Calls {@link Game#proceed()} if {@link Game#isSuspended()}</li>
      *     <li>Calls {@link #notifyAll()} in order to wake a possible thread waiting on game</li>

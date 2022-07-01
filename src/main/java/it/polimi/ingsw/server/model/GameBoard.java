@@ -543,6 +543,17 @@ public class GameBoard extends Observable<ModelChange> {
         //notify(exceptionChange);
     }
 
+    /**
+     * <ul>
+     * <li>Calls {@link Character#setSelectedIslandNumber(int)} to execute setting for the {@link #currentCharacter}</li>
+     * <li>Calls {@link Character#execute()} in order to execute character`s action</li>
+     * <li>Generates {@link CharactersChange}, {@link EndOfChangesException} and sends it to all active players
+     * by calling {@link Observable#notify(Object)}</li>
+     * </ul>
+     * @param islandNumber  index of the island that is needed in {@link #currentCharacter} setting
+     * @throws IllegalArgumentException  if islandNumber index is out of bound in {@link #islands}
+     * @throws UnsupportedOperationException  if currentCharacter doesn`t need island number setting
+     * */
     public void activateCharacter(int islandNumber) {
         if (islandNumber < 0 || islandNumber > islands.size()-1)
             throw new IllegalArgumentException("Error: invalid island number");
@@ -550,9 +561,6 @@ public class GameBoard extends Observable<ModelChange> {
         currentCharacter.setSelectedIslandNumber(islandNumber);
         currentCharacter.execute();
         //execute generates necessary modelChanges
-
-        /*CharacterChange characterChange = new CharacterChange(currentCharacter, Arrays.stream(playedCharacters).toList().indexOf(currentCharacter));
-        notify(characterChange);*/
 
         CharactersChange charactersChange = new CharactersChange(playedCharacters);
         notify(charactersChange);
@@ -563,6 +571,18 @@ public class GameBoard extends Observable<ModelChange> {
         notify(exceptionChange);
     }
 
+    /**
+     * <ul>
+     * <li>Calls {@link Character#setSelectedStudents(ArrayList)} to execute setting for the {@link #currentCharacter}</li>
+     * <li>Calls {@link Character#setToBeSwappedStudents(ArrayList)} to execute setting for the {@link #currentCharacter}</li>
+     * <li>Calls {@link Character#execute()} in order to execute character`s action</li>
+     * <li>Generates {@link CharactersChange}, {@link EndOfChangesException} and sends it to all active players
+     * by calling {@link Observable#notify(Object)}</li>
+     * </ul>
+     * @param toBeSwappedStudents  students needed for character execution in {@link Character#execute()}
+     * @param selectedStudents  students needed for character execution in {@link Character#execute()}
+     * @throws UnsupportedOperationException  if currentCharacter doesn`t need toBeSwapped and selectedStudents settings
+     * */
     public void activateCharacter(ArrayList<Color> toBeSwappedStudents, ArrayList<Color> selectedStudents) {
 
         currentCharacter.setSelectedStudents(selectedStudents);
@@ -581,6 +601,18 @@ public class GameBoard extends Observable<ModelChange> {
         notify(exceptionChange);
     }
 
+    /**
+     * <ul>
+     * <li>Calls {@link Character#setSelectedStudent(Color)} to execute setting for the {@link #currentCharacter}</li>
+     * <li>Calls {@link Character#setSelectedIslandNumber(int)} to execute setting for the {@link #currentCharacter}</li>
+     * <li>Calls {@link Character#execute()} in order to execute character`s action</li>
+     * <li>Generates {@link CharactersChange}, {@link EndOfChangesException} and sends it to all active players
+     * by calling {@link Observable#notify(Object)}</li>
+     * </ul>
+     * @param color  students color needed for character execution in {@link Character#execute()}
+     * @param islandNumber  index of the island needed for character execution in {@link Character#execute()}
+     * @throws UnsupportedOperationException  if currentCharacter doesn`t need color and islandNumber settings
+     * */
     public void activateCharacter(Color color, int islandNumber) {
         if (islandNumber < 0 || islandNumber > islands.size()-1)
             throw new IllegalArgumentException("Error: invalid island number");
@@ -601,6 +633,16 @@ public class GameBoard extends Observable<ModelChange> {
         notify(exceptionChange);
     }
 
+    /**
+     * <ul>
+     * <li>Calls {@link Character#setSelectedStudent(Color)} to execute setting for the {@link #currentCharacter}</li>
+     * <li>Calls {@link Character#execute()} in order to execute character`s action</li>
+     * <li>Generates {@link CharactersChange}, {@link EndOfChangesException} and sends it to all active players
+     * by calling {@link Observable#notify(Object)}</li>
+     * </ul>
+     * @param color  students color needed for character execution in {@link Character#execute()}
+     * @throws UnsupportedOperationException  if currentCharacter doesn`t need color setting
+     * */
     public void activateCharacter(Color color) {
         currentCharacter.setSelectedStudent(color);
         currentCharacter.execute();
@@ -647,6 +689,10 @@ public class GameBoard extends Observable<ModelChange> {
         instanceOfBag.addStudent(studentColor);
     }
 
+    /**
+     * Executes {@link Player#setPlayedAssistant(int)} and generates {@link AssistantChange} and send it
+     * to all active players by calling {@link Observable#notify(Object)}
+     * */
     public void setPlayedAssistantRank(int assistantRank, Player player){
         player.setPlayedAssistant(assistantRank);
         AssistantChange assistantChange = new AssistantChange(player);

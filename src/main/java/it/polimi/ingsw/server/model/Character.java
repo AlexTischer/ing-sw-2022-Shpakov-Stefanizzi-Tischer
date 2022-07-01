@@ -86,6 +86,9 @@ public class Character {
         }
     }
 
+    /**
+     * @return  true if currentPlayer is allowed to move mother nature this number of steps, false otherwise
+     * */
     public boolean moveMotherNature(int steps){
         return (game.getCurrentPlayer().getPlayedAssistant().getMovements()>=steps && steps>0);
     }
@@ -94,6 +97,10 @@ public class Character {
         this.game=game;
     }
 
+    /**
+     * Executes a sequence of actions related to the properties of this character
+     * <p>Note: can be also void if character does no action and only causes an effect</p>
+     * */
     public void execute() {}
 
     public void buy() throws NoEnoughCoinsException {
@@ -103,20 +110,48 @@ public class Character {
         return cost;
     }
 
+    /**
+     * <p>This setting is used by {@link Character1}, {@link Character4}, {@link Character10} and {@link Character11}</p>
+     * @param selectedStudent  student to be set as an attribute in this character
+     * @throws UnsupportedOperationException  if this setting is not supported in this character
+     *
+     * */
     public void setSelectedStudent(Color selectedStudent){
         throw new UnsupportedOperationException("Students cannot be set on default character");
     }
 
-    public void setSelectedIslandNumber(int selectedIsland) throws NoEnoughStudentsException {
-        throw new UnsupportedOperationException("Island cannot be set on default character");
+    /**
+     * Sets index of selected island as a Character`s attribute
+     * <p>This setting is used by {@link Character1}, {@link Character5} and {@link Character12}</p>
+     * @param selectedIsland  index of the island to be set as an attribute in this character
+     * @throws UnsupportedOperationException  if this setting is not supported in this character
+     * */
+    public void setSelectedIslandNumber(int selectedIsland){
+        throw new UnsupportedOperationException("Island cannot be set on this character");
     }
 
+    /**
+     * Sets selectedStudents as a Character`s attribute
+     * <p>This setting is used by {@link Character7} and {@link Character9}</p>
+     * @param selectedStudents  students needed for character execution in {@link #execute()}
+     * @throws UnsupportedOperationException  if this setting is not supported in this character
+     * <p>Note: for other exceptions thrown look {@link Character7#setSelectedStudents(ArrayList)}
+     * and {@link Character9#setSelectedStudents(ArrayList)}</p>
+     * */
     public void setSelectedStudents(ArrayList<Color> selectedStudents){
-        throw new UnsupportedOperationException("Students cannot be set on default character");
+        throw new UnsupportedOperationException("Students cannot be set on this character");
     }
 
+    /**
+     * Sets index of selected island as a Character`s attribute
+     * <p>This setting is used by {@link Character7} and {@link Character9}</p>
+     * @param toBeSwappedStudents  students needed for character execution in {@link #execute()}
+     * @throws UnsupportedOperationException  if this setting is not supported in this character
+     * <p>Note: for other exceptions thrown look {@link Character7#setToBeSwappedStudents(ArrayList)}
+     * and {@link Character9#setToBeSwappedStudents(ArrayList)}</p>
+     * */
     public void setToBeSwappedStudents(ArrayList<Color> toBeSwappedStudents){
-        throw new UnsupportedOperationException("Students cannot be set on default character");
+        throw new UnsupportedOperationException("Students cannot be set on this character");
     }
 
     public void addNoEntryTile(){}

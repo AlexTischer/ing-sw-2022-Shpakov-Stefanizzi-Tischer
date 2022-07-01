@@ -15,6 +15,9 @@ public class Character8 extends Character {
         super.initialFill(game);
     }
 
+    /**
+     * Adds 2 to maximum allowable number of mother nature steps
+     * */
     @Override
     public boolean moveMotherNature(int steps){
         return (game.getCurrentPlayer().getPlayedAssistant().getMovements()+2>=steps && steps>0);
