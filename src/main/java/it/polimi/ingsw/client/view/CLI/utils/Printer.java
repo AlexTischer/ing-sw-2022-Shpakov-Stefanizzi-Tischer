@@ -10,13 +10,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * This class is responsible for printing all the information to play the Game to a user that plays with a CLI
+ */
 public class Printer {
+
+    /**
+     * Clears the console from all the previous printings
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public void clearConsole() throws IOException, InterruptedException {
         if(System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")){
             new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
         }
     }
 
+    /**
+     * Prints the lobby with player usernames
+     * @param userNames list of usernames
+     */
     public void showLobby(List<String> userNames) {
         if(!userNames.isEmpty()) {
             System.out.print("Lobby:\n");
@@ -26,6 +39,10 @@ public class Printer {
         }
     }
 
+    /**
+     * Shows the entire Client model with all the information needed to play the game
+     * @param gameBoard
+     */
     public void showModel(ClientGameBoard gameBoard){
         System.out.print("Islands:\n");
         printIslands(gameBoard.getIslands(), gameBoard.getPositionOfMotherNature());
@@ -45,12 +62,22 @@ public class Printer {
         printAssistants(gameBoard.getPlayer(gameBoard.getClientName()).getAssistants());
     }
 
+    /**
+     * Colors a string with a given color
+     * @param str a String to be colored
+     * @param color the color to apply
+     */
     private void printColored(String str, String color){
         System.out.print(color);
         System.out.print(str);
         System.out.print(AnsiKeys.COLOR_RESET);
     }
 
+    /**
+     * Prints all the Islands to the user
+     * @param islands list of {@link ClientIsland}
+     * @param positionOfMotherNature index of the island where Mother Nature is placed
+     */
     private void printIslands(List<ClientIsland> islands, int positionOfMotherNature){
         printIslandLine1(islands);
         printIslandLine2(islands, positionOfMotherNature);
@@ -59,6 +86,13 @@ public class Printer {
         printIslandLine5(islands);
     }
 
+
+    /**
+     * Prints all the School Boards
+     * @param clientPlayers list of {@link ClientPlayer}
+     * @param currentPlayerName the name of the current player
+     * @param advancedSettings true if advanced settings are enabled for the match. Needed to show or hide advanced setting related information
+     */
     private void printSchoolBoards(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName, boolean advancedSettings){
         printSchoolBoardLine1(clientPlayers, currentPlayerName);
         printSchoolBoardLine2(clientPlayers, currentPlayerName, advancedSettings);
@@ -74,6 +108,10 @@ public class Printer {
         printSchoolBoardLine11(clientPlayers, currentPlayerName);
     }
 
+    /**
+     * Prints all the clouds
+     * @param clientClouds list of {@link ClientCloud}
+     */
     private void printClouds(List<ClientCloud> clientClouds){
         printCloudLine1(clientClouds);
         printCloudLine2(clientClouds);
@@ -81,6 +119,10 @@ public class Printer {
         printCloudLine4(clientClouds);
     }
 
+    /**
+     * Prints all the Character cards
+     * @param characters array of {@link ClientCharacter}
+     */
     private void printCharacters(ClientCharacter[] characters){
         printCharacterLine1(characters);
         printCharacterLine2(characters);
@@ -89,6 +131,10 @@ public class Printer {
         printCharacterLine5(characters);
     }
 
+    /**
+     * Prints all the Assistants owned by the user
+     * @param assistants array of {@link Assistant}
+     */
     private void printAssistants(Assistant[] assistants){
         printAssistantLine1(assistants);
         printAssistantLine2(assistants);
@@ -98,9 +144,10 @@ public class Printer {
     }
 
 
-
-
-
+    /**
+     * Prints first line of lobby. Containing: up frame
+     * @param userNames list of usernames
+     */
     private void printLobbyLine1(List<String> userNames){
 
         for(String name : userNames){
@@ -113,6 +160,10 @@ public class Printer {
 
     }
 
+    /**
+     * Prints second line of lobby. Containing: left frame, username and right frame
+     * @param userNames list of usernames
+     */
     private void printLobbyLine2(List<String> userNames){
 
         for(String name : userNames){
@@ -144,6 +195,10 @@ public class Printer {
 
     }
 
+    /**
+     * Prints third line of lobby. Containing: down frame
+     * @param userNames list of usernames
+     */
     private void printLobbyLine3(List<String> userNames){
 
         for(String name : userNames){
@@ -157,8 +212,12 @@ public class Printer {
     }
 
 
-
-
+    /**
+     * <p>Prints a given number with a given color</p>
+     * <p>Called in printIslandsLine methods to print students into the islands</p>
+     * @param numOfStudents number of students on the island
+     * @param color the {@link Color} of the student
+     */
     private void printIslandStudents(int numOfStudents, Color color){
         if(numOfStudents!=0) {
             printColored(String.format("%2s", numOfStudents), color.ansi);
@@ -168,6 +227,10 @@ public class Printer {
         }
     }
 
+    /**
+     * Prints first line of all the islands. Containing: left frame, index of island and right frame
+     * @param islands list of {@link ClientIsland}
+     */
     private void printIslandLine1(List<ClientIsland> islands) {
         for (int i=0; i<islands.size(); i++) {
             System.out.print("╔══");
@@ -178,6 +241,11 @@ public class Printer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints second line of all the islands. Containing: left frame, Mother Nature (if present), Entry Tile (if present), right frame
+     * @param islands list of list of {@link ClientIsland}
+     * @param positionOfMotherNature index of the island where Mother Nature is placed
+     */
     private void printIslandLine2(List<ClientIsland> islands, int positionOfMotherNature) {
         int cnt = 0;
         for (ClientIsland island : islands) {
@@ -209,6 +277,10 @@ public class Printer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints the third line of all the islands. Containing: left frame, num of Towers, num of green Students, num of red Students, right frame
+     * @param islands list of {@link ClientIsland}
+     */
     private void printIslandLine3(List<ClientIsland> islands) {
         for (ClientIsland island : islands) {
 
@@ -232,6 +304,10 @@ public class Printer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints the fourth line of all the Islands. Containing: left frame, num of yellow, pink, blue Students, right frame
+     * @param islands list of {@link ClientIsland}
+     */
     private void printIslandLine4(List<ClientIsland> islands) {
         for (ClientIsland island : islands) {
 
@@ -247,6 +323,10 @@ public class Printer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints the fifth line of all the Islands. Containing: down frame
+     * @param islands list of {@link ClientIsland}
+     */
     private void printIslandLine5(List<ClientIsland> islands){
         for (int i=0; i<islands.size(); i++) {
             System.out.print("╚══════╝");
@@ -256,6 +336,12 @@ public class Printer {
     }
 
 
+    /**
+     * <p>Prints the student of the given position located in the Entrance</p>
+     * <p>If the student at the given position does not exist, it will be printed an empty space</p>
+     * @param students list of Students in the Entrance
+     * @param position of the student into the list
+     */
     private void printEntranceStudents(List<Color> students, int position){
         if(students.size() >= position){
             printColored("o", students.get(position-1).ansi);
@@ -265,6 +351,13 @@ public class Printer {
         }
     }
 
+    /**
+     * <p>Prints the tower of the given position located in the Tower Table</p>
+     * <p>If the tower at the given position does not exist, it will be printed an empty space</p>
+     * @param numOfTowers number of towers owned by the user
+     * @param towerColor color of the tower
+     * @param position of the tower into the Tower Table
+     */
     private void printTowerTableItems(int numOfTowers, TowerColor towerColor, int position){
         if(numOfTowers>=position){
 
@@ -280,28 +373,26 @@ public class Printer {
 
    /* SCHOOLBOARD LAYOUT
 
-
     System.out.println("+-----------------------------------+\n" +      1
             "|Name.............  Coins: xx       |\n" +           2
-            "|+----+------------+---+----+       |\n" +     done  3
-            "|| ii | pppppppppp | P | TT |  +--+ |\n" +     done  4
-            "|| ii | pppppppppp | P | TT |  |R | |\n" +     done  5
-            "|| ii | pppppppppp | P | TT |  |  | |\n" +     done  6
-            "|| ii | pppppppppp | P | TT |  |St| |\n" +     done  7
-            "|| ii | pppppppppp | P | TT |  +--+ |\n" +     done  8
-            "|+----+------------+---+----+       |\n" +     done  9
+            "|+----+------------+---+----+       |\n" +      3
+            "|| ii | pppppppppp | P | TT |  +--+ |\n" +      4
+            "|| ii | pppppppppp | P | TT |  |R | |\n" +      5
+            "|| ii | pppppppppp | P | TT |  |  | |\n" +      6
+            "|| ii | pppppppppp | P | TT |  |St| |\n" +      7
+            "|| ii | pppppppppp | P | TT |  +--+ |\n" +      8
+            "|+----+------------+---+----+       |\n" +      9
             "+-----------------------------------+");    10
 }
-
 
     */
 
 
-
-
-
-
-
+    /**
+     * Prints the first line of all the School Boards. Containing: upper frame
+     * @param clientPlayers list of {@link ClientPlayer}
+     * @param currentPlayerName to color the schoolboard frame of the current player
+     */
     private void printSchoolBoardLine1(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
 
         String frameColor;
@@ -326,6 +417,12 @@ public class Printer {
 
     }
 
+    /**
+     * Prints the second line of all the School Boards. Containing: left and right frame, username, coins (if adv settings are enabled)
+     * @param clientPlayers list of {@link ClientPlayer}
+     * @param currentPlayerName to color the schoolboard frame of the current player
+     * @param advancedSettings if it's true, it will be printed also coin information
+     */
     private void printSchoolBoardLine2(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName, boolean advancedSettings){
 
         String frameColor;
@@ -368,6 +465,11 @@ public class Printer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints the third line of all the School Boards. Containing: frame
+     * @param clientPlayers list of {@link ClientPlayer}
+     * @param currentPlayerName to color the schoolboard frame of the current player
+     */
     private void printSchoolBoardLine3(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
 
         String frameColor;
@@ -395,6 +497,13 @@ public class Printer {
         System.out.print("\n");
     }
 
+
+    /**
+     * Prints the fourth line of all the School Boards. Containing: student 1 and 2 of Entrance, green Students
+     * in Dining Room, green Professor, tower 1 and 2 in Tower Table, played assistant frame
+     * @param clientPlayers list of {@link ClientPlayer}
+     * @param currentPlayerName to color the schoolboard frame of the current player
+     */
     private void printSchoolBoardLine4(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
 
         String frameColor;
@@ -472,6 +581,12 @@ public class Printer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints the fifth line of all the School Boards. Containing: student 3 and 4 of Entrance, red Students
+     * in Dining Room, red Professor, tower 3 and 4 in Tower Table, played assistant frame and rank
+     * @param clientPlayers list of {@link ClientPlayer}
+     * @param currentPlayerName to color the schoolboard frame of the current player
+     */
     private void printSchoolBoardLine5(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
 
         String frameColor;
@@ -549,6 +664,12 @@ public class Printer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints the sixth line of all the School Boards. Containing: student 5 and 6 of Entrance, yeelow Students
+     * in Dining Room, yellow Professor, tower 5 and 6 in Tower Table, played assistant frame
+     * @param clientPlayers list of {@link ClientPlayer}
+     * @param currentPlayerName to color the schoolboard frame of the current player
+     */
     private void printSchoolBoardLine6(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
 
         String frameColor;
@@ -622,6 +743,12 @@ public class Printer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints the seventh line of all the School Boards. Containing: student 7 and 8 of Entrance, pink Students
+     * in Dining Room, pink Professor, tower 7 and 8 in Tower Table, played assistant frame and movements
+     * @param clientPlayers list of {@link ClientPlayer}
+     * @param currentPlayerName to color the schoolboard frame of the current player
+     */
     private void printSchoolBoardLine7(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
 
         String frameColor;
@@ -697,6 +824,12 @@ public class Printer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints the eighth line of all the School Boards. Containing: student 9 and 10 of Entrance, blue Students
+     * in Dining Room, blue Professor, tower 9 and 10 in Tower Table, played assistant frame
+     * @param clientPlayers list of {@link ClientPlayer}
+     * @param currentPlayerName to color the schoolboard frame of the current player
+     */
     private void printSchoolBoardLine8(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
 
         String frameColor;
@@ -771,6 +904,11 @@ public class Printer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints the ninth line of all the School Boards. Containing: frame
+     * @param clientPlayers list of {@link ClientPlayer}
+     * @param currentPlayerName to color the schoolboard frame of the current player
+     */
     private void printSchoolBoardLine9(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
 
         String frameColor;
@@ -795,6 +933,11 @@ public class Printer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints the tenth line of all the School Boards. Containing: frame and tower color
+     * @param clientPlayers list of {@link ClientPlayer}
+     * @param currentPlayerName to color the schoolboard frame of the current player
+     */
     private void printSchoolBoardLine10(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
         String frameColor;
 
@@ -820,6 +963,11 @@ public class Printer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints the eleventh line of all the School Boards. Containing: down frame
+     * @param clientPlayers list of {@link ClientPlayer}
+     * @param currentPlayerName to color the schoolboard frame of the current player
+     */
     private void printSchoolBoardLine11(ArrayList<ClientPlayer> clientPlayers, String currentPlayerName){
 
         String frameColor;
@@ -844,7 +992,12 @@ public class Printer {
     }
 
 
-
+    /**
+     * <p>Prints a given students at a given position into a cloud</p>
+     * <p>Called by printCloudLine methods for printing students on clouds</p>
+     * @param students list of Students into the Cloud
+     * @param position position of the student into the list
+     */
     private void printCloudStudents(ArrayList<Color> students, int position){
         if(students.size() >= position){
             printColored("o", students.get(position-1).ansi );
@@ -854,6 +1007,10 @@ public class Printer {
         }
     }
 
+    /**
+     * Prints the first line of all the clouds. Containing: upper frame
+     * @param clientClouds list of {@link ClientCloud}
+     */
     private void printCloudLine1(List<ClientCloud> clientClouds){
 
         for(int i=0; i<clientClouds.size(); i++){
@@ -864,6 +1021,10 @@ public class Printer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints the first line of all the clouds. Containing: frame, student 1 and 2
+     * @param clientClouds list of {@link ClientCloud}
+     */
     private void printCloudLine2(List<ClientCloud> clientClouds){
 
         for(ClientCloud clientCloud : clientClouds) {
@@ -879,6 +1040,10 @@ public class Printer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints the second line of all the clouds. Containing: frame, student 3 and 4
+     * @param clientClouds list of {@link ClientCloud}
+     */
     private void printCloudLine3(List<ClientCloud> clientClouds){
 
         for(ClientCloud clientCloud : clientClouds) {
@@ -894,6 +1059,10 @@ public class Printer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints the fourth line of all the clouds. Containing: down frame
+     * @param clientClouds array of {@link ClientCharacter}
+     */
     private void printCloudLine4(List<ClientCloud> clientClouds){
 
         for(int i=0; i<clientClouds.size(); i++){
@@ -905,9 +1074,11 @@ public class Printer {
     }
 
 
-
-
-
+    /**
+     * Prints given student at the given position on a Character card
+     * @param students array of Students on the Character card
+     * @param position position of the student into the array
+     */
     private void printCharacterStudents(Color[] students, int position){
 
         if(students.length >= position) {
@@ -922,6 +1093,10 @@ public class Printer {
         }
     }
 
+    /**
+     * Prints the first line of all the Character cards. Containing: frame, Character card number, description of first card
+     * @param clientCharacters array of {@link ClientCharacter}
+     */
     private void printCharacterLine1(ClientCharacter[] clientCharacters){
         for(int i=0; i<clientCharacters.length; i++){
             System.out.print("╔══C");
@@ -934,6 +1109,10 @@ public class Printer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints the first line of all the Character cards. Containing: frame, cost
+     * @param clientCharacters array of {@link ClientCharacter}
+     */
     private void printCharacterLine2(ClientCharacter[] clientCharacters){
         int index=1;
         for(ClientCharacter clientCharacter : clientCharacters){
@@ -953,6 +1132,11 @@ public class Printer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints the first line of all the Character cards. Containing: frame, students/entry tile/empty space
+     * according to the card, description of second card
+     * @param clientCharacters array of {@link ClientCharacter}
+     */
     private void printCharacterLine3(ClientCharacter[] clientCharacters){
 
         for(ClientCharacter clientCharacter : clientCharacters){
@@ -987,6 +1171,10 @@ public class Printer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints the first line of all the Character cards. Containing: frame, student 5 and 6 (if present)
+     * @param clientCharacters array of {@link ClientCharacter}
+     */
     private void printCharacterLine4(ClientCharacter[] clientCharacters){
 
         for(ClientCharacter clientCharacter : clientCharacters){
@@ -1010,6 +1198,10 @@ public class Printer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints the first line of all the Character cards. Containing: down frame, description of third card
+     * @param clientCharacters array of {@link ClientCharacter}
+     */
     private void printCharacterLine5(ClientCharacter[] clientCharacters){
 
         for(int i=0; i<clientCharacters.length; i++){
@@ -1023,8 +1215,10 @@ public class Printer {
     }
 
 
-
-
+    /**
+     * Prints the first line of all the Assistants owned by the user. Containing: upper frame
+     * @param assistants array of all the owned {@link Assistant}
+     */
     private void printAssistantLine1(Assistant[] assistants){
 
         for(Assistant assistant : assistants){
@@ -1041,6 +1235,10 @@ public class Printer {
 
     }
 
+    /**
+     * Prints the first line of all the Assistants owned by the user. Containing: frame, assistant rank
+     * @param assistants array of all the owned {@link Assistant}
+     */
     private void printAssistantLine2(Assistant[] assistants){
 
         for(Assistant assistant : assistants){
@@ -1059,6 +1257,10 @@ public class Printer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints the first line of all the Assistants owned by the user. Containing: frame
+     * @param assistants array of all the owned {@link Assistant}
+     */
     private void printAssistantLine3(Assistant[] assistants){
 
         for(Assistant assistant : assistants){
@@ -1075,6 +1277,10 @@ public class Printer {
 
     }
 
+    /**
+     * Prints the first line of all the Assistants owned by the user. Containing: frame, assistants steps
+     * @param assistants array of all the owned {@link Assistant}
+     */
     private void printAssistantLine4(Assistant[] assistants){
 
         for(Assistant assistant : assistants){
@@ -1096,6 +1302,10 @@ public class Printer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints the first line of all the Assistants owned by the user. Containing: down frame
+     * @param assistants array of all the owned {@link Assistant}
+     */
     private void printAssistantLine5(Assistant[] assistants){
 
         for(Assistant assistant : assistants){

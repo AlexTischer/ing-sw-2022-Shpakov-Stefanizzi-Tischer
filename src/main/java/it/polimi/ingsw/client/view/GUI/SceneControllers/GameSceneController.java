@@ -21,6 +21,26 @@ import java.util.ArrayList;
 import static it.polimi.ingsw.server.model.Color.*;
 import static javafx.scene.effect.BlurType.ONE_PASS_BOX;
 
+/**
+ * <p>This class is the controller assigned to the game scene (the main scene)</p>
+ * <ul>
+ *     Contains:
+ *     <li>{@link #root}, contains all the object of Game.fxml </li>
+ *     <li>{@link #playersList}, a list that contains Groups of player1,2,3,4 </li>
+ *     <li>{@link #islands} the Group that contain all Islands objects and their children</li>
+ *     <li>{@link #assistants} the Group that contain all Assistant objects and their children</li>
+ *     <li>{@link #clouds} the Group that contain all Clouds objects and their children</li>
+ *     <li>{@link #characters} the Group that contain all Characters objects and their children</li>
+ *     <li>{@link #zoomedAssistant} a Pane where is shown the zoomed Assistant when the mouse enter on the Assistant</li>
+ *     <li>{@link #characterDescription} where is shown the description of a Character card when the mouse enter on it </li>
+ *     <li>{@link #dialogText} where is set the text for the game flow</li>
+ *     <li>{@link #messageText} where is set the text for game messages (like moves not allowed or explanations)</li>
+ *     <li>{@link #askColorBox} shown when user is asked to choose a Color</li>
+ *     <li>{@link #yesButton} and {@link #noButton} shown when user is asked to give an affirmative or negative answer</li>
+ *
+ *     <p>All the children_ attributes are intended to get the index of various children into Game.fxml</p>
+ * </ul>
+ */
 public class GameSceneController extends SceneController {
 
 
@@ -84,11 +104,11 @@ public class GameSceneController extends SceneController {
     private boolean firstModelShown = false;
 
 
-
-
-
-
-
+    /**
+     * <p>Show all the game model and all information to play to the user</p>
+     * <p>In the first call it's invoked showFirstModel, in the other calls it's invoked updateModel</p>
+     * @param gameBoard
+     */
     public void showModel(ClientGameBoard gameBoard){
         if(!firstModelShown){
             showFirstModel(gameBoard);
@@ -99,6 +119,10 @@ public class GameSceneController extends SceneController {
         }
     }
 
+    /**
+     * <p>Show all the model and initialize "not movable" objects</p>
+     * @param gameBoard {@link ClientGameBoard}
+     */
     private void showFirstModel(ClientGameBoard gameBoard) {
 
         this.positionOfMotherNature = gameBoard.getPositionOfMotherNature();
@@ -330,6 +354,10 @@ public class GameSceneController extends SceneController {
 
     }
 
+    /**
+     * Update the model, removing all the "movable" objects and showing that again
+     * @param gameBoard {@link ClientGameBoard}
+     */
     private void updateModel(ClientGameBoard gameBoard){
 
         this.positionOfMotherNature=gameBoard.getPositionOfMotherNature();
@@ -555,9 +583,13 @@ public class GameSceneController extends SceneController {
     }
 
 
-    /* SHOWS PLAYER SCHOOLBOARD
-       p = player index in array of players
-       s = schoolBoard index in schoolBoardsList */
+    /**
+     * Show the School Boards for the first time
+     * @param gameBoard {@link ClientGameBoard}
+     * @param p the index of the Client Player from which is retrieved the data to fill the SchoolBoard
+     * @param s the index of {@link #playersList } where is located the SchoolBoard to fill
+     *
+     */
     private void fillSchoolBoard(ClientGameBoard gameBoard, int p, int s) {
 
         //entrance
@@ -642,6 +674,13 @@ public class GameSceneController extends SceneController {
         }
     }
 
+
+    /**
+     * Update the SchoolBaord
+     * @param gameBoard {@link ClientGameBoard}
+     * @param p the index of the Client Player from which is retrieved the data to fill the SchoolBoard
+     * @param s the index of {@link #playersList } where is located the SchoolBoard to fill
+     */
     private void refillSchoolBoard(ClientGameBoard gameBoard, int p, int s){
 
         //entrance
@@ -746,6 +785,12 @@ public class GameSceneController extends SceneController {
         }
     }
 
+    /**
+     * Fill a Character card for the first time
+     * @param gameBoard {@link ClientGameBoard}
+     * @param index of the character in {@link #characters} to fill
+     */
+
     private void fillCharacter(ClientGameBoard gameBoard, int index){
 
         //checking if cost is increased by 1
@@ -781,6 +826,11 @@ public class GameSceneController extends SceneController {
         }
     }
 
+    /**
+     * Updates a Character Card
+     * @param gameBoard {@link ClientGameBoard}
+     * @param index of the character in {@link #characters} to update
+     */
     private void refillCharacter(ClientGameBoard gameBoard, int index){
 
         //checking if cost is increased by 1
@@ -828,6 +878,10 @@ public class GameSceneController extends SceneController {
 
 
 
+    /**
+     * <p>Called by a mouse click on an Assistant</p>
+     * <p>Removes the possibility for all Assistants to be selected again and notifies Gui of the selection</p>
+     */
     public synchronized void selectAssistant(int assistantRank){
         askingDone=true;
         this.assistantRank= assistantRank;
@@ -847,6 +901,10 @@ public class GameSceneController extends SceneController {
         notifyAll();
     }
 
+    /**
+     * <p>Called by a mouse click on an Student</p>
+     * <p>Removes the possibility for all Students and all the other objects to be selected again and notifies Gui of the selection</p>
+     */
     public synchronized void selectStudent(Color studentColor){
         askingDone=true;
         chosenAction = 1;
@@ -863,6 +921,10 @@ public class GameSceneController extends SceneController {
         notifyAll();
     }
 
+    /**
+     * <p>Called by a mouse click on an Character</p>
+     * <p>Removes the possibility for all Characters and all the other objects to be selected again and notifies Gui of the selection</p>
+     */
     public synchronized void selectCharacter(int index){
         askingDone=true;
         chosenAction = 2;
@@ -879,7 +941,10 @@ public class GameSceneController extends SceneController {
         notifyAll();
     }
 
-
+    /**
+     * <p>Called by a mouse click on an Island or Dining Room</p>
+     * <p>Removes the possibility for all Islands, Dining Room and all the other objects to be selected again and notifies Gui of the selection</p>
+     */
     public synchronized void selectDestination(int index){
 
         askingDone=true;
@@ -898,6 +963,10 @@ public class GameSceneController extends SceneController {
         notifyAll();
     }
 
+    /**
+     * <p>Called by a mouse click on an Cloud</p>
+     * <p>Removes the possibility for all Clouds and all the other objects to be selected again and notifies Gui of the selection</p>
+     */
     public synchronized void selectCloud(int index){
         askingDone=true;
         chosenAction = 1;
@@ -915,6 +984,11 @@ public class GameSceneController extends SceneController {
         notifyAll();
     }
 
+    /**
+     * <p>Called by a mouse click on an Island</p>
+     * <p>It calculates the steps requested from the user to move Mother Nature</p>
+     * <p>Removes the possibility for all Islands and all the other objects to be selected again and notifies Gui of the selection</p>
+     */
     public synchronized void selectMotherNature(int selectedIsland){
         askingDone=true;
         chosenAction = 1;
@@ -940,6 +1014,10 @@ public class GameSceneController extends SceneController {
         notifyAll();
     }
 
+    /**
+     * <p>Called by a mouse click on the {@link #yesButton} or {@link #noButton}/p>
+     * Notifies Gui of the choice taken</p>
+     */
     public synchronized void selectBoolean(boolean choice){
         askingDone=true;
         this.choice=choice;
@@ -950,6 +1028,11 @@ public class GameSceneController extends SceneController {
         notifyAll();
     }
 
+    /**
+     * Called by GUI
+     * <p>Ask the user to select an Assistant to play</p>
+     * <p>Enables all the Assistants to call {@link #selectAssistant(int)} when mouse is clicked on them</p>
+     */
     public synchronized void askAssistant(){
 
         Platform.runLater(()->{
@@ -965,6 +1048,10 @@ public class GameSceneController extends SceneController {
 
     }
 
+    /**
+     * <p>Called by GUI</p>
+     * <p>Enables all the Students on a Character to be chosen</p>
+     */
     public void askStudentColorFromCharacter() {
 
         Platform.runLater(()->{
@@ -975,6 +1062,10 @@ public class GameSceneController extends SceneController {
         });
     }
 
+    /**
+     * <p>Called by GUI</p>
+     * <p>Enables the {@link #askColorBox}</p>
+     */
     public void askStudentColorFromBox(){
 
         Platform.runLater(()->{
@@ -985,6 +1076,10 @@ public class GameSceneController extends SceneController {
         });
     }
 
+    /**
+     * <p>Called by GUI</p>
+     * <p>Enables all the Students on the Dining Room to be chosen</p>
+     */
     public void askStudentColorFromDiningRoom(){
 
         Platform.runLater(()->{
@@ -994,12 +1089,20 @@ public class GameSceneController extends SceneController {
         });
     }
 
+    /**
+     * <p>Called by GUI</p>
+     * <p>Enables all the Students on the Entrance to be chosen</p>
+     */
     public void askStudentColorFromEntrance(){
         Platform.runLater(()->{
             enableEntranceStudents();
         });
     }
 
+    /**
+     * <p>Called by GUI</p>
+     * <p>Enables all the Students on the Entrance to be chosen</p>
+     */
     public void askStudentColor(){
 
         Platform.runLater(()->{
@@ -1011,6 +1114,10 @@ public class GameSceneController extends SceneController {
     }
 
 
+    /**
+     * <p>Called by GUI</p>
+     * <p>Enables all Islands to be chosen</p>
+     */
     public void askIslandNumber() {
 
         Platform.runLater(()->{
@@ -1021,6 +1128,10 @@ public class GameSceneController extends SceneController {
 
     }
 
+    /**
+     * <p>Called by GUI</p>
+     * <p>Enables all the Island and the Dining Room to be chosen as destination</p>
+     */
     public void askStudentDestination() {
 
         Platform.runLater(()->{
@@ -1036,6 +1147,10 @@ public class GameSceneController extends SceneController {
 
     }
 
+    /**
+     * <p>Called by GUI</p>
+     * <p>Enables all the Islands to be chosen for moving Mother Nature</p>
+     */
     public void askMotherNatureSteps() {
         Platform.runLater(()->{
             dialogText.setText("Select the island you want to move MotherNature to");
@@ -1045,6 +1160,10 @@ public class GameSceneController extends SceneController {
         });
     }
 
+    /**
+     * <p>Called by GUI</p>
+     * <p>Enables all the Clouds to be chosen</p>
+     */
     public void askCloudNumber() {
         Platform.runLater(()->{
             dialogText.setText("Select a cloud to refill your entrance");
@@ -1060,6 +1179,10 @@ public class GameSceneController extends SceneController {
         });
     }
 
+    /**
+     * <p>Called by GUI</p>
+     * <p>Enables {@link #yesButton} and {@link #noButton}, to be selected</p>
+     */
     public void askBoolean() {
         Platform.runLater(()->{
             dialogText.setText("Do you want to proceed with character effect?");
@@ -1075,6 +1198,10 @@ public class GameSceneController extends SceneController {
         });
     }
 
+    /**
+     * <p>Called by GUI</p>
+     * <p>Enables Entrance Students and Characters to be chosen</p>
+     */
     public void chooseActionStudent() {
 
         Platform.runLater(()->{
@@ -1091,6 +1218,10 @@ public class GameSceneController extends SceneController {
 
     }
 
+    /**
+     * <p>Called by GUI</p>
+     * <p>Enables Islands and Characters to be chosen</p>
+     */
     public void chooseActionMotherNature() {
 
         Platform.runLater(()->{
@@ -1105,6 +1236,10 @@ public class GameSceneController extends SceneController {
         });
     }
 
+    /**
+     * <p>Called by GUI</p>
+     * <p>Enables Clouds and Characters to be chosen</p>
+     */
     public void chooseActionCloud() {
 
         Platform.runLater(()->{
@@ -1120,68 +1255,123 @@ public class GameSceneController extends SceneController {
 
     }
 
+    /**
+     * @return if a question have been correctly asked
+     */
     public boolean isAskingDone(){
         return askingDone;
     }
 
+    /**
+     * Set if a question have been correctly asked
+     * @param askingDone
+     */
     public void setAskingDone(boolean askingDone){
         this.askingDone = askingDone;
     }
 
+    /**
+     * @return the rank of an Assistant that has been selected
+     */
     public int getAssistantRank(){
         return assistantRank;
     }
 
+    /**
+     * @return the action chosen by the player
+     */
     public int getChosenAction() {
         return chosenAction;
     }
 
+    /**
+     * @return the Student {@link Color} that has been selected
+     */
     public Color getStudentColor() {
         return studentColor;
     }
 
+    /**
+     * @return the Island number that has been selected
+     */
     public int getIslandNumber() {
         return destination;
     }
 
+    /**
+     * @return the steps of Mother Nature that has been made
+     */
     public int getMotherNatureSteps() {
         return motherNatureSteps;
     }
 
+    /**
+     * @return the Cloud number that has been selected
+     */
     public int getCloudNumber(){
         return cloudNumber;
     }
 
+    /**
+     * @return the Character card number that has been selected
+     */
     public int getCharacterNumber() {
         return characterNumber;
     }
 
+    /**
+     * @return the destination index that has been selected
+     */
     public int getStudentDestination() {
         return destination;
     }
 
+    /**
+     * @return the choice that has been made
+     */
     public boolean getChoice() {
         return choice;
     }
 
 
     /*METHODS FOR POSITIONING STUDENTS*/
+
+    /**
+     * Method for positioning Students on Islands
+     * @param num index of Student to be placed
+     * @return index of the row to place the Student
+     */
     private int studentOnIslandRow(int num){
         Integer[] positions = {2,3,1,1,3,0,1,2,2,2,0,3,1,2,3,0,0,0,0,3,3,2,1,4,4,4,4,4,4};
         return positions[num];
     }
 
+    /**
+     * Method for positioning Students on Islands
+     * @param num index of Student to be placed
+     * @return index of the column to place the Student
+     */
     private int studentOnIslandColumn(int num){
         Integer[] positions = {4,1,0,3,3,3,5,1,3,0,4,2,1,2,4,2,5,0,1,0,5,5,4,2,3,0,4,1,5};
         return positions[num];
     }
 
+    /**
+     * Method for positioning Towers on Islands
+     * @param num index of Tower to be placed
+     * @return index of the row to place the Tower
+     */
     private int towerOnIslandRow(int num){
         Integer[] positions = {1,1,1,1,1,0,0,0,0,0};
         return positions[num];
 
     }
 
+    /**
+     * Method for positioning Towers on Islands
+     * @param num index of Tower to be placed
+     * @return index of the column to place the Tower
+     */
     private int towerOnIslandColumn(int num){
         Integer[] positions = {1,3,2,0,4,1,3,2,0,4};
         return positions[num];
@@ -1190,15 +1380,28 @@ public class GameSceneController extends SceneController {
 
 
     /*METHODS ASSIGNED TO ASSISTANTS DURING INITIALIZATION*/
+
+    /**
+     * Put an Assistant into {@link #zoomedAssistant} Pane
+     * @param rank of the assistant to be put
+     */
     public void showAssistant(int rank){
         zoomedAssistant.getChildren()
                 .add(loadImageView(getAssistantPath(rank),(int)zoomedAssistant.getWidth(),(int)zoomedAssistant.getHeight()));
     }
 
+    /**
+     * Removes an Assistant from {@link #zoomedAssistant} Pane
+     */
     public void removeShowAssistant(){
         zoomedAssistant.getChildren().remove(0);
     }
 
+    /**
+     *
+     * @param rank of the Assistant
+     * @return the Assistant image path of the given rank
+     */
     private String getAssistantPath(int rank){
         String[] paths = {
                 "/images/assistants/Assistente (1).png",
@@ -1217,6 +1420,11 @@ public class GameSceneController extends SceneController {
     }
 
 
+    /**
+     *
+     * @param id of the Character
+     * @return the Character path of the given id
+     */
     private String getCharacterPath(int id){
         String[] paths = {
                 "/images/characters/Character1.jpg",
@@ -1236,6 +1444,13 @@ public class GameSceneController extends SceneController {
     }
 
 
+    /**
+     * Calculate the position on an ellipse where an Island should be placed, according to number of Islands to be placed
+     * @param n number of Islands to be placed
+     * @param islandIndex index of the Island to be placed
+     * @param dim size of the Island to show
+     * @return
+     */
     private int[] calculateIslandPosition(int n, int islandIndex, int dim){
 
         int a=400+10-5*(12-n);
@@ -1251,12 +1466,21 @@ public class GameSceneController extends SceneController {
         return new int[]{x, y};
     }
 
+    /**
+     * Set an error message into the {@link #messageText}
+     * @param message
+     */
     @Override
     public void printErrorMessage(String message){
         Platform.runLater(()->{
             messageText.setText(message + "\n\n");
         });
     }
+
+    /**
+     * Set a message into the {@link #messageText}
+     * @param message
+     */
     @Override
     public void printMessage(String message){
         Platform.runLater(()->{
@@ -1264,6 +1488,11 @@ public class GameSceneController extends SceneController {
         });
     }
 
+    /**
+     * Highlights or not the given {@link ImageView} with Chocolate color
+     * @param imageView
+     * @param bool true to highlight
+     */
     private void highlightImageView(ImageView imageView, boolean bool){
         DropShadow ds = new DropShadow( 10, javafx.scene.paint.Color.CHOCOLATE);
         ds.setBlurType( ONE_PASS_BOX);
@@ -1276,6 +1505,12 @@ public class GameSceneController extends SceneController {
         }
     }
 
+    /**
+     * Highlights or not the given {@link ImageView} with the given color
+     * @param imageView
+     * @param color
+     * @param lightOn true to highlight
+     */
     private void highlightSchoolBoard(ImageView imageView, boolean lightOn, javafx.scene.paint.Color color){
         DropShadow ds = new DropShadow( 50, color);
         ds.setBlurType( ONE_PASS_BOX);
@@ -1288,6 +1523,9 @@ public class GameSceneController extends SceneController {
         }
     }
 
+    /**
+     * Disable all the objects from mouse clicking, mouse entering, mouse exiting and restore the cursor to default.
+     */
     public void disableAllFromSelectionAndHighLight(){
 
         //disabling assistants
@@ -1389,6 +1627,10 @@ public class GameSceneController extends SceneController {
 
     }
 
+    /**
+     * Enable all the Students on Entrance to call {@link #selectStudent(Color)}
+     * when mouse is clicked on them and to be highlighted when mouse enters on them
+     */
     public void enableEntranceStudents(){
             for(int i=0; i<((Group)playersList.get(0).getChildren().get(children_entrance)).getChildren().size(); i++){
                 int finalI = i;
@@ -1417,6 +1659,10 @@ public class GameSceneController extends SceneController {
 
     }
 
+    /**
+     * Enable all the Clouds to call {@link #selectCloud(int)}
+     * when mouse is clicked on them and to be highlighted when mouse enters on them
+     */
     public void enableClouds(){
 
         for(int i=0; i<clouds.getChildren().size(); i++){
@@ -1434,6 +1680,10 @@ public class GameSceneController extends SceneController {
         }
     }
 
+    /**
+     * Enable all the Islands to call {@link #selectMotherNature(int)}
+     * when mouse is clicked on them and to be highlighted when mouse enters on them
+     */
     public void enableIslandsForMN(){
         for(int i=0; i<islands.getChildren().size(); i++) {
             int finalI = i;
@@ -1449,6 +1699,10 @@ public class GameSceneController extends SceneController {
         }
     }
 
+    /**
+     * Enable all the Islands to call {@link #selectDestination(int)}
+     * when mouse is clicked on them and to be highlighted when mouse enters on them
+     */
     public void enableIslandsForDestination(){
         for(int i=0; i<islands.getChildren().size(); i++) {
             int finalI = i;
@@ -1464,6 +1718,10 @@ public class GameSceneController extends SceneController {
         }
     }
 
+    /**
+     * Enable Dining Room to call {@link #selectDestination(int)}
+     * when mouse is clicked on it
+     */
     public void enableDiningRoom(){
         playersList.get(0).getChildren().get(children_diningRoom).setOnMouseClicked(mouseEvent ->
             {selectDestination(0);});
@@ -1471,6 +1729,10 @@ public class GameSceneController extends SceneController {
         playersList.get(0).getChildren().get(children_diningRoom).setCursor(Cursor.HAND);
     }
 
+    /**
+     * Enable all the Students on Dining Room to call {@link #selectStudent(Color)}
+     * when mouse is clicked on them and to be highlighted when mouse enters on them
+     */
     public void enableDiningRoomStudents(){
         for(int i=0; i<((GridPane)playersList.get(0).getChildren().get(children_diningRoom)).getChildren().size();i++){
             int finalI = i;
@@ -1496,6 +1758,10 @@ public class GameSceneController extends SceneController {
         }
     }
 
+    /**
+     * Enable all the Characters to call {@link #selectCharacter(int)}
+     * when mouse is clicked on them
+     */
     public void enableCharacters(){
         if(!(characters.getChildren().isEmpty())) {
             for (int i = 0; i < characters.getChildren().size(); i++) {
@@ -1509,6 +1775,10 @@ public class GameSceneController extends SceneController {
         }
     }
 
+    /**
+     * Enable all the Students on Characters to call {@link #selectStudent(Color)}
+     * when mouse is clicked on them and to be highlighted when mouse enters on them
+     */
     public void enableCharactersStudents(){
         if(!(characters.getChildren().isEmpty())) {
             for (int i = 0; i < ((GridPane) ((Pane) characters.getChildren().get(characterNumber - 1)).getChildren().get(1)).getChildren().size(); i++) {
@@ -1535,6 +1805,10 @@ public class GameSceneController extends SceneController {
         }
     }
 
+    /**
+     * Enable {@link #askColorBox} and the Colors on it to call {@link #selectStudent(Color)}
+     * when mouse is clicked on them and to be highlighted when mouse enters on them
+     */
     public void enableAskColorBox(){
         askColorBox.setVisible(true);
 
@@ -1553,10 +1827,16 @@ public class GameSceneController extends SceneController {
         }
     }
 
+    /**
+     * Hide {@link #askColorBox}
+     */
     public void hideAskColorBox() {
         askColorBox.setVisible(false);
     }
 
+    /**
+     * Hide {@link #askColorBox}
+     */
     public void hideYesNoButtons() {
         yesButton.setVisible(false);
         noButton.setVisible(false);

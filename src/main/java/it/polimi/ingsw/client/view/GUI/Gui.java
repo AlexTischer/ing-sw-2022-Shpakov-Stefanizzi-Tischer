@@ -13,6 +13,18 @@ import java.util.List;
 
 import static it.polimi.ingsw.client.view.GUI.FXMLPaths.*;
 
+
+/**
+ * <p>This class is responsible for managing the user interaction with the game through a GUI</p>
+ * <p>It implements {@link View} methods and forward their requests to the specific Scene Controller</p>
+ * <p>All the View methods are synchronized to a SceneController and wait until that SceneController notifies a change (the user interaction)</p>
+ * <ul>
+ *     Contains:
+ *     <li>{@link ConfigurationSceneController} instance that is responsible for configuration scene</li>
+ *     <li>{@link LoginSceneController} that is responsible for login scene</li>
+ *     <li>{@link GameSceneController} that is responsible for game scene, where the user effectively plays the game</li>
+ * </ul>
+ */
 public class Gui extends View {
 
     private ConfigurationSceneController configurationSceneController;
@@ -20,6 +32,9 @@ public class Gui extends View {
     private GameSceneController gameSceneController;
 
 
+    /**
+     * Constructor method where is created the JavaFx thread, managed by {@link GuiApp}
+     */
     public Gui(){
         synchronized (GuiApp.class){
             new Thread(()-> {

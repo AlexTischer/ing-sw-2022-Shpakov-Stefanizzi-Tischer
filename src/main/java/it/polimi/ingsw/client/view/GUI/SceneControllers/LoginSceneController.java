@@ -12,6 +12,18 @@ import javafx.scene.layout.VBox;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * <p>This class is the controller assigned to the login scene</p>
+ * <ul>
+ *     Contains:
+ *     <li>{@link #textField} let the user insert its name</li>
+ *     <li>{@link #errorMessage} shows error messages to the user (eg. username format not allowed, username already taken)</li>
+ *     <li>{@link #labelList} shows name of the players that joined the lobby</li>
+ *     <li>{@link #vBOXList} show assistant images of the players that joined the lobby</li>
+ *     <li>{@link #button1} allow the user to send its username</li>
+ *     <li>{@link #group} contains all the FXML objects</li>
+ * </ul>
+ */
 public class LoginSceneController extends SceneController {
 
     @FXML
@@ -32,6 +44,10 @@ public class LoginSceneController extends SceneController {
     private String name;
 
 
+    /**
+     * <p>Called by {@link #button1} to set {@link #name} and notify Gui that user has sent a name</p>
+     * <p>Checks if the name is well formatted</p>
+     */
     public synchronized void sendName(){
 
     String input = textField.getText();
@@ -45,10 +61,15 @@ public class LoginSceneController extends SceneController {
         }
     }
 
+
     public String getName() {
         return name.toUpperCase();
     }
 
+    /**
+     * Called by Gui. Updates the lobby names
+     * @param userNames list of usernames to insert into the lobby
+     */
     public void update(List<String> userNames){
 
         Platform.runLater(()->{
@@ -73,10 +94,18 @@ public class LoginSceneController extends SceneController {
 
     }
 
+    /**
+     * Called by Gui
+     * @return if user has sent its name correctly
+     */
     public boolean isLoginDone() {
         return loginDone;
     }
 
+    /**
+     * Set an error message to {@link #errorMessage} and enable {@link #textField} again
+     * @param message
+     */
     @Override
     public void printErrorMessage(String message){
         errorMessage.setText(message);
@@ -87,6 +116,9 @@ public class LoginSceneController extends SceneController {
         });
     }
 
+    /**
+     * Assigned to {@link #textField} when is clicked. It removes the error message
+     */
     public void cancelMessage(){
         errorMessage.setText("");
     }
