@@ -3,6 +3,7 @@ package it.polimi.ingsw.server;
 import it.polimi.ingsw.exceptions.GameReactivatedException;
 import it.polimi.ingsw.exceptions.GameSuspendedException;
 import it.polimi.ingsw.modelChange.*;
+import it.polimi.ingsw.packets.Packet;
 import it.polimi.ingsw.server.controller.CharacterDeck;
 import it.polimi.ingsw.server.controller.Game;
 import it.polimi.ingsw.server.model.Player;
@@ -14,31 +15,65 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
+
+/**
+ * This class handles the clients' connections and reconnections.
+ * It handles first game configuration.
+ * It creates a new {@link Connection} for each client and attaches it a {@link VirtualView},
+ * creating it if it's the first client's connection or using an already created one if it's a reconnection.
+ * It handles the Lobby.
+ * It creates {@link Game} and {@link it.polimi.ingsw.server.model.GameBoard} and initiates them when the Lobby is ready.
+ * <ul> Contains:
+ *      <li>{@link #port} is the port the Server will listen at</li>
+ *      <li>{@link #serverSocket} is the socket the server will accept clients with</li>
+ *      <li>{@link #waitingConnection} is a Map linking each connection with the name of its client</li>
+ *      <li>{@link #virtualViews} is the list of {@link VirtualView} in game once game has started</li>
+ *      <li>{@link #timer} is the Timer used in {@link #startTimer()} to wait for clients to reconnect</li>
+ *      <li>{@link #secondsToWait} is the remaining time clients have to reconnect</li>
+ *      <li>{@link #isTimerActive} is the boolean representing the status of {@link #timer}</li>
+ *      <li>{@link #game} is the instance of {@link Game} handling the current match</li>
+ *      <li>{@link #numOfPlayers} is the number of players current match is made for</li>
+ *      <li>{@link #advancedSettings} is the boolean representing whether the current match is using advanced settings or not</li>
+ *      <li>{@link #numOfConnections} is the number of connection the server has accepted</li>
+ *      <li>{@link #gameReady} is a boolean representing whether the lobby is full and the game can be created (or if it already has been done)</li>
+ * </ul>
+ */
 public class Server {
     private int port;
     private ServerSocket serverSocket;
     private Map<String, Connection> waitingConnection = new HashMap<>();
     private static List<VirtualView> virtualViews = new ArrayList<VirtualView>();
-
     private static Timer timer;
-
     private static final int[] secondsToWait = {29};
-
     private static boolean isTimerActive = false;
-
     private Game game;
     private int numOfPlayers = 0;
     private boolean advancedSettings;
     private int numOfConnections = 0;
     private boolean gameReady = false;
+
+
     public Server(int port) throws IOException{
         this.port=port;
         serverSocket = new ServerSocket(port);
     }
 
-
+    /**
+     *This method is used to add a client to the Lobby or to reconnect it to an ongoing match
+     * <ul>
+     *     <li>if !{@link #gameReady} calls {@link #addToLobby(Connection, String)}</li>
+     *     <li>if {@link #gameReady} checks if any {@link VirtualView} has its {@link Connection} inactive and, if so, checks
+     *     if the name of the connecting client is the same as the {@link Player}'s one in the VirtualView</li>
+     *     <li>if a matching {@link VirtualView} is found, it calls {@link VirtualView#attachConnection(Connection)}, {@link Connection#attachView(VirtualView)},
+     *     {@link VirtualView#changePlayerStatus(boolean)}, {@link VirtualView#update(ModelChange)} and {@link #changeConnectionStatus(ModelChange)}</li>
+     *     <li>if a matching {@link VirtualView} is not found, it sends an {@link EndOfGameChange} with null parameter in order to close the exceeding client, and calls {@link Connection#close()}</li>
+     * </ul>
+     * @param connection the {@link Connection} the client is asking to be added through
+     * @param name of the player to add
+     * @throws InterruptedException whenever the client cannot be added whether because its name is the same as one of the active {@link Player},
+     * or because the game is already started and every player is active.
+     */
     //synchronized because no clients can be added simultaneously
-
     public synchronized void addClient(Connection connection, String name) throws InterruptedException {
         if(!gameReady) {
             addToLobby(connection, name);
@@ -77,10 +112,23 @@ public class Server {
             }
         }
     }
+
+    /**
+     * Creates a new and updated {@link LobbyChange}
+     * @return {@link LobbyChange} to be sent to clients containing the list of clients in lobby
+     */
     public LobbyChange createLobbyChange(){
         return new LobbyChange(waitingConnection.keySet().stream().toList());
     }
 
+
+    /**
+     * This method is used to add a client to the Lobby
+     * If Lobby is full, it turns {@link #gameReady} to true and calls {@link #createGame()}
+     * @param connection the {@link Connection} the client is asking to be added through
+     * @param name of the player to add
+     * @throws InterruptedException whenever the client cannot be added whether because its name is already present in Lobby
+     */
     private void addToLobby(Connection connection, String name) throws InterruptedException{
 
         if (waitingConnection.keySet().contains(name)) {
@@ -102,6 +150,10 @@ public class Server {
         }
     }
 
+    /**
+     * TODO createGame
+     * @throws InterruptedException
+     */
     private void createGame() throws InterruptedException{
         game = Game.getInstanceOfGame();
 
@@ -153,10 +205,13 @@ public class Server {
         }
     }
 
-    /*only for addToLobby*/
-
+    /**
+     * Removes connection from {@link #waitingConnection}, sends {@link LobbyChange},
+     * decreases {@link #numOfConnections} and sets {@link #gameReady} back to false
+     *
+     * @param connection the {@link Connection} of the disconnected client
+     */
     public void removeFromLobby(Connection connection) {
-        /*remove connection from waiting virtualViews map*/
 
         //save oldKeys because map may be modified during execution
         Set<String> oldKeys = new TreeSet<String>(waitingConnection.keySet());
@@ -179,8 +234,12 @@ public class Server {
         System.out.println("Server: I deregistered connection");
 
     }
-    /*receives ConnectionStatusChange of that particular client that became inactive or active*/
 
+
+    /**Sends {@link ConnectionStatusChange} to every active client to set the status of a player whose client just disconnected or reconnected
+     *
+     * @param playerConnectionStatus is the {@link ModelChange} that will set a player status on the clients
+     */
     public void changeConnectionStatus(ModelChange playerConnectionStatus){
         for (VirtualView client : virtualViews) {
             //need to notify only active virtualViews
@@ -188,12 +247,17 @@ public class Server {
                 client.update(playerConnectionStatus);
         }
     }
+
+
+    /**
+     * Starts a countDown within which disconnected clients can reconnect. Other clients will receive {@link ExceptionChange}
+     * containing {@link GameSuspendedException} each second for {@link #secondsToWait} seconds
+     */
     public static void startTimer(){
         timer = new Timer();
         isTimerActive = true;
         secondsToWait[0] = 29;
 
-        //TODO send GameSuspendedException each second
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -217,6 +281,11 @@ public class Server {
         }, 0, 1000);
     }
 
+    /**
+     *If {@link #isTimerActive()}, sends {@link ExceptionChange} containing {@link GameReactivatedException} to every active client,
+     * calls {@link VirtualView#notifyAll()} to wake any Thread sleeping on it (the one created in {@link VirtualView#sendPacket(Packet)}) and
+     * cancels, purges and sets {@link #isTimerActive} to false
+     */
     public static void resetTimer(){
         if (isTimerActive){
             System.out.println("Timer was reset");
@@ -242,6 +311,16 @@ public class Server {
         return secondsToWait[0];
     }
 
+    /**
+     * This is the method that the {@link it.polimi.ingsw.ServerApp} main Thread will execute until the end of the game
+     * <ul>
+     *      <li>It accepts the clients requests on {@link #serverSocket} and creates client sockets, {@link ObjectInputStream} and {@link ObjectOutputStream} </li>
+     *      <li>It sets socketTimeOut</li>
+     *      <li>It lets the first client to configure the game (temporarily handling Ping-Pong messages)</li>
+     *      <li>It increments {@link #numOfConnections}</li>
+     *      <li>It runs a new {@link Connection} on a new thread</li>
+     * </ul>
+     */
     public void run(){
         System.out.println("Server listening on port: " + port);
         //server sends strings to each client with writeUTF() until it gets added to lobby
