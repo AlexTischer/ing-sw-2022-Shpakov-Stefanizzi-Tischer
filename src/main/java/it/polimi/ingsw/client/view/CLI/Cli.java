@@ -11,12 +11,26 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
+/**<p>This class is responsible for managing the user interaction with the game through a CLI</p>
+ *<ul>
+ *     Contains:
+ *     <li>{@link #stdin} - Scanner instance to take user input</li>
+ *     <li>{@link #printer} - {@link Printer} instance to call its printing methods and show the game Model</li>
+ *</ul>
+ */
 public class Cli extends View {
 
     private Scanner stdin = new Scanner(System.in);
     private Printer printer = new Printer();
 
 
+    /**
+     *   <ul>
+     *      <li>Calls {@link Printer#clearConsole()} to clear all the CLI from previous prints</li>
+     *      <li>Calls {@link Printer#showLobby(List)} to show lobby formatted for CLI</li>
+     *   </ul>
+     * @param userNames list of usernames to show
+     */
     @Override
     public void showLobby(List<String> userNames) {
         try {
