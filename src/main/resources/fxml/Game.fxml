@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+
 <?import java.util.ArrayList?>
 <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-alignment: center;  -fx-background-image: url('/images/misc/background.jpg'); -fx-background-position: center center; -fx-background-repeat: no-repeat; -fx-background-size: cover;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -88,13 +99,13 @@
                            </children></Pane>
 
                         <Label layoutX="150.0" layoutY="-20.0" prefHeight="17.0" prefWidth="175.0" text="Name" />
+                        <Label layoutX="300.0" layoutY="-20.0" prefHeight="17.0" prefWidth="134.0" text="Tower Color:" />
                         <ImageView fitHeight="30.0" fitWidth="30.0" layoutY="-35.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/misc/coin2.png" />
                            </image>
                         </ImageView>
                         <Label layoutX="32.0" layoutY="-24.0" prefHeight="17.0" prefWidth="26.0" text="0" />
-                        <Label layoutX="300.0" layoutY="-20.0" prefHeight="17.0" prefWidth="134.0" text="Tower Color:" />
       
                          
                            </children>
@@ -172,13 +183,13 @@
                               <ImageView fitHeight="150.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
                            </children></Pane>
                         <Label layoutX="340.0" layoutY="80.0" prefHeight="17.0" prefWidth="173.0" rotate="270.0" text="Name" />
+                        <Label layoutX="420.0" layoutY="100.0" prefHeight="17.0" prefWidth="134.0" rotate="270.0" text="Tower Color:" />
                         <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="440.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true" rotate="270.0">
                            <image>
                               <Image url="@../images/misc/coin2.png" />
                            </image>
                         </ImageView>
                         <Label layoutX="438.0" layoutY="120.0" prefHeight="17.0" prefWidth="30.0" rotate="270.0" text="0" />
-                        <Label layoutX="420.0" layoutY="100.0" prefHeight="17.0" prefWidth="134.0" rotate="270.0" text="Tower Color:" />
                      </children>
       
 
@@ -258,13 +269,13 @@
                               <ImageView fitHeight="150.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" rotate="180.0" />
                            </children></Pane>
                         <Label alignment="CENTER_RIGHT" layoutX="420.0" layoutY="157.0" prefHeight="17.0" prefWidth="144.0" rotate="180.0" text="Name" textAlignment="RIGHT" />
+                        <Label layoutX="420.0" layoutY="100.0" prefHeight="17.0" prefWidth="134.0" rotate="180.0" text="Tower Color:" />
                         <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="445.0" layoutY="130.0" pickOnBounds="true" preserveRatio="true" rotate="180.0">
                            <image>
                               <Image url="@../images/misc/coin2.png" />
                            </image>
                         </ImageView>
                         <Label layoutX="415.0" layoutY="135.0" prefHeight="17.0" prefWidth="24.0" rotate="180.0" text="0" />
-                        <Label layoutX="420.0" layoutY="100.0" prefHeight="17.0" prefWidth="134.0" rotate="180.0" text="Tower Color:" />
                      </children>
       
 
@@ -344,13 +355,13 @@
                               <ImageView fitHeight="105.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true" />
                            </children></Pane>
                         <Label layoutX="-20.0" layoutY="-15.0" prefHeight="17.0" prefWidth="126.0" scaleX="0.7" scaleY="0.7" text="Name" />
+                        <Label layoutX="-20.0" layoutY="-50.0" prefHeight="17.0" prefWidth="134.0" scaleX="0.7" scaleY="0.7" text="Tower Color:" />
                         <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="-5.0" layoutY="-35.0" pickOnBounds="true" preserveRatio="true" scaleX="0.7" scaleY="0.7">
                            <image>
                               <Image url="@../images/misc/coin2.png" />
                            </image>
                         </ImageView>
                         <Label layoutX="16.0" layoutY="-31.0" prefHeight="17.0" prefWidth="24.0" scaleX="0.7" scaleY="0.7" text="0" />
-                        <Label layoutX="-20.0" layoutY="-50.0" prefHeight="17.0" prefWidth="134.0" scaleX="0.7" scaleY="0.7" text="Tower Color:" />
                      </children>
       
 

@@ -64,10 +64,10 @@ public class GameSceneController extends SceneController {
     //player group
     int children_assistantPlayed = 5;
     int children_nameLabel = 6;
-    int children_imageOfCoin = 7;
-    int children_numOfCoins = 8;
+    int children_towerColorLabel = 7;
+    int children_imageOfCoin = 8;
+    int children_numOfCoins = 9;
 
-    int children_towerColorLable = 9;
 
 
     //schoolboard
@@ -664,13 +664,13 @@ public class GameSceneController extends SceneController {
         //setting infos for teams (4 player game)
         if(gameBoard.getPlayers().size()==4) {
             if (gameBoard.getPlayers().get(p).getSchoolBoard().getNumOfTowers() != 0) {
-                ((Label) playersList.get(s).getChildren().get(children_towerColorLable)).setText("");
+                ((Label) playersList.get(s).getChildren().get(children_towerColorLabel)).setText("");
             } else {
-                ((Label) playersList.get(s).getChildren().get(children_towerColorLable)).setText("Tower Color: " + gameBoard.getPlayers().get(p).getTowerColor());
+                ((Label) playersList.get(s).getChildren().get(children_towerColorLabel)).setText("Tower Color: " + gameBoard.getPlayers().get(p).getTowerColor());
             }
         }
         else{
-            ((Label) playersList.get(s).getChildren().get(children_towerColorLable)).setText("");
+            ((Label) playersList.get(s).getChildren().get(children_towerColorLabel)).setText("");
         }
     }
 
