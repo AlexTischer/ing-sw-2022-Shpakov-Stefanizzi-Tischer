@@ -10,6 +10,7 @@ import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -594,12 +595,11 @@ public class GameSceneController extends SceneController {
 
         //entrance
         ArrayList<Color> entrance = gameBoard.getPlayers().get(p).getSchoolBoard().getEntrance();
+
         for (int student = 0; student < entrance.size(); student++) {
-            ((Pane) ((Group) playersList.get(s).getChildren().get(children_entrance)).getChildren().get(student)).getChildren()
-                    .add(loadImageView(entrance.get(student).student, 20, 20));
+           ((Pane)((Group) playersList.get(s).getChildren().get(children_entrance)).getChildren().get(student)).getChildren()
+                    .add(loadImageView(entrance.get(student).student,20,20));
         }
-
-
 
         //diningRoom
         for (int student = 0; student < gameBoard.getPlayers().get(p).getSchoolBoard().getDiningRoom().get(GREEN); student++) {
@@ -684,22 +684,20 @@ public class GameSceneController extends SceneController {
     private void refillSchoolBoard(ClientGameBoard gameBoard, int p, int s){
 
         //entrance
-        ArrayList<Color> entrance = gameBoard.getPlayers().get(p).getSchoolBoard().getEntrance();
 
-        int entrancePane =0;
-        for (int student = 0; student < entrance.size(); student++) {
-            ((ImageView)((Pane)((Group) playersList.get(s).getChildren().get(children_entrance)).getChildren().get(student)).getChildren().get(0))
-                    .setImage(loadImage(entrance.get(student).student));
-
-            entrancePane++;
-
+        //removing previous images
+        for (int student = 0; student < ((Group) playersList.get(s).getChildren().get(children_entrance)).getChildren().size(); student++) {
+            if(!(((Pane)((Group) playersList.get(s).getChildren().get(children_entrance)).getChildren().get(student)).getChildren().isEmpty())) {
+                ((Pane) ((Group) playersList.get(s).getChildren().get(children_entrance)).getChildren().get(student)).getChildren().remove(0);
+            }
 
         }
-        for(int i = entrancePane; i<((Group)playersList.get(s).getChildren().get(children_entrance)).getChildren().size(); i++){
-            if(!(((Pane)((Group) playersList.get(s).getChildren().get(children_entrance)).getChildren().get(i)).getChildren().isEmpty())) {
-                ((ImageView) ((Pane) ((Group) playersList.get(s).getChildren().get(children_entrance)).getChildren().get(i)).getChildren().get(0))
-                        .setImage(null);
-            }
+
+        ArrayList<Color> entrance = gameBoard.getPlayers().get(p).getSchoolBoard().getEntrance();
+
+        for (int student = 0; student < entrance.size(); student++) {
+            ((Pane)((Group) playersList.get(s).getChildren().get(children_entrance)).getChildren().get(student)).getChildren()
+                    .add(loadImageView(entrance.get(student).student,20,20));
         }
 
 
@@ -763,19 +761,19 @@ public class GameSceneController extends SceneController {
 
 
         //towers
-        int towerPane =0;
-        for (int tower = 0; tower < gameBoard.getPlayers().get(p).getSchoolBoard().getNumOfTowers(); tower++) {
-            ((ImageView)((Pane)((Group) playersList.get(s).getChildren().get(children_towerTable)).getChildren().get(tower)).getChildren().get(0))
-                    .setImage(loadImage(gameBoard.getPlayers().get(p).getTowerColor().tower));
-            towerPane++;
+        //removing previous images
+        for (int tower = 0; tower < ((Group) playersList.get(s).getChildren().get(children_towerTable)).getChildren().size(); tower++) {
+
+            if(!(((Pane) ((Group) playersList.get(s).getChildren().get(children_towerTable)).getChildren().get(tower)).getChildren().isEmpty())){
+                ((Pane) ((Group) playersList.get(s).getChildren().get(children_towerTable)).getChildren().get(tower)).getChildren().remove(0);
+            }
         }
 
-        //removing previous images
-        for(int i = towerPane; i<((Group)playersList.get(p).getChildren().get(children_towerTable)).getChildren().size(); i++){
-            if(!(((Pane)((Group) playersList.get(s).getChildren().get(children_towerTable)).getChildren().get(i)).getChildren().isEmpty())) {
-                ((ImageView) ((Pane) ((Group) playersList.get(s).getChildren().get(children_towerTable)).getChildren().get(i)).getChildren().get(0))
-                        .setImage(null);
-            }
+
+        for (int tower = 0; tower < gameBoard.getPlayers().get(p).getSchoolBoard().getNumOfTowers(); tower++) {
+
+            ((Pane) ((Group) playersList.get(s).getChildren().get(children_towerTable)).getChildren().get(tower)).getChildren()
+                    .add(loadImageView(gameBoard.getPlayers().get(p).getTowerColor().tower, 30, 30));
         }
 
         if(gameBoard.getAdvancedSettings()) {
